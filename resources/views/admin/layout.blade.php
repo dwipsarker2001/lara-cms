@@ -7,6 +7,8 @@
     <link rel="preconnect" href="https://fonts.bunny.net">
     <link href="https://fonts.bunny.net/css?family=inter:400,500,600,700&display=swap" rel="stylesheet">
     @vite(['resources/css/app.css', 'resources/js/app.js'])
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <script>window.FA_ICONS = {{ Js::from(json_decode(file_get_contents(public_path('fa-icons.json')))) }};</script>
 </head>
 <body class="admin-root antialiased bg-header-bg text-text-primary min-h-full" x-data="{ navCollapsed: {{ (request()->routeIs('admin.pages.editor')) ? 'true' : 'false' }}, userMenuOpen: false }">
     {{-- Fixed header --}}

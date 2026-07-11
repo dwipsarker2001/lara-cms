@@ -105,13 +105,13 @@
                     </div>
                     <div class="flex flex-col gap-3 p-0.5">
                         <template x-for="field in currentFields()" :key="field.name">
-                            <div data-field-scroll="field.name">
+                            <div :data-field-scroll="field.name">
                                 {{-- string (input) --}}
                                 <template x-if="field.type === 'string' && !field.multiline">
                                     <div>
                                         <label class="block text-sm font-semibold text-text-primary mb-1" x-text="field.label"></label>
                                         <input type="text" :value="getField(field.name)" @input="setField(field.name, $event.target.value)"
-                                            data-field-target="field.name"
+                                            :data-field-target="field.name"
                                             class="w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm text-text-primary shadow-[0_2px_3px_-2px_rgba(0,0,0,0.15)] focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary">
                                     </div>
                                 </template>
@@ -121,7 +121,7 @@
                                     <div>
                                         <label class="block text-sm font-semibold text-text-primary mb-1" x-text="field.label"></label>
                                         <textarea :value="getField(field.name)" @input="setField(field.name, $event.target.value)"
-                                            data-field-target="field.name"
+                                            :data-field-target="field.name"
                                             class="w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm text-text-primary shadow-[0_2px_3px_-2px_rgba(0,0,0,0.15)] focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary resize-y min-h-[80px]" rows="3"></textarea>
                                     </div>
                                 </template>
@@ -131,32 +131,33 @@
                                     <div>
                                         <label class="block text-sm font-semibold text-text-primary mb-1" x-text="field.label"></label>
                                         <input type="number" :value="getField(field.name)" @input="setField(field.name, parseFloat($event.target.value) || '')"
-                                            data-field-target="field.name"
+                                            :data-field-target="field.name"
                                             class="w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm text-text-primary shadow-[0_2px_3px_-2px_rgba(0,0,0,0.15)] focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary">
                                     </div>
                                 </template>
 
-                                {{-- boolean (toggle) --}}
-                                <template x-if="field.type === 'boolean'">
-                                    <div class="flex items-center justify-between gap-3">
-                                        <label class="text-sm font-semibold text-text-primary" x-text="field.label"></label>
-                                        <button type="button" role="switch"
-                                            :aria-checked="isChecked(getField(field.name))"
-                                            @click="setField(field.name, isChecked(getField(field.name)) ? 'false' : 'true')"
-                                            :class="isChecked(getField(field.name)) ? 'bg-primary' : 'bg-gray-300'"
-                                            class="relative inline-flex h-6 w-11 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-primary/30 focus:ring-offset-1"
-                                        >
-                                            <span aria-hidden="true"
-                                                :class="isChecked(getField(field.name)) ? 'translate-x-5' : 'translate-x-0'"
-                                                class="pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out"
-                                            ></span>
-                                        </button>
+                                        {{-- boolean (toggle) --}}
+                                        <template x-if="field.type === 'boolean'">
+                                            <div class="flex items-center justify-between gap-3">
+                                                <label class="text-sm font-semibold text-text-primary" x-text="field.label"></label>
+                                                <button type="button" role="switch"
+                                                    :aria-checked="isChecked(getField(field.name))"
+                                                    @click="setField(field.name, isChecked(getField(field.name)) ? 'false' : 'true')"
+                                                    :class="isChecked(getField(field.name)) ? 'bg-primary' : 'bg-gray-300'"
+                                                    class="relative inline-flex h-6 w-11 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-primary/30 focus:ring-offset-1"
+                                                    :data-field-target="field.name"
+                                                >
+                                                    <span aria-hidden="true"
+                                                        :class="isChecked(getField(field.name)) ? 'translate-x-5' : 'translate-x-0'"
+                                                        class="pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out"
+                                                    ></span>
+                                                </button>
                                     </div>
                                 </template>
 
                                 {{-- image --}}
                                 <template x-if="field.type === 'image'">
-                                    <div>
+                                    <div :data-field-target="field.name">
                                         <label class="block text-sm font-semibold text-text-primary mb-1" x-text="field.label"></label>
                                         <div
                                             @click="window.dispatchEvent(new CustomEvent('open-asset-picker', { detail: { callback: (url) => { setField(field.name, url) } } }))"
@@ -171,14 +172,14 @@
                                                     reader.readAsDataURL(file);
                                                 }
                                             "
-                                            class="relative flex flex-col items-center justify-center w-full py-10 rounded-lg border-2 border-dashed cursor-pointer transition-colors bg-white overflow-hidden"
+                                            class="relative w-full h-32 rounded-lg border-2 border-dashed cursor-pointer transition-colors bg-white overflow-hidden"
                                             :class="getField(field.name) ? 'border-gray-300 hover:border-gray-400' : 'border-gray-300 hover:border-gray-400'"
                                         >
                                             <template x-if="getField(field.name)">
                                                 <img :src="getField(field.name)" alt="" class="w-full h-full object-cover rounded-lg">
                                             </template>
                                             <template x-if="!getField(field.name)">
-                                                <div class="flex flex-col items-center justify-center text-text-muted">
+                                                <div class="flex flex-col items-center justify-center w-full h-full text-text-muted">
                                                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="size-8 mb-1">
                                                         <rect x="3" y="3" width="18" height="18" rx="2" ry="2" />
                                                         <circle cx="8.5" cy="8.5" r="1.5" />
@@ -199,22 +200,78 @@
                                     </div>
                                 </template>
 
-                                {{-- rich-text --}}
-                                <template x-if="field.type === 'rich-text'">
+                                {{-- icon picker --}}
+                                <template x-if="field.type === 'icon'">
                                     <div>
                                         <label class="block text-sm font-semibold text-text-primary mb-1" x-text="field.label"></label>
-                                        <textarea :value="getField(field.name)" @input="setField(field.name, $event.target.value)"
-                                            class="w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm text-text-primary shadow-[0_2px_3px_-2px_rgba(0,0,0,0.15)] focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary font-mono resize-y min-h-[100px]" rows="4"></textarea>
+                                        <div class="relative">
+                                            <button type="button" @click="iconPickerOpen = !iconPickerOpen; if(iconPickerOpen) { iconLoading = true; iconSearch = ''; $nextTick(() => iconLoading = false); }"
+                                                class="flex items-center gap-2 w-full rounded-lg border px-3 py-2 text-sm transition-colors bg-white"
+                                                :class="getField(field.name) ? 'border-primary' : 'border-gray-300 hover:border-gray-400'"
+                                            >
+                                                <template x-if="getField(field.name)">
+                                                    <i :class="getField(field.name)" class="text-base w-5 text-center"></i>
+                                                </template>
+                                                <template x-if="!getField(field.name)">
+                                                    <span class="text-gray-400 w-5 text-center">?</span>
+                                                </template>
+                                                <span class="text-text-primary" x-text="getField(field.name) ? iconLabel(getField(field.name)) : 'Choose icon'"></span>
+                                                <svg class="ml-auto size-3 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+                                            </button>
+                                            <template x-if="iconPickerOpen">
+                                                <div class="absolute z-50 mt-1 w-full rounded-lg border border-gray-200 bg-white shadow-lg">
+                                                    <div class="p-2 border-b border-gray-100">
+                                                        <input type="text" x-model="iconSearch" placeholder="Search icons (e.g. 'plane', 'check', 'heart')..."
+                                                            class="w-full rounded-md border border-gray-200 px-3 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary"
+                                                        >
+                                                    </div>
+                                                    <div x-show="iconLoading" class="flex items-center justify-center py-4 text-sm text-gray-400">
+                                                        <svg class="animate-spin size-4 mr-2" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"/><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"/></svg>
+                                                        Loading icons...
+                                                    </div>
+                                                    <div x-show="!iconLoading" class="p-2 max-h-72 overflow-y-auto grid grid-cols-8 gap-1 scrollbar-thin">
+                                                        <template x-for="icon in filteredIcons" :key="icon.c">
+                                                            <button type="button" @click="setField(field.name, icon.c); iconPickerOpen = false; iconSearch = ''"
+                                                                class="flex items-center justify-center size-8 rounded-md border transition-colors text-sm"
+                                                                :class="getField(field.name) === icon.c ? 'border-primary bg-primary/10 ring-1 ring-primary' : 'border-gray-200 hover:border-gray-300 bg-white'"
+                                                                :title="icon.l"
+                                                            >
+                                                                <i :class="icon.c"></i>
+                                                            </button>
+                                                        </template>
+                                                        <template x-if="filteredIcons.length === 0">
+                                                            <div class="col-span-8 py-4 text-center text-sm text-gray-400">No icons found</div>
+                                                        </template>
+                                                    </div>
+                                                </div>
+                                            </template>
+                                        </div>
+                                        <template x-if="getField(field.name)">
+                                            <button type="button" @click="setField(field.name, '')"
+                                                class="mt-1 text-xs text-danger hover:text-danger/80 transition-colors"
+                                            >Remove icon</button>
+                                        </template>
+                                    </div>
+                                </template>
+
+                                {{-- rich-text --}}
+                                        <template x-if="field.type === 'rich-text'">
+                                            <div>
+                                                <label class="block text-sm font-semibold text-text-primary mb-1" x-text="field.label"></label>
+                                                <textarea :value="getField(field.name)" @input="setField(field.name, $event.target.value)"
+                                                    :data-field-target="field.name"
+                                                    class="w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm text-text-primary shadow-[0_2px_3px_-2px_rgba(0,0,0,0.15)] focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary font-mono resize-y min-h-[100px]" rows="4"></textarea>
                                     </div>
                                 </template>
 
                                 {{-- link --}}
-                                <template x-if="field.type === 'link'">
-                                    <div>
-                                        <label class="block text-sm font-semibold text-text-primary mb-1" x-text="field.label"></label>
-                                        <input type="text" :value="getField(field.name)" @input="setField(field.name, $event.target.value)"
-                                            placeholder="/page-url or https://..."
-                                            class="w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm text-text-primary shadow-[0_2px_3px_-2px_rgba(0,0,0,0.15)] focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary">
+                                        <template x-if="field.type === 'link'">
+                                            <div>
+                                                <label class="block text-sm font-semibold text-text-primary mb-1" x-text="field.label"></label>
+                                                <input type="text" :value="getField(field.name)" @input="setField(field.name, $event.target.value)"
+                                                    placeholder="/page-url or https://..."
+                                                    :data-field-target="field.name"
+                                                    class="w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm text-text-primary shadow-[0_2px_3px_-2px_rgba(0,0,0,0.15)] focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary">
                                     </div>
                                 </template>
 
@@ -238,21 +295,21 @@
                                 </template>
 
                                 {{-- object (drill-in or list) --}}
-                                <template x-if="field.type === 'object'">
-                                    <div>
-                                        <template x-if="!field.list">
-                                            <button @click="drillIn(field.name)"
-                                                class="w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-left text-sm text-text-primary shadow-[0_2px_3px_-2px_rgba(0,0,0,0.15)] flex items-center justify-between"
-                                            >
-                                                <span class="font-semibold" x-text="field.label"></span>
-                                                <svg class="w-4 h-4 text-text-muted" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" /></svg>
-                                            </button>
-                                        </template>
-                                        <template x-if="field.list">
-                                            <div class="rounded-lg border border-gray-300 bg-white px-3 py-2 shadow-[0_2px_3px_-2px_rgba(0,0,0,0.15)]">
-                                                <div class="flex items-center justify-between mb-2">
-                                                    <span class="text-sm font-semibold text-text-primary" x-text="field.label"></span>
-                                                    <button type="button" @click="addListItem(field.name)" class="text-xs text-primary hover:text-primary/80 font-medium">+ Add <span x-text="field.label.toLowerCase()"></span></button>
+                                        <template x-if="field.type === 'object'">
+                                            <div :data-field-target="field.name">
+                                                <template x-if="!field.list">
+                                                    <button @click="drillIn(field.name)"
+                                                        class="w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-left text-sm text-text-primary shadow-[0_2px_3px_-2px_rgba(0,0,0,0.15)] flex items-center justify-between"
+                                                    >
+                                                        <span class="font-semibold" x-text="field.label"></span>
+                                                        <svg class="w-4 h-4 text-text-muted" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" /></svg>
+                                                    </button>
+                                                </template>
+                                                <template x-if="field.list">
+                                                    <div class="rounded-lg border border-gray-300 bg-white px-3 py-2 shadow-[0_2px_3px_-2px_rgba(0,0,0,0.15)]">
+                                                        <div class="flex items-center justify-between mb-2">
+                                                            <span class="text-sm font-semibold text-text-primary" x-text="field.label"></span>
+                                                            <button type="button" @click="addListItem(field.name)" class="text-xs text-primary hover:text-primary/80 font-medium">+ Add <span x-text="field.label.toLowerCase()"></span></button>
                                                 </div>
                                                 <template x-if="getList(field.name).length > 0">
                                                     <div class="space-y-0.5">
@@ -292,7 +349,7 @@
 
                                 {{-- background --}}
                                 <template x-if="field.type === 'background'">
-                                    <div>
+                                    <div :data-field-target="field.name">
                                         <label class="block text-sm font-semibold text-text-primary mb-1">Background</label>
                                         <button @click="drillIn(field.name)"
                                             class="w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-left text-sm text-text-primary shadow-[0_2px_3px_-2px_rgba(0,0,0,0.15)] flex items-center justify-between"
@@ -398,6 +455,10 @@
             showPicker: false,
             isSaving: false,
             previewTimer: null,
+            iconPickerOpen: false,
+            iconSearch: '',
+            iconLoading: false,
+            faIcons: window.FA_ICONS || [],
 
             init(sections, schemas, blockList, slug) {
                 this.sections = JSON.parse(JSON.stringify(sections));
@@ -643,6 +704,20 @@
                 this.setField(name, JSON.stringify(current));
             },
 
+            get filteredIcons() {
+                let icons = this.faIcons;
+                if (this.iconSearch.trim()) {
+                    const q = this.iconSearch.toLowerCase();
+                    icons = icons.filter(i => i.l.toLowerCase().includes(q) || i.c.toLowerCase().includes(q));
+                }
+                return icons.slice(0, 2000);
+            },
+
+            iconLabel(cls) {
+                const found = this.faIcons.find(i => i.c === cls);
+                return found ? found.l : cls;
+            },
+
             schedulePreview() {
                 clearTimeout(this.previewTimer);
                 this.previewTimer = setTimeout(() => this.refreshPreview(), 150);
@@ -662,36 +737,105 @@
             },
 
             attachPreviewListeners(el) {
-                el.querySelectorAll('[data-edit]').forEach(elem => {
-                    elem.addEventListener('click', (e) => {
-                        e.preventDefault();
-                        this.focusField(elem.dataset.edit);
-                    });
+                el.addEventListener('click', (e) => {
+                    const sectionEl = e.target.closest('[data-section-index]');
+                    if (!sectionEl) return;
+                    const link = e.target.closest('a');
+                    if (link) { e.preventDefault(); e.stopPropagation(); }
+
+                    const idx = parseInt(sectionEl.getAttribute('data-section-index'), 10);
+                    if (isNaN(idx) || idx < 0 || idx >= this.sections.length) return;
+
+                    const path = this.buildFieldPath(e.target);
+                    this.focusField(path, idx);
                 });
             },
 
-            focusField(cmd) {
-                if (cmd === '_root') { this.crumbs = []; return; }
-                const parts = cmd.split('/');
+            buildFieldPath(target) {
+                const fieldEl = target.closest('[data-edit]');
+                const listEl = !fieldEl ? target.closest('[data-list]') : null;
+
+                if (!fieldEl && !listEl) return '_root';
+
+                let leaf = '';
+                let startEl = fieldEl;
+                if (fieldEl) {
+                    leaf = fieldEl.getAttribute('data-edit') || '';
+                    if (!leaf) { startEl = null; leaf = ''; }
+                } else if (listEl) {
+                    startEl = listEl;
+                }
+
+                const listParts = [];
+                let current = startEl;
+                while (current) {
+                    const listName = current.getAttribute('data-list');
+                    if (listName) {
+                        const parent = current.parentElement;
+                        if (parent) {
+                            const siblings = Array.from(parent.querySelectorAll(`[data-list="${listName}"]`));
+                            const index = siblings.indexOf(current);
+                            if (index >= 0) listParts.unshift(`${listName}:${index}`);
+                        }
+                    }
+                    current = current.parentElement?.closest('[data-list]') ?? null;
+                }
+
+                if (leaf) {
+                    return [...listParts, leaf].join('/');
+                }
+                return listParts.join('/') + '/';
+            },
+
+            focusField(cmd, sectionIdx) {
+                if (sectionIdx !== undefined) this.active = sectionIdx;
+
+                const raw = cmd.split('#')[0];
+                if (raw === '_root') { this.crumbs = []; return; }
+
+                const segs = raw.split('/');
+                const leaf = segs.pop() || '';
                 const newCrumbs = [];
-                for (const part of parts) {
-                    if (!part) continue;
-                    if (part.includes(':')) {
-                        const [key, idxStr] = part.split(':');
-                        const idx = parseInt(idxStr, 10);
-                        if (!isNaN(idx)) {
-                            newCrumbs.push({ key, index: idx });
-                        } else {
-                            newCrumbs.push({ key });
+                let curFields = this.schemas[this.sections[this.active]?.name] || [];
+                let curData = this.sections[this.active]?.data || {};
+
+                for (const s of segs) {
+                    if (!s) continue;
+                    const [key, idxStr] = s.split(':');
+                    const def = curFields.find(f => f.name === key && f.type === 'object');
+                    if (!def) break;
+                    if (idxStr !== undefined) {
+                        const index = parseInt(idxStr, 10);
+                        if (!isNaN(index)) {
+                            newCrumbs.push({ key, index });
+                            curData = curData?.[key]?.[index] || {};
                         }
                     } else {
                         newCrumbs.push({ key });
+                        curData = curData?.[key] || {};
                     }
+                    curFields = def.fields || [];
                 }
+
                 this.crumbs = newCrumbs;
-                if (this.active === null && this.sections.length > 0) {
-                    this.active = 0;
-                }
+
+                this.$nextTick(() => {
+                    const fieldEl = document.querySelector(`[data-field-target="${leaf}"]`);
+                    if (fieldEl && fieldEl.offsetParent !== null) {
+                        try { fieldEl.focus(); } catch {}
+                        try { fieldEl.scrollIntoView({ behavior: 'smooth', block: 'center' }); } catch {}
+                    } else if (leaf) {
+                        const scrollEl = document.querySelector(`[data-field-scroll="${leaf}"]`);
+                        if (scrollEl) {
+                            try { scrollEl.scrollIntoView({ behavior: 'smooth', block: 'center' }); } catch {}
+                            const target = document.querySelector(`[data-field-target="${leaf}"]`);
+                            if (target) {
+                                target.style.boxShadow = '0 0 0 3px rgba(59,130,246,0.5)';
+                                setTimeout(() => { target.style.boxShadow = ''; }, 2000);
+                            }
+                        }
+                    }
+                });
             },
 
             async save() {

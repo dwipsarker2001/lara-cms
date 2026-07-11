@@ -10,9 +10,9 @@
 
 /* Preview shell: reset CSS variables so admin theme doesn't leak into preview */
 .preview-shell {
-    --color-primary: oklch(0.457 0.24 277.023);
-    --color-primary-hover: oklch(0.4 0.22 277.023);
-    --color-primary-soft: oklch(0.457 0.24 277.023 / 0.1);
+    --color-primary: #16a34a;
+    --color-primary-hover: #138b3f;
+    --color-primary-soft: rgba(22, 163, 74, 0.1);
     --color-primary-foreground: #fff;
     --color-body-bg: oklch(0.967 0.001 286.375);
     --color-content-bg: #fff;
@@ -25,7 +25,9 @@
 }
 
 /* Preview: no visual indicator on editable fields by default */
-.preview-shell [data-edit] {
+.preview-shell [data-edit],
+.preview-shell [data-list],
+.preview-shell [data-section-index] {
     cursor: pointer;
 }
 
@@ -37,11 +39,20 @@
     z-index: 50;
 }
 
+.preview-shell [data-section-index]:hover {
+    outline: 2px dashed #3b82f6 !important;
+    outline-offset: -2px;
+    position: relative;
+    z-index: 50;
+    background-color: rgba(59, 130, 246, 0.06) !important;
+    border-radius: 4px;
+}
+
 .preview-shell [data-edit]:not([data-edit-button]):hover {
     background-color: rgba(59, 130, 246, 0.07) !important;
 }
 
-/* Preview: highlight list/section containers on hover */
+/* Preview: highlight list containers on hover */
 .preview-shell [data-list]:hover {
     outline: 2px dashed #3b82f6 !important;
     outline-offset: -2px;
@@ -78,11 +89,25 @@
 
 .sortable-ghost {
     opacity: 0.5;
-    background: oklch(0.457 0.24 277.023 / 0.08) !important;
-    outline: 2px dashed oklch(0.457 0.24 277.023 / 0.5);
+    background: rgba(22, 163, 74, 0.08) !important;
+    outline: 2px dashed rgba(22, 163, 74, 0.5);
     outline-offset: -2px;
 }
 
 .sortable-chosen {
     box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+}
+
+.scrollbar-thin::-webkit-scrollbar {
+    width: 4px;
+}
+.scrollbar-thin::-webkit-scrollbar-track {
+    background: transparent;
+}
+.scrollbar-thin::-webkit-scrollbar-thumb {
+    background: #d1d5db;
+    border-radius: 4px;
+}
+.scrollbar-thin::-webkit-scrollbar-thumb:hover {
+    background: #9ca3af;
 }

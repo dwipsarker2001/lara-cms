@@ -28,14 +28,16 @@ class HomePageSeeder extends Seeder
             $registry->get('siteFooter') ? Sections::createDefaultSection('siteFooter') : null,
         ]);
 
-        Page::create([
-            'slug' => 'home',
-            'title' => 'Home',
-            'sections' => $homeSections,
-            'meta' => null,
-            'published' => true,
-            'position' => 0,
-        ]);
+        Page::updateOrCreate(
+            ['slug' => 'home'],
+            [
+                'title' => 'Home',
+                'sections' => $homeSections,
+                'meta' => null,
+                'published' => true,
+                'position' => 0,
+            ]
+        );
 
         $this->command->info('Home page seeded with '.count($homeSections).' sections.');
     }

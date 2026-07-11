@@ -1,60 +1,101 @@
-@php $d = $data; @endphp
-@php $btn = $d['button'] ?? []; @endphp
-<section data-block="travelDeals">
-    <div class="max-w-6xl mx-auto px-6">
-        <div class="flex flex-col sm:flex-row items-start sm:items-end justify-between gap-4">
-            <div>
+@php
+    $d = $data;
+    $btn = $d['button'] ?? [];
+    $bg = [];
+    if (isset($d['background']) && is_string($d['background'])) {
+        try { $bg = json_decode($d['background'], true) ?? []; } catch (\Exception) { $bg = []; }
+    }
+    $bgImg = $bg['image'] ?? '';
+    $bgColor = $bg['color'] ?? '';
+    $bgOpacity = $bg['opacity'] ?? 100;
+@endphp
+<section data-block="travelDeals" class="py-20 relative overflow-hidden">
+    @if($bgColor)
+        <div class="absolute inset-0" style="background-color: {{ $bgColor }}"></div>
+    @endif
+    @if($bgImg)
+        <div class="absolute inset-0 bg-cover bg-center bg-no-repeat" style="background-image: url({{ $bgImg }}); opacity: {{ $bgOpacity / 100 }}"></div>
+    @endif
+    <div class="relative">
+        <div class="max-w-6xl mx-auto px-6">
+            <div class="relative">
                 @if($d['headline'] ?? false)
-                    <h2 data-edit="headline" class="text-2xl md:text-3xl font-bold text-gray-900">{{ $d['headline'] }}</h2>
+                    <h2 data-edit="headline" class="text-center text-2xl md:text-3xl font-bold text-gray-900">{{ $d['headline'] }}</h2>
                 @endif
                 @if($d['description'] ?? false)
-                    <p data-edit="description" class="mt-3 max-w-lg text-gray-500 text-sm md:text-base leading-relaxed">{{ $d['description'] }}</p>
+                    <p data-edit="description" class="mx-auto mt-3 max-w-xl text-center text-gray-500">{{ $d['description'] }}</p>
                 @endif
-            </div>
-            @if($btn['label'] ?? false)
-                <a href="{{ $btn['link'] ?? '#' }}" data-edit="label" class="inline-flex shrink-0 items-center gap-2 rounded-full border border-gray-200 bg-white px-5 py-2.5 text-sm font-semibold text-gray-800 transition-all hover:border-brand hover:bg-brand hover:text-brand-foreground hover:shadow-md">
-                    {{ $btn['label'] }}
-                    <svg class="size-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5l7 7-7 7"/></svg>
-                </a>
-            @endif
-        </div>
-        <div class="mt-10 flex gap-5 overflow-x-auto snap-x snap-mandatory sm:grid sm:grid-cols-2 xl:grid-cols-4 md:gap-6" style="-ms-overflow-style:none;scrollbar-width:none">
-            @foreach(($d['cards'] ?? []) as $i => $deal)
-                @if($deal)
-                    <div data-list="cards" class="group block min-w-[260px] sm:min-w-0 snap-start rounded-2xl bg-gray-100/80 overflow-hidden transition-shadow hover:shadow-sm">
-                        <div class="relative aspect-[4/5] overflow-hidden bg-gray-200">
-                            @if($deal['image'] ?? false)
-                                <img src="{{ $deal['image'] }}" alt="" data-edit="image" class="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" />
-                            @endif
-                            @if($deal['badge'] ?? false)
-                                <span data-edit="badge" class="absolute top-3 left-3 rounded-full bg-brand px-3 py-1 text-xs font-semibold text-brand-foreground shadow-sm">{{ $deal['badge'] }}</span>
-                            @endif
-                        </div>
-                        <div class="p-4 md:p-5">
-                            @if($deal['title'] ?? false)
-                                <h3 data-edit="title" class="text-base font-bold text-gray-900 leading-snug group-hover:text-brand transition-colors">{{ $deal['title'] }}</h3>
-                            @endif
-                            @if($deal['description'] ?? false)
-                                <p data-edit="description" class="mt-2 text-sm text-gray-500 leading-relaxed line-clamp-2">{{ $deal['description'] }}</p>
-                            @endif
-                            <div class="mt-3 flex items-center gap-2">
-                                @if($deal['price'] ?? false)
-                                    <span data-edit="price" class="text-lg font-extrabold text-gray-900">${{ number_format($deal['price']) }}</span>
-                                @endif
-                                @if($deal['originalPrice'] ?? false)
-                                    <span data-edit="originalPrice" class="text-sm text-gray-400 line-through">${{ number_format($deal['originalPrice']) }}</span>
-                                @endif
+                <div class="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+                    @foreach(($d['cards'] ?? []) as $i => $card)
+                        @if($card)
+                            <div data-list="cards" class="group flex h-full flex-col overflow-hidden rounded-xl p-3 border border-gray-100 bg-white shadow-sm">
+                                <div class="relative h-52 overflow-hidden rounded-xl">
+                                    @if($card['image'] ?? false)
+                                        <img src="{{ $card['image'] }}" alt="{{ $card['title'] ?? '' }}" data-edit="image" class="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105" />
+                                    @endif
+                                    @if($card['badge'] ?? false)
+                                        <span data-edit="badge" data-edit-button class="absolute top-3 right-3 rounded-md bg-red-500 px-3 py-1 text-xs font-semibold text-white">{{ $card['badge'] }}</span>
+                                    @endif
+                                </div>
+                                <div class="flex flex-1 flex-col px-2 pt-4 pb-2">
+                                    @if($card['title'] ?? false)
+                                        <h3 data-edit="title" class="text-lg font-bold text-gray-900 transition-colors group-hover:text-primary">{{ $card['title'] }}</h3>
+                                    @endif
+                                    @if($card['description'] ?? false)
+                                        <p data-edit="description" class="mt-1.5 text-sm text-gray-500">{{ $card['description'] }}</p>
+                                    @endif
+                                    <div class="mt-3 flex items-end justify-between">
+                                        @if($card['buttonLabel'] ?? false)
+                                            <span data-edit="buttonLabel" data-edit-button class="inline-flex items-center gap-1.5 rounded-lg bg-primary text-white px-4 py-2.5 text-sm font-semibold transition-colors hover:bg-primary/90">
+                                                {{ $card['buttonLabel'] }}
+                                                <svg class="w-3.5 h-3.5 -rotate-45" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 12h14M12 5l7 7-7 7"/></svg>
+                                            </span>
+                                        @endif
+                                        <div class="text-right">
+                                            @if($card['priceLabel'] ?? false)
+                                                <span data-edit="priceLabel" class="text-xs text-gray-400">{{ $card['priceLabel'] }}</span>
+                                            @endif
+                                            <div class="flex items-baseline gap-1.5">
+                                                @if($card['originalPrice'] ?? false)
+                                                    <span data-edit="originalPrice" class="text-sm text-gray-400 line-through">${{ number_format($card['originalPrice']) }}</span>
+                                                @endif
+                                                @if($card['price'] ?? false)
+                                                    <span data-edit="price" class="text-2xl font-bold text-gray-900">${{ number_format($card['price']) }}</span>
+                                                @endif
+                                            </div>
+                                        </div>
+                                    </div>
+                                    @if(($card['features'] ?? []) && count($card['features'] ?? []) > 0)
+                                        <div class="mt-4 border-t border-dashed border-gray-200"></div>
+                                        <ul class="mt-3 flex flex-wrap items-center gap-x-5 gap-y-2">
+                                            @foreach($card['features'] as $fi => $feature)
+                                                @if($feature)
+                                                    <li data-list="features" class="flex items-center">
+                                                        <span class="flex items-center gap-1.5 rounded-md text-sm font-medium text-gray-700 cursor-default">
+                                                            @if($feature['icon'] ?? false)
+                                                                 <i class="{{ $feature['icon'] }} size-4" data-edit="icon"></i>
+                                                            @endif
+                                                            <span data-edit="text">{{ $feature['text'] }}</span>
+                                                        </span>
+                                                    </li>
+                                                @endif
+                                            @endforeach
+                                        </ul>
+                                    @endif
+                                </div>
                             </div>
-                            @if($deal['priceLabel'] ?? false)
-                                <p data-edit="priceLabel" class="mt-1 text-xs text-gray-400">{{ $deal['priceLabel'] }}</p>
-                            @endif
-                            @if($deal['buttonLabel'] ?? false)
-                                <a href="{{ $d['button']['link'] ?? '#' }}" data-edit="buttonLabel" class="mt-4 inline-flex w-full items-center justify-center rounded-xl bg-brand py-2.5 text-sm font-semibold text-brand-foreground transition-all hover:bg-brand/90">{{ $deal['buttonLabel'] }}</a>
-                            @endif
-                        </div>
+                        @endif
+                    @endforeach
+                </div>
+                @if($btn['label'] ?? false)
+                    <div class="mt-10 flex justify-center">
+                        <a href="{{ $btn['link'] ?? '#' }}" data-edit="label" class="inline-flex items-center gap-2 rounded-lg bg-primary text-white px-6 py-3 text-sm font-semibold transition-colors hover:bg-primary/90">
+                            {{ $btn['label'] }}
+                            <svg class="w-4 h-4 -rotate-45" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 12h14M12 5l7 7-7 7"/></svg>
+                        </a>
                     </div>
                 @endif
-            @endforeach
+            </div>
         </div>
     </div>
 </section>

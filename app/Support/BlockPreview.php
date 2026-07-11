@@ -12,18 +12,20 @@ class BlockPreview
         $registry = app(BlockRegistry::class);
         $html = '';
 
-        foreach ($resolved as $section) {
+        foreach ($resolved as $i => $section) {
             $block = $registry->get($section['name'] ?? '');
 
             if (! $block || ! view()->exists($block->view())) {
                 continue;
             }
 
-            $html .= view($block->view(), [
+            $inner = view($block->view(), [
                 'data' => $section['data'] ?? [],
                 '_key' => $section['_key'] ?? '',
                 'preview' => true,
             ])->render();
+
+            $html .= '<div data-section-index="'.$i.'" class="p-0.5">'.$inner.'</div>';
         }
 
         return $html;

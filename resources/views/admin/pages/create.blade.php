@@ -528,14 +528,14 @@
                                                                         reader.readAsDataURL(file);
                                                                     }
                                                                 "
-                                                                class="relative flex flex-col items-center justify-center w-full py-10 rounded-lg border-2 border-dashed cursor-pointer transition-colors bg-white overflow-hidden"
-                                                                :class="meta.socialImage ? 'border-gray-300 hover:border-gray-400' : 'border-gray-300 hover:border-gray-400'"
-                                                            >
-                                                                <template x-if="meta.socialImage">
-                                                                    <img :src="meta.socialImage" alt="" class="w-full h-full object-cover rounded-lg">
-                                                                </template>
-                                                                <template x-if="!meta.socialImage">
-                                                                    <div class="flex flex-col items-center justify-center text-text-muted">
+                                                                 class="relative w-full h-32 rounded-lg border-2 border-dashed cursor-pointer transition-colors bg-white overflow-hidden"
+                                                                 :class="meta.socialImage ? 'border-gray-300 hover:border-gray-400' : 'border-gray-300 hover:border-gray-400'"
+                                                             >
+                                                                 <template x-if="meta.socialImage">
+                                                                     <img :src="meta.socialImage" alt="" class="w-full h-full object-cover rounded-lg">
+                                                                 </template>
+                                                                 <template x-if="!meta.socialImage">
+                                                                     <div class="flex flex-col items-center justify-center w-full h-full text-text-muted">
                                                                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="size-8 mb-1">
                                                                             <rect x="3" y="3" width="18" height="18" rx="2" ry="2" />
                                                                             <circle cx="8.5" cy="8.5" r="1.5" />
