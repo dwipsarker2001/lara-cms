@@ -33,7 +33,7 @@
             <div class="px-[18px] py-3 text-sm font-medium text-text-heading flex items-center justify-between">
                 <div>All Pages</div>
             </div>
-            <div class="px-1.5 pb-2">
+            <div class="px-1.5 pb-2" id="sortable-pages">
                 @if ($pages->isEmpty())
                     <div class="flex flex-col items-center justify-center py-8">
                         <p class="text-sm font-medium text-text-heading">No pages yet</p>
@@ -41,8 +41,8 @@
                     </div>
                 @else
                     @foreach ($pages as $page)
-                        <div class="flex rounded-xl shadow-sm bg-content-bg mb-px group">
-                            <div class="w-6 shrink-0 flex items-center justify-center text-text-muted/70">
+                        <div class="flex rounded-xl shadow-sm bg-content-bg mb-px group px-3" data-page-id="{{ $page->id }}">
+                            <div class="w-6 shrink-0 flex items-center justify-center text-text-muted/70 cursor-grab" data-drag-handle>
                                 <svg viewBox="0 0 24 24" fill="currentColor" class="size-[14px]">
                                     <circle cx="8" cy="6" r="2.5" />
                                     <circle cx="16" cy="6" r="2.5" />
@@ -61,10 +61,9 @@
                                             <span class="text-xs text-text-muted font-normal ml-1">(Home)</span>
                                         @endif
                                     </span>
-                                    <code class="text-xs bg-panel-bg px-2 py-0.5 rounded shrink-0 text-text-muted">{{ $page->route() }}</code>
                                 </div>
                                 <div class="flex items-center gap-2 sm:gap-3 shrink-0">
-                                    <a href="{{ route('admin.pages.editor', $page) }}" class="text-xs text-text-muted hover:text-text-primary font-medium">Edit</a>
+                                    <code class="text-xs bg-panel-bg px-2 py-0.5 rounded shrink-0 text-text-muted">{{ $page->route() }}</code>
                                     <div class="relative" x-data="{ open: false }" @click.outside="open = false" @keydown.escape.window="open = false">
                                         <button
                                             type="button"
@@ -89,40 +88,39 @@
                                             x-transition:leave-start="opacity-100 scale-100"
                                             x-transition:leave-end="opacity-0 scale-95"
                                             role="menu"
-                                            style="position: fixed; z-index: 9999;"
-                                            :style="'top: ' + ($event ? $event.target.closest('button').getBoundingClientRect().bottom + 2 : 0) + 'px; right: ' + (window.innerWidth - ($event ? $event.target.closest('button').getBoundingClientRect().right : 0)) + 'px'"
-                                            class="min-w-[12rem] rounded-xl border border-content-border bg-content-bg shadow-xl p-1.5"
+                                            style="z-index: 9999;"
+                                            class="absolute right-0 top-full mt-1 min-w-[12rem] rounded-xl border border-content-border bg-content-bg shadow-xl p-1.5"
                                         >
                                             <a href="{{ route('admin.pages.editor', $page) }}" role="menuitem"
-                                                class="flex w-full items-center gap-2.5 px-3 py-2 rounded-lg text-sm no-underline transition-colors text-text-primary hover:bg-body-bg"
+                                                class="flex w-full items-center justify-start gap-2.5 px-3 py-2 rounded-lg text-sm no-underline transition-colors text-text-primary hover:bg-body-bg"
                                             >
                                                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" class="size-4 shrink-0 text-text-muted">
                                                     <path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7" />
                                                     <path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z" />
                                                 </svg>
-                                                <span class="grow">Edit</span>
+                                                <span>Edit</span>
                                             </a>
                                             <a href="{{ route('admin.pages.edit', $page) }}" role="menuitem"
-                                                class="flex w-full items-center gap-2.5 px-3 py-2 rounded-lg text-sm no-underline transition-colors text-text-primary hover:bg-body-bg"
+                                                class="flex w-full items-center justify-start gap-2.5 px-3 py-2 rounded-lg text-sm no-underline transition-colors text-text-primary hover:bg-body-bg"
                                             >
                                                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" class="size-4 shrink-0 text-text-muted">
                                                     <circle cx="12" cy="12" r="3" />
                                                     <path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83 0 2 2 0 010-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z" />
                                                 </svg>
-                                                <span class="grow">Settings</span>
+                                                <span>Settings</span>
                                             </a>
                                             @if ($page->slug !== 'home')
                                                 <hr class="my-1 border-content-border">
-                                                <form method="POST" action="{{ route('admin.pages.destroy', $page) }}">
+                                                <form method="POST" action="{{ route('admin.pages.destroy', $page) }}" class="w-full">
                                                     @csrf @method('DELETE')
                                                     <button type="submit" role="menuitem"
                                                         onclick="return confirm('Delete this page?')"
-                                                        class="flex w-full items-center gap-2.5 px-3 py-2 rounded-lg text-sm no-underline transition-colors text-red-600 hover:bg-red-50"
+                                                        class="flex w-full items-center justify-start gap-2.5 px-3 py-2 rounded-lg text-sm transition-colors text-red-600 hover:bg-red-50 cursor-pointer"
                                                     >
                                                         <svg viewBox="0 0 20 20" fill="currentColor" class="size-4 shrink-0 text-red-500">
                                                             <path fill-rule="evenodd" d="M8.75 1A2.75 2.75 0 006 3.75v.443c-.795.077-1.584.176-2.365.298a.75.75 0 10.23 1.482l.149-.022.841 10.518A2.75 2.75 0 007.596 19h4.807a2.75 2.75 0 002.742-2.53l.841-10.52.149.023a.75.75 0 00.23-1.482A41.03 41.03 0 0014 4.193V3.75A2.75 2.75 0 0011.25 1h-2.5zM10 4c-.84 0-1.673.025-2.5.075V3.75c0-.69.56-1.25 1.25-1.25h2.5c.69 0 1.25.56 1.25 1.25v.325C11.673 4.025 10.84 4 10 4zM8.58 7.72a.75.75 0 00-1.5.06l.3 7.5a.75.75 0 101.5-.06l-.3-7.5zm4.34.06a.75.75 0 10-1.5-.06l-.3 7.5a.75.75 0 101.5.06l.3-7.5z" clip-rule="evenodd" />
                                                         </svg>
-                                                        <span class="grow">Delete</span>
+                                                        <span>Delete</span>
                                                     </button>
                                                 </form>
                                             @endif
@@ -137,3 +135,28 @@
         </div>
     </div>
 @endsection
+
+@push('scripts')
+    <script>
+        window.addEventListener('load', function () {
+            const el = document.getElementById('sortable-pages');
+            if (!el || typeof Sortable === 'undefined') return;
+
+            new Sortable(el, {
+                handle: '[data-drag-handle]',
+                animation: 200,
+                ghostClass: 'sortable-ghost',
+                chosenClass: 'sortable-chosen',
+                dragClass: 'sortable-drag',
+                onEnd() {
+                    const pageIds = [...el.querySelectorAll('[data-page-id]')].map(row => row.dataset.pageId);
+                    fetch('{{ route("admin.pages.reorder") }}', {
+                        method: 'PATCH',
+                        headers: { 'Content-Type': 'application/json', 'X-CSRF-TOKEN': '{{ csrf_token() }}' },
+                        body: JSON.stringify({ page_ids: pageIds }),
+                    });
+                },
+            });
+        });
+    </script>
+@endpush

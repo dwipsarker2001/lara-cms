@@ -28,9 +28,22 @@ class PageController extends Controller
             'title' => 'required|string|max:255',
             'slug' => 'required|string|max:255|unique:pages,slug',
             'published' => 'boolean',
+            'meta' => 'nullable|array',
         ]);
 
         $data['published'] = $request->boolean('published', true);
+        $data['meta'] = array_merge($request->meta ?? [], [
+            'metaTitleSource' => 'From Field',
+            'metaDescriptionSource' => 'Inherit',
+            'canonicalUrlSource' => 'Inherit',
+            'schemaSource' => 'Inherit',
+            'maxSnippetSource' => 'Inherit',
+            'maxVideoPreviewSource' => 'Inherit',
+            'socialImageSource' => 'Inherit',
+            'xHandleSource' => 'Inherit',
+            'xCardTitleSource' => 'Inherit',
+            'xCardDescriptionSource' => 'Inherit',
+        ]);
         $data['sections'] = [];
         $data['position'] = Page::max('position') + 1;
 

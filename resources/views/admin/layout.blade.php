@@ -8,7 +8,7 @@
     <link href="https://fonts.bunny.net/css?family=inter:400,500,600,700&display=swap" rel="stylesheet">
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
-<body class="admin-root antialiased bg-body-bg text-text-primary min-h-full" x-data="{ navCollapsed: {{ (request()->routeIs('admin.pages.editor')) ? 'true' : 'false' }}, userMenuOpen: false }">
+<body class="admin-root antialiased bg-header-bg text-text-primary min-h-full" x-data="{ navCollapsed: {{ (request()->routeIs('admin.pages.editor')) ? 'true' : 'false' }}, userMenuOpen: false }">
     {{-- Fixed header --}}
     <header class="fixed top-0 left-0 right-0 h-14 px-4 flex items-center gap-3 z-[1] bg-header-bg text-header-text">
         <div class="flex items-center gap-3">
@@ -117,7 +117,7 @@
                     </header>
 
                     <div class="p-1.5 bg-content-bg border-b border-content-border rounded-b-xl">
-                        <a href="{{ route('profile.edit') }}" role="menuitem" class="flex w-full items-center rounded-lg px-1 py-1.5 text-sm text-text-primary hover:bg-body-bg transition-colors no-underline cursor-pointer">
+                        <a href="#" role="menuitem" class="flex w-full items-center rounded-lg px-1 py-1.5 text-sm text-text-primary hover:bg-body-bg transition-colors no-underline cursor-pointer">
                             <svg viewBox="0 0 14 14" fill="none" class="size-4 shrink-0 text-text-muted mx-1">
                                 <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="m3.17188 12.5625 0.12377 -0.528c0.20645 -0.7775 0.65299 -1.4723 1.27877 -1.9838 0.68452 -0.55951 1.54143 -0.86515 2.42552 -0.86515s1.74099 0.30564 2.42552 0.86515c0.62574 0.5115 1.07234 1.2063 1.27874 1.9838l0.1239 0.5436" />
                                 <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M7 13.5c4.16 0 6.5 -2.34 6.5 -6.5S11.16 0.5 7 0.5 0.5 2.84 0.5 7s2.34 6.5 6.5 6.5Z" />
@@ -160,191 +160,195 @@
         </div>
     </header>
 
-    {{-- NavClient sidebar --}}
-    <aside
-        class="fixed top-14 left-0 bottom-0 w-52 px-3 py-6 z-20 overflow-y-auto transition-all duration-300 ease-in-out bg-body-bg"
-        :style="navCollapsed ? 'transform: translateX(-100%); opacity: 0; pointer-events: none;' : ''"
-    >
-        <a
-            href="{{ route('admin.dashboard') }}"
-            class="flex items-center gap-2.5 px-2.5 py-1.5 rounded-md text-sm no-underline transition-colors @if(request()->routeIs('admin.dashboard')) text-text-heading bg-gray-200 font-semibold @else text-text-primary hover:bg-gray-100 hover:text-text-heading font-medium @endif"
+    {{-- Shell: light gray container with rounded top, holds sidebar + content --}}
+    <div class="fixed top-14 left-0 right-0 bottom-0 bg-body-bg rounded-t-[16px] overflow-hidden flex">
+        {{-- NavClient sidebar --}}
+        <aside
+            :style="'width: ' + (navCollapsed ? '0px' : '208px')"
+            class="shrink-0 overflow-hidden transition-all duration-300 ease-in-out"
         >
-            <span class="flex w-4 shrink-0 items-center justify-center">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" class="size-4">
-                    <rect x="3" y="3" width="7" height="9" rx="1" />
-                    <rect x="14" y="3" width="7" height="5" rx="1" />
-                    <rect x="14" y="12" width="7" height="9" rx="1" />
-                    <rect x="3" y="16" width="7" height="5" rx="1" />
-                </svg>
-            </span>
-            Dashboard
-        </a>
+            <div class="w-52 px-3 py-6 overflow-y-auto h-full">
+                <a
+                    href="{{ route('admin.dashboard') }}"
+                    class="flex items-center gap-2.5 px-2.5 py-1.5 rounded-md text-sm no-underline transition-colors @if(request()->routeIs('admin.dashboard')) text-text-heading bg-gray-200 font-semibold @else text-text-primary hover:bg-gray-100 hover:text-text-heading font-medium @endif"
+                >
+                    <span class="flex w-4 shrink-0 items-center justify-center">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" class="size-4">
+                            <rect x="3" y="3" width="7" height="9" rx="1" />
+                            <rect x="14" y="3" width="7" height="5" rx="1" />
+                            <rect x="14" y="12" width="7" height="9" rx="1" />
+                            <rect x="3" y="16" width="7" height="5" rx="1" />
+                        </svg>
+                    </span>
+                    Dashboard
+                </a>
 
-        {{-- Collection --}}
-        <div class="mt-5">
-            <div class="px-2.5 pb-1.5 text-xs font-semibold uppercase tracking-wider text-text-muted/70">Collection</div>
-            <ul class="space-y-0.5">
-                <li>
-                    <a href="{{ route('admin.pages.index') }}"
-                        class="flex items-center gap-2.5 px-2.5 py-1.5 rounded-md text-sm no-underline transition-colors @if(request()->routeIs('admin.pages.*')) text-text-heading bg-gray-200 font-semibold @else text-text-primary hover:bg-gray-100 hover:text-text-heading font-medium @endif"
-                    >
-                        <span class="flex w-4 shrink-0 items-center justify-center">
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" class="size-4">
-                                <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z" />
-                                <polyline points="14 2 14 8 20 8" />
-                                <line x1="16" y1="13" x2="8" y2="13" />
-                                <line x1="16" y1="17" x2="8" y2="17" />
-                                <polyline points="10 9 9 9 8 9" />
-                            </svg>
-                        </span>
-                        Pages
-                    </a>
-                </li>
-                <li>
-                    <a href="#"
-                        class="flex items-center gap-2.5 px-2.5 py-1.5 rounded-md text-sm no-underline transition-colors text-text-primary hover:bg-gray-100 hover:text-text-heading font-medium"
-                    >
-                        <span class="flex w-4 shrink-0 items-center justify-center">
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" class="size-4">
-                                <path d="M12 20h9" />
-                                <path d="M16.5 3.5a2.121 2.121 0 013 3L7 19l-4 1 1-4L16.5 3.5z" />
-                            </svg>
-                        </span>
-                        Blog
-                    </a>
-                </li>
-                <li>
-                    <a href="#"
-                        class="flex items-center gap-2.5 px-2.5 py-1.5 rounded-md text-sm no-underline transition-colors text-text-primary hover:bg-gray-100 hover:text-text-heading font-medium"
-                    >
-                        <span class="flex w-4 shrink-0 items-center justify-center">
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" class="size-4">
-                                <path d="M16.5 9.4 7.55 4.24" />
-                                <path d="M21 16V8a2 2 0 00-1-1.73l-7-4a2 2 0 00-2 0l-7 4A2 2 0 002 8v8a2 2 0 001 1.73l7 4a2 2 0 002 0l7-4A2 2 0 0021 16z" />
-                                <polyline points="3.29 7 12 12 20.71 7" />
-                                <line x1="12" y1="22" x2="12" y2="12" />
-                            </svg>
-                        </span>
-                        Package
-                    </a>
-                </li>
-                <li>
-                    <a href="#"
-                        class="flex items-center gap-2.5 px-2.5 py-1.5 rounded-md text-sm no-underline transition-colors text-text-primary hover:bg-gray-100 hover:text-text-heading font-medium"
-                    >
-                        <span class="flex w-4 shrink-0 items-center justify-center">
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" class="size-4">
-                                <rect x="3" y="4" width="18" height="18" rx="2" ry="2" />
-                                <line x1="16" y1="2" x2="16" y2="6" />
-                                <line x1="8" y1="2" x2="8" y2="6" />
-                                <line x1="3" y1="10" x2="21" y2="10" />
-                            </svg>
-                        </span>
-                        Booking
-                    </a>
-                </li>
-                <li>
-                    <a href="#"
-                        class="flex items-center gap-2.5 px-2.5 py-1.5 rounded-md text-sm no-underline transition-colors text-text-primary hover:bg-gray-100 hover:text-text-heading font-medium"
-                    >
-                        <span class="flex w-4 shrink-0 items-center justify-center">
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" class="size-4">
-                                <rect x="1" y="4" width="22" height="16" rx="2" ry="2" />
-                                <line x1="1" y1="10" x2="23" y2="10" />
-                            </svg>
-                        </span>
-                        Payment
-                    </a>
-                </li>
-                <li>
-                    <a href="#"
-                        class="flex items-center gap-2.5 px-2.5 py-1.5 rounded-md text-sm no-underline transition-colors text-text-primary hover:bg-gray-100 hover:text-text-heading font-medium"
-                    >
-                        <span class="flex w-4 shrink-0 items-center justify-center">
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" class="size-4">
-                                <line x1="4" y1="9" x2="20" y2="9" />
-                                <line x1="4" y1="15" x2="20" y2="15" />
-                                <line x1="10" y1="3" x2="8" y2="21" />
-                                <line x1="16" y1="3" x2="14" y2="21" />
-                            </svg>
-                        </span>
-                        Taxonomies
-                    </a>
-                </li>
-                <li>
-                    <a href="#"
-                        class="flex items-center gap-2.5 px-2.5 py-1.5 rounded-md text-sm no-underline transition-colors text-text-primary hover:bg-gray-100 hover:text-text-heading font-medium"
-                    >
-                        <span class="flex w-4 shrink-0 items-center justify-center">
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" class="size-4">
-                                <rect x="3" y="3" width="18" height="18" rx="2" ry="2" />
-                                <circle cx="8.5" cy="8.5" r="1.5" />
-                                <polyline points="21 15 16 10 5 21" />
-                            </svg>
-                        </span>
-                        Assets
-                    </a>
-                </li>
-                <li>
-                    <a href="#"
-                        class="flex items-center gap-2.5 px-2.5 py-1.5 rounded-md text-sm no-underline transition-colors text-text-primary hover:bg-gray-100 hover:text-text-heading font-medium"
-                    >
-                        <span class="flex w-4 shrink-0 items-center justify-center">
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" class="size-4">
-                                <circle cx="12" cy="12" r="10" />
-                                <line x1="2" y1="12" x2="22" y2="12" />
-                                <path d="M12 2a15.3 15.3 0 014 10 15.3 15.3 0 01-4 10 15.3 15.3 0 01-4-10 15.3 15.3 0 014-10z" />
-                            </svg>
-                        </span>
-                        Destication
-                    </a>
-                </li>
-            </ul>
-        </div>
-
-        {{-- Settings --}}
-        <div class="mt-5">
-            <div class="px-2.5 pb-1.5 text-xs font-semibold uppercase tracking-wider text-text-muted/70">Settings</div>
-            <ul class="space-y-0.5">
-                <li>
-                    <a href="{{ route('admin.settings') }}"
-                        class="flex items-center gap-2.5 px-2.5 py-1.5 rounded-md text-sm no-underline transition-colors @if(request()->routeIs('admin.settings')) text-text-heading bg-gray-200 font-semibold @else text-text-primary hover:bg-gray-100 hover:text-text-heading font-medium @endif"
-                    >
-                        <span class="flex w-4 shrink-0 items-center justify-center">
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" class="size-4">
-                                <circle cx="12" cy="12" r="3" />
-                                <path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83 0 2 2 0 010-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z" />
-                            </svg>
-                        </span>
-                        Globals
-                    </a>
-                </li>
-            </ul>
-        </div>
-    </aside>
-
-    {{-- Main content area --}}
-    <main
-        class="fixed top-14 left-0 bottom-0 right-0 bg-body-bg rounded-t-[16px] overflow-hidden transition-[padding-left] duration-300 ease-in-out"
-        :style="'padding-left: ' + (navCollapsed ? '0px' : '208px')"
-    >
-        <div class="h-full overflow-y-auto">
-            @hasSection('content-full')
-                @yield('content-full')
-            @else
-                {{-- PageShell --}}
-                <div class="bg-content-bg min-h-[calc(100%-8px)] mx-2 mt-2 px-6 lg:px-20 rounded-t-2xl border border-content-border border-b-0" style="container-type: inline-size;">
-                    @if (session('success'))
-                        <div class="mb-4 px-4 py-3 rounded-lg bg-success/10 text-success text-sm">{{ session('success') }}</div>
-                    @endif
-                    @if (session('error'))
-                        <div class="mb-4 px-4 py-3 rounded-lg bg-danger/10 text-danger text-sm">{{ session('error') }}</div>
-                    @endif
-                    @yield('content')
+                {{-- Collection --}}
+                <div class="mt-5">
+                    <div class="px-2.5 pb-1.5 text-xs font-semibold uppercase tracking-wider text-text-muted/70">Collection</div>
+                    <ul class="space-y-0.5">
+                        <li>
+                            <a href="{{ route('admin.pages.index') }}"
+                                class="flex items-center gap-2.5 px-2.5 py-1.5 rounded-md text-sm no-underline transition-colors @if(request()->routeIs('admin.pages.*')) text-text-heading bg-gray-200 font-semibold @else text-text-primary hover:bg-gray-100 hover:text-text-heading font-medium @endif"
+                            >
+                                <span class="flex w-4 shrink-0 items-center justify-center">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" class="size-4">
+                                        <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z" />
+                                        <polyline points="14 2 14 8 20 8" />
+                                        <line x1="16" y1="13" x2="8" y2="13" />
+                                        <line x1="16" y1="17" x2="8" y2="17" />
+                                        <polyline points="10 9 9 9 8 9" />
+                                    </svg>
+                                </span>
+                                Pages
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#"
+                                class="flex items-center gap-2.5 px-2.5 py-1.5 rounded-md text-sm no-underline transition-colors text-text-primary hover:bg-gray-100 hover:text-text-heading font-medium"
+                            >
+                                <span class="flex w-4 shrink-0 items-center justify-center">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" class="size-4">
+                                        <path d="M12 20h9" />
+                                        <path d="M16.5 3.5a2.121 2.121 0 013 3L7 19l-4 1 1-4L16.5 3.5z" />
+                                    </svg>
+                                </span>
+                                Blog
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#"
+                                class="flex items-center gap-2.5 px-2.5 py-1.5 rounded-md text-sm no-underline transition-colors text-text-primary hover:bg-gray-100 hover:text-text-heading font-medium"
+                            >
+                                <span class="flex w-4 shrink-0 items-center justify-center">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" class="size-4">
+                                        <path d="M16.5 9.4 7.55 4.24" />
+                                        <path d="M21 16V8a2 2 0 00-1-1.73l-7-4a2 2 0 00-2 0l-7 4A2 2 0 002 8v8a2 2 0 001 1.73l7 4a2 2 0 002 0l7-4A2 2 0 0021 16z" />
+                                        <polyline points="3.29 7 12 12 20.71 7" />
+                                        <line x1="12" y1="22" x2="12" y2="12" />
+                                    </svg>
+                                </span>
+                                Package
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#"
+                                class="flex items-center gap-2.5 px-2.5 py-1.5 rounded-md text-sm no-underline transition-colors text-text-primary hover:bg-gray-100 hover:text-text-heading font-medium"
+                            >
+                                <span class="flex w-4 shrink-0 items-center justify-center">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" class="size-4">
+                                        <rect x="3" y="4" width="18" height="18" rx="2" ry="2" />
+                                        <line x1="16" y1="2" x2="16" y2="6" />
+                                        <line x1="8" y1="2" x2="8" y2="6" />
+                                        <line x1="3" y1="10" x2="21" y2="10" />
+                                    </svg>
+                                </span>
+                                Booking
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#"
+                                class="flex items-center gap-2.5 px-2.5 py-1.5 rounded-md text-sm no-underline transition-colors text-text-primary hover:bg-gray-100 hover:text-text-heading font-medium"
+                            >
+                                <span class="flex w-4 shrink-0 items-center justify-center">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" class="size-4">
+                                        <rect x="1" y="4" width="22" height="16" rx="2" ry="2" />
+                                        <line x1="1" y1="10" x2="23" y2="10" />
+                                    </svg>
+                                </span>
+                                Payment
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#"
+                                class="flex items-center gap-2.5 px-2.5 py-1.5 rounded-md text-sm no-underline transition-colors text-text-primary hover:bg-gray-100 hover:text-text-heading font-medium"
+                            >
+                                <span class="flex w-4 shrink-0 items-center justify-center">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" class="size-4">
+                                        <line x1="4" y1="9" x2="20" y2="9" />
+                                        <line x1="4" y1="15" x2="20" y2="15" />
+                                        <line x1="10" y1="3" x2="8" y2="21" />
+                                        <line x1="16" y1="3" x2="14" y2="21" />
+                                    </svg>
+                                </span>
+                                Taxonomies
+                            </a>
+                        </li>
+                        <li>
+                            <a href="{{ route('admin.assets.index') }}"
+                                class="flex items-center gap-2.5 px-2.5 py-1.5 rounded-md text-sm no-underline transition-colors @if(request()->routeIs('admin.assets.*')) text-text-heading bg-gray-200 font-semibold @else text-text-primary hover:bg-gray-100 hover:text-text-heading font-medium @endif"
+                            >
+                                <span class="flex w-4 shrink-0 items-center justify-center">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" class="size-4">
+                                        <rect x="3" y="3" width="18" height="18" rx="2" ry="2" />
+                                        <circle cx="8.5" cy="8.5" r="1.5" />
+                                        <polyline points="21 15 16 10 5 21" />
+                                    </svg>
+                                </span>
+                                Assets
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#"
+                                class="flex items-center gap-2.5 px-2.5 py-1.5 rounded-md text-sm no-underline transition-colors text-text-primary hover:bg-gray-100 hover:text-text-heading font-medium"
+                            >
+                                <span class="flex w-4 shrink-0 items-center justify-center">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" class="size-4">
+                                        <circle cx="12" cy="12" r="10" />
+                                        <line x1="2" y1="12" x2="22" y2="12" />
+                                        <path d="M12 2a15.3 15.3 0 014 10 15.3 15.3 0 01-4 10 15.3 15.3 0 01-4-10 15.3 15.3 0 014-10z" />
+                                    </svg>
+                                </span>
+                                Destication
+                            </a>
+                        </li>
+                    </ul>
                 </div>
-            @endif
-        </div>
-    </main>
+
+                {{-- Settings --}}
+                <div class="mt-5">
+                    <div class="px-2.5 pb-1.5 text-xs font-semibold uppercase tracking-wider text-text-muted/70">Settings</div>
+                    <ul class="space-y-0.5">
+                        <li>
+                            <a href="{{ route('admin.settings') }}"
+                                class="flex items-center gap-2.5 px-2.5 py-1.5 rounded-md text-sm no-underline transition-colors @if(request()->routeIs('admin.settings')) text-text-heading bg-gray-200 font-semibold @else text-text-primary hover:bg-gray-100 hover:text-text-heading font-medium @endif"
+                            >
+                                <span class="flex w-4 shrink-0 items-center justify-center">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" class="size-4">
+                                        <circle cx="12" cy="12" r="3" />
+                                        <path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83 0 2 2 0 010-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z" />
+                                    </svg>
+                                </span>
+                                Globals
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </aside>
+
+        {{-- Main content area --}}
+        <main class="flex-1 overflow-hidden">
+            <div class="h-full overflow-y-auto">
+                @hasSection('content-full')
+                    @yield('content-full')
+                @else
+                    {{-- PageShell --}}
+                    <div class="bg-content-bg min-h-[calc(100%-8px)] mx-2 mt-2 px-6 lg:px-20 rounded-t-2xl border border-content-border border-b-0" style="container-type: inline-size;">
+                        @if (session('success'))
+                            <div class="mb-4 px-4 py-3 rounded-lg bg-success/10 text-success text-sm">{{ session('success') }}</div>
+                        @endif
+                        @if (session('error'))
+                            <div class="mb-4 px-4 py-3 rounded-lg bg-danger/10 text-danger text-sm">{{ session('error') }}</div>
+                        @endif
+                        @yield('content')
+                    </div>
+                @endif
+            </div>
+        </main>
+    </div>
+
+    <x-admin::asset-picker />
 
     @stack('scripts')
 </body>

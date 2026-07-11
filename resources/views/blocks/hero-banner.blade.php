@@ -1,31 +1,41 @@
 @php $d = $data; @endphp
-<section data-block="heroBanner" class="relative flex min-h-[80vh] items-center justify-center overflow-hidden bg-neutral-900">
-    @if($d['backgroundImage'] ?? false)
-        <div data-edit="backgroundImage" class="absolute inset-0 bg-cover bg-center" style="background-image: url('{{ $d['backgroundImage'] }}')"></div>
-        <div class="absolute inset-0 bg-neutral-900/60"></div>
-    @endif
-    <div class="relative z-10 mx-auto max-w-4xl px-4 text-center">
-        @if($d['badge'] ?? false)
-            <span data-edit="badge" class="mb-6 inline-block rounded-full bg-white/20 px-4 py-1.5 text-sm font-medium text-white backdrop-blur-sm">{{ $d['badge'] }}</span>
+<section data-block="heroBanner" class="relative w-full overflow-hidden md:rounded-xl">
+    <div class="relative min-h-[560px] md:min-h-[650px] md:mx-[5%] md:rounded-2xl overflow-hidden flex items-center justify-center">
+        @if($d['backgroundImage'] ?? false)
+            <img src="{{ $d['backgroundImage'] }}" alt="" data-edit="backgroundImage" class="absolute inset-0 w-full h-full object-cover" />
         @endif
-        @if($d['headline'] ?? false)
-            <h1 data-edit="headline" class="text-4xl font-bold italic leading-tight text-white md:text-5xl lg:text-7xl">{{ $d['headline'] }}</h1>
-        @endif
-        @if($d['description'] ?? false)
-            <p data-edit="description" class="mx-auto mt-6 max-w-2xl text-lg leading-relaxed text-neutral-200 md:text-xl">{{ $d['description'] }}</p>
-        @endif
-        <form class="mx-auto mt-10 flex max-w-2xl flex-col gap-3 sm:flex-row">
-            <div class="relative flex-1">
-                <svg class="pointer-events-none absolute left-3 top-1/2 h-5 w-5 -translate-y-1/2 text-neutral-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
-                <input type="text" data-edit="searchDestination" placeholder="{{ $d['searchDestinationPlaceholder'] ?? 'Where to?' }}" class="w-full rounded-xl border-0 bg-white py-3.5 pl-10 pr-4 text-sm text-neutral-900 shadow-sm ring-1 ring-neutral-300 focus:ring-2 focus:ring-primary" />
-            </div>
-            <div class="relative flex-1">
-                <svg class="pointer-events-none absolute left-3 top-1/2 h-5 w-5 -translate-y-1/2 text-neutral-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
-                <input type="date" data-edit="searchDate" class="w-full rounded-xl border-0 bg-white py-3.5 pl-10 pr-4 text-sm text-neutral-900 shadow-sm ring-1 ring-neutral-300 focus:ring-2 focus:ring-primary" />
-            </div>
-            <button type="submit" class="rounded-xl bg-primary px-8 py-3.5 text-sm font-semibold text-white shadow-sm hover:bg-primary/90 transition">
-                {{ $d['searchButtonText'] ?? 'Search' }}
-            </button>
-        </form>
+        <div class="absolute inset-0 bg-black/20"></div>
+        <div class="relative z-10 flex flex-col items-center text-center px-6 py-20 max-w-4xl mx-auto">
+            @if($d['badge'] ?? false)
+                <span data-edit="badge" class="inline-flex items-center gap-2 rounded-full bg-orange-400 px-6 py-2 text-sm font-medium text-white mb-6">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                        <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" />
+                        <circle cx="9" cy="7" r="4" />
+                        <path d="M22 21v-2a4 4 0 0 0-3-3.87" />
+                        <path d="M16 3.13a4 4 0 0 1 0 7.75" />
+                    </svg>
+                    {{ $d['badge'] }}
+                </span>
+            @endif
+            @if($d['headline'] ?? false)
+                <h1 data-edit="headline" class="text-3xl md:text-5xl lg:text-6xl font-bold text-white italic leading-tight">{{ $d['headline'] }}</h1>
+            @endif
+            @if($d['description'] ?? false)
+                <p data-edit="description" class="mt-6 text-sm md:text-base text-gray-200 max-w-2xl capitalize">{{ $d['description'] }}</p>
+            @endif
+            <form action="{{ $d['searchUrl'] ?? '#' }}" method="get" class="mt-10 w-full max-w-2xl flex items-center bg-white rounded-full shadow-lg overflow-hidden px-4 py-2">
+                <span class="flex flex-1 items-center gap-2 px-3 py-2 border-r border-gray-200">
+                    <svg class="w-5 h-5 text-gray-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" /></svg>
+                    <input type="text" name="destination" placeholder="{{ $d['searchPlaceholder'] ?? 'Where do you want to go?' }}" class="w-full bg-transparent text-sm text-gray-700 placeholder:text-gray-400 outline-none" />
+                </span>
+                <span class="flex flex-1 items-center gap-2 px-3 py-2">
+                    <svg class="w-5 h-5 text-gray-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg>
+                    <input type="text" name="dates" placeholder="{{ $d['datePlaceholder'] ?? 'Add dates' }}" class="w-full bg-transparent text-sm text-gray-700 placeholder:text-gray-400 outline-none" />
+                </span>
+                <button type="submit" aria-label="Search" class="ml-2 flex h-10 w-10 items-center justify-center rounded-full bg-orange-500 transition-colors hover:bg-orange-600 shrink-0">
+                    <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" /></svg>
+                </button>
+            </form>
+        </div>
     </div>
 </section>

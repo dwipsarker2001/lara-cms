@@ -1,74 +1,113 @@
 @php $d = $data; @endphp
-<section data-block="profileBento" class="bg-neutral-50 py-20 md:py-28">
-    <div class="mx-auto max-w-6xl px-4">
-        <div class="grid gap-4 md:grid-cols-4 md:grid-rows-3">
-            <div class="relative overflow-hidden rounded-2xl bg-white p-6 shadow-sm ring-1 ring-neutral-100 md:col-span-2 md:row-span-2">
-                <div class="flex flex-col items-center gap-4 sm:flex-row">
-                    <div class="h-24 w-24 shrink-0 overflow-hidden rounded-2xl">
-                        <img src="{{ $d['profileImage'] ?? '' }}" data-edit="profileImage" alt="" class="h-full w-full object-cover" />
-                    </div>
-                    <div>
-                        <h2 data-edit="name" class="text-2xl font-bold text-neutral-900">{{ $d['name'] ?? 'John Doe' }}</h2>
-                        <p data-edit="role" class="text-neutral-500">{{ $d['role'] ?? '' }}</p>
-                        @if($d['status'] ?? false)
-                            <span data-edit="status" class="mt-2 inline-block rounded-full bg-green-100 px-3 py-0.5 text-xs font-medium text-green-700">{{ $d['status'] }}</span>
+@php
+    $social = $d['profileSocial'] ?? [];
+    $stats = $d['stats'] ?? [];
+    $stat = fn($i) => $stats[$i] ?? ['count' => '0', 'handle' => ''];
+@endphp
+<section data-block="profileBento">
+    <div class="max-w-6xl mx-auto px-6 space-y-4 md:space-y-5">
+        {{-- TOP --}}
+        <div class="grid grid-cols-1 gap-4 md:gap-5 lg:grid-cols-6">
+            {{-- Profile card --}}
+            <div class="lg:col-span-2">
+                <div class="rounded-2xl bg-gray-100/80 p-6 md:p-7 transition-shadow hover:shadow-sm flex h-full flex-col">
+                    <div class="flex items-start justify-between gap-4">
+                        <div data-edit="profileImage" class="relative h-20 w-20 shrink-0 overflow-hidden rounded-full bg-gray-200">
+                            @if($d['profileImage'] ?? false)
+                                <img src="{{ $d['profileImage'] }}" alt="" class="absolute inset-0 w-full h-full object-cover" />
+                            @endif
+                        </div>
+                        @if($d['profileStatus'] ?? false)
+                            <span data-edit="profileStatus" class="inline-flex items-center gap-1.5 rounded-full bg-white px-3 py-1 text-xs font-medium text-gray-600 shadow-sm">
+                                <span class="h-2 w-2 rounded-full bg-emerald-500"></span>
+                                {{ $d['profileStatus'] }}
+                            </span>
                         @endif
                     </div>
-                </div>
-                @if(($d['socialLinks'] ?? []))
-                    <div data-list="socialLinks" class="mt-5 flex items-center gap-3 border-t border-neutral-100 pt-5">
-                        @foreach($d['socialLinks'] as $s => $link)
-                            <a href="{{ $link['url']['url'] ?? '#' }}" data-edit="socialLinks:{{ $s }}/url" class="flex h-10 w-10 items-center justify-center rounded-xl bg-neutral-100 text-neutral-600 hover:bg-primary hover:text-white transition">
-                                @if($link['icon'] ?? false)
-                                    <img src="{{ $link['icon'] }}" alt="" class="h-5 w-5" />
-                                @else
-                                    <svg class="h-5 w-5" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2C6.477 2 2 6.477 2 12s4.477 10 10 10 10-4.477 10-10S17.523 2 12 2z"/></svg>
+                    @if($d['profileName'] ?? false)
+                        <h3 data-edit="profileName" class="mt-6 text-2xl md:text-3xl font-bold text-gray-900 leading-tight">{{ $d['profileName'] }}</h3>
+                    @endif
+                    @if($d['profileRole'] ?? false)
+                        <p data-edit="profileRole" class="mt-2 text-sm text-gray-500 leading-relaxed">{{ $d['profileRole'] }}</p>
+                    @endif
+                    @if(count($social) > 0)
+                        <ul class="mt-auto flex flex-wrap items-center gap-2 pt-6">
+                            @foreach($social as $i => $s)
+                                @if($s)
+                                    <li data-list="profileSocial">
+                                        <a href="{{ $s['url'] ?? '#' }}" target="_blank" rel="noopener noreferrer" data-edit="platform" aria-label="{{ $s['platform'] ?? 'social link' }}" class="inline-flex h-8 w-8 items-center justify-center rounded-full border border-gray-200 bg-white text-gray-500 transition-colors hover:border-brand hover:bg-brand hover:text-brand-foreground">
+                                            <svg class="size-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 9l6 6-6 6"/></svg>
+                                        </a>
+                                    </li>
                                 @endif
-                            </a>
-                        @endforeach
-                    </div>
-                @endif
-            </div>
-
-            <div class="overflow-hidden rounded-2xl shadow-sm ring-1 ring-neutral-100 md:col-span-2 md:row-span-1">
-                <img src="{{ $d['decorativeImage1'] ?? '' }}" data-edit="decorativeImage1" alt="" class="h-full w-full object-cover" />
-            </div>
-
-            <div class="rounded-2xl bg-white p-6 shadow-sm ring-1 ring-neutral-100">
-                <div class="flex h-full flex-col justify-center">
-                    @if(($d['stats'] ?? []))
-                        <div data-list="stats" class="space-y-4">
-                            @foreach($d['stats'] as $t => $stat)
-                                <div class="flex items-center gap-3">
-                                    @if($stat['icon'] ?? false)
-                                        <img src="{{ $stat['icon'] }}" data-edit="stats:{{ $t }}/icon" alt="" class="h-6 w-6 text-primary" />
-                                    @endif
-                                    <div>
-                                        <p data-edit="stats:{{ $t }}/count" class="text-xl font-bold text-neutral-900">{{ $stat['count'] ?? '0' }}</p>
-                                        <p data-edit="stats:{{ $t }}/handle" class="text-xs text-neutral-500">{{ $stat['handle'] ?? '' }}</p>
-                                    </div>
-                                </div>
                             @endforeach
-                        </div>
+                        </ul>
                     @endif
                 </div>
             </div>
-
-            <div class="rounded-2xl bg-white p-6 shadow-sm ring-1 ring-neutral-100 md:col-span-1 md:row-span-1">
-                <div class="flex h-full flex-col items-center justify-center text-center">
-                    <p data-edit="quote" class="text-sm italic leading-relaxed text-neutral-600">"{{ $d['quote'] ?? '' }}"</p>
+            {{-- About + stats --}}
+            <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 md:gap-5 lg:col-span-2">
+                <div class="sm:col-span-2">
+                    <div class="rounded-2xl bg-gray-100/80 p-6 md:p-7 transition-shadow hover:shadow-sm flex h-full items-start">
+                        @if($d['aboutText'] ?? false)
+                            <p data-edit="aboutText" class="text-sm md:text-base text-gray-600 leading-relaxed">{{ $d['aboutText'] }}</p>
+                        @endif
+                    </div>
+                </div>
+                @for($i = 0; $i < 2; $i++)
+                    @php $s = $stat($i); @endphp
+                    <div data-list="stats" class="rounded-2xl bg-gray-100/80 p-6 md:p-7 transition-shadow hover:shadow-sm flex h-full flex-col border-2 border-transparent">
+                        <div class="inline-flex h-12 w-12 items-center justify-center rounded-full bg-brand text-brand-foreground shadow-sm" aria-hidden="true">
+                            <svg class="size-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 9l6 6-6 6"/></svg>
+                        </div>
+                        <p data-edit="count" class="mt-6 text-base font-bold text-gray-900">{{ $s['count'] ?? '0' }} Followers</p>
+                        @if($s['handle'] ?? false)
+                            <p data-edit="handle" class="mt-1 text-xs text-gray-400">{{ $s['handle'] }}</p>
+                        @endif
+                    </div>
+                @endfor
+            </div>
+            {{-- Top right image --}}
+            <div class="lg:col-span-2">
+                <div data-edit="imageTopRight" class="relative h-full min-h-[260px] overflow-hidden rounded-2xl bg-gray-200">
+                    @if($d['imageTopRight'] ?? false)
+                        <img src="{{ $d['imageTopRight'] }}" alt="" class="absolute inset-0 w-full h-full object-cover" />
+                    @endif
                 </div>
             </div>
-
-            <div class="overflow-hidden rounded-2xl shadow-sm ring-1 ring-neutral-100 md:col-span-1 md:row-span-2">
-                <img src="{{ $d['decorativeImage2'] ?? '' }}" data-edit="decorativeImage2" alt="" class="h-full w-full object-cover" />
-            </div>
-
-            <div class="rounded-2xl bg-white p-6 shadow-sm ring-1 ring-neutral-100 md:col-span-2 md:row-span-1">
-                <div class="flex h-full flex-col justify-center">
-                    <h3 class="mb-2 text-sm font-semibold uppercase tracking-wider text-neutral-500">About</h3>
-                    <p data-edit="about" class="text-neutral-700 leading-relaxed">{{ $d['about'] ?? '' }}</p>
+        </div>
+        {{-- BOTTOM --}}
+        <div class="grid grid-cols-1 gap-4 md:gap-5 lg:grid-cols-6">
+            {{-- Bottom left image --}}
+            <div class="lg:col-span-2">
+                <div data-edit="imageBottomLeft" class="relative h-full min-h-[260px] overflow-hidden rounded-2xl bg-gray-200">
+                    @if($d['imageBottomLeft'] ?? false)
+                        <img src="{{ $d['imageBottomLeft'] }}" alt="" class="absolute inset-0 w-full h-full object-cover" />
+                    @endif
                 </div>
+            </div>
+            {{-- Quote --}}
+            <div class="lg:col-span-2">
+                <div class="rounded-2xl bg-gray-100/80 p-6 md:p-7 transition-shadow hover:shadow-sm flex h-full items-start">
+                    @if($d['quoteText'] ?? false)
+                        <p data-edit="quoteText" class="text-sm md:text-base text-gray-600 leading-relaxed">{{ $d['quoteText'] }}</p>
+                    @endif
+                </div>
+            </div>
+            {{-- Bottom stats --}}
+            <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 md:gap-5 lg:col-span-2">
+                @for($i = 2; $i < 4; $i++)
+                    @php $s = $stat($i); @endphp
+                    <div data-list="stats" class="rounded-2xl bg-gray-100/80 p-6 md:p-7 transition-shadow hover:shadow-sm flex h-full flex-col border-2 border-transparent">
+                        <div class="inline-flex h-12 w-12 items-center justify-center rounded-full bg-brand text-brand-foreground shadow-sm" aria-hidden="true">
+                            <svg class="size-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 9l6 6-6 6"/></svg>
+                        </div>
+                        <p data-edit="count" class="mt-6 text-base font-bold text-gray-900">{{ $s['count'] ?? '0' }} Followers</p>
+                        @if($s['handle'] ?? false)
+                            <p data-edit="handle" class="mt-1 text-xs text-gray-400">{{ $s['handle'] }}</p>
+                        @endif
+                    </div>
+                @endfor
             </div>
         </div>
     </div>

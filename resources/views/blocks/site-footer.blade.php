@@ -1,73 +1,92 @@
 @php $d = $data; @endphp
-<footer data-block="siteFooter">
-    @if($d['bannerImage'] ?? false)
-        <div data-edit="bannerImage" class="h-48 w-full bg-cover bg-center" style="background-image: url('{{ $d['bannerImage'] }}')"></div>
-    @endif
-
-    <div class="bg-neutral-900 text-neutral-300">
-        <div class="mx-auto max-w-7xl px-4 py-16">
-            <div class="grid gap-12 lg:grid-cols-4">
-                <div class="lg:col-span-1">
-                    <div class="mb-4 flex items-center gap-3">
-                        @if($d['logo'] ?? false)
-                            <img src="{{ $d['logo'] }}" alt="{{ $d['brandName'] ?? '' }}" data-edit="logo" style="height: {{ $d['logoHeight'] ?? 40 }}px" class="w-auto brightness-0 invert" />
-                        @else
-                            <span data-edit="brandName" class="text-xl font-bold text-white">{{ $d['brandName'] ?? 'E CMS' }}</span>
+<footer data-block="siteFooter" class="w-full bg-gray-900 text-gray-300 mt-auto">
+    <div class="mx-auto max-w-7xl px-6 py-16 lg:py-20">
+        @if($d['bannerImage'] ?? false)
+            <div class="relative w-full h-48 overflow-hidden rounded-2xl mb-12 bg-gray-800">
+                <img src="{{ $d['bannerImage'] }}" alt="" data-edit="bannerImage" class="absolute inset-0 w-full h-full object-cover" />
+            </div>
+        @endif
+        <div class="grid grid-cols-1 gap-12 sm:grid-cols-2 lg:grid-cols-12 lg:gap-8">
+            <div class="lg:col-span-4">
+                <a href="/" class="flex items-center gap-2 text-xl font-extrabold tracking-tight text-white">
+                    @if($d['logo'] ?? false)
+                        <img src="{{ $d['logo'] }}" alt="" data-edit="logo" class="object-contain" style="height:{{ $d['logoHeight'] ?? 40 }}px;width:auto" />
+                    @endif
+                    {{ $d['brandName'] ?? 'Brand' }}
+                </a>
+                @if($d['description'] ?? false)
+                    <p data-edit="description" class="mt-4 text-sm leading-relaxed text-gray-400">{{ $d['description'] }}</p>
+                @endif
+                @if(count($d['social'] ?? []) > 0)
+                    <div class="mt-6">
+                        @if($d['socialHeading'] ?? false)
+                            <p data-edit="socialHeading" class="text-sm font-medium text-gray-400 mb-3">{{ $d['socialHeading'] }}</p>
                         @endif
-                    </div>
-                    <p data-edit="description" class="mb-6 text-sm leading-relaxed text-neutral-400">{{ $d['description'] ?? '' }}</p>
-                    <div class="space-y-2 text-sm">
-                        @if($d['email'] ?? false)
-                            <p><a href="mailto:{{ $d['email'] }}" data-edit="email" class="text-neutral-400 hover:text-white transition">{{ $d['email'] }}</a></p>
-                        @endif
-                        @if($d['phone'] ?? false)
-                            <p><a href="tel:{{ $d['phone'] }}" data-edit="phone" class="text-neutral-400 hover:text-white transition">{{ $d['phone'] }}</a></p>
-                        @endif
-                    </div>
-                </div>
-
-                @foreach($d['linkColumns'] ?? [] as $col => $column)
-                    <div data-list="linkColumns">
-                        <h3 data-edit="linkColumns:{{ $col }}/heading" class="mb-4 text-sm font-semibold uppercase tracking-wider text-white">{{ $column['heading'] ?? '' }}</h3>
-                        <ul class="space-y-3 text-sm">
-                            @foreach($column['links'] ?? [] as $link => $lnk)
-                                <li>
-                                    <a href="{{ $lnk['href']['url'] ?? '#' }}" data-edit="linkColumns:{{ $col }}/links:{{ $link }}/href" class="text-neutral-400 hover:text-white transition">{{ $lnk['label'] ?? '' }}</a>
-                                </li>
+                        <ul class="flex items-center gap-3">
+                            @foreach($d['social'] as $i => $s)
+                                @if($s)
+                                    <li data-list="social">
+                                        <a href="{{ $s['url'] ?? '#' }}" target="_blank" rel="noopener noreferrer" data-edit="label" aria-label="{{ $s['label'] ?? 'social' }}" class="inline-flex h-9 w-9 items-center justify-center rounded-lg bg-gray-800 text-gray-400 transition-all hover:bg-brand hover:text-white">
+                                            <svg class="size-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 9l6 6-6 6"/></svg>
+                                        </a>
+                                    </li>
+                                @endif
                             @endforeach
                         </ul>
                     </div>
-                @endforeach
+                @endif
             </div>
-
-            @if(($d['social'] ?? []))
-                <div class="mt-12 border-t border-neutral-800 pt-8">
-                    <h3 data-edit="socialHeading" class="mb-4 text-sm font-semibold text-white">{{ $d['socialHeading'] ?? 'Connect with us' }}</h3>
-                    <div data-list="social" class="flex items-center gap-4">
-                        @foreach($d['social'] as $s => $social)
-                            <a href="{{ $social['url']['url'] ?? '#' }}" data-edit="social:{{ $s }}/url" class="flex h-10 w-10 items-center justify-center rounded-full bg-neutral-800 text-neutral-400 hover:bg-primary hover:text-white transition" aria-label="{{ $social['label'] ?? '' }}">
-                                @if($social['icon'] ?? false)
-                                    <img src="{{ $social['icon'] }}" alt="" class="h-5 w-5" />
-                                @else
-                                    <svg class="h-5 w-5" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2C6.477 2 2 6.477 2 12s4.477 10 10 10 10-4.477 10-10S17.523 2 12 2z"/></svg>
-                                @endif
-                            </a>
-                        @endforeach
+            @foreach(($d['linkColumns'] ?? []) as $ci => $col)
+                @if($col)
+                    <div data-list="linkColumns" class="lg:col-span-2">
+                        @if($col['heading'] ?? false)
+                            <h3 data-edit="heading" class="text-sm font-bold text-white uppercase tracking-wider">{{ $col['heading'] }}</h3>
+                        @endif
+                        @if(count($col['links'] ?? []) > 0)
+                            <ul class="mt-5 space-y-3">
+                                @foreach($col['links'] as $li => $link)
+                                    @if($link)
+                                        <li data-list="links">
+                                            <a href="{{ $link['href'] ?? '#' }}" data-edit="label" class="text-sm text-gray-400 transition-colors hover:text-white">{{ $link['label'] ?? 'Link' }}</a>
+                                        </li>
+                                    @endif
+                                @endforeach
+                            </ul>
+                        @endif
                     </div>
-                </div>
+                @endif
+            @endforeach
+        </div>
+        <div class="mt-16 flex flex-col sm:flex-row items-center justify-between gap-4 border-t border-gray-800 pt-8 text-xs text-gray-500">
+            @if($d['copyright'] ?? false)
+                <p data-edit="copyright">{{ $d['copyright'] }}</p>
+            @elseif($d['copyrightBrand'] ?? false)
+                <p>&copy; {{ date('Y') }} {{ $d['copyrightBrand'] }}. All rights reserved.</p>
+            @endif
+            @if(count($d['legalLinks'] ?? []) > 0)
+                <ul class="flex items-center gap-5">
+                    @foreach($d['legalLinks'] as $i => $ll)
+                        @if($ll)
+                            <li data-list="legalLinks">
+                                <a href="{{ $ll['href'] ?? '#' }}" data-edit="label" class="transition-colors hover:text-gray-300">{{ $ll['label'] ?? '' }}</a>
+                            </li>
+                        @endif
+                    @endforeach
+                </ul>
+            @endif
+            @if($d['languageCurrency'] ?? false)
+                <p data-edit="languageCurrency" class="text-gray-500">{{ $d['languageCurrency'] }}</p>
             @endif
         </div>
-
-        <div class="border-t border-neutral-800">
-            <div class="mx-auto flex max-w-7xl flex-col items-center justify-between gap-4 px-4 py-6 text-sm text-neutral-500 md:flex-row">
-                <p>&copy; {{ date('Y') }} <span data-edit="copyrightBrand">{{ $d['copyrightBrand'] ?? 'E CMS' }}</span>. <span data-edit="copyright">{{ $d['copyright'] ?? 'All rights reserved.' }}</span></p>
-                <div class="flex items-center gap-6">
-                    @foreach($d['legalLinks'] ?? [] as $l => $link)
-                        <a href="{{ $link['href']['url'] ?? '#' }}" data-edit="legalLinks:{{ $l }}/href" class="hover:text-white transition">{{ $link['label'] ?? '' }}</a>
-                    @endforeach
-                    <span data-edit="languageCurrency" class="rounded-full border border-neutral-700 px-3 py-1 text-xs">{{ $d['languageCurrency'] ?? 'EN / USD' }}</span>
-                </div>
+        @if(($d['email'] ?? false) || ($d['phone'] ?? false))
+            <div class="mt-4 flex items-center justify-center gap-6 text-xs text-gray-500">
+                @if($d['email'] ?? false)
+                    <a href="mailto:{{ $d['email'] }}" data-edit="email" class="hover:text-gray-300 transition-colors">{{ $d['email'] }}</a>
+                @endif
+                @if($d['phone'] ?? false)
+                    <a href="tel:{{ $d['phone'] }}" data-edit="phone" class="hover:text-gray-300 transition-colors">{{ $d['phone'] }}</a>
+                @endif
             </div>
-        </div>
+        @endif
     </div>
 </footer>

@@ -16,73 +16,76 @@
         <div class="flex-1 overflow-y-auto px-3 pt-3 pb-4 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
             <div class="bg-gray-100 rounded-2xl p-[7px]">
                 {{-- Section list mode --}}
-                <div x-show="active === null">
-                    <div class="flex items-center justify-between px-3 py-3 text-sm font-medium text-text-heading">
-                        <div class="font-bold">Sections</div>
-                        <button
-                            type="button"
-                            @click="showPicker = true"
-                            class="size-6 flex items-center justify-center rounded-full bg-white text-text-primary border border-content-border hover:bg-gray-50 transition-colors"
-                        >
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="size-[14px]">
-                                <path d="M12 5v14M5 12h14" stroke-linecap="round" />
-                            </svg>
-                        </button>
-                    </div>
-                    <div class="space-y-0.5" x-ref="sectionList">
-                        <template x-for="(section, i) in sections" :key="section._key">
-                            <div class="flex rounded-lg shadow-sm bg-content-bg mb-0.5 group overflow-hidden">
-                                <div class="w-6 shrink-0 flex items-center justify-center cursor-grab active:cursor-grabbing opacity-70 hover:opacity-100 touch-none transition-opacity text-text-muted/70">
-                                    <svg viewBox="0 0 24 24" fill="currentColor" class="size-[14px]">
-                                        <circle cx="8" cy="6" r="2.5" />
-                                        <circle cx="16" cy="6" r="2.5" />
-                                        <circle cx="8" cy="12" r="2.5" />
-                                        <circle cx="16" cy="12" r="2.5" />
-                                        <circle cx="8" cy="18" r="2.5" />
-                                        <circle cx="16" cy="18" r="2.5" />
-                                    </svg>
-                                </div>
-                                <div
-                                    @click="edit(i)"
-                                    role="button"
-                                    tabindex="0"
-                                    class="flex flex-1 min-w-0 items-center px-1.5 py-2.5 text-xs leading-normal text-left cursor-pointer"
-                                >
-                                    <div class="flex min-w-0 flex-1 items-center">
-                                        <span class="text-sm font-semibold text-text-heading group-hover:text-primary truncate leading-normal transition-colors" x-text="sectionLabel(section)"></span>
+                    <div x-show="active === null">
+                        <div class="flex items-center justify-between px-3 py-3 text-sm font-medium text-text-heading">
+                            <div class="font-bold">Sections</div>
+                            <button
+                                type="button"
+                                @click="showPicker = true"
+                                class="size-6 flex items-center justify-center rounded-full bg-white text-text-primary border border-content-border hover:bg-gray-50 transition-colors"
+                            >
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="size-[14px]">
+                                    <path d="M12 5v14M5 12h14" stroke-linecap="round" />
+                                </svg>
+                            </button>
+                        </div>
+
+                        {{-- Empty state --}}
+                        <div x-show="sections.length === 0" class="flex flex-col items-center justify-center py-8">
+                            <img src="/empty-collection.svg" alt="No items" class="size-32 mb-4 opacity-60">
+                            <p class="text-sm font-medium text-text-heading">No items.</p>
+                            <p class="text-xs text-text-muted mt-1">Add a section to get started.</p>
+                        </div>
+
+                        {{-- Section list --}}
+                        <div x-show="sections.length > 0" class="space-y-0.5" x-ref="sectionList">
+                            <template x-for="(section, i) in sections" :key="section._key">
+                                <div class="flex rounded-lg shadow-sm bg-content-bg mb-0.5 group overflow-hidden">
+                                    <div class="w-6 shrink-0 flex items-center justify-center cursor-grab active:cursor-grabbing opacity-70 hover:opacity-100 touch-none transition-opacity text-text-muted/70">
+                                        <svg viewBox="0 0 24 24" fill="currentColor" class="size-[14px]">
+                                            <circle cx="8" cy="6" r="2.5" />
+                                            <circle cx="16" cy="6" r="2.5" />
+                                            <circle cx="8" cy="12" r="2.5" />
+                                            <circle cx="16" cy="12" r="2.5" />
+                                            <circle cx="8" cy="18" r="2.5" />
+                                            <circle cx="16" cy="18" r="2.5" />
+                                        </svg>
                                     </div>
-                                    <div class="flex items-center gap-0.5 shrink-0 ml-1">
-                                        <button
-                                            @click.stop="edit(i)"
-                                            class="p-1 text-text-muted/60 hover:text-primary group-hover:text-primary transition-colors rounded hover:bg-text-primary/10"
-                                            title="Edit"
-                                        >
-                                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" class="size-4">
-                                                <path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7" />
-                                                <path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z" />
-                                            </svg>
-                                        </button>
-                                        <button
-                                            @click.stop="removeSection(i)"
-                                            class="p-1 text-text-muted/60 hover:text-danger transition-colors rounded hover:bg-text-primary/10"
-                                            title="Remove section"
-                                        >
-                                            <svg viewBox="0 0 20 20" fill="currentColor" class="size-4">
-                                                <path fill-rule="evenodd" d="M8.75 1A2.75 2.75 0 006 3.75v.443c-.795.077-1.584.176-2.365.298a.75.75 0 10.23 1.482l.149-.022.841 10.518A2.75 2.75 0 007.596 19h4.807a2.75 2.75 0 002.742-2.53l.841-10.52.149.023a.75.75 0 00.23-1.482A41.03 41.03 0 0014 4.193V3.75A2.75 2.75 0 0011.25 1h-2.5zM10 4c-.84 0-1.673.025-2.5.075V3.75c0-.69.56-1.25 1.25-1.25h2.5c.69 0 1.25.56 1.25 1.25v.325C11.673 4.025 10.84 4 10 4zM8.58 7.72a.75.75 0 00-1.5.06l.3 7.5a.75.75 0 101.5-.06l-.3-7.5zm4.34.06a.75.75 0 10-1.5-.06l-.3 7.5a.75.75 0 101.5.06l.3-7.5z" clip-rule="evenodd" />
-                                            </svg>
-                                        </button>
+                                    <div
+                                        @click="edit(i)"
+                                        role="button"
+                                        tabindex="0"
+                                        class="flex flex-1 min-w-0 items-center px-1.5 py-2.5 text-xs leading-normal text-left cursor-pointer"
+                                    >
+                                        <div class="flex min-w-0 flex-1 items-center">
+                                            <span class="text-sm font-semibold text-text-heading group-hover:text-primary truncate leading-normal transition-colors" x-text="sectionLabel(section)"></span>
+                                        </div>
+                                        <div class="flex items-center gap-0.5 shrink-0 ml-1">
+                                            <button
+                                                @click.stop="edit(i)"
+                                                class="p-1 text-text-muted/60 hover:text-primary group-hover:text-primary transition-colors rounded hover:bg-text-primary/10"
+                                                title="Edit"
+                                            >
+                                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" class="size-4">
+                                                    <path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7" />
+                                                    <path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z" />
+                                                </svg>
+                                            </button>
+                                            <button
+                                                @click.stop="removeSection(i)"
+                                                class="p-1 text-text-muted/60 hover:text-danger transition-colors rounded hover:bg-text-primary/10"
+                                                title="Remove section"
+                                            >
+                                                <svg viewBox="0 0 20 20" fill="currentColor" class="size-4">
+                                                    <path fill-rule="evenodd" d="M8.75 1A2.75 2.75 0 006 3.75v.443c-.795.077-1.584.176-2.365.298a.75.75 0 10.23 1.482l.149-.022.841 10.518A2.75 2.75 0 007.596 19h4.807a2.75 2.75 0 002.742-2.53l.841-10.52.149.023a.75.75 0 00.23-1.482A41.03 41.03 0 0014 4.193V3.75A2.75 2.75 0 0011.25 1h-2.5zM10 4c-.84 0-1.673.025-2.5.075V3.75c0-.69.56-1.25 1.25-1.25h2.5c.69 0 1.25.56 1.25 1.25v.325C11.673 4.025 10.84 4 10 4zM8.58 7.72a.75.75 0 00-1.5.06l.3 7.5a.75.75 0 101.5-.06l-.3-7.5zm4.34.06a.75.75 0 10-1.5-.06l-.3 7.5a.75.75 0 101.5.06l.3-7.5z" clip-rule="evenodd" />
+                                                </svg>
+                                            </button>
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
-                        </template>
-                        <button
-                            @click="showPicker = true"
-                            class="w-full mt-2 rounded-lg border-2 border-dashed border-gray-300 px-3 py-2.5 text-sm text-text-muted hover:border-primary hover:text-primary transition-colors"
-                        >
-                            + Add section
-                        </button>
+                            </template>
+                        </div>
                     </div>
-                </div>
 
                 {{-- Field editor mode --}}
                 <div x-show="active !== null">
@@ -107,7 +110,7 @@
                                 <template x-if="field.type === 'string' && !field.multiline">
                                     <div>
                                         <label class="block text-sm font-semibold text-text-primary mb-1" x-text="field.label"></label>
-                                        <input type="text" :value="getField(field.name)" @input.debounce="setField(field.name, $event.target.value)"
+                                        <input type="text" :value="getField(field.name)" @input="setField(field.name, $event.target.value)"
                                             data-field-target="field.name"
                                             class="w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm text-text-primary shadow-[0_2px_3px_-2px_rgba(0,0,0,0.15)] focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary">
                                     </div>
@@ -117,7 +120,7 @@
                                 <template x-if="field.type === 'string' && field.multiline">
                                     <div>
                                         <label class="block text-sm font-semibold text-text-primary mb-1" x-text="field.label"></label>
-                                        <textarea :value="getField(field.name)" @input.debounce="setField(field.name, $event.target.value)"
+                                        <textarea :value="getField(field.name)" @input="setField(field.name, $event.target.value)"
                                             data-field-target="field.name"
                                             class="w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm text-text-primary shadow-[0_2px_3px_-2px_rgba(0,0,0,0.15)] focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary resize-y min-h-[80px]" rows="3"></textarea>
                                     </div>
@@ -127,7 +130,7 @@
                                 <template x-if="field.type === 'number'">
                                     <div>
                                         <label class="block text-sm font-semibold text-text-primary mb-1" x-text="field.label"></label>
-                                        <input type="number" :value="getField(field.name)" @input.debounce="setField(field.name, parseFloat($event.target.value) || '')"
+                                        <input type="number" :value="getField(field.name)" @input="setField(field.name, parseFloat($event.target.value) || '')"
                                             data-field-target="field.name"
                                             class="w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm text-text-primary shadow-[0_2px_3px_-2px_rgba(0,0,0,0.15)] focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary">
                                     </div>
@@ -155,10 +158,44 @@
                                 <template x-if="field.type === 'image'">
                                     <div>
                                         <label class="block text-sm font-semibold text-text-primary mb-1" x-text="field.label"></label>
-                                        <input type="text" :value="getField(field.name)" @input.debounce="setField(field.name, $event.target.value)"
-                                            placeholder="Image URL..."
-                                            class="w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm text-text-primary shadow-[0_2px_3px_-2px_rgba(0,0,0,0.15)] focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary">
-                                        <img x-show="getField(field.name)" :src="getField(field.name)" class="mt-2 h-20 rounded border border-gray-200 object-cover w-full">
+                                        <div
+                                            @click="window.dispatchEvent(new CustomEvent('open-asset-picker', { detail: { callback: (url) => { setField(field.name, url) } } }))"
+                                            @dragover.prevent="$event.currentTarget.classList.add('border-primary', 'bg-primary/5')"
+                                            @dragleave.prevent="$event.currentTarget.classList.remove('border-primary', 'bg-primary/5')"
+                                            @drop.prevent="
+                                                $event.currentTarget.classList.remove('border-primary', 'bg-primary/5');
+                                                const file = $event.dataTransfer.files[0];
+                                                if (file && file.type.startsWith('image/')) {
+                                                    const reader = new FileReader();
+                                                    reader.onload = (e) => { setField(field.name, e.target.result); };
+                                                    reader.readAsDataURL(file);
+                                                }
+                                            "
+                                            class="relative flex flex-col items-center justify-center w-full py-10 rounded-lg border-2 border-dashed cursor-pointer transition-colors bg-white overflow-hidden"
+                                            :class="getField(field.name) ? 'border-gray-300 hover:border-gray-400' : 'border-gray-300 hover:border-gray-400'"
+                                        >
+                                            <template x-if="getField(field.name)">
+                                                <img :src="getField(field.name)" alt="" class="w-full h-full object-cover rounded-lg">
+                                            </template>
+                                            <template x-if="!getField(field.name)">
+                                                <div class="flex flex-col items-center justify-center text-text-muted">
+                                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="size-8 mb-1">
+                                                        <rect x="3" y="3" width="18" height="18" rx="2" ry="2" />
+                                                        <circle cx="8.5" cy="8.5" r="1.5" />
+                                                        <polyline points="21 15 16 10 5 21" />
+                                                    </svg>
+                                                    <span class="text-xs font-medium">Click or drag to upload</span>
+                                                </div>
+                                            </template>
+                                            <template x-if="getField(field.name)">
+                                                <button type="button" @click.stop="setField(field.name, '')"
+                                                    class="absolute top-1 right-1 text-[11px] font-medium text-white bg-danger/80 hover:bg-danger rounded px-2 py-0.5 transition-colors"
+                                                >Remove</button>
+                                            </template>
+                                        </div>
+                                        <input type="file" accept="image/*" class="hidden"
+                                            @change="const file = $event.target.files[0]; if (file && file.type.startsWith('image/')) { const reader = new FileReader(); reader.onload = (e) => { setField(field.name, e.target.result); }; reader.readAsDataURL(file); } $event.target.value = '';"
+                                        >
                                     </div>
                                 </template>
 
@@ -166,7 +203,7 @@
                                 <template x-if="field.type === 'rich-text'">
                                     <div>
                                         <label class="block text-sm font-semibold text-text-primary mb-1" x-text="field.label"></label>
-                                        <textarea :value="getField(field.name)" @input.debounce="setField(field.name, $event.target.value)"
+                                        <textarea :value="getField(field.name)" @input="setField(field.name, $event.target.value)"
                                             class="w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm text-text-primary shadow-[0_2px_3px_-2px_rgba(0,0,0,0.15)] focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary font-mono resize-y min-h-[100px]" rows="4"></textarea>
                                     </div>
                                 </template>
@@ -175,7 +212,7 @@
                                 <template x-if="field.type === 'link'">
                                     <div>
                                         <label class="block text-sm font-semibold text-text-primary mb-1" x-text="field.label"></label>
-                                        <input type="text" :value="getField(field.name)" @input.debounce="setField(field.name, $event.target.value)"
+                                        <input type="text" :value="getField(field.name)" @input="setField(field.name, $event.target.value)"
                                             placeholder="/page-url or https://..."
                                             class="w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm text-text-primary shadow-[0_2px_3px_-2px_rgba(0,0,0,0.15)] focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary">
                                     </div>
@@ -477,6 +514,7 @@
                     this.crumbs.pop();
                 } else {
                     this.active = null;
+                    this.$nextTick(() => this.initSectionSortable());
                 }
             },
 
@@ -491,6 +529,7 @@
                     this.sections.push(section);
                     this.dirty = true;
                     this.schedulePreview();
+                    this.$nextTick(() => this.initSectionSortable());
                 }
             },
 
@@ -533,6 +572,7 @@
                 if (this.active === i) { this.active = null; this.crumbs = []; }
                 this.dirty = true;
                 this.schedulePreview();
+                this.$nextTick(() => this.initSectionSortable());
             },
 
             addListItem(name) {
@@ -605,7 +645,7 @@
 
             schedulePreview() {
                 clearTimeout(this.previewTimer);
-                this.previewTimer = setTimeout(() => this.refreshPreview(), 300);
+                this.previewTimer = setTimeout(() => this.refreshPreview(), 150);
             },
 
             refreshPreview() {

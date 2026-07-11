@@ -1,31 +1,30 @@
 @php $d = $data; @endphp
-<section data-block="whyChooseUs" class="bg-neutral-50 py-20 md:py-28">
-    <div class="mx-auto max-w-7xl px-4">
-        <div class="grid items-center gap-12 lg:grid-cols-2">
-            <div class="overflow-hidden rounded-2xl shadow-sm">
-                <img src="{{ $d['image'] ?? '' }}" data-edit="image" alt="" class="h-full w-full object-cover" />
+<section data-block="whyChooseUs">
+    <div class="max-w-6xl mx-auto px-6">
+        <div class="mb-14">
+            @if($d['heading'] ?? false)
+                <h2 data-edit="heading" class="text-center text-2xl md:text-3xl font-bold text-gray-900">{{ $d['heading'] }}</h2>
+            @endif
+            @if($d['subtitle'] ?? false)
+                <p data-edit="subtitle" class="mx-auto mt-3 max-w-xl text-center text-gray-500">{{ $d['subtitle'] }}</p>
+            @endif
+        </div>
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 items-stretch">
+            <div data-edit="image" class="relative overflow-hidden rounded-3xl min-h-[400px] lg:min-h-full">
+                @if($d['image'] ?? false)
+                    <img src="{{ $d['image'] }}" alt="" class="absolute inset-0 w-full h-full object-cover" />
+                @endif
             </div>
-
-            <div>
-                @if($d['badge'] ?? false)
-                    <span data-edit="badge" class="mb-3 inline-block text-sm font-semibold uppercase tracking-widest text-primary">{{ $d['badge'] }}</span>
-                @endif
-                @if($d['heading'] ?? false)
-                    <h2 data-edit="heading" class="text-3xl font-bold tracking-tight text-neutral-900 md:text-4xl lg:text-5xl">{{ $d['heading'] }}</h2>
-                @endif
-                @if(($d['features'] ?? []))
-                    <div data-list="features" class="mt-10 space-y-8">
-                        @foreach($d['features'] as $i => $feature)
-                            <div class="flex gap-5">
-                                <span data-edit="features:{{ $i }}/number" class="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-primary/10 text-sm font-bold text-primary">{{ $feature['number'] ?? sprintf('%02d', $i + 1) }}</span>
-                                <div>
-                                    <h3 data-edit="features:{{ $i }}/title" class="text-lg font-semibold text-neutral-900">{{ $feature['title'] ?? '' }}</h3>
-                                    <p data-edit="features:{{ $i }}/description" class="mt-1 text-neutral-600 leading-relaxed">{{ $feature['description'] ?? '' }}</p>
-                                </div>
-                            </div>
-                        @endforeach
-                    </div>
-                @endif
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+                @foreach(($d['features'] ?? []) as $i => $feature)
+                    @if($feature)
+                        <div data-list="features" class="bg-gray-100/80 rounded-2xl p-6 flex flex-col transition-transform duration-300 hover:-translate-y-1 hover:shadow-lg">
+                            <span data-edit="number" class="text-4xl font-bold text-brand mb-3 leading-none">{{ $feature['number'] ?? '' }}</span>
+                            <h3 data-edit="title" class="font-bold text-gray-900 text-lg mb-2">{{ $feature['title'] ?? '' }}</h3>
+                            <p data-edit="description" class="text-gray-500 text-sm leading-relaxed">{{ $feature['description'] ?? '' }}</p>
+                        </div>
+                    @endif
+                @endforeach
             </div>
         </div>
     </div>
