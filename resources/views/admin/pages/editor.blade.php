@@ -155,6 +155,41 @@
                                     </div>
                                 </template>
 
+                                {{-- select --}}
+                                <template x-if="field.type === 'select'">
+                                    <div>
+                                        <label class="block text-sm font-semibold text-text-primary mb-1" x-text="field.label"></label>
+                                        <div class="relative" x-data="{ open: false }">
+                                            <button type="button" @click="open = !open"
+                                                :data-field-target="field.name"
+                                                class="w-full flex items-center gap-2.5 rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm text-text-primary shadow-[0_2px_3px_-2px_rgba(0,0,0,0.15)] hover:border-gray-400 focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary transition-colors"
+                                            >
+                                                <span class="inline-block size-4 rounded border border-gray-200 shrink-0" :style="'background-color: ' + (getField(field.name) || '#ffffff')"></span>
+                                                <span class="flex-1 text-left" x-text="(field.options || []).find(o => o.value === getField(field.name))?.label || 'Select...'"></span>
+                                                <svg class="size-4 text-text-muted transition-transform" :class="open ? 'rotate-180' : ''" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" /></svg>
+                                            </button>
+                                            <div x-show="open" @click.outside="open = false"
+                                                class="absolute z-20 mt-1 w-full rounded-xl border border-gray-200 bg-white py-1 shadow-lg ring-1 ring-black/5 max-h-60 overflow-y-auto"
+                                                x-transition:enter="transition ease-out duration-100" x-transition:enter-start="opacity-0 scale-95" x-transition:enter-end="opacity-100 scale-100"
+                                                x-transition:leave="transition ease-in duration-75" x-transition:leave-start="opacity-100 scale-100" x-transition:leave-end="opacity-0 scale-95"
+                                            >
+                                                <template x-for="opt in field.options" :key="opt.value">
+                                                    <button type="button" @click="setField(field.name, opt.value); open = false"
+                                                        class="w-full flex items-center gap-2.5 px-3 py-2 text-sm text-left transition-colors"
+                                                        :class="getField(field.name) === opt.value ? 'bg-primary/5 text-primary font-medium' : 'text-text-primary hover:bg-gray-50'"
+                                                    >
+                                                        <span class="inline-block size-4 rounded border border-gray-200 shrink-0" :style="'background-color: ' + opt.value"></span>
+                                                        <span x-text="opt.label"></span>
+                                                        <template x-if="getField(field.name) === opt.value">
+                                                            <svg class="size-3.5 ml-auto shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" /></svg>
+                                                        </template>
+                                                    </button>
+                                                </template>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </template>
+
                                 {{-- image --}}
                                 <template x-if="field.type === 'image'">
                                     <div :data-field-target="field.name">
@@ -306,15 +341,34 @@
                                                     </button>
                                                 </template>
                                                 <template x-if="field.list">
-                                                    <div class="rounded-lg border border-gray-300 bg-white px-3 py-2 shadow-[0_2px_3px_-2px_rgba(0,0,0,0.15)]">
+                                                    <div>
                                                         <div class="flex items-center justify-between mb-2">
                                                             <span class="text-sm font-semibold text-text-primary" x-text="field.label"></span>
                                                             <button type="button" @click="addListItem(field.name)" class="text-xs text-primary hover:text-primary/80 font-medium">+ Add <span x-text="field.label.toLowerCase()"></span></button>
                                                 </div>
                                                 <template x-if="getList(field.name).length > 0">
-                                                    <div class="space-y-0.5">
+                                                    <div class="space-y-0.5" data-sortable-list :data-field-name="field.name"
+                                                         x-init="$nextTick(() => {
+                                                             const el = $el;
+                                                             el._sortable = new Sortable(el, {
+                                                                 handle: '.cursor-grab',
+                                                                 animation: 200,
+                                                                 easing: 'cubic-bezier(0.25, 0.1, 0.25, 1)',
+                                                                 onEnd: (evt) => {
+                                                                     if (evt.oldIndex === evt.newIndex) return;
+                                                                     const name = el.dataset.fieldName;
+                                                                     if (!name) return;
+                                                                     const list = getList(name);
+                                                                     const item = list.splice(evt.oldIndex, 1)[0];
+                                                                     list.splice(evt.newIndex, 0, item);
+                                                                     dirty = true;
+                                                                     schedulePreview();
+                                                                 },
+                                                             });
+                                                         })"
+                                                    >
                                                         <template x-for="(item, ci) in getList(field.name)" :key="item._key">
-                                                            <div class="flex rounded-lg shadow-sm bg-gray-50 mb-0.5 group overflow-hidden">
+                                                            <div class="flex rounded-lg shadow-sm bg-content-bg mb-0.5 group overflow-hidden">
                                                                 <div class="w-6 shrink-0 flex items-center justify-center cursor-grab active:cursor-grabbing opacity-70 hover:opacity-100 touch-none transition-opacity text-text-muted/70">
                                                                     <svg viewBox="0 0 24 24" fill="currentColor" class="size-[14px]">
                                                                         <circle cx="8" cy="6" r="2.5" /><circle cx="16" cy="6" r="2.5" />
@@ -322,17 +376,22 @@
                                                                         <circle cx="8" cy="18" r="2.5" /><circle cx="16" cy="18" r="2.5" />
                                                                     </svg>
                                                                 </div>
-                                                                <div class="flex flex-1 min-w-0 items-center px-1.5 py-2 text-xs leading-normal">
-                                                                    <span class="text-sm font-semibold text-text-heading truncate flex-1" x-text="cardLabel(item, field)"></span>
+                                                                <div class="flex flex-1 min-w-0 items-center px-1.5 py-2.5 text-xs leading-normal">
+                                                                    <div class="flex min-w-0 flex-1 items-center gap-1.5">
+                                                                        <template x-if="item.icon">
+                                                                            <i :class="item.icon" class="size-3 shrink-0 text-text-muted"></i>
+                                                                        </template>
+                                                                        <span class="text-sm font-semibold text-text-heading group-hover:text-primary truncate leading-normal transition-colors" x-text="cardLabel(item, field)"></span>
+                                                                    </div>
                                                                     <div class="flex items-center gap-0.5 shrink-0 ml-1">
-                                                                        <button @click="drillIn(field.name, ci)" class="p-1 text-text-muted/60 hover:text-primary transition-colors rounded hover:bg-text-primary/10" title="Edit">
-                                                                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" class="size-3.5">
+                                                                        <button @click="drillIn(field.name, ci)" class="p-1 text-text-muted/60 hover:text-primary group-hover:text-primary transition-colors rounded hover:bg-text-primary/10" title="Edit">
+                                                                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" class="size-4">
                                                                                 <path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7" />
                                                                                 <path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z" />
                                                                             </svg>
                                                                         </button>
                                                                         <button @click="removeListItem(field.name, ci)" class="p-1 text-text-muted/60 hover:text-danger transition-colors rounded hover:bg-text-primary/10" title="Remove">
-                                                                            <svg viewBox="0 0 20 20" fill="currentColor" class="size-3.5">
+                                                                            <svg viewBox="0 0 20 20" fill="currentColor" class="size-4">
                                                                                 <path fill-rule="evenodd" d="M8.75 1A2.75 2.75 0 006 3.75v.443c-.795.077-1.584.176-2.365.298a.75.75 0 10.23 1.482l.149-.022.841 10.518A2.75 2.75 0 007.596 19h4.807a2.75 2.75 0 002.742-2.53l.841-10.52.149.023a.75.75 0 00.23-1.482A41.03 41.03 0 0014 4.193V3.75A2.75 2.75 0 0011.25 1h-2.5zM10 4c-.84 0-1.673.025-2.5.075V3.75c0-.69.56-1.25 1.25-1.25h2.5c.69 0 1.25.56 1.25 1.25v.325C11.673 4.025 10.84 4 10 4zM8.58 7.72a.75.75 0 00-1.5.06l.3 7.5a.75.75 0 101.5-.06l-.3-7.5zm4.34.06a.75.75 0 10-1.5-.06l-.3 7.5a.75.75 0 101.5.06l.3-7.5z" clip-rule="evenodd" />
                                                                             </svg>
                                                                         </button>
@@ -342,23 +401,10 @@
                                                         </template>
                                                     </div>
                                                 </template>
-                                            </div>
                                         </template>
                                     </div>
                                 </template>
 
-                                {{-- background --}}
-                                <template x-if="field.type === 'background'">
-                                    <div :data-field-target="field.name">
-                                        <label class="block text-sm font-semibold text-text-primary mb-1">Background</label>
-                                        <button @click="drillIn(field.name)"
-                                            class="w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-left text-sm text-text-primary shadow-[0_2px_3px_-2px_rgba(0,0,0,0.15)] flex items-center justify-between"
-                                        >
-                                            <span x-text="getField(field.name) ? 'Configured' : 'Not configured'" :class="getField(field.name) ? '' : 'text-text-muted'"></span>
-                                            <svg class="w-4 h-4 text-text-muted" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" /></svg>
-                                        </button>
-                                    </div>
-                                </template>
                             </div>
                         </template>
                     </div>
@@ -567,16 +613,35 @@
             },
 
             drillIn(key, index) {
+                const val = this.currentData()[key];
+                if (typeof val === 'string') {
+                    try {
+                        const parsed = JSON.parse(val);
+                        if (typeof parsed === 'object' && parsed !== null) {
+                            this.setNested(key, parsed);
+                        }
+                    } catch (e) {}
+                }
                 this.crumbs.push({ key, index: index ?? undefined });
             },
 
             exit() {
                 if (this.crumbs.length > 0) {
+                    this.destroyNestedSortables();
                     this.crumbs.pop();
                 } else {
                     this.active = null;
                     this.$nextTick(() => this.initSectionSortable());
                 }
+            },
+
+            destroyNestedSortables() {
+                document.querySelectorAll('[data-sortable-list]').forEach(el => {
+                    if (el._sortable) {
+                        el._sortable.destroy();
+                        delete el._sortable;
+                    }
+                });
             },
 
             edit(i) {
@@ -720,7 +785,7 @@
 
             schedulePreview() {
                 clearTimeout(this.previewTimer);
-                this.previewTimer = setTimeout(() => this.refreshPreview(), 150);
+                this.previewTimer = setTimeout(() => this.refreshPreview(), 0);
             },
 
             refreshPreview() {

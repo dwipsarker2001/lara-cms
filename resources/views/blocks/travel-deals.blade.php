@@ -1,8 +1,8 @@
 @php
     $d = $data;
     $btn = $d['button'] ?? [];
-    $bg = [];
-    if (isset($d['background']) && is_string($d['background'])) {
+    $bg = is_array($d['background'] ?? null) ? $d['background'] : [];
+    if (empty($bg) && isset($d['background']) && is_string($d['background'])) {
         try { $bg = json_decode($d['background'], true) ?? []; } catch (\Exception) { $bg = []; }
     }
     $bgImg = $bg['image'] ?? '';

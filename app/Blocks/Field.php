@@ -67,7 +67,34 @@ class Field
 
     public static function background(): array
     {
-        return ['name' => 'background', 'label' => 'Background', 'type' => 'background', 'defaultValue' => '{}'];
+        return [
+            'name' => 'background',
+            'label' => 'Background',
+            'type' => 'object',
+            'fields' => [
+                self::image('image', 'Background Image'),
+                self::select('color', 'Background Color', [
+                    ['value' => '#ffffff', 'label' => 'White'],
+                    ['value' => '#000000', 'label' => 'Black'],
+                    ['value' => '#f3f4f6', 'label' => 'Light Gray'],
+                    ['value' => '#e5e7eb', 'label' => 'Gray'],
+                    ['value' => '#eff6ff', 'label' => 'Light Blue'],
+                    ['value' => '#dbeafe', 'label' => 'Blue'],
+                    ['value' => '#f0fdf4', 'label' => 'Light Green'],
+                    ['value' => '#dcfce7', 'label' => 'Green'],
+                    ['value' => '#fef2f2', 'label' => 'Light Red'],
+                    ['value' => '#fefce8', 'label' => 'Light Yellow'],
+                    ['value' => '#f5f3ff', 'label' => 'Light Purple'],
+                    ['value' => '#fff7ed', 'label' => 'Light Orange'],
+                ], default: '#ffffff'),
+                self::number('opacity', 'Opacity', default: 100),
+            ],
+        ];
+    }
+
+    public static function select(string $name, string $label, array $options, string $default = ''): array
+    {
+        return compact('name', 'label', 'options') + ['type' => 'select', 'defaultValue' => $default];
     }
 
     /**
