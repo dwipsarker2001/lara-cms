@@ -54,13 +54,15 @@
                             </div>
                             <div class="flex flex-1 items-center px-1.5 text-xs leading-normal min-w-0">
                                 <div class="flex gap-2 sm:gap-3 grow items-center py-3 min-w-0">
-                                    <span class="inline-block w-2 h-2 rounded-full shrink-0 {{ $page->published ? 'bg-success' : 'bg-text-muted' }}"></span>
-                                    <span class="text-sm font-semibold text-text-heading truncate">
-                                        {{ $page->title }}
-                                        @if ($page->slug === 'home')
-                                            <span class="text-xs text-text-muted font-normal ml-1">(Home)</span>
-                                        @endif
-                                    </span>
+                                    <a href="{{ route('admin.pages.editor', $page) }}" class="flex items-center gap-2 no-underline min-w-0">
+                                        <span class="inline-block w-2 h-2 rounded-full shrink-0 {{ $page->published ? 'bg-success' : 'bg-text-muted' }}"></span>
+                                        <span class="text-sm font-semibold text-text-heading truncate group-hover:text-primary transition-colors">
+                                            {{ $page->title }}
+                                            @if ($page->slug === 'home')
+                                                <span class="text-xs text-text-muted font-normal ml-1">(Home)</span>
+                                            @endif
+                                        </span>
+                                    </a>
                                 </div>
                                 <div class="flex items-center gap-2 sm:gap-3 shrink-0">
                                     <code class="text-xs bg-panel-bg px-2 py-0.5 rounded shrink-0 text-text-muted">{{ $page->route() }}</code>
@@ -135,6 +137,18 @@
         </div>
     </div>
 @endsection
+
+<style>
+    #sortable-pages .sortable-ghost {
+        opacity: 0 !important;
+    }
+    #sortable-pages .sortable-drag {
+        opacity: 0.9 !important;
+        box-shadow: none !important;
+        border-radius: 0.75rem !important;
+        background: var(--color-content-bg, #fff) !important;
+    }
+</style>
 
 @push('scripts')
     <script>

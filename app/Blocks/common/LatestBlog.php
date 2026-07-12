@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Blocks\Home;
+namespace App\Blocks\common;
 
 use App\Blocks\Block;
 use App\Blocks\Field;
@@ -11,13 +11,11 @@ class LatestBlog extends Block
 
     public string $label = 'Latest Blog';
 
-    public bool $background = false;
-
     public function fields(): array
     {
         return [
             Field::string('headline', 'Headline', default: 'Latest Travel Blog'),
-            Field::text('description', 'Description'),
+            Field::text('description', 'Description', default: 'Stories, tips and inspiration to help you plan your next trip.'),
         ];
     }
 }

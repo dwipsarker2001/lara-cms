@@ -120,6 +120,11 @@ class PageController extends Controller
             'page' => $page,
             'blockSchemas' => $registry->schemas(),
             'blockList' => $blockList,
+            'pages' => Page::orderBy('position')->orderBy('title')->get(['id', 'slug', 'title'])->map(fn ($p) => [
+                'id' => $p->id,
+                'title' => $p->title,
+                'route' => $p->slug === 'home' ? '/' : '/'.$p->slug,
+            ]),
         ]);
     }
 

@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Blocks\Packages;
+namespace App\Blocks\common;
 
 use App\Blocks\Block;
 use App\Blocks\Field;

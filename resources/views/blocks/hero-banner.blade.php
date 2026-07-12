@@ -25,12 +25,12 @@
             @endif
             <form action="{{ $d['searchUrl'] ?? '#' }}" method="get" class="mt-10 w-full max-w-2xl flex items-center bg-white rounded-full shadow-lg overflow-hidden px-4 py-2">
                 <span class="flex flex-1 items-center gap-2 px-3 py-2 border-r border-gray-200">
-                    <svg class="w-5 h-5 text-gray-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" /></svg>
-                    <input type="text" name="destination" placeholder="{{ $d['searchPlaceholder'] ?? 'Where do you want to go?' }}" class="w-full bg-transparent text-sm text-gray-700 placeholder:text-gray-400 outline-none" />
+                    <svg class="w-5 h-5 text-gray-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" /><circle cx="12" cy="10" r="3" /></svg>
+                    <span class="text-sm text-gray-700">{{ $d['searchPlaceholder'] ?? 'Where do you want to go?' }}</span>
                 </span>
                 <span class="flex flex-1 items-center gap-2 px-3 py-2">
                     <svg class="w-5 h-5 text-gray-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg>
-                    <input type="text" name="dates" placeholder="{{ $d['datePlaceholder'] ?? 'Add dates' }}" class="w-full bg-transparent text-sm text-gray-700 placeholder:text-gray-400 outline-none" />
+                    <span class="text-sm text-gray-700">{{ $d['datePlaceholder'] ?? 'Add dates' }}</span>
                 </span>
                 <button type="submit" aria-label="Search" class="ml-2 flex h-10 w-10 items-center justify-center rounded-full bg-orange-500 transition-colors hover:bg-orange-600 shrink-0">
                     <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" /></svg>

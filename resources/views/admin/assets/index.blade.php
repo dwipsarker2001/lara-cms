@@ -238,7 +238,7 @@
                                                             :src="`/storage/${asset.path}`"
                                                             :alt="asset.name"
                                                             class="size-full object-cover"
-                                                            x-on:error="$el.style.display='none';$el.parentElement.innerHTML='<div class=\"size-full flex items-center justify-center text-xs text-blue-600 font-medium bg-gradient-to-br from-blue-100 to-blue-200\">IMG</div>'"
+                                                            x-on:error='$el.style.display="none";$el.parentElement.innerHTML=`<div class="size-full flex items-center justify-center text-xs text-blue-600 font-medium bg-gradient-to-br from-blue-100 to-blue-200">IMG</div>`'
                                                         >
                                                     </div>
                                                 </template>

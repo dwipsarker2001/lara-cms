@@ -1,5 +1,5 @@
 @php $d = $data; @endphp
-<section data-block="teamCards">
+<section data-block="teamCards" class="py-20">
     <div class="max-w-6xl mx-auto px-6">
         @if($d['headline'] ?? false)
             <h2 data-edit="headline" class="text-center text-2xl md:text-3xl font-bold text-gray-900">{{ $d['headline'] }}</h2>
@@ -7,7 +7,7 @@
         @if($d['description'] ?? false)
             <p data-edit="description" class="mx-auto mt-3 max-w-2xl text-center text-gray-500">{{ $d['description'] }}</p>
         @endif
-        <div class="mt-12 flex gap-5 overflow-x-auto snap-x snap-mandatory sm:grid sm:grid-cols-2 lg:grid-cols-4 md:gap-6" style="-ms-overflow-style:none;scrollbar-width:none">
+        <div class="mt-12 flex gap-5 overflow-x-auto snap-x snap-mandatory sm:grid sm:grid-cols-2 lg:grid-cols-4 md:gap-6 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
             @foreach(($d['members'] ?? []) as $i => $member)
                 @if($member)
                     <div data-list="members" class="min-w-[260px] sm:min-w-0 snap-start rounded-2xl border-2 border-transparent">
@@ -29,7 +29,9 @@
                                             @if($s)
                                                 <li data-list="social">
                                                     <a href="{{ $s['url'] ?? '#' }}" target="_blank" rel="noopener noreferrer" data-edit="platform" aria-label="{{ $s['platform'] ?? 'social link' }}" class="inline-flex h-7 w-7 items-center justify-center rounded-md bg-white/15 backdrop-blur-sm text-white transition-colors hover:bg-brand hover:text-brand-foreground">
-                                                        <svg class="size-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 9l6 6-6 6"/></svg>
+                                                        @if($s['icon'] ?? false)
+                                                            <i class="{{ $s['icon'] }}" data-edit="icon" style="font-size: 12px"></i>
+                                                        @endif
                                                     </a>
                                                 </li>
                                             @endif

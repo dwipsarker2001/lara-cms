@@ -9,16 +9,24 @@
     window.editorSchemas = @json($blockSchemas);
     window.editorBlockList = @json($blockList);
     window.editorSlug = '{{ $page->slug }}';
+    window.editorPages = @json($pages);
 </script>
-<div class="flex h-full gap-3 p-3" x-data="pageEditor()" x-init="init(window.editorSections, window.editorSchemas, window.editorBlockList, window.editorSlug)" x-on:section-selected.window="addSection($event.detail.name)">
+<div class="flex h-full gap-3 p-3" x-data="pageEditor()" x-init="init(window.editorSections, window.editorSchemas, window.editorBlockList, window.editorSlug, window.editorPages)" x-on:section-selected.window="addSection($event.detail.name)">
     {{-- Editor panel --}}
     <div class="w-[420px] min-w-[320px] shrink-0 bg-white h-full flex flex-col rounded-2xl border border-[#e8eaed] shadow-[0_1px_2px_rgba(16,24,40,0.04),0_8px_24px_-12px_rgba(16,24,40,0.12)] overflow-hidden">
         <div class="flex-1 overflow-y-auto px-3 pt-3 pb-4 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
             <div class="bg-gray-100 rounded-2xl p-[7px]">
                 {{-- Section list mode --}}
                     <div x-show="active === null">
-                        <div class="flex items-center justify-between px-3 py-3 text-sm font-medium text-text-heading">
-                            <div class="font-bold">Sections</div>
+                        <div class="flex items-center justify-between pr-3 py-3 text-sm font-medium text-text-heading">
+                            <div class="flex items-center gap-2">
+                                <a href="{{ route('admin.pages.index') }}" aria-label="Back" class="size-7 shrink-0 flex items-center justify-center rounded-full border border-gray-300 bg-white text-text-primary hover:bg-gray-100 transition-colors">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="size-3">
+                                        <path d="M19 12H5M12 19l-7-7 7-7" stroke-linecap="round" stroke-linejoin="round" />
+                                    </svg>
+                                </a>
+                                <div class="font-bold">Sections</div>
+                            </div>
                             <button
                                 type="button"
                                 @click="window.dispatchEvent(new CustomEvent('open-section-picker'))"
@@ -301,12 +309,91 @@
 
                                 {{-- link --}}
                                         <template x-if="field.type === 'link'">
-                                            <div>
+                                            <div :data-field-target="field.name">
                                                 <label class="block text-sm font-semibold text-text-primary mb-1" x-text="field.label"></label>
-                                                <input type="text" :value="getField(field.name)" @input="setField(field.name, $event.target.value)"
-                                                    placeholder="/page-url or https://..."
-                                                    :data-field-target="field.name"
-                                                    class="w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm text-text-primary shadow-[0_2px_3px_-2px_rgba(0,0,0,0.15)] focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary">
+                                                <div class="flex gap-2">
+                                                    {{-- Mode select --}}
+                                                    <div class="relative w-36 shrink-0" @keydown="selectKeydown($event, 'mode-' + field.name)">
+                                                        <button type="button" @click.stop="toggleSelect('mode-' + field.name)"
+                                                            class="w-full flex items-center justify-between gap-2 bg-white border border-gray-300 text-sm rounded-lg px-3 h-10 cursor-pointer transition-shadow duration-150 hover:shadow-sm"
+                                                            :class="getSelect('mode-' + field.name).open ? 'ring-2 ring-primary/30 border-primary shadow-sm' : 'shadow-[0_2px_3px_-2px_rgba(0,0,0,0.15)]'">
+                                                            <span class="text-text-primary truncate" x-text="getLinkMode(field.name) === 'page' ? 'Page' : 'Custom'"></span>
+                                                            <svg viewBox="0 0 20 20" fill="currentColor" class="size-4 shrink-0 opacity-60" :class="getSelect('mode-' + field.name).open ? 'rotate-180' : ''">
+                                                                <path fill-rule="evenodd" d="M5.22 8.22a.75.75 0 0 1 1.06 0L10 11.94l3.72-3.72a.75.75 0 1 1 1.06 1.06l-4.25 4.25a.75.75 0 0 1-1.06 0L5.22 9.28a.75.75 0 0 1 0-1.06Z" clip-rule="evenodd" />
+                                                            </svg>
+                                                        </button>
+                                                        <div x-show="getSelect('mode-' + field.name).open" x-cloak
+                                                            class="absolute z-50 top-full mt-1.5 left-0 right-0 bg-white rounded-xl shadow-lg overflow-hidden"
+                                                            @click.away="closeSelect('mode-' + field.name)">
+                                                            <div class="py-1">
+                                                                <template x-for="opt in [{value:'page',label:'Page'},{value:'custom',label:'Custom'}]">
+                                                                    <button type="button" @click="setLinkMode(field.name, opt.value); closeSelect('mode-' + field.name)"
+                                                                        class="w-full flex items-center justify-between gap-2 px-3 py-2 text-sm text-left transition-colors duration-75 hover:bg-primary/10"
+                                                                        :class="getLinkMode(field.name) === opt.value ? 'text-primary font-medium' : 'text-gray-700'">
+                                                                        <span class="truncate" x-text="opt.label"></span>
+                                                                        <svg x-show="getLinkMode(field.name) === opt.value" viewBox="0 0 20 20" fill="currentColor" class="size-4 shrink-0 text-primary">
+                                                                            <path fill-rule="evenodd" d="M16.704 4.153a.75.75 0 0 1 .143 1.052l-8 10.5a.75.75 0 0 1-1.127.075l-4.5-4.5a.75.75 0 0 1 1.06-1.06l3.894 3.893 7.48-9.817a.75.75 0 0 1 1.05-.143Z" clip-rule="evenodd" />
+                                                                        </svg>
+                                                                    </button>
+                                                                </template>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    {{-- Page select --}}
+                                                    <template x-if="getLinkMode(field.name) === 'page'">
+                                                        <div class="relative flex-1 min-w-0" @keydown="selectKeydown($event, 'page-' + field.name)">
+                                                            <button type="button" @click.stop="toggleSelect('page-' + field.name)"
+                                                                 class="w-full flex items-center justify-between gap-2 bg-white border border-gray-300 text-sm rounded-lg px-3 h-10 cursor-pointer transition-shadow duration-150 hover:shadow-sm"
+                                                                 :class="getSelect('page-' + field.name).open ? 'ring-2 ring-primary/30 border-primary shadow-sm' : 'shadow-[0_2px_3px_-2px_rgba(0,0,0,0.15)]'">
+                                                                 <span class="truncate" :class="getField(field.name) ? 'text-gray-900' : 'text-gray-400'">
+                                                                     <template x-if="getField(field.name)">
+                                                                         <span x-text="pages.find(p => p.route === getField(field.name))?.title || getField(field.name)"></span>
+                                                                     </template>
+                                                                     <template x-if="!getField(field.name)">Select a page...</template>
+                                                                 </span>
+                                                                 <svg viewBox="0 0 20 20" fill="currentColor" class="size-4 shrink-0 opacity-60" :class="getSelect('page-' + field.name).open ? 'rotate-180' : ''">
+                                                                     <path fill-rule="evenodd" d="M5.22 8.22a.75.75 0 0 1 1.06 0L10 11.94l3.72-3.72a.75.75 0 1 1 1.06 1.06l-4.25 4.25a.75.75 0 0 1-1.06 0L5.22 9.28a.75.75 0 0 1 0-1.06Z" clip-rule="evenodd" />
+                                                                 </svg>
+                                                             </button>
+                                                              <div x-show="getSelect('page-' + field.name).open" x-cloak
+                                                                  class="absolute z-50 top-full mt-1.5 left-0 right-0 bg-white rounded-xl shadow-lg overflow-hidden"
+                                                                 @click.away="closeSelect('page-' + field.name)">
+                                                                  <div class="flex items-center gap-2 px-3 py-1 border-b border-gray-200">
+                                                                      <svg viewBox="0 0 20 20" fill="currentColor" class="size-4 shrink-0 opacity-50 text-gray-400">
+                                                                          <path fill-rule="evenodd" d="M9 3.5a5.5 5.5 0 1 0 0 11 5.5 5.5 0 0 0 0-11ZM2 9a7 7 0 1 1 12.452 4.391l3.328 3.329a.75.75 0 1 1-1.06 1.06l-3.329-3.328A7 7 0 0 1 2 9Z" clip-rule="evenodd" />
+                                                                      </svg>
+                                                                      <input type="text" :id="'sel-search-page-' + field.name"
+                                                                          @input="getSelect('page-' + field.name).search = $event.target.value; getSelect('page-' + field.name).highlight = 0"
+                                                                          @click.stop
+                                                                          placeholder="Search..."
+                                                                          class="w-full bg-transparent text-sm text-gray-900 placeholder:text-gray-400 outline-none border-0 focus:ring-0">
+                                                                 </div>
+                                                                 <div class="max-h-60 overflow-y-auto py-1 [scrollbar-width:thin]" x-ref="list">
+                                                                     <template x-for="(page, pi) in pages.filter(p => !getSelect('page-' + field.name).search || p.title.toLowerCase().includes(getSelect('page-' + field.name).search.toLowerCase()) || p.route.toLowerCase().includes(getSelect('page-' + field.name).search.toLowerCase()))" :key="page.id">
+                                                                         <button type="button" @click="linkFieldValue(field.name, page.route); closeSelect('page-' + field.name)"
+                                                                             class="w-full flex items-center justify-between gap-2 px-3 py-2 text-sm text-left transition-colors duration-75 hover:bg-primary/10"
+                                                                             :class="getField(field.name) === page.route ? 'text-primary font-medium' : 'text-gray-700'">
+                                                                             <span class="truncate" x-text="page.title"></span>
+                                                                             <svg x-show="getField(field.name) === page.route" viewBox="0 0 20 20" fill="currentColor" class="size-4 shrink-0 text-primary">
+                                                                                 <path fill-rule="evenodd" d="M16.704 4.153a.75.75 0 0 1 .143 1.052l-8 10.5a.75.75 0 0 1-1.127.075l-4.5-4.5a.75.75 0 0 1 1.06-1.06l3.894 3.893 7.48-9.817a.75.75 0 0 1 1.05-.143Z" clip-rule="evenodd" />
+                                                                             </svg>
+                                                                         </button>
+                                                                     </template>
+                                                                     <template x-if="pages.filter(p => !getSelect('page-' + field.name).search || p.title.toLowerCase().includes(getSelect('page-' + field.name).search.toLowerCase()) || p.route.toLowerCase().includes(getSelect('page-' + field.name).search.toLowerCase())).length === 0">
+                                                                         <div class="px-3 py-6 text-sm text-gray-400 text-center">No results found</div>
+                                                                     </template>
+                                                                 </div>
+                                                             </div>
+                                                        </div>
+                                                    </template>
+                                                    <template x-if="getLinkMode(field.name) === 'custom'">
+                                                        <input type="text"
+                                                            :value="getField(field.name)"
+                                                            @input="linkFieldValue(field.name, $event.target.value)"
+                                                            placeholder="https://example.com"
+                                                            class="flex-1 min-w-0 rounded-lg border border-gray-300 bg-white px-3 h-10 text-sm text-text-primary shadow-[0_2px_3px_-2px_rgba(0,0,0,0.15)] focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary">
+                                                    </template>
+                                                </div>
                                     </div>
                                 </template>
 
@@ -414,7 +501,7 @@
 
         {{-- Footer --}}
         <div class="shrink-0 px-4 py-3 border-t border-content-border bg-body-bg flex items-center justify-end gap-2">
-            <button type="button" class="px-4 py-1.5 text-sm font-medium text-text-primary bg-content-bg border border-content-border rounded-lg hover:bg-gray-50 transition-colors">
+            <button type="button" @click="reset()" x-bind:disabled="!dirty" class="px-4 py-1.5 text-sm font-medium text-text-primary bg-content-bg border border-content-border rounded-lg hover:bg-gray-50 transition-colors disabled:opacity-50 disabled:cursor-not-allowed">
                 Reset
             </button>
             <button
@@ -453,6 +540,15 @@
 </div>
 @endsection
 
+<style>
+    .sortable-ghost,
+    .sortable-drag {
+        opacity: 0.3 !important;
+        box-shadow: none !important;
+        border: none !important;
+    }
+</style>
+
 @push('scripts')
 <script>
     function pageEditor() {
@@ -461,8 +557,11 @@
             schemas: {},
             blockList: [],
             slug: '',
+            pages: [],
+            linkModes: {},
             active: null,
             crumbs: [],
+            originalSections: [],
             dirty: false,
             isSaving: false,
             previewTimer: null,
@@ -471,23 +570,34 @@
             iconLoading: false,
             faIcons: window.FA_ICONS || [],
 
-            init(sections, schemas, blockList, slug) {
+            init(sections, schemas, blockList, slug, pages) {
+                if (!sections) sections = [];
+                if (!schemas) schemas = {};
+                if (!blockList) blockList = [];
+                if (!slug) slug = '';
+                if (!pages) pages = [];
                 this.sections = JSON.parse(JSON.stringify(sections));
+                this.originalSections = JSON.parse(JSON.stringify(sections));
                 this.schemas = schemas;
                 this.blockList = blockList;
                 this.slug = slug;
+                this.pages = pages;
                 this.$nextTick(() => this.initSectionSortable());
                 this.refreshPreview();
             },
 
             initSectionSortable() {
-                if (this._sectionSortable) this._sectionSortable.destroy();
+                if (this._sectionSortable) {
+                    try { this._sectionSortable.destroy(); } catch (e) {}
+                    this._sectionSortable = null;
+                }
                 const el = this.$refs?.sectionList;
                 if (!el) return;
                 this._sectionSortable = new Sortable(el, {
                     handle: '.cursor-grab',
                     animation: 200,
                     easing: 'cubic-bezier(0.25, 0.1, 0.25, 1)',
+                    ghostClass: 'sortable-ghost',
                     onEnd: (evt) => {
                         if (evt.oldIndex === evt.newIndex) return;
                         const item = this.sections.splice(evt.oldIndex, 1)[0];
@@ -554,6 +664,22 @@
 
             getField(name) {
                 return this.currentData()[name] ?? '';
+            },
+
+            getLinkMode(name) {
+                if (!(name in this.linkModes)) {
+                    const val = this.getField(name);
+                    this.linkModes[name] = (!val || this.pages?.some(p => p.route === val)) ? 'page' : 'custom';
+                }
+                return this.linkModes[name];
+            },
+
+            setLinkMode(name, mode) {
+                this.linkModes[name] = mode;
+            },
+
+            linkFieldValue(name, linkValue) {
+                this.setField(name, linkValue);
             },
 
             setField(name, value) {
@@ -656,6 +782,18 @@
 
             buildListItem(field) {
                 return { _key: crypto.randomUUID ? crypto.randomUUID() : Date.now().toString(36) + Math.random().toString(36).slice(2), ...this.buildDefaultData(field.fields || []) };
+            },
+
+            reset() {
+                this.sections = JSON.parse(JSON.stringify(this.originalSections));
+                this.active = null;
+                this.crumbs = [];
+                this.dirty = false;
+                this.closeAllSelects();
+                this.$nextTick(() => {
+                    this.initSectionSortable();
+                    this.refreshPreview();
+                });
             },
 
             removeSection(i) {
@@ -866,6 +1004,52 @@
                         }
                     }
                 });
+            },
+
+            selects: {},
+
+            getSelect(id) {
+                if (!this.selects[id]) this.selects[id] = { open: false, search: '', highlight: -1 };
+                return this.selects[id];
+            },
+
+            toggleSelect(id) {
+                const s = this.getSelect(id);
+                const wasOpen = s.open;
+                this.closeAllSelects();
+                if (!wasOpen) {
+                    s.open = true;
+                    this.$nextTick(() => {
+                        if (this.selects[id]?.searchable) {
+                            const input = document.getElementById('sel-search-' + id);
+                            input?.focus();
+                        }
+                    });
+                }
+            },
+
+            closeSelect(id) {
+                const s = this.selects[id];
+                if (s) { s.open = false; s.search = ''; s.highlight = -1; }
+            },
+
+            closeAllSelects() {
+                Object.keys(this.selects).forEach(k => this.closeSelect(k));
+            },
+
+            selectKeydown(e, id) {
+                const s = this.getSelect(id);
+                if (!s.open) {
+                    if (['Enter', ' ', 'ArrowDown'].includes(e.key)) { e.preventDefault(); s.open = true; }
+                    return;
+                }
+                const list = s.searchable ? s.filtered : s.options;
+                switch (e.key) {
+                    case 'Escape': e.preventDefault(); s.open = false; break;
+                    case 'ArrowDown': e.preventDefault(); s.highlight = Math.min(s.highlight + 1, (list?.length || 1) - 1); break;
+                    case 'ArrowUp': e.preventDefault(); s.highlight = Math.max(s.highlight - 1, 0); break;
+                    case 'Enter': e.preventDefault(); if (list?.[s.highlight]) { s.onSelect(list[s.highlight].value); s.open = false; } break;
+                }
             },
 
             async save() {

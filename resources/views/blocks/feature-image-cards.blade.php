@@ -1,5 +1,5 @@
 @php $d = $data; @endphp
-<section data-block="featureImageCards">
+<section data-block="featureImageCards" class="py-20">
     <div class="max-w-6xl mx-auto px-6">
         @if($d['headline'] ?? false)
             <h2 data-edit="headline" class="text-center text-2xl md:text-3xl font-bold text-gray-900">{{ $d['headline'] }}</h2>
@@ -7,7 +7,7 @@
         @if($d['description'] ?? false)
             <p data-edit="description" class="mx-auto mt-3 max-w-2xl text-center text-gray-500">{{ $d['description'] }}</p>
         @endif
-        <div class="mt-10 flex gap-5 overflow-x-auto snap-x snap-mandatory sm:grid sm:grid-cols-2 lg:grid-cols-4 md:gap-6" style="-ms-overflow-style:none;scrollbar-width:none">
+        <div class="mt-10 flex gap-5 overflow-x-auto snap-x snap-mandatory sm:grid sm:grid-cols-2 lg:grid-cols-4 md:gap-6 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
             @foreach(($d['cards'] ?? []) as $i => $card)
                 @if($card)
                     <div data-list="cards" class="min-w-[260px] sm:min-w-0 snap-start rounded-2xl border-2 border-transparent">
