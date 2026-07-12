@@ -44,7 +44,7 @@ class PageController extends Controller
             'xCardTitleSource' => 'Inherit',
             'xCardDescriptionSource' => 'Inherit',
         ]);
-        $data['sections'] = [];
+        $data['sections'] = Sections::injectGlobals();
         $data['position'] = Page::max('position') + 1;
 
         Page::create($data);
@@ -116,9 +116,12 @@ class PageController extends Controller
             return [...$item, 'previewHtml' => $html];
         })->all();
 
+        $homeGlobals = Sections::injectGlobals();
+
         return view('admin.pages.editor', [
             'page' => $page,
             'blockSchemas' => $registry->schemas(),
+            'homeGlobals' => $homeGlobals,
             'blockList' => $blockList,
             'pages' => Page::orderBy('position')->orderBy('title')->get(['id', 'slug', 'title'])->map(fn ($p) => [
                 'id' => $p->id,

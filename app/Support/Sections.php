@@ -40,6 +40,7 @@ class Sections
         return [
             '_key' => (string) Str::uuid(),
             'name' => $name,
+            'enabled' => true,
             'data' => static::defaultData($block->resolvedFields()),
         ];
     }
@@ -53,14 +54,37 @@ class Sections
         }
 
         $registry = app(BlockRegistry::class);
+
         $homeGlobals = collect($home->sections)
-            ->filter(fn ($s) => $registry->get($s['name'])?->global);
+            ->filter(fn ($s) => $registry->get($s['name'])?->global)
+            ->keyBy('name');
 
         return collect($sections)->map(function ($s) use ($homeGlobals) {
-            $global = $homeGlobals->firstWhere('name', $s['name']);
+            $global = $homeGlobals->get($s['name'] ?? '');
 
             return $global ? [...$s, 'data' => $global['data']] : $s;
         })->all();
+    }
+
+    public static function injectGlobals(): array
+    {
+        $home = Page::where('slug', 'home')->first();
+        if (! $home || ! $home->sections) {
+            return [];
+        }
+
+        $registry = app(BlockRegistry::class);
+
+        return collect($home->sections)
+            ->filter(fn ($s) => $registry->get($s['name'])?->global)
+            ->map(fn ($s) => [
+                '_key' => (string) Str::uuid(),
+                'name' => $s['name'],
+                'enabled' => true,
+                'data' => $s['data'],
+            ])
+            ->values()
+            ->all();
     }
 
     public static function sectionsToPropagate(array $sections, array $globalNames): array

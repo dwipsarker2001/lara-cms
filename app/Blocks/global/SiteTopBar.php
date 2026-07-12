@@ -18,7 +18,6 @@ class SiteTopBar extends Block
     public function fields(): array
     {
         return [
-            Field::boolean('topBarEnabled', 'Top Bar Enabled', default: true),
             Field::string('topBarEmail', 'Top Bar Email', default: 'hello@dwipsarker.com'),
             Field::string('promoText', 'Promo Text', default: 'Get 10% off your first booking!'),
             Field::string('promoLinkText', 'Promo Link Text', default: 'Learn more'),

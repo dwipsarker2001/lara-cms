@@ -7,7 +7,7 @@
     @endphp
     @foreach ($sections as $section)
         @php $block = $registry->get($section['name'] ?? ''); @endphp
-        @if ($block && view()->exists($block->view()))
+        @if (($section['enabled'] ?? true) && $block && view()->exists($block->view()))
             @include($block->view(), [
                 'data' => $section['data'] ?? [],
                 '_key' => $section['_key'] ?? '',

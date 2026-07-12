@@ -1,6 +1,5 @@
 @php $d = $data; @endphp
-@if(($d['topBarEnabled'] ?? 'true') !== 'false')
-    <div data-block="siteTopBar" class="hidden md:block bg-[#2a2a2a] text-white text-sm py-2.5">
+<div data-block="siteTopBar" class="hidden md:block bg-[#2a2a2a] text-white text-sm py-2.5">
         <div class="mx-auto max-w-7xl px-6 flex items-center justify-between gap-4">
             <div class="flex items-center gap-2 min-w-0 flex-1 md:flex-initial">
                 <svg class="w-5 h-5 text-brand shrink-0" viewBox="0 0 24 24" fill="currentColor" aria-hidden>
@@ -36,4 +35,3 @@
             </div>
         </div>
     </div>
-@endif

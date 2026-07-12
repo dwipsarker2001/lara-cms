@@ -15,7 +15,7 @@ class BlockPreview
         foreach ($resolved as $i => $section) {
             $block = $registry->get($section['name'] ?? '');
 
-            if (! $block || ! view()->exists($block->view())) {
+            if (($section['enabled'] ?? true) === false || ! $block || ! view()->exists($block->view())) {
                 continue;
             }
 
