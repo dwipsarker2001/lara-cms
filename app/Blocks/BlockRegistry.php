@@ -39,10 +39,10 @@ class BlockRegistry
         return collect($this->all())->filter(fn (Block $b) => $b->global)->values();
     }
 
-    /** Compact list for the editor's "add section" picker: [{name,label}]. */
+    /** Compact list for the editor's "add section" picker: [{name,label}]. Includes all blocks. */
     public function pickerList(): array
     {
-        return $this->pickable()->map(fn (Block $b) => ['name' => $b->name, 'label' => $b->label])->all();
+        return collect($this->all())->map(fn (Block $b) => ['name' => $b->name, 'label' => $b->label])->values()->all();
     }
 
     /** All schemas keyed by name for the editor: { name: fields[] }. */

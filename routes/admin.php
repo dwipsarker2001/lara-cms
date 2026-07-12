@@ -27,4 +27,5 @@ Route::middleware(['web', 'auth'])->prefix('admin')->name('admin.')->group(funct
     Route::get('assets/{asset}/file', [AssetsController::class, 'file'])->name('assets.file');
 
     Route::post('preview', [PreviewController::class, 'render'])->name('preview');
+    Route::get('block-preview/{block}', [PreviewController::class, 'blockPreview'])->name('block-preview');
 });

@@ -15,7 +15,7 @@ class TravelDeals extends Block
     {
         return [
             Field::string('headline', 'Headline', default: 'Travel Deals'),
-            Field::text('description', 'Description'),
+            Field::text('description', 'Description', default: 'Find Your Perfect Escape'),
             Field::group('button', 'Button', [
                 Field::string('label', 'Label'),
                 Field::link('link', 'Link'),

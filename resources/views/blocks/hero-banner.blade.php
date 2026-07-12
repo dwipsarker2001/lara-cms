@@ -1,8 +1,8 @@
 @php $d = $data; @endphp
 <section data-block="heroBanner" class="relative w-full overflow-hidden md:rounded-xl">
-    <div class="relative min-h-[560px] md:min-h-[650px] md:mx-[5%] md:rounded-2xl overflow-hidden flex items-center justify-center">
+    <div data-edit="backgroundImage" class="relative min-h-[560px] md:min-h-[650px] md:mx-[5%] md:rounded-2xl overflow-hidden flex items-center justify-center">
         @if($d['backgroundImage'] ?? false)
-            <img src="{{ $d['backgroundImage'] }}" alt="" data-edit="backgroundImage" class="absolute inset-0 w-full h-full object-cover" />
+            <img src="{{ $d['backgroundImage'] }}" alt="" class="absolute inset-0 w-full h-full object-cover" />
         @endif
         <div class="absolute inset-0 bg-black/20"></div>
         <div class="relative z-10 flex flex-col items-center text-center px-6 py-20 max-w-4xl mx-auto">

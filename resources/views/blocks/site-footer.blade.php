@@ -1,53 +1,52 @@
 @php $d = $data; @endphp
-<footer data-block="siteFooter" class="w-full bg-gray-900 text-gray-300 mt-auto">
-    <div class="mx-auto max-w-7xl px-6 py-16 lg:py-20">
-        @if($d['bannerImage'] ?? false)
-            <div class="relative w-full h-48 overflow-hidden rounded-2xl mb-12 bg-gray-800">
-                <img src="{{ $d['bannerImage'] }}" alt="" data-edit="bannerImage" class="absolute inset-0 w-full h-full object-cover" />
+<footer data-block="siteFooter" class="relative text-white" style="background-color: #070b18">
+    @if($d['bannerImage'] ?? false)
+        <div data-edit="bannerImage" class="relative w-full overflow-hidden">
+            <div class="relative h-[220px] w-full md:h-[320px] lg:h-[360px]">
+                <img src="{{ $d['bannerImage'] }}" alt="" class="absolute inset-0 w-full h-full object-cover object-center" />
+                <div class="pointer-events-none absolute inset-x-0 top-0 h-32" style="background: linear-gradient(to bottom, rgba(255,255,255,0.85) 0%, rgba(255,255,255,0) 100%)"></div>
+                <div class="pointer-events-none absolute inset-x-0 bottom-0 h-2/3" style="background: linear-gradient(to bottom, rgba(7,11,24,0) 0%, rgba(7,11,24,0.55) 45%, #070b18 100%)"></div>
             </div>
-        @endif
-        <div class="grid grid-cols-1 gap-12 sm:grid-cols-2 lg:grid-cols-12 lg:gap-8">
-            <div class="lg:col-span-4">
-                <a href="/" class="flex items-center gap-2 text-xl font-extrabold tracking-tight text-white">
+        </div>
+    @endif
+    <div class="mx-auto max-w-6xl px-6 pb-10 pt-16 md:pt-20 lg:pt-24">
+        <div class="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-7 lg:gap-8">
+            <div class="md:col-span-2 lg:col-span-2">
+                <a href="/" class="inline-flex items-center">
                     @if($d['logo'] ?? false)
-                        <img src="{{ $d['logo'] }}" alt="" data-edit="logo" class="object-contain" style="height:{{ $d['logoHeight'] ?? 40 }}px;width:auto" />
+                        <img src="{{ $d['logo'] }}" alt="{{ $d['brandName'] ?? 'Logo' }}" data-edit="logo" class="object-contain" style="height: {{ $d['logoHeight'] ?? 40 }}px; width: auto" />
+                    @else
+                        <span data-edit="brandName" class="text-4xl font-extrabold lowercase tracking-tight text-brand">{{ $d['brandName'] ?? 'E CMS' }}</span>
                     @endif
-                    {{ $d['brandName'] ?? 'Brand' }}
                 </a>
                 @if($d['description'] ?? false)
-                    <p data-edit="description" class="mt-4 text-sm leading-relaxed text-gray-400">{{ $d['description'] }}</p>
+                    <p data-edit="description" class="mt-4 max-w-sm text-[15px] leading-7 text-white/75 lg:mt-6">{{ $d['description'] }}</p>
                 @endif
-                @if(count($d['social'] ?? []) > 0)
-                    <div class="mt-6">
-                        @if($d['socialHeading'] ?? false)
-                            <p data-edit="socialHeading" class="text-sm font-medium text-gray-400 mb-3">{{ $d['socialHeading'] }}</p>
-                        @endif
-                        <ul class="flex items-center gap-3">
-                            @foreach($d['social'] as $i => $s)
-                                @if($s)
-                                    <li data-list="social">
-                                        <a href="{{ $s['url'] ?? '#' }}" target="_blank" rel="noopener noreferrer" data-edit="label" aria-label="{{ $s['label'] ?? 'social' }}" class="inline-flex h-9 w-9 items-center justify-center rounded-lg bg-gray-800 text-gray-400 transition-all hover:bg-brand hover:text-white">
-                                            <svg class="size-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 9l6 6-6 6"/></svg>
-                                        </a>
-                                    </li>
-                                @endif
-                            @endforeach
-                        </ul>
-                    </div>
-                @endif
+                <ul class="mt-5 space-y-3 text-[15px] text-white/85 lg:mt-7 lg:space-y-4">
+                    @if($d['email'] ?? false)
+                        <li class="flex items-center gap-3">
+                            <span class="font-semibold uppercase">E.</span>
+                            <a href="mailto:{{ $d['email'] }}" data-edit="email" class="transition-colors hover:text-brand">{{ $d['email'] }}</a>
+                        </li>
+                    @endif
+                    @if($d['phone'] ?? false)
+                        <li class="flex items-center gap-3">
+                            <span class="font-semibold uppercase">P.</span>
+                            <a href="tel:{{ preg_replace('/\s+/', '', $d['phone']) }}" data-edit="phone" class="transition-colors hover:text-brand">{{ $d['phone'] }}</a>
+                        </li>
+                    @endif
+                </ul>
             </div>
-            @foreach(($d['linkColumns'] ?? []) as $ci => $col)
+            @foreach(($d['linkColumns'] ?? []) as $i => $col)
                 @if($col)
-                    <div data-list="linkColumns" class="lg:col-span-2">
-                        @if($col['heading'] ?? false)
-                            <h3 data-edit="heading" class="text-sm font-bold text-white uppercase tracking-wider">{{ $col['heading'] }}</h3>
-                        @endif
+                    <div data-list="linkColumns" class="lg:col-span-1">
+                        <h4 data-edit="heading" class="mb-4 text-base font-semibold uppercase tracking-wide text-white lg:mb-6">{{ $col['heading'] ?? '' }}</h4>
                         @if(count($col['links'] ?? []) > 0)
-                            <ul class="mt-5 space-y-3">
-                                @foreach($col['links'] as $li => $link)
+                            <ul class="space-y-3 lg:space-y-4">
+                                @foreach($col['links'] as $j => $link)
                                     @if($link)
                                         <li data-list="links">
-                                            <a href="{{ $link['href'] ?? '#' }}" data-edit="label" class="text-sm text-gray-400 transition-colors hover:text-white">{{ $link['label'] ?? 'Link' }}</a>
+                                            <a href="{{ $link['href'] ?? '#' }}" data-edit="label" class="text-[15px] text-white/80 transition-colors hover:text-brand">{{ $link['label'] ?? 'Link' }}</a>
                                         </li>
                                     @endif
                                 @endforeach
@@ -56,37 +55,62 @@
                     </div>
                 @endif
             @endforeach
-        </div>
-        <div class="mt-16 flex flex-col sm:flex-row items-center justify-between gap-4 border-t border-gray-800 pt-8 text-xs text-gray-500">
-            @if($d['copyright'] ?? false)
-                <p data-edit="copyright">{{ $d['copyright'] }}</p>
-            @elseif($d['copyrightBrand'] ?? false)
-                <p>&copy; {{ date('Y') }} {{ $d['copyrightBrand'] }}. All rights reserved.</p>
-            @endif
-            @if(count($d['legalLinks'] ?? []) > 0)
-                <ul class="flex items-center gap-5">
-                    @foreach($d['legalLinks'] as $i => $ll)
-                        @if($ll)
-                            <li data-list="legalLinks">
-                                <a href="{{ $ll['href'] ?? '#' }}" data-edit="label" class="transition-colors hover:text-gray-300">{{ $ll['label'] ?? '' }}</a>
+            <div class="md:col-span-2 lg:col-span-1">
+                @if($d['socialHeading'] ?? false)
+                    <h4 data-edit="socialHeading" class="mb-4 text-base font-semibold uppercase tracking-wide text-white lg:mb-6">{{ $d['socialHeading'] }}</h4>
+                @endif
+                <ul class="flex flex-wrap gap-3 lg:block lg:space-y-4">
+                    @foreach(($d['social'] ?? []) as $idx => $item)
+                        @if($item)
+                            <li data-list="social">
+                                <a href="{{ $item['url'] ?? '#' }}" target="_blank" rel="noopener noreferrer" data-edit="label" class="group inline-flex items-center justify-center gap-3 text-[15px] text-white/85 transition-colors hover:text-brand lg:inline-flex">
+                                    <span class="inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-full border border-white/25 text-white transition-colors group-hover:border-brand group-hover:text-brand">
+                                        @if($item['icon'] ?? false)
+                                            <i class="{{ $item['icon'] }}" style="font-size: 14px"></i>
+                                        @endif
+                                    </span>
+                                    <span>{{ $item['label'] ?? '' }}</span>
+                                </a>
                             </li>
                         @endif
                     @endforeach
                 </ul>
-            @endif
-            @if($d['languageCurrency'] ?? false)
-                <p data-edit="languageCurrency" class="text-gray-500">{{ $d['languageCurrency'] }}</p>
-            @endif
+            </div>
         </div>
-        @if(($d['email'] ?? false) || ($d['phone'] ?? false))
-            <div class="mt-4 flex items-center justify-center gap-6 text-xs text-gray-500">
-                @if($d['email'] ?? false)
-                    <a href="mailto:{{ $d['email'] }}" data-edit="email" class="hover:text-gray-300 transition-colors">{{ $d['email'] }}</a>
-                @endif
-                @if($d['phone'] ?? false)
-                    <a href="tel:{{ $d['phone'] }}" data-edit="phone" class="hover:text-gray-300 transition-colors">{{ $d['phone'] }}</a>
+        <div class="mt-10 border-t border-white/10 lg:mt-14"></div>
+        <div class="flex flex-col items-center justify-between gap-4 pt-4 md:flex-row md:pt-6">
+            <div class="flex flex-col items-center gap-2 md:flex-row md:gap-6">
+                <p class="text-[15px] text-white/70">
+                    @if($d['copyrightBrand'] ?? false)
+                        <span data-edit="copyrightBrand" class="font-semibold text-brand">{{ $d['copyrightBrand'] }}</span>
+                    @endif
+                    @if(($d['copyrightBrand'] ?? false) && ($d['copyright'] ?? false))
+                        {{ ' ' }}
+                    @endif
+                    @if($d['copyright'] ?? false)
+                        <span data-edit="copyright">{{ $d['copyright'] }}</span>
+                    @endif
+                </p>
+                @if(count($d['legalLinks'] ?? []) > 0)
+                    <ul class="flex flex-wrap items-center justify-center gap-x-5 gap-y-2 text-[13px] text-white/60">
+                        @foreach($d['legalLinks'] as $i => $link)
+                            @if($link)
+                                <li data-list="legalLinks">
+                                    <a href="{{ $link['href'] ?? '#' }}" data-edit="label" class="transition-colors hover:text-brand">{{ $link['label'] ?? '' }}</a>
+                                </li>
+                            @endif
+                        @endforeach
+                    </ul>
                 @endif
             </div>
-        @endif
+            @if($d['languageCurrency'] ?? false)
+                <button type="button" data-edit="languageCurrency" data-edit-button class="inline-flex items-center gap-2 rounded-full border border-white/40 px-5 py-2 text-sm font-medium text-white transition-colors hover:border-white hover:text-brand">
+                    <span>{{ $d['languageCurrency'] }}</span>
+                    <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden>
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                    </svg>
+                </button>
+            @endif
+        </div>
     </div>
 </footer>

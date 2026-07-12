@@ -56,19 +56,11 @@ class Sections
         $homeGlobals = collect($home->sections)
             ->filter(fn ($s) => $registry->get($s['name'])?->global);
 
-        $merged = collect($sections)->map(function ($s) use ($homeGlobals) {
+        return collect($sections)->map(function ($s) use ($homeGlobals) {
             $global = $homeGlobals->firstWhere('name', $s['name']);
 
             return $global ? [...$s, 'data' => $global['data']] : $s;
-        });
-
-        foreach ($homeGlobals as $g) {
-            if (! $merged->contains(fn ($s) => ($s['name'] ?? '') === $g['name'])) {
-                $merged->push($g);
-            }
-        }
-
-        return $merged->all();
+        })->all();
     }
 
     public static function sectionsToPropagate(array $sections, array $globalNames): array

@@ -39,9 +39,11 @@
             @endif
             @if(($d['signature'] ?? false) || ($d['signerName'] ?? false))
                 <div class="flex items-center gap-4">
-                    @if($d['signature'] ?? false)
-                        <img src="{{ $d['signature'] }}" alt="" data-edit="signature" class="object-contain" style="height:3rem;width:auto" />
-                    @endif
+                    <div data-edit="signature" class="object-contain" style="height:3rem;width:auto">
+                        @if($d['signature'] ?? false)
+                            <img src="{{ $d['signature'] }}" alt="" class="object-contain h-full w-auto" />
+                        @endif
+                    </div>
                     <div>
                         @if($d['signerName'] ?? false)
                             <p data-edit="signerName" class="font-bold text-gray-900">{{ $d['signerName'] }}</p>

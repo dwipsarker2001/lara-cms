@@ -11,9 +11,9 @@
             @foreach(($d['cards'] ?? []) as $i => $card)
                 @if($card)
                     <div data-list="cards" class="min-w-[260px] sm:min-w-0 snap-start rounded-2xl border-2 border-transparent">
-                        <div class="group relative aspect-[4/5] overflow-hidden rounded-2xl bg-gray-200">
+                        <div data-edit="image" class="group relative aspect-[4/5] overflow-hidden rounded-2xl bg-gray-200">
                             @if($card['image'] ?? false)
-                                <img src="{{ $card['image'] }}" alt="{{ $card['title'] ?? '' }}" data-edit="image" class="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" />
+                                <img src="{{ $card['image'] }}" alt="{{ $card['title'] ?? '' }}" class="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" />
                             @endif
                             <div class="absolute inset-x-0 bottom-0 h-3/5 bg-gradient-to-t from-black/85 via-black/50 to-transparent"></div>
                             <div class="absolute inset-x-0 bottom-0 p-5 md:p-6 text-white">

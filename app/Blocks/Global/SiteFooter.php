@@ -22,9 +22,9 @@ class SiteFooter extends Block
             Field::image('logo', 'Logo'),
             Field::number('logoHeight', 'Logo Height', default: 40),
             Field::string('brandName', 'Brand Name', default: 'E CMS'),
-            Field::text('description', 'Description'),
-            Field::string('email', 'Email'),
-            Field::string('phone', 'Phone'),
+            Field::text('description', 'Description', default: 'Discover extraordinary travel experiences curated by experts. From hidden gems to iconic landmarks, every journey is crafted to inspire and transform.'),
+            Field::string('email', 'Email', default: 'hello@dwipsarker.com'),
+            Field::string('phone', 'Phone', default: '+880 1771 868 382'),
             Field::list('linkColumns', 'Link Columns', [
                 Field::string('heading', 'Heading', default: 'Quick Links'),
                 Field::list('links', 'Links', [
@@ -39,7 +39,7 @@ class SiteFooter extends Block
                 Field::link('url', 'URL'),
             ]),
             Field::string('copyrightBrand', 'Copyright Brand', default: 'E CMS'),
-            Field::string('copyright', 'Copyright'),
+            Field::string('copyright', 'Copyright', default: '© 2026 E CMS. All rights reserved.'),
             Field::list('legalLinks', 'Legal Links', [
                 Field::string('label', 'Label', default: 'Privacy Policy'),
                 Field::link('href', 'Href'),

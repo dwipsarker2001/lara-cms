@@ -10,7 +10,7 @@
     window.editorBlockList = @json($blockList);
     window.editorSlug = '{{ $page->slug }}';
 </script>
-<div class="flex h-full gap-3 p-3" x-data="pageEditor()" x-init="init(window.editorSections, window.editorSchemas, window.editorBlockList, window.editorSlug)">
+<div class="flex h-full gap-3 p-3" x-data="pageEditor()" x-init="init(window.editorSections, window.editorSchemas, window.editorBlockList, window.editorSlug)" x-on:section-selected.window="addSection($event.detail.name)">
     {{-- Editor panel --}}
     <div class="w-[420px] min-w-[320px] shrink-0 bg-white h-full flex flex-col rounded-2xl border border-[#e8eaed] shadow-[0_1px_2px_rgba(16,24,40,0.04),0_8px_24px_-12px_rgba(16,24,40,0.12)] overflow-hidden">
         <div class="flex-1 overflow-y-auto px-3 pt-3 pb-4 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
@@ -21,7 +21,7 @@
                             <div class="font-bold">Sections</div>
                             <button
                                 type="button"
-                                @click="showPicker = true"
+                                @click="window.dispatchEvent(new CustomEvent('open-section-picker'))"
                                 class="size-6 flex items-center justify-center rounded-full bg-white text-text-primary border border-content-border hover:bg-gray-50 transition-colors"
                             >
                                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="size-[14px]">
@@ -450,40 +450,6 @@
         </div>
     </div>
 
-    {{-- Add-section picker modal --}}
-    <div x-show="showPicker" class="fixed inset-0 bg-black/40 z-50 flex items-center justify-center" @click.self="showPicker = false">
-        <div class="bg-content-bg rounded-xl shadow-xl w-[420px] max-h-[80vh] overflow-y-auto p-6" @click.stop>
-            <div class="flex items-center justify-between gap-2 mb-4">
-                <h3 class="text-lg font-bold text-text-heading">Components</h3>
-                <button @click="showPicker = false" class="text-sm text-text-muted hover:text-text-heading">Cancel</button>
-            </div>
-            <div class="space-y-2.5">
-                <template x-for="item in blockList" :key="item.name">
-                    <button
-                        @click="addSection(item.name); showPicker = false"
-                        class="group block w-full min-w-0 cursor-pointer overflow-hidden rounded-lg bg-content-bg ring-1 ring-content-border/60 shadow-sm transition-shadow hover:shadow-md text-left"
-                    >
-                        <div class="flex items-center gap-2 px-3 py-3">
-                            <div class="flex size-10 shrink-0 items-center justify-center rounded-lg bg-panel-bg text-text-muted">
-                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" class="size-5">
-                                    <rect x="3" y="3" width="18" height="18" rx="2" />
-                                </svg>
-                            </div>
-                            <div class="min-w-0">
-                                <div class="text-sm font-semibold text-text-primary group-hover:text-primary transition-colors" x-text="item.label"></div>
-                                <div class="text-[11px] text-text-muted" x-text="item.name"></div>
-                            </div>
-                            <span class="ml-auto shrink-0 inline-flex size-6 items-center justify-center rounded-full bg-content-border/40 text-text-muted transition-colors group-hover:bg-primary group-hover:text-white">
-                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="size-[14px]">
-                                    <path d="M12 5v14M5 12h14" stroke-linecap="round" />
-                                </svg>
-                            </span>
-                        </div>
-                    </button>
-                </template>
-            </div>
-        </div>
-    </div>
 </div>
 @endsection
 
@@ -498,7 +464,6 @@
             active: null,
             crumbs: [],
             dirty: false,
-            showPicker: false,
             isSaving: false,
             previewTimer: null,
             iconPickerOpen: false,
@@ -542,7 +507,7 @@
 
             sectionLabel(section) {
                 const s = this.schemas[section.name];
-                return section.data?.title || section.data?.heading || section.data?.headline || (s ? s.label : section.name) || section.name;
+                return section.data?.headline || section.data?.title || section.data?.heading || (s ? s.label : section.name) || section.name;
             },
 
             editorTitle() {

@@ -30,8 +30,8 @@ class SiteNavbar extends Block
                 ]),
             ], count: 4),
             Field::string('contactLabel', 'Contact Label', default: 'Chat with us'),
-            Field::string('contactNumber', 'Contact Number', default: '+880'),
-            Field::link('contactLink', 'Contact Link'),
+            Field::string('contactNumber', 'Contact Number', default: '+8801771868382'),
+            Field::link('contactLink', 'Contact Link', default: 'https://wa.me/8801771868382'),
             Field::image('contactIcon', 'Contact Icon'),
         ];
     }

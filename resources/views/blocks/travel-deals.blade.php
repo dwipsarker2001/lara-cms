@@ -29,9 +29,9 @@
                     @foreach(($d['cards'] ?? []) as $i => $card)
                         @if($card)
                             <div data-list="cards" class="group flex h-full flex-col overflow-hidden rounded-xl p-3 border border-gray-100 bg-white shadow-sm">
-                                <div class="relative h-52 overflow-hidden rounded-xl">
+                                <div data-edit="image" class="relative h-52 overflow-hidden rounded-xl">
                                     @if($card['image'] ?? false)
-                                        <img src="{{ $card['image'] }}" alt="{{ $card['title'] ?? '' }}" data-edit="image" class="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105" />
+                                        <img src="{{ $card['image'] }}" alt="{{ $card['title'] ?? '' }}" class="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105" />
                                     @endif
                                     @if($card['badge'] ?? false)
                                         <span data-edit="badge" data-edit-button class="absolute top-3 right-3 rounded-md bg-red-500 px-3 py-1 text-xs font-semibold text-white">{{ $card['badge'] }}</span>

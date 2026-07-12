@@ -33,37 +33,29 @@
 
 /* Preview: dashed blue border on hover */
 .preview-shell [data-edit]:hover {
-    outline: 2px dashed #3b82f6 !important;
-    outline-offset: -2px;
+    outline: 1px dashed #3b82f6 !important;
     position: relative;
     z-index: 50;
+}
+
+/* Only text elements get blue background; images get border only */
+.preview-shell [data-edit]:not(img):not([data-edit-button]):hover {
+    background-color: rgba(59, 130, 246, 0.07) !important;
 }
 
 .preview-shell [data-section-index]:hover {
-    outline: 2px dashed #3b82f6 !important;
-    outline-offset: -2px;
-    position: relative;
-    z-index: 50;
-    background-color: rgba(59, 130, 246, 0.06) !important;
+    outline: 1px dashed #3b82f6 !important;
     border-radius: 4px;
-}
-
-.preview-shell [data-edit]:not([data-edit-button]):hover {
-    background-color: rgba(59, 130, 246, 0.07) !important;
 }
 
 /* Preview: highlight list containers on hover */
 .preview-shell [data-list]:hover {
-    outline: 2px dashed #3b82f6 !important;
-    outline-offset: -2px;
-    background-color: rgba(59, 130, 246, 0.07);
+    outline: 1px dashed #3b82f6 !important;
 }
 
 /* Preview: full package block hover */
 .preview-shell [data-package-block]:hover {
-    outline: 2px dashed #3b82f6 !important;
-    outline-offset: -2px;
-    background-color: rgba(59, 130, 246, 0.07);
+    outline: 1px dashed #3b82f6 !important;
 }
 
 .shimmer {

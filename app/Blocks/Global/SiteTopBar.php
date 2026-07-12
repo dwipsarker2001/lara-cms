@@ -19,10 +19,10 @@ class SiteTopBar extends Block
     {
         return [
             Field::boolean('topBarEnabled', 'Top Bar Enabled', default: true),
-            Field::string('topBarEmail', 'Top Bar Email', default: 'hello@example.com'),
+            Field::string('topBarEmail', 'Top Bar Email', default: 'hello@dwipsarker.com'),
             Field::string('promoText', 'Promo Text', default: 'Get 10% off your first booking!'),
-            Field::string('promoLinkText', 'Promo Link Text'),
-            Field::link('promoLinkUrl', 'Promo Link URL'),
+            Field::string('promoLinkText', 'Promo Link Text', default: 'Learn more'),
+            Field::link('promoLinkUrl', 'Promo Link URL', default: '#'),
             Field::list('topBarSocial', 'Top Bar Social', [
                 Field::icon('icon', 'Icon'),
                 Field::string('platform', 'Platform', default: 'facebook'),

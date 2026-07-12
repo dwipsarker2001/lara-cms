@@ -11,9 +11,9 @@
             @foreach(($d['members'] ?? []) as $i => $member)
                 @if($member)
                     <div data-list="members" class="min-w-[260px] sm:min-w-0 snap-start rounded-2xl border-2 border-transparent">
-                        <div class="group relative aspect-[4/5] overflow-hidden rounded-2xl bg-gray-200">
+                        <div data-edit="image" class="group relative aspect-[4/5] overflow-hidden rounded-2xl bg-gray-200">
                             @if($member['image'] ?? false)
-                                <img src="{{ $member['image'] }}" alt="{{ $member['name'] ?? '' }}" data-edit="image" class="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-[1.03]" />
+                                <img src="{{ $member['image'] }}" alt="{{ $member['name'] ?? '' }}" class="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-[1.03]" />
                             @endif
                             <div class="absolute inset-x-0 bottom-0 h-1/2 bg-gradient-to-t from-black/80 via-black/40 to-transparent"></div>
                             <div class="absolute inset-x-0 bottom-0 p-5 text-white">

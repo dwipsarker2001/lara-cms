@@ -351,6 +351,7 @@
     </div>
 
     <x-admin::asset-picker />
+    <x-admin::section-picker />
 
     @stack('scripts')
 </body>

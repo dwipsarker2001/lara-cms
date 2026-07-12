@@ -101,10 +101,25 @@ class PageController extends Controller
     {
         $registry = app(BlockRegistry::class);
 
+        $blockList = collect($registry->pickerList())->map(function ($item) use ($registry) {
+            $block = $registry->get($item['name']);
+            $section = Sections::createDefaultSection($item['name']);
+            $html = '';
+            if ($block && $section && view()->exists($block->view())) {
+                $html = view($block->view(), [
+                    'data' => $section['data'],
+                    '_key' => '',
+                    'preview' => true,
+                ])->render();
+            }
+
+            return [...$item, 'previewHtml' => $html];
+        })->all();
+
         return view('admin.pages.editor', [
             'page' => $page,
             'blockSchemas' => $registry->schemas(),
-            'blockList' => $registry->pickerList(),
+            'blockList' => $blockList,
         ]);
     }
 
