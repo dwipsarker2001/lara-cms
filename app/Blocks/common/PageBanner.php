@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Blocks\global;
+namespace App\Blocks\common;
 
 use App\Blocks\Block;
 use App\Blocks\Field;
@@ -11,15 +11,13 @@ class PageBanner extends Block
 
     public string $label = 'Page Banner';
 
-    public bool $global = true;
-
     public bool $background = false;
 
     public function fields(): array
     {
         return [
             Field::string('title', 'Title', default: 'Page Title'),
-            Field::image('backgroundImage', 'Background Image'),
+            Field::image('backgroundImage', 'Background Image', default: '/placeholder-image.png'),
         ];
     }
 }

@@ -49,7 +49,7 @@
                 <div class="space-y-2">
                     <template x-for="item in blockList" :key="item.name">
                         <div class="rounded-[5px] bg-content-bg border border-content-border/60 shadow-sm overflow-hidden">
-                            <div class="w-full bg-panel-bg overflow-hidden" x-init="const ro=new ResizeObserver(()=>{const e=$el.querySelector(':scope>.thumb-inner');if(e)e.style.zoom=$el.clientWidth/1200});ro.observe($el)">
+                            <div class="w-full bg-panel-bg overflow-hidden max-h-[160px]" x-init="const ro=new ResizeObserver(()=>{const e=$el.querySelector(':scope>.thumb-inner');if(e)e.style.zoom=$el.clientWidth/1200});ro.observe($el)">
                                 <div class="thumb-inner" style="width:1200px" x-html="item.previewHtml"></div>
                             </div>
                             <button

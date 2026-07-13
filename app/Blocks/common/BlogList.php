@@ -16,7 +16,13 @@ class BlogList extends Block
     public function fields(): array
     {
         return [
-            Field::string('layout', 'Layout', default: 'grid'),
+            Field::string('bannerTitle', 'Banner Title', default: 'Blog'),
+            Field::string('bannerSubtitle', 'Banner Subtitle', default: 'Blog'),
+            Field::image('bannerImage', 'Banner Background Image', default: '/placeholder-image.png'),
+            Field::select('layout', 'Posts Layout', [
+                ['value' => 'grid', 'label' => 'Grid (Box)'],
+                ['value' => 'list', 'label' => 'List'],
+            ], default: 'grid'),
             Field::number('postsPerPage', 'Posts Per Page', default: 6),
         ];
     }

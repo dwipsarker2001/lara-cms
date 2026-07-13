@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Admin\AssetsController;
 use App\Http\Controllers\Admin\PageController;
+use App\Http\Controllers\Admin\PostController;
 use App\Http\Controllers\Admin\PreviewController;
 use App\Http\Controllers\Admin\SettingsController;
 use Illuminate\Support\Facades\Route;
@@ -14,6 +15,9 @@ Route::middleware(['web', 'auth'])->prefix('admin')->name('admin.')->group(funct
     Route::patch('pages/{page}/sections', [PageController::class, 'updateSections'])->name('pages.update-sections');
     Route::get('pages/{page}/edit', [PageController::class, 'edit'])->name('pages.edit');
     Route::get('pages/{page}', [PageController::class, 'editor'])->name('pages.editor');
+
+    Route::patch('posts/reorder', [PostController::class, 'reorder'])->name('posts.reorder');
+    Route::resource('posts', PostController::class)->except(['show']);
 
     Route::get('settings', [SettingsController::class, 'index'])->name('settings');
     Route::put('settings', [SettingsController::class, 'update'])->name('settings.update');

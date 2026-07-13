@@ -206,8 +206,8 @@
                             </a>
                         </li>
                         <li>
-                            <a href="#"
-                                class="flex items-center gap-2.5 px-2.5 py-1.5 rounded-md text-sm no-underline transition-colors text-text-primary hover:bg-gray-100 hover:text-text-heading font-medium"
+                            <a href="{{ route('admin.posts.index') }}"
+                                class="flex items-center gap-2.5 px-2.5 py-1.5 rounded-md text-sm no-underline transition-colors {{ request()->routeIs('admin.posts.*') ? 'text-text-heading bg-gray-200 font-semibold' : 'text-text-primary hover:bg-gray-100 hover:text-text-heading font-medium' }}"
                             >
                                 <span class="flex w-4 shrink-0 items-center justify-center">
                                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" class="size-4">

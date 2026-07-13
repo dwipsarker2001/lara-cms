@@ -1,75 +1,90 @@
-@php $d = $data; @endphp
 @php
-    $emailTitle = $d['emailTitle'] ?? 'Email';
-    $emailDesc = $d['emailDescription'] ?? '';
-    $emailValue = $d['emailValue'] ?? '';
-    $phoneTitle = $d['phoneTitle'] ?? 'Phone';
-    $phoneDesc = $d['phoneDescription'] ?? '';
-    $phoneValue = $d['phoneValue'] ?? '';
-    $officeTitle = $d['officeTitle'] ?? 'Office';
-    $officeDesc = $d['officeDescription'] ?? '';
-    $officeValue = $d['officeValue'] ?? '';
+    $d = $data;
+    $bg = is_array($d['background'] ?? null) ? $d['background'] : [];
+    if (empty($bg) && isset($d['background']) && is_string($d['background'])) {
+        try { $bg = json_decode($d['background'], true) ?? []; } catch (\Exception) { $bg = []; }
+    }
+    $hasBg = !empty($bg['image']) || !empty($bg['color']);
+    $bgColor = $bg['color'] ?? '';
+    $bgOpacity = $bg['opacity'] ?? 100;
+    $bgImg = $bg['image'] ?? '';
+
+    $email = $d['email'] ?? [];
+    $contactPhone = $d['contactPhone'] ?? [];
+    $office = $d['office'] ?? [];
+
+    $cards = [
+        ['icon' => 'mail', 'title' => $email['title'] ?? 'Email', 'description' => $email['description'] ?? '', 'value' => $email['value'] ?? '', 'href' => $email['value'] ?? null, 'type' => 'email'],
+        ['icon' => 'phone', 'title' => $contactPhone['title'] ?? 'Phone', 'description' => $contactPhone['description'] ?? '', 'value' => $contactPhone['value'] ?? '', 'href' => $contactPhone['value'] ?? null, 'type' => 'contactPhone'],
+        ['icon' => 'map', 'title' => $office['title'] ?? 'Office', 'description' => $office['description'] ?? '', 'value' => $office['value'] ?? '', 'href' => null, 'type' => 'office'],
+    ];
 @endphp
-<section data-block="contact">
-    <div class="max-w-6xl mx-auto px-6">
-        <div class="grid grid-cols-1 lg:grid-cols-2 gap-16 lg:gap-20">
-            <div>
+<section data-block="contact" class="py-20 px-6 relative overflow-hidden">
+    @if($hasBg)
+        @if($bgColor)
+            <div class="absolute inset-0" style="background-color: {{ $bgColor }}"></div>
+        @endif
+        @if($bgImg)
+            <div class="absolute inset-0 bg-cover bg-center bg-no-repeat" style="background-image: url({{ $bgImg }}); opacity: {{ $bgOpacity / 100 }}"></div>
+        @endif
+    @endif
+    <div class="max-w-7xl mx-auto relative">
+        @if($d['heading'] ?? $d['subheading'] ?? false)
+            <div class="text-center mb-14">
                 @if($d['heading'] ?? false)
-                    <h2 data-edit="heading" class="text-2xl md:text-3xl font-bold text-gray-900">{{ $d['heading'] }}</h2>
+                    <h2 data-edit="heading" class="text-3xl md:text-4xl font-bold text-foreground mb-4">{{ $d['heading'] }}</h2>
                 @endif
                 @if($d['subheading'] ?? false)
-                    <p data-edit="subheading" class="mt-4 text-sm md:text-base text-gray-500 leading-relaxed">{{ $d['subheading'] }}</p>
+                    <p data-edit="subheading" class="text-muted-foreground max-w-2xl mx-auto text-base md:text-lg">{{ $d['subheading'] }}</p>
                 @endif
             </div>
-            <div class="space-y-6">
-                @if($emailValue)
-                    <div class="flex items-start gap-4">
-                        <div class="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-brand/10 text-brand">
-                            <svg class="size-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
-                        </div>
-                        <div>
-                            <p data-edit="emailTitle" class="text-sm font-semibold text-gray-900">{{ $emailTitle }}</p>
-                            @if($emailDesc)
-                                <p data-edit="emailDescription" class="text-sm text-gray-500">{{ $emailDesc }}</p>
-                            @endif
-                            <a href="mailto:{{ $emailValue }}" data-edit="emailValue" class="text-sm font-medium text-brand hover:text-brand/80">{{ $emailValue }}</a>
-                        </div>
-                    </div>
-                @endif
-                @if($phoneValue)
-                    <div class="flex items-start gap-4">
-                        <div class="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-brand/10 text-brand">
-                            <svg class="size-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"/></svg>
-                        </div>
-                        <div>
-                            <p data-edit="phoneTitle" class="text-sm font-semibold text-gray-900">{{ $phoneTitle }}</p>
-                            @if($phoneDesc)
-                                <p data-edit="phoneDescription" class="text-sm text-gray-500">{{ $phoneDesc }}</p>
-                            @endif
-                            <a href="tel:{{ $phoneValue }}" data-edit="phoneValue" class="text-sm font-medium text-brand hover:text-brand/80">{{ $phoneValue }}</a>
-                        </div>
-                    </div>
-                @endif
-                @if($officeValue)
-                    <div class="flex items-start gap-4">
-                        <div class="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-brand/10 text-brand">
-                            <svg class="size-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a2 2 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
-                        </div>
-                        <div>
-                            <p data-edit="officeTitle" class="text-sm font-semibold text-gray-900">{{ $officeTitle }}</p>
-                            @if($officeDesc)
-                                <p data-edit="officeDescription" class="text-sm text-gray-500">{{ $officeDesc }}</p>
-                            @endif
-                            <p data-edit="officeValue" class="text-sm font-medium text-gray-700">{{ $officeValue }}</p>
-                        </div>
-                    </div>
-                @endif
-                @if($d['mapEmbedUrl'] ?? false)
-                    <div class="mt-6 overflow-hidden rounded-2xl">
-                        <iframe src="{{ $d['mapEmbedUrl'] }}" width="100%" height="240" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
-                    </div>
-                @endif
+        @endif
+
+        @if($d['mapEmbedUrl'] ?? false)
+            <div data-edit="mapEmbedUrl" class="w-full rounded-xl mb-14 shadow-md overflow-hidden">
+                <div class="relative w-full h-[420px] max-sm:h-[300px]">
+                    <iframe
+                        src="{{ $d['mapEmbedUrl'] }}"
+                        class="absolute inset-0 w-full h-full"
+                        style="border:0"
+                        allowfullscreen
+                        loading="lazy"
+                        referrerpolicy="no-referrer-when-downgrade"
+                        title="Office Location"
+                        aria-label="Office Location Map"
+                    ></iframe>
+                </div>
             </div>
+        @endif
+
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            @foreach($cards as $card)
+                @php
+                    $isLink = !is_null($card['href']);
+                @endphp
+                <article data-group="{{ $card['type'] }}" class="bg-[#f4f4f6] rounded-2xl p-10">
+                    <div class="flex items-center gap-3 mb-4">
+                        @if($card['icon'] === 'mail')
+                            <svg class="w-5 h-5 text-[#1a1a1a] shrink-0" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
+                        @elseif($card['icon'] === 'phone')
+                            <svg class="w-5 h-5 text-[#1a1a1a] shrink-0" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+                        @elseif($card['icon'] === 'map')
+                            <svg class="w-5 h-5 text-[#1a1a1a] shrink-0" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg>
+                        @endif
+                        <h3 class="text-lg font-bold text-[#1a1a1a]">{{ $card['title'] }}</h3>
+                    </div>
+                    @if($card['description'])
+                        <p class="text-muted-foreground text-sm leading-relaxed mb-3">{{ $card['description'] }}</p>
+                    @endif
+                    @if($isLink)
+                        <a href="{{ $card['type'] === 'email' ? 'mailto:' . $card['value'] : ($card['type'] === 'contactPhone' ? 'tel:' . $card['value'] : '#') }}" class="text-primary hover:text-primary/80 font-medium text-base transition-colors" aria-label="{{ $card['title'] }}: {{ $card['value'] }}">
+                            {{ $card['value'] }}
+                        </a>
+                    @else
+                        <p class="text-foreground font-medium text-base">{{ $card['value'] }}</p>
+                    @endif
+                </article>
+            @endforeach
         </div>
     </div>
 </section>
