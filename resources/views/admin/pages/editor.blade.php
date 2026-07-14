@@ -11,6 +11,8 @@
     window.editorSlug = '{{ $page->slug }}';
     window.editorPages = @json($pages);
     window.editorHomeGlobals = @json($homeGlobals);
+    window.editorSaveRoute = @isset($editorSaveRoute) '{{ $editorSaveRoute }}' @else '{{ route('admin.pages.update-sections', $page) }}' @endisset;
+    window.editorPostId = {{ $page->id ?? 'null' }};
 </script>
 <div class="flex h-full gap-3 p-3" x-data="pageEditor()"     x-init="init(window.editorSections, window.editorSchemas, window.editorBlockList, window.editorSlug, window.editorPages, window.editorHomeGlobals)" x-on:section-selected.window="addSection($event.detail.name)">
     {{-- Editor panel --}}
@@ -925,10 +927,12 @@
             refreshPreview() {
                 const el = document.getElementById('preview-content');
                 if (!el) return;
+                const payload = { sections: this.sections };
+                if (window.editorPostId) payload.post_id = window.editorPostId;
                 fetch('{{ route('admin.preview') }}', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json', 'X-CSRF-TOKEN': '{{ csrf_token() }}' },
-                    body: JSON.stringify({ sections: this.sections }),
+                    body: JSON.stringify(payload),
                 })
                 .then(r => r.json())
                 .then(data => { el.innerHTML = data.html; this.attachPreviewListeners(el); })
@@ -1085,13 +1089,15 @@
 
             async save() {
                 this.isSaving = true;
+                const route = window.editorSaveRoute || '{{ route('admin.pages.update-sections', $page) }}';
                 try {
-                    const r = await fetch('{{ route('admin.pages.update-sections', $page) }}', {
+                    const r = await fetch(route, {
                         method: 'PATCH',
                         headers: { 'Content-Type': 'application/json', 'X-CSRF-TOKEN': '{{ csrf_token() }}' },
                         body: JSON.stringify({ sections: this.sections }),
                     });
                     if (r.ok) {
+                        this.originalSections = JSON.parse(JSON.stringify(this.sections));
                         this.dirty = false;
                         this.isSaving = false;
                     } else {

@@ -12,6 +12,7 @@
                 'data' => $section['data'] ?? [],
                 '_key' => $section['_key'] ?? '',
                 'preview' => false,
+                'page' => $page ?? null,
             ])
         @endif
     @endforeach

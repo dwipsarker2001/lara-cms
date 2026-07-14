@@ -31,7 +31,7 @@
             sortable-id="sortable-posts"
             data-key="postId"
             reorder-route="admin.posts.reorder"
-            edit-route="admin.posts.edit"
+            edit-route="admin.posts.editor"
             delete-route="admin.posts.destroy"
             empty-text="No posts yet."
             empty-link-text="Create your first post"

@@ -18,6 +18,8 @@ Route::middleware(['web', 'auth'])->prefix('admin')->name('admin.')->group(funct
 
     Route::patch('posts/reorder', [PostController::class, 'reorder'])->name('posts.reorder');
     Route::resource('posts', PostController::class)->except(['show']);
+    Route::patch('posts/{post}/sections', [PostController::class, 'updateSections'])->name('posts.update-sections');
+    Route::get('posts/{post}/editor', [PostController::class, 'editor'])->name('posts.editor');
 
     Route::get('settings', [SettingsController::class, 'index'])->name('settings');
     Route::put('settings', [SettingsController::class, 'update'])->name('settings.update');

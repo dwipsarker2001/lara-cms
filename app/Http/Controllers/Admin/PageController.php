@@ -137,7 +137,7 @@ class PageController extends Controller
             'sections' => 'required|array',
             'sections.*._key' => 'required|string',
             'sections.*.name' => 'required|string',
-            'sections.*.data' => 'required|array',
+            'sections.*.data' => 'required',
         ]);
 
         $page->update(['sections' => $request->sections]);

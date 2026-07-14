@@ -6,10 +6,6 @@
     $perPage = max(1, (int) ($d['postsPerPage'] ?? 6));
     $layout = $d['layout'] ?? 'grid';
 
-    $bannerTitle = $d['bannerTitle'] ?? 'Blog';
-    $bannerSubtitle = $d['bannerSubtitle'] ?? 'Blog';
-    $bannerImage = $d['bannerImage'] ?? '';
-
     $query = \App\Models\Post::where('published', true);
     if ($categoryTag) {
         $query->whereJsonContains('tags', $categoryTag);
@@ -93,24 +89,6 @@
 @endphp
 
 <section data-block="blogList">
-    {{-- Banner --}}
-    <div data-edit="bannerImage" class="relative w-full h-72 md:h-80 lg:h-96 overflow-hidden">
-        @if($bannerImage)
-            <img src="{{ $bannerImage }}" alt="" class="absolute inset-0 w-full h-full object-cover" />
-        @else
-            <div class="absolute inset-0 bg-gray-200"></div>
-        @endif
-        <div class="absolute inset-0 bg-black/50"></div>
-        <div class="relative h-full flex flex-col items-center justify-center text-white">
-            <h1 data-edit="bannerTitle" class="text-4xl font-bold mb-2">{{ $bannerTitle }}</h1>
-            <div class="flex items-center gap-2 text-sm">
-                <a href="{{ url('/') }}" class="hover:text-brand transition-colors">Home</a>
-                <span>→</span>
-                <span data-edit="bannerSubtitle">{{ $bannerSubtitle }}</span>
-            </div>
-        </div>
-    </div>
-
     {{-- Content --}}
     <div class="mx-auto max-w-7xl px-6 py-16">
         @if($categoryTag)

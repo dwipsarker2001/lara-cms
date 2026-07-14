@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Blocks\BlockRegistry;
 use App\Http\Controllers\Controller;
 use App\Models\Post;
+use App\Support\Sections;
 use Illuminate\Http\Request;
 
 class PostController extends Controller
@@ -91,5 +93,47 @@ class PostController extends Controller
         }
 
         return response()->json(['message' => 'Reordered.']);
+    }
+
+    public function editor(Post $post)
+    {
+        $registry = app(BlockRegistry::class);
+
+        $blockList = collect($registry->pickerList())->map(function ($item) use ($registry) {
+            $block = $registry->get($item['name']);
+            $section = Sections::createDefaultSection($item['name']);
+            $html = '';
+            if ($block && $section && view()->exists($block->view())) {
+                $html = view($block->view(), [
+                    'data' => $section['data'],
+                    '_key' => '',
+                    'preview' => true,
+                ])->render();
+            }
+
+            return [...$item, 'previewHtml' => $html];
+        })->all();
+
+        return view('admin.pages.editor', [
+            'page' => $post,
+            'blockSchemas' => $registry->schemas(),
+            'blockList' => $blockList,
+            'pages' => [],
+            'homeGlobals' => [],
+        ])->with('editorSaveRoute', route('admin.posts.update-sections', $post));
+    }
+
+    public function updateSections(Request $request, Post $post)
+    {
+        $request->validate([
+            'sections' => 'required|array',
+            'sections.*._key' => 'required|string',
+            'sections.*.name' => 'required|string',
+            'sections.*.data' => 'required',
+        ]);
+
+        $post->update(['sections' => $request->sections]);
+
+        return response()->json(['message' => 'Sections saved.']);
     }
 }

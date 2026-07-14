@@ -6,7 +6,7 @@ use App\Blocks\BlockRegistry;
 
 class BlockPreview
 {
-    public static function render(array $sections, bool $withGlobals = true): string
+    public static function render(array $sections, bool $withGlobals = true, mixed $page = null): string
     {
         $resolved = $withGlobals ? Sections::withGlobals($sections) : $sections;
         $registry = app(BlockRegistry::class);
@@ -23,6 +23,7 @@ class BlockPreview
                 'data' => $section['data'] ?? [],
                 '_key' => $section['_key'] ?? '',
                 'preview' => true,
+                'page' => $page,
             ])->render();
 
             $html .= '<div data-section-index="'.$i.'" class="p-0.5">'.$inner.'</div>';

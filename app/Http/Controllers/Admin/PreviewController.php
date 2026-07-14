@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Blocks\BlockRegistry;
 use App\Http\Controllers\Controller;
+use App\Models\Post;
 use App\Support\BlockPreview;
 use App\Support\Sections;
 use Illuminate\Http\Request;
@@ -14,9 +15,15 @@ class PreviewController extends Controller
     {
         $request->validate([
             'sections' => 'required|array',
+            'post_id' => 'sometimes|integer|exists:posts,id',
         ]);
 
-        $html = BlockPreview::render($request->sections, withGlobals: false);
+        $page = null;
+        if ($request->post_id) {
+            $page = Post::find($request->post_id);
+        }
+
+        $html = BlockPreview::render($request->sections, withGlobals: false, page: $page);
 
         return response()->json(['html' => $html]);
     }
