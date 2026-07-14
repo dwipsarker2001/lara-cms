@@ -241,6 +241,64 @@
     color: #16a34a;
 }
 
+.tt-wrapper .tt-btn.active svg {
+    color: #16a34a;
+}
+
+/* Toolbar dropdown panels */
+.tt-dropdown [data-tt-panel] {
+    display: none;
+}
+
+.tt-dropdown [data-tt-panel]:not(.hidden) {
+    display: block;
+}
+
+.tt-dropdown [data-tt-dd-panel] button:hover {
+    background-color: #f3f4f6;
+}
+
+.tt-dropdown [data-tt-dd-panel] button:active {
+    background-color: #e5e7eb;
+}
+
+/* Toolbar action labels: hidden on the toolbar, revealed inside the "..." overflow menu */
+.tt-toolbar .tt-label {
+    display: none;
+}
+
+[data-tt-panel="overflow"] .tt-btn {
+    display: flex;
+    align-items: center;
+    gap: 0.625rem;
+    width: 100%;
+    padding: 0.4rem 0.6rem;
+    border-radius: 0.5rem;
+    font-size: 0.875rem;
+    color: #374151;
+    white-space: nowrap;
+}
+
+[data-tt-panel="overflow"] .tt-btn .tt-label {
+    display: inline;
+}
+
+[data-tt-panel="overflow"] .tt-btn:hover {
+    background-color: #f3f4f6;
+    color: #16a34a;
+}
+
+[data-tt-panel="overflow"] .tt-btn.active {
+    background-color: #dcfce7;
+    color: #16a34a;
+}
+
+/* Group menu rows highlight their active state */
+.tt-dropdown [data-tt-panel] button.active {
+    background-color: #dcfce7;
+    color: #16a34a;
+}
+
 /* Image resize + alignment in editor */
 .tt-editor img[data-align="left"] {
     display: block;
@@ -282,11 +340,21 @@ img[data-align="center"] {
     margin-left: auto;
     margin-right: auto;
 }
-
 img[data-align="right"] {
     display: block;
     margin-left: auto;
     margin-right: 0;
     float: none;
 }
+
+.tt-image-width {
+    min-width: 50px;
+}
+
+.tt-image-width:focus {
+    outline: none;
+    border-color: #16a34a;
+    box-shadow: 0 0 0 2px rgba(22, 163, 74, 0.2);
+}
+
 

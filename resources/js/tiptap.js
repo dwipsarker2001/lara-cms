@@ -50,7 +50,13 @@ function updateActiveButtons(wrapperEl, editor) {
         else if (cmd === 'toggleBlockquote') active = editor.isActive('blockquote');
         else if (cmd === 'toggleCodeBlock') active = editor.isActive('codeBlock');
         else if (cmd === 'toggleHeading') active = editor.isActive('heading', { level: args[0] });
-        else if (cmd === 'setTextAlign') active = editor.isActive('textAlign', { textAlign: args[0] });
+        else if (cmd === 'setTextAlign') {
+            if (editor.isActive('image')) {
+                active = editor.getAttributes('image')['data-align'] === args[0];
+            } else {
+                active = editor.isActive('textAlign', { textAlign: args[0] });
+            }
+        }
         else if (cmd === 'prompt-link') active = editor.isActive('link');
 
         btn.classList.toggle('active', active);
@@ -62,63 +68,55 @@ function updateActiveButtons(wrapperEl, editor) {
     }
 }
 
-function setupImageToolbar(wrapperEl, editor) {
+function setupImageToolbar(_wrapperEl, _editor) {
+}
+
+function setupToolbarOverflow(wrapperEl) {
     const toolbar = wrapperEl.querySelector('.tt-toolbar');
     if (!toolbar) return;
+    const overflowDd = toolbar.querySelector('.tt-overflow-dd');
+    if (!overflowDd) return;
+    const overflowPanel = overflowDd.querySelector('[data-tt-panel="overflow"]');
 
-    const controls = document.createElement('span');
-    controls.className = 'tt-image-controls';
-    controls.style.display = 'none';
+    const update = () => {
+        // Restore every moved item back to the toolbar (before the "..." toggle)
+        while (overflowPanel.firstChild) {
+            toolbar.insertBefore(overflowPanel.firstChild, overflowDd);
+        }
+        toolbar.querySelectorAll('span.w-px').forEach((s) => { s.style.display = ''; });
+        overflowDd.style.display = 'none';
 
-    const btnLeft = document.createElement('button');
-    btnLeft.type = 'button';
-    btnLeft.className = 'tt-btn tt-image-controls px-2 py-1 text-sm text-gray-700 hover:bg-gray-200 hover:text-primary rounded transition-colors';
-    btnLeft.style.display = 'none';
-    btnLeft.title = 'Align Left';
-    btnLeft.innerHTML = '&#9668; Img';
+        // Everything fits — nothing to do.
+        if (toolbar.scrollWidth <= toolbar.clientWidth) return;
 
-    const btnCenter = btnLeft.cloneNode();
-    btnCenter.title = 'Align Center';
-    btnCenter.innerHTML = '&#9640; Img';
+        // Reveal the "..." toggle and reserve its width before measuring.
+        overflowDd.style.display = '';
 
-    const btnRight = btnLeft.cloneNode();
-    btnRight.title = 'Align Right';
-    btnRight.innerHTML = '&#9654; Img';
+        // Move trailing single-action buttons into the overflow menu until it fits.
+        // Group dropdowns (wrapped in .tt-dropdown) are never moved — only bare .tt-btn actions.
+        let guard = 100;
+        while (toolbar.scrollWidth > toolbar.clientWidth && guard-- > 0) {
+            const last = overflowDd.previousElementSibling;
+            if (!last) break;
+            if (last.matches('span.w-px')) { last.style.display = 'none'; continue; }
+            if (!last.matches('button.tt-btn')) break; // stop at group dropdowns
+            overflowPanel.prepend(last);
+        }
 
-    const btnNone = btnLeft.cloneNode();
-    btnNone.title = 'Default';
-    btnNone.innerHTML = '&#9644; Img';
+        // Hide a now-dangling separator left at the toolbar's right edge.
+        let sib = overflowDd.previousElementSibling;
+        while (sib && sib.matches('span.w-px')) {
+            sib.style.display = 'none';
+            sib = sib.previousElementSibling;
+        }
 
-    const lastSpan = toolbar.querySelector('span:last-of-type');
-    if (lastSpan) {
-        [controls, btnLeft, btnCenter, btnRight, btnNone].forEach(el => {
-            toolbar.insertBefore(el, lastSpan);
-        });
-    }
-
-    const setAlign = (align) => {
-        editor.chain().focus().updateAttributes('image', { 'data-align': align }).run();
+        if (!overflowPanel.querySelector('.tt-btn')) overflowDd.style.display = 'none';
     };
 
-    btnLeft.addEventListener('click', () => setAlign('left'));
-    btnCenter.addEventListener('click', () => setAlign('center'));
-    btnRight.addEventListener('click', () => setAlign('right'));
-    btnNone.addEventListener('click', () => setAlign(null));
-
-    editor.on('selectionUpdate', () => {
-        const active = editor.isActive('image');
-        [controls, btnLeft, btnCenter, btnRight, btnNone].forEach(el => {
-            el.style.display = active ? '' : 'none';
-        });
-        if (active) {
-            const attrs = editor.getAttributes('image');
-            [btnLeft, btnCenter, btnRight, btnNone].forEach(b => b.classList.remove('active'));
-            if (attrs['data-align'] === 'left') btnLeft.classList.add('active');
-            else if (attrs['data-align'] === 'center') btnCenter.classList.add('active');
-            else if (attrs['data-align'] === 'right') btnRight.classList.add('active');
-            else btnNone.classList.add('active');
-        }
-    });
+    const ro = new ResizeObserver(update);
+    ro.observe(toolbar);
+    setTimeout(update, 0);
+    setTimeout(update, 150); // re-run once layout/fonts settle
 }
 
 function setupResizeHandle(wrapperEl, editor) {
@@ -232,17 +230,74 @@ export function mountTipTap(fieldName, wrapperEl, initialContent, onUpdate) {
     window.__ttEditors[fieldName] = editor;
     updateActiveButtons(wrapperEl, editor);
 
+    // Set initial heading dropdown label (no-op if label element removed)
+
     setupImageToolbar(wrapperEl, editor);
     setupResizeHandle(wrapperEl, editor);
+    setupToolbarOverflow(wrapperEl);
 
+    // Dropdown toggle handler via wrapper click delegation
     wrapperEl.addEventListener('click', (e) => {
+        // Close dropdowns when clicking outside any dropdown
+        const dd = e.target.closest('.tt-dropdown');
+        if (!dd) {
+            wrapperEl.querySelectorAll('[data-tt-panel]').forEach(p => {
+                p.classList.add('hidden');
+                p.style.position = '';
+                p.style.top = '';
+                p.style.left = '';
+                p.style.zIndex = '';
+            });
+        }
+
         const btn = e.target.closest('[data-tt-cmd]');
         if (!btn) return;
 
         const cmd = btn.dataset.ttCmd;
         const args = btn.dataset.ttArgs ? JSON.parse(btn.dataset.ttArgs) : [];
 
+        if (cmd === 'toggle-dropdown') {
+            const name = btn.dataset.ttDropdown;
+            if (!name) return;
+            const panel = wrapperEl.querySelector(`[data-tt-panel="${name}"]`);
+            if (!panel) return;
+            const wasOpen = !panel.classList.contains('hidden');
+            // Hide + reset every panel (including this one) so a re-click closes it
+            // cleanly instead of leaving it position:static inside the toolbar.
+            wrapperEl.querySelectorAll('[data-tt-panel]').forEach(p => {
+                p.classList.add('hidden');
+                p.style.position = '';
+                p.style.top = '';
+                p.style.left = '';
+                p.style.zIndex = '';
+            });
+            if (wasOpen) return;
+            const rect = btn.getBoundingClientRect();
+            panel.style.position = 'fixed';
+            panel.style.top = rect.bottom + 4 + 'px';
+            panel.style.zIndex = '9999';
+            panel.style.left = '0px';
+            panel.classList.remove('hidden');
+            // Clamp within the viewport (menus near the right edge would clip otherwise).
+            const pw = panel.getBoundingClientRect().width;
+            let left = rect.left;
+            if (left + pw > window.innerWidth - 8) left = window.innerWidth - pw - 8;
+            panel.style.left = Math.max(8, left) + 'px';
+            return;
+        }
+
+        const closeParentPanel = () => {
+            const parentPanel = btn.closest('[data-tt-panel]');
+            if (!parentPanel) return;
+            parentPanel.classList.add('hidden');
+            parentPanel.style.position = '';
+            parentPanel.style.top = '';
+            parentPanel.style.left = '';
+            parentPanel.style.zIndex = '';
+        };
+
         if (cmd === 'prompt-link') {
+            closeParentPanel();
             const existing = editor.getAttributes('link').href;
             const url = prompt('Enter URL:', existing || '');
             if (url === null) return;
@@ -251,6 +306,7 @@ export function mountTipTap(fieldName, wrapperEl, initialContent, onUpdate) {
         }
 
         if (cmd === 'prompt-image') {
+            closeParentPanel();
             window.dispatchEvent(new CustomEvent('open-asset-picker', {
                 detail: {
                     callback: (url) => {
@@ -261,10 +317,47 @@ export function mountTipTap(fieldName, wrapperEl, initialContent, onUpdate) {
             return;
         }
 
+        if (cmd === 'setTextAlign' && editor.isActive('image')) {
+            editor.chain().focus().updateAttributes('image', { 'data-align': args[0] }).run();
+            closeParentPanel();
+            return;
+        }
+
+        if (cmd === 'toggleHeading') {
+            // TipTap expects { level }, not a bare number.
+            editor.chain().focus().toggleHeading({ level: args[0] }).run();
+            closeParentPanel();
+            return;
+        }
+
         const chain = editor.chain().focus();
         if (typeof chain[cmd] === 'function') {
             chain[cmd](...args).run();
         }
+
+        closeParentPanel();
+    });
+
+    // Close any open toolbar menu when clicking outside the whole editor.
+    document.addEventListener('mousedown', (e) => {
+        if (wrapperEl.contains(e.target)) return;
+        wrapperEl.querySelectorAll('[data-tt-panel]:not(.hidden)').forEach((p) => {
+            p.classList.add('hidden');
+            p.style.position = '';
+            p.style.top = '';
+            p.style.left = '';
+            p.style.zIndex = '';
+        });
+    });
+
+    // Update heading label on selection change
+    editor.on('selectionUpdate', () => {
+        const label = wrapperEl.querySelector('[data-tt-dd-label="heading"]');
+        if (!label) return;
+        if (editor.isActive('heading', { level: 1 })) label.textContent = 'H1';
+        else if (editor.isActive('heading', { level: 2 })) label.textContent = 'H2';
+        else if (editor.isActive('heading', { level: 3 })) label.textContent = 'H3';
+        else label.textContent = 'P';
     });
 
     return editor;
