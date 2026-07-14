@@ -312,13 +312,89 @@
                                     </div>
                                 </template>
 
-                                {{-- rich-text --}}
-                                        <template x-if="field.type === 'rich-text'">
-                                            <div>
-                                                <label class="block text-sm font-semibold text-text-primary mb-1" x-text="field.label"></label>
-                                                <textarea :value="getField(field.name)" @input="setField(field.name, $event.target.value)"
-                                                    :data-field-target="field.name"
-                                                    class="w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm text-text-primary shadow-[0_2px_3px_-2px_rgba(0,0,0,0.15)] focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary font-mono resize-y min-h-[100px]" rows="4"></textarea>
+                                {{-- rich-text (TipTap WYSIWYG) --}}
+                                <template x-if="field.type === 'rich-text'">
+                                    <div>
+                                        <label class="block text-sm font-semibold text-text-primary mb-1" x-text="field.label"></label>
+                                        <div class="tt-wrapper border border-gray-300 rounded-lg overflow-hidden"
+                                             :data-field-target="field.name"
+                                             x-init="mountTipTap(field.name, $el, getField(field.name) || '', (html) => setField(field.name, html))">
+                                            <div class="tt-toolbar flex flex-wrap items-center gap-0.5 px-2 py-1.5 border-b border-gray-200 bg-gray-50/80 select-none">
+                                                <button type="button" data-tt-cmd="toggleHeading" data-tt-args="[1]"
+                                                        class="tt-btn px-2 py-1 text-xs font-semibold text-gray-700 hover:bg-gray-200 hover:text-primary rounded transition-colors"
+                                                        title="Heading 1">H1</button>
+                                                <button type="button" data-tt-cmd="toggleHeading" data-tt-args="[2]"
+                                                        class="tt-btn px-2 py-1 text-xs font-semibold text-gray-700 hover:bg-gray-200 hover:text-primary rounded transition-colors"
+                                                        title="Heading 2">H2</button>
+                                                <button type="button" data-tt-cmd="toggleHeading" data-tt-args="[3]"
+                                                        class="tt-btn px-2 py-1 text-xs font-semibold text-gray-700 hover:bg-gray-200 hover:text-primary rounded transition-colors"
+                                                        title="Heading 3">H3</button>
+
+                                                <span class="w-px h-5 bg-gray-300 mx-0.5"></span>
+
+                                                <button type="button" data-tt-cmd="toggleBold"
+                                                        class="tt-btn px-2 py-1 text-sm font-bold text-gray-700 hover:bg-gray-200 hover:text-primary rounded transition-colors"
+                                                        title="Bold"><strong>B</strong></button>
+                                                <button type="button" data-tt-cmd="toggleItalic"
+                                                        class="tt-btn px-2 py-1 text-sm italic text-gray-700 hover:bg-gray-200 hover:text-primary rounded transition-colors"
+                                                        title="Italic"><em>I</em></button>
+                                                <button type="button" data-tt-cmd="toggleUnderline"
+                                                        class="tt-btn px-2 py-1 text-sm underline text-gray-700 hover:bg-gray-200 hover:text-primary rounded transition-colors"
+                                                        title="Underline"><u>U</u></button>
+                                                <button type="button" data-tt-cmd="toggleStrike"
+                                                        class="tt-btn px-2 py-1 text-sm text-gray-700 hover:bg-gray-200 hover:text-primary rounded transition-colors"
+                                                        title="Strikethrough"><s>S</s></button>
+
+                                                <span class="w-px h-5 bg-gray-300 mx-0.5"></span>
+
+                                                <button type="button" data-tt-cmd="toggleBulletList"
+                                                        class="tt-btn px-2 py-1 text-sm text-gray-700 hover:bg-gray-200 hover:text-primary rounded transition-colors"
+                                                        title="Bullet List">&#8226; List</button>
+                                                <button type="button" data-tt-cmd="toggleOrderedList"
+                                                        class="tt-btn px-2 py-1 text-sm text-gray-700 hover:bg-gray-200 hover:text-primary rounded transition-colors"
+                                                        title="Ordered List">1. List</button>
+
+                                                <span class="w-px h-5 bg-gray-300 mx-0.5"></span>
+
+                                                <button type="button" data-tt-cmd="setTextAlign" data-tt-args='["left"]'
+                                                        class="tt-btn px-2 py-1 text-sm text-gray-700 hover:bg-gray-200 hover:text-primary rounded transition-colors"
+                                                        title="Align Left">&#9668;</button>
+                                                <button type="button" data-tt-cmd="setTextAlign" data-tt-args='["center"]'
+                                                        class="tt-btn px-2 py-1 text-sm text-gray-700 hover:bg-gray-200 hover:text-primary rounded transition-colors"
+                                                        title="Align Center">&#9640;</button>
+                                                <button type="button" data-tt-cmd="setTextAlign" data-tt-args='["right"]'
+                                                        class="tt-btn px-2 py-1 text-sm text-gray-700 hover:bg-gray-200 hover:text-primary rounded transition-colors"
+                                                        title="Align Right">&#9654;</button>
+
+                                                <span class="w-px h-5 bg-gray-300 mx-0.5"></span>
+
+                                                <button type="button" data-tt-cmd="prompt-link"
+                                                        class="tt-btn px-2 py-1 text-sm text-gray-700 hover:bg-gray-200 hover:text-primary rounded transition-colors"
+                                                        title="Link">&#128279;</button>
+                                                <button type="button" data-tt-cmd="prompt-image"
+                                                        class="tt-btn px-2 py-1 text-sm text-gray-700 hover:bg-gray-200 hover:text-primary rounded transition-colors"
+                                                        title="Image">&#128247;</button>
+
+                                                <span class="w-px h-5 bg-gray-300 mx-0.5"></span>
+
+                                                <button type="button" data-tt-cmd="toggleBlockquote"
+                                                        class="tt-btn px-2 py-1 text-sm text-gray-700 hover:bg-gray-200 hover:text-primary rounded transition-colors"
+                                                        title="Blockquote">&#10077;</button>
+                                                <button type="button" data-tt-cmd="toggleCodeBlock"
+                                                        class="tt-btn px-2 py-1 text-sm text-gray-700 hover:bg-gray-200 hover:text-primary rounded transition-colors"
+                                                        title="Code Block">&lt;/&gt;</button>
+
+                                                <span class="w-px h-5 bg-gray-300 mx-0.5"></span>
+
+                                                <button type="button" data-tt-cmd="undo"
+                                                        class="tt-btn px-2 py-1 text-sm text-gray-700 hover:bg-gray-200 rounded transition-colors"
+                                                        title="Undo">&#8630;</button>
+                                                <button type="button" data-tt-cmd="redo"
+                                                        class="tt-btn px-2 py-1 text-sm text-gray-700 hover:bg-gray-200 rounded transition-colors"
+                                                        title="Redo">&#8631;</button>
+                                            </div>
+                                            <div class="tt-editor px-4 py-3 min-h-[200px] prose prose-sm max-w-none focus:outline-none"></div>
+                                        </div>
                                     </div>
                                 </template>
 
@@ -949,45 +1025,8 @@
                     const idx = parseInt(sectionEl.getAttribute('data-section-index'), 10);
                     if (isNaN(idx) || idx < 0 || idx >= this.sections.length) return;
 
-                    const path = this.buildFieldPath(e.target);
-                    this.focusField(path, idx);
+                    this.focusField('_root', idx);
                 });
-            },
-
-            buildFieldPath(target) {
-                const fieldEl = target.closest('[data-edit]');
-                const listEl = !fieldEl ? target.closest('[data-list]') : null;
-
-                if (!fieldEl && !listEl) return '_root';
-
-                let leaf = '';
-                let startEl = fieldEl;
-                if (fieldEl) {
-                    leaf = fieldEl.getAttribute('data-edit') || '';
-                    if (!leaf) { startEl = null; leaf = ''; }
-                } else if (listEl) {
-                    startEl = listEl;
-                }
-
-                const listParts = [];
-                let current = startEl;
-                while (current) {
-                    const listName = current.getAttribute('data-list');
-                    if (listName) {
-                        const parent = current.parentElement;
-                        if (parent) {
-                            const siblings = Array.from(parent.querySelectorAll(`[data-list="${listName}"]`));
-                            const index = siblings.indexOf(current);
-                            if (index >= 0) listParts.unshift(`${listName}:${index}`);
-                        }
-                    }
-                    current = current.parentElement?.closest('[data-list]') ?? null;
-                }
-
-                if (leaf) {
-                    return [...listParts, leaf].join('/');
-                }
-                return listParts.join('/') + '/';
             },
 
             focusField(cmd, sectionIdx) {
