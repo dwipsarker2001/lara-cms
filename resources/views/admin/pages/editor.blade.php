@@ -69,13 +69,6 @@
                                         >
                                             <span class="text-sm font-semibold text-text-heading group-hover:text-primary truncate leading-normal transition-colors" :class="section.enabled === false ? 'opacity-50' : ''" x-text="sectionLabel(section)"></span>
                                         </div>
-                                        <div
-                                            @click="edit(i, 'description')"
-                                            x-show="sectionDescription(section)"
-                                            class="mt-0.5"
-                                        >
-                                            <span class="text-xs text-text-muted truncate block leading-normal" x-text="sectionDescription(section)"></span>
-                                        </div>
                                     </div>
                                     <div class="flex items-center gap-0.5 shrink-0 ml-auto pr-1">
                                         <button
@@ -733,10 +726,6 @@
                 this.pages = pages;
                 this.homeGlobals = homeGlobals;
                 this.$nextTick(() => this.initSectionSortable());
-                this.$watch('active', () => {
-                    if (this.active === null) return;
-                    this.$nextTick(() => this.focusFirstField());
-                });
                 this.refreshPreview();
             },
 
@@ -906,6 +895,9 @@
                 this.active = i;
                 this.crumbs = [];
                 this._focusField = focusField || null;
+                if (this._focusField) {
+                    this.$nextTick(() => this.focusFirstField());
+                }
             },
 
             focusFirstField() {
@@ -950,7 +942,7 @@
                     return f ? f.name : null;
                 }
                 if (type === 'description') {
-                    for (const name of ['description', 'subtitle', 'subheading']) {
+                    for (const name of ['description', 'subheading']) {
                         if (schema.some(f => f.name === name)) return name;
                     }
                     const f = schema.find(f => (f.type === 'string' && f.multiline) || f.type === 'text');
@@ -960,7 +952,7 @@
             },
 
             sectionDescription(section) {
-                return section.data?.description || section.data?.subtitle || section.data?.subheading || '';
+                return section.data?.description || section.data?.subheading || '';
             },
 
             addSection(name) {

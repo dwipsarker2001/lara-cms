@@ -16,6 +16,7 @@ class WhyChooseUs extends Block
         return [
             Field::string('heading', 'Heading', default: 'Why Choose Us'),
             Field::text('subtitle', 'Subtitle', default: 'Experience seamless travel planning with trusted experts, personalized packages, and worldwide destinations.'),
+
             Field::image('image', 'Image'),
             Field::list('features', 'Features', [
                 Field::string('number', 'Number', default: '01'),
