@@ -13,6 +13,10 @@ if ! grep -q "APP_KEY=" .env || grep -q "APP_KEY=$" .env; then
     php artisan key:generate --force
 fi
 
+if [ ! -L "public/storage" ]; then
+    ln -s ../storage/app/public public/storage 2>/dev/null || true
+fi
+
 chmod -R 775 storage bootstrap/cache 2>/dev/null || true
 
 exec "$@"

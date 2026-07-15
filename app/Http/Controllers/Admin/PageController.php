@@ -143,7 +143,7 @@ class PageController extends Controller
     public function updateSections(Request $request, Page $page)
     {
         $request->validate([
-            'sections' => 'required|array',
+            'sections' => 'present|array',
             'sections.*._key' => 'required|string',
             'sections.*.name' => 'required|string',
             'sections.*.data' => 'required',

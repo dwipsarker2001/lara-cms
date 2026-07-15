@@ -1,0 +1,7 @@
+            <div class="flex items-center justify-center size-16 rounded-full bg-white shrink-0">
+                <div class="flex items-center justify-center size-14 rounded-full bg-[#10B981] shadow-[0_0_0_4px_rgba(16,185,129,0.2)]">
+                    <svg viewBox="0 0 16 16" fill="none" class="size-7">
+                        <path d="M13.3 4.3a1 1 0 0 1 0 1.4l-6 6a1 1 0 0 1-1.4 0l-3-3a1 1 0 0 1 1.4-1.4L6.6 9.2l5.3-5.3a1 1 0 0 1 1.4 0Z" fill="white" />
+                    </svg>
+                </div>
+            </div>

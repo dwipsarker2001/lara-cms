@@ -32,6 +32,7 @@
             data-key="postId"
             reorder-route="admin.posts.reorder"
             edit-route="admin.posts.editor"
+            update-route="admin.posts.edit"
             delete-route="admin.posts.destroy"
             empty-text="No posts yet."
             empty-link-text="Create your first post"

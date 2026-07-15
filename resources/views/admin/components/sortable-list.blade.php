@@ -6,6 +6,7 @@
     'reorderRoute',
     'editRoute',
     'deleteRoute',
+    'updateRoute' => null,
     'emptyText',
     'emptyLinkText' => null,
     'emptyLinkRoute' => null,
@@ -92,7 +93,7 @@
                                     style="z-index: 9999;"
                                     class="absolute right-0 top-full mt-1 min-w-[12rem] rounded-xl border border-content-border bg-content-bg shadow-xl p-1.5"
                                 >
-                                    <a href="{{ route($editRoute, $item) }}" role="menuitem"
+                                    <a href="{{ route($updateRoute ?? $editRoute, $item) }}" role="menuitem"
                                         class="flex w-full items-center justify-start gap-2.5 px-3 py-2 rounded-lg text-sm no-underline transition-colors text-text-primary hover:bg-body-bg"
                                     >
                                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" class="size-4 shrink-0 text-text-muted">

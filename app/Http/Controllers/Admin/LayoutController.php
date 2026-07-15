@@ -111,7 +111,7 @@ class LayoutController extends Controller
     public function updateSections(Request $request, Layout $layout)
     {
         $request->validate([
-            'sections' => 'required|array',
+            'sections' => 'present|array',
             'sections.*._key' => 'required|string',
             'sections.*.name' => 'required|string',
             'sections.*.data' => 'required',

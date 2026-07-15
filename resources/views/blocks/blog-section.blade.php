@@ -68,6 +68,12 @@
                 </div>
             @endif
 
+            @if($d['topImage'] ?? false)
+                <div class="relative mb-6 overflow-hidden rounded-xl max-h-72" data-edit="topImage">
+                    <img src="{{ $d['topImage'] }}" alt="" class="w-full object-cover" />
+                </div>
+            @endif
+
             {{-- Blog Meta --}}
             <div class="border-y border-gray-200 py-4">
                 <div class="flex flex-col gap-4 sm:flex-row sm:flex-wrap sm:items-center sm:justify-between">

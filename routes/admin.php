@@ -6,6 +6,7 @@ use App\Http\Controllers\Admin\PageController;
 use App\Http\Controllers\Admin\PostController;
 use App\Http\Controllers\Admin\PreviewController;
 use App\Http\Controllers\Admin\SettingsController;
+use App\Http\Controllers\Admin\TaxonomyController;
 use Illuminate\Support\Facades\Route;
 
 Route::middleware(['web', 'auth'])->prefix('admin')->name('admin.')->group(function () {
@@ -29,6 +30,8 @@ Route::middleware(['web', 'auth'])->prefix('admin')->name('admin.')->group(funct
 
     Route::get('settings', [SettingsController::class, 'index'])->name('settings');
     Route::put('settings', [SettingsController::class, 'update'])->name('settings.update');
+
+    Route::resource('taxonomies', TaxonomyController::class)->except(['show']);
 
     Route::get('assets', [AssetsController::class, 'page'])->name('assets.index');
     Route::get('assets/list', [AssetsController::class, 'index'])->name('assets.list');

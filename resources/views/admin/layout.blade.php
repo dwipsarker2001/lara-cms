@@ -276,8 +276,8 @@
                             </a>
                         </li>
                         <li>
-                            <a href="#"
-                                class="flex items-center gap-2.5 px-2.5 py-1.5 rounded-md text-sm no-underline transition-colors text-text-primary hover:bg-gray-100 hover:text-text-heading font-medium"
+                            <a href="{{ route('admin.taxonomies.index') }}"
+                                class="flex items-center gap-2.5 px-2.5 py-1.5 rounded-md text-sm no-underline transition-colors @if(request()->routeIs('admin.taxonomies.*')) text-text-heading bg-gray-200 font-semibold @else text-text-primary hover:bg-gray-100 hover:text-text-heading font-medium @endif"
                             >
                                 <span class="flex w-4 shrink-0 items-center justify-center">
                                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" class="size-4">
@@ -302,20 +302,6 @@
                                     </svg>
                                 </span>
                                 Assets
-                            </a>
-                        </li>
-                        <li>
-                            <a href="#"
-                                class="flex items-center gap-2.5 px-2.5 py-1.5 rounded-md text-sm no-underline transition-colors text-text-primary hover:bg-gray-100 hover:text-text-heading font-medium"
-                            >
-                                <span class="flex w-4 shrink-0 items-center justify-center">
-                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" class="size-4">
-                                        <circle cx="12" cy="12" r="10" />
-                                        <line x1="2" y1="12" x2="22" y2="12" />
-                                        <path d="M12 2a15.3 15.3 0 014 10 15.3 15.3 0 01-4 10 15.3 15.3 0 01-4-10 15.3 15.3 0 014-10z" />
-                                    </svg>
-                                </span>
-                                Destication
                             </a>
                         </li>
                     </ul>
@@ -350,13 +336,8 @@
                     @yield('content-full')
                 @else
                     {{-- PageShell --}}
-                    <div class="bg-content-bg min-h-[calc(100%-8px)] mx-2 mt-2 px-6 lg:px-20 rounded-t-2xl border border-content-border border-b-0" style="container-type: inline-size;">
-                        @if (session('success'))
-                            <div class="mb-4 px-4 py-3 rounded-lg bg-success/10 text-success text-sm">{{ session('success') }}</div>
-                        @endif
-                        @if (session('error'))
-                            <div class="mb-4 px-4 py-3 rounded-lg bg-danger/10 text-danger text-sm">{{ session('error') }}</div>
-                        @endif
+                    <div class="bg-content-bg min-h-[calc(100%-8px)] mx-2 mt-2 px-6 lg:px-20 rounded-t-2xl border border-content-border border-b-0 relative" style="container-type: inline-size;">
+
                         @yield('content')
                     </div>
                 @endif
@@ -366,6 +347,7 @@
 
     <x-admin::asset-picker />
     <x-admin::section-picker />
+    <x-admin::toast />
 
     @stack('scripts')
 </body>

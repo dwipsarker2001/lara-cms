@@ -5,6 +5,7 @@ namespace App\Models;
 use Database\Factories\PostFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class Post extends Model
 {
@@ -19,4 +20,9 @@ class Post extends Model
         'date' => 'date',
         'published' => 'boolean',
     ];
+
+    public function terms(): BelongsToMany
+    {
+        return $this->belongsToMany(Term::class);
+    }
 }

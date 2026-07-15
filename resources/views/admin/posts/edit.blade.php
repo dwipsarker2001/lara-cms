@@ -11,7 +11,44 @@
             slug: '{{ old('slug', $post->slug) }}',
             published: {{ old('published', $post->published) ? 'true' : 'false' }},
             date: '{{ old('date', $post->date ? \Carbon\Carbon::parse($post->date)->format('Y-m-d') : '') }}',
-            tags: '{{ old('tags', is_array($post->tags) ? implode(', ', $post->tags) : '') }}',
+            tags: '{{ old('tags', implode(', ', $customTags)) }}',
+            selectedTerms: @js($selectedTerms),
+            tagSearch: '',
+            taxonomies: @js($taxonomies->map(fn ($tax) => ['title' => $tax->title, 'terms' => $tax->terms->map(fn ($t) => ['id' => $t->id, 'title' => $t->title])->values()->toArray()])->values()->toArray()),
+            tagOpen: false,
+            get allTerms() {
+                return this.taxonomies.flatMap(t => t.terms);
+            },
+            get tagList() {
+                const termTitles = this.selectedTerms.map(id => {
+                    const t = this.allTerms.find(t => t.id === id);
+                    return t ? t.title : null;
+                }).filter(Boolean);
+                const custom = this.tags ? this.tags.split(',').map(t => t.trim()).filter(t => t) : [];
+                return [...termTitles, ...custom.filter(t => !termTitles.includes(t))];
+            },
+            toggleTag(title) {
+                const term = this.allTerms.find(tr => tr.title === title);
+                if (term) {
+                    const idx = this.selectedTerms.indexOf(term.id);
+                    if (idx >= 0) {
+                        this.selectedTerms.splice(idx, 1);
+                    } else {
+                        this.selectedTerms.push(term.id);
+                    }
+                } else {
+                    const list = this.tags ? this.tags.split(',').map(t => t.trim()).filter(t => t) : [];
+                    const i = list.indexOf(title);
+                    if (i >= 0) {
+                        list.splice(i, 1);
+                    } else {
+                        if (!list.includes(title)) {
+                            list.push(title);
+                        }
+                    }
+                    this.tags = list.join(', ');
+                }
+            },
         }"
     >
         <form method="POST" action="{{ route('admin.posts.update', $post) }}">
@@ -117,18 +154,82 @@
                             <div class="grid md:grid-cols-2 items-start px-[18px] py-4 gap-y-3 md:gap-y-0 md:gap-x-5">
                                 <div class="flex flex-col gap-1.5">
                                     <label for="field-tags" class="text-sm font-medium text-text-heading">Tags</label>
-                                    <div class="text-sm text-text-muted">Comma-separated tags for categorizing posts.</div>
+                                    <div class="text-sm text-text-muted">Select one or more tags from your taxonomies or type to add new ones.</div>
                                 </div>
-                                <div class="flex items-center gap-2">
-                                    <div class="flex-1">
-                                        <input
-                                            id="field-tags"
-                                            type="text"
-                                            name="tags"
-                                            x-model="tags"
-                                            placeholder="tag1, tag2, tag3"
-                                            class="w-full block bg-content-bg border border-content-border text-text-primary placeholder:text-text-muted text-sm rounded-lg px-3 py-2 h-9 transition-all duration-150 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary"
+                                <div class="flex flex-col gap-2">
+                                    <div class="relative" @click.outside="tagOpen = false" @keydown.escape.window="tagOpen = false">
+                                        <div
+                                            @click="tagOpen = true; $nextTick(() => $refs.tagSearch.focus())"
+                                            class="w-full flex flex-wrap items-center gap-2 bg-content-bg border border-content-border text-text-primary text-sm rounded-lg px-3 py-1.5 min-h-9 cursor-text transition-all duration-150 hover:bg-content-border/30 focus-within:ring-2 focus-within:ring-primary/20 focus-within:border-primary"
                                         >
+                                            <template x-for="(tag, ti) in tagList" :key="ti">
+                                                <span class="inline-flex items-center gap-1 px-2 py-0.5 bg-panel-bg rounded text-xs font-medium text-text-primary border border-content-border shadow-sm">
+                                                    <span x-text="tag"></span>
+                                                    <button @click.prevent.stop="toggleTag(tag)" type="button" class="text-text-muted hover:text-danger leading-none text-base">&times;</button>
+                                                </span>
+                                            </template>
+                                            <input
+                                                x-ref="tagSearch"
+                                                id="field-tags"
+                                                type="text"
+                                                x-model="tagSearch"
+                                                @keydown.enter.prevent="if(tagSearch.trim()) { toggleTag(tagSearch.trim()); tagSearch = ''; }"
+                                                @keydown.backspace="if(!tagSearch && tagList.length) { toggleTag(tagList[tagList.length - 1]); }"
+                                                placeholder="Type or select..."
+                                                class="flex-1 bg-transparent border-none p-0 focus:ring-0 text-sm min-w-[120px]"
+                                            >
+                                            <svg class="size-4 text-text-muted shrink-0 transition-transform duration-150 ml-auto" :class="tagOpen ? 'rotate-180' : ''" viewBox="0 0 20 20" fill="currentColor">
+                                                <path fill-rule="evenodd" d="M5.22 8.22a.75.75 0 0 1 1.06 0L10 11.94l3.72-3.72a.75.75 0 1 1 1.06 1.06l-4.25 4.25a.75.75 0 0 1-1.06 0L5.22 9.28a.75.75 0 0 1 0-1.06Z" clip-rule="evenodd" />
+                                            </svg>
+                                        </div>
+                                        <div
+                                            x-show="tagOpen"
+                                            x-transition:enter="transition ease-out duration-100"
+                                            x-transition:enter-start="opacity-0 translate-y-1"
+                                            x-transition:enter-end="opacity-100 translate-y-0"
+                                            class="absolute z-50 top-full mt-1 left-0 right-0 bg-content-bg border border-content-border rounded-lg shadow-xl p-1 max-h-60 overflow-y-auto space-y-1"
+                                            style="display: none;"
+                                        >
+                                            <template x-if="!taxonomies.length">
+                                                <div class="px-3 py-4 text-center">
+                                                    <p class="text-sm text-text-muted mb-2">No taxonomies found.</p>
+                                                    <a href="{{ route('admin.taxonomies.index') }}" class="text-xs font-medium text-primary hover:underline">Create your first taxonomy &rarr;</a>
+                                                </div>
+                                            </template>
+                                            <template x-for="(tax, ti) in taxonomies" :key="ti">
+                                                <div>
+                                                    <button
+                                                        type="button"
+                                                        @click="toggleTag(tax.title); tagSearch = '';"
+                                                        class="w-full flex items-center justify-between gap-2 px-3 py-2 text-xs font-bold tracking-wider rounded-md transition-colors"
+                                                        :class="tagList.includes(tax.title) ? 'bg-primary/10 text-primary' : 'text-text-muted/70 hover:bg-content-border/30 hover:text-text-heading'"
+                                                    >
+                                                        <span class="flex items-center gap-1.5">
+                                                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" class="size-3 shrink-0"><line x1="4" y1="9" x2="20" y2="9" /><line x1="4" y1="15" x2="20" y2="15" /><line x1="10" y1="3" x2="8" y2="21" /><line x1="16" y1="3" x2="14" y2="21" /></svg>
+                                                            <span x-text="tax.title"></span>
+                                                        </span>
+                                                        <svg x-show="tagList.includes(tax.title)" class="size-3 text-primary" viewBox="0 0 20 20" fill="currentColor">
+                                                            <path fill-rule="evenodd" d="M16.7 5.3a1 1 0 0 1 0 1.4l-7.5 7.5a1 1 0 0 1-1.4 0L3.3 9.7a1 1 0 1 1 1.4-1.4l3.1 3.1 6.8-6.8a1 1 0 0 1 1.4 0Z" clip-rule="evenodd" />
+                                                        </svg>
+                                                    </button>
+                                                    <template x-for="(term, tii) in tax.terms.filter(t => t.title.toLowerCase().includes(tagSearch.toLowerCase()))" :key="tii">
+                                                        <button
+                                                            type="button"
+                                                            @click="toggleTag(term.title); tagSearch = '';"
+                                                            class="w-full flex items-center justify-between gap-2 px-3 py-1.5 text-sm rounded-md transition-colors"
+                                                            :class="tagList.includes(term.title) ? 'bg-primary/10 text-primary font-medium' : 'text-text-primary hover:bg-content-border/30'"
+                                                        >
+                                                            <span x-text="term.title"></span>
+                                                            <svg x-show="tagList.includes(term.title)" class="size-4 text-primary" viewBox="0 0 20 20" fill="currentColor">
+                                                                <path fill-rule="evenodd" d="M16.7 5.3a1 1 0 0 1 0 1.4l-7.5 7.5a1 1 0 0 1-1.4 0L3.3 9.7a1 1 0 1 1 1.4-1.4l3.1 3.1 6.8-6.8a1 1 0 0 1 1.4 0Z" clip-rule="evenodd" />
+                                                            </svg>
+                                                        </button>
+                                                    </template>
+                                                </div>
+                                            </template>
+                                        </div>
+                                        <input type="hidden" name="tags" :value="tags">
+                                        <input type="hidden" name="term_ids" :value="selectedTerms.join(',')">
                                     </div>
                                 </div>
                             </div>
@@ -152,27 +253,5 @@
             </div>
         </form>
 
-        {{-- Delete --}}
-        <div class="mt-12 border-t border-content-border pt-8 px-2 sm:px-0">
-            <div class="bg-panel-bg rounded-2xl p-[7px]">
-                <div class="px-[18px] py-3 text-sm font-medium text-text-heading">Delete Post</div>
-                <div class="px-1.5 pb-2 max-w-2xl">
-                    <div class="bg-content-bg rounded-xl ring-1 ring-content-border shadow-sm p-4">
-                        <p class="text-sm text-text-muted mb-4">Permanently delete this post and all its content. This action cannot be undone.</p>
-                        <form method="POST" action="{{ route('admin.posts.destroy', $post) }}" onsubmit="return confirm('Delete this post permanently?')">
-                            @csrf @method('DELETE')
-                            <button type="submit"
-                                class="inline-flex items-center justify-center gap-2 whitespace-nowrap shrink-0 font-medium cursor-pointer no-underline rounded-lg transition-colors h-10 text-sm leading-tight px-4 bg-red-600 hover:bg-red-700 text-white shadow-sm"
-                            >
-                                <svg viewBox="0 0 20 20" fill="currentColor" class="size-4">
-                                    <path fill-rule="evenodd" d="M8.75 1A2.75 2.75 0 006 3.75v.443c-.795.077-1.584.176-2.365.298a.75.75 0 10.23 1.482l.149-.022.841 10.518A2.75 2.75 0 007.596 19h4.807a2.75 2.75 0 002.742-2.53l.841-10.52.149.023a.75.75 0 00.23-1.482A41.03 41.03 0 0014 4.193V3.75A2.75 2.75 0 0011.25 1h-2.5zM10 4c-.84 0-1.673.025-2.5.075V3.75c0-.69.56-1.25 1.25-1.25h2.5c.69 0 1.25.56 1.25 1.25v.325C11.673 4.025 10.84 4 10 4zM8.58 7.72a.75.75 0 00-1.5.06l.3 7.5a.75.75 0 101.5-.06l-.3-7.5zm4.34.06a.75.75 0 10-1.5-.06l-.3 7.5a.75.75 0 101.5.06l.3-7.5z" clip-rule="evenodd" />
-                                </svg>
-                                Delete Post
-                            </button>
-                        </form>
-                    </div>
-                </div>
-            </div>
-        </div>
     </div>
 @endsection
