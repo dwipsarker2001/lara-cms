@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Blocks\BlockRegistry;
 use App\Http\Controllers\Controller;
+use App\Models\Layout;
 use App\Models\Post;
 use App\Support\Sections;
 use Illuminate\Http\Request;
@@ -34,12 +35,18 @@ class PostController extends Controller
             'tags' => 'nullable|string',
             'hero_img' => 'nullable|string',
             'banner_img' => 'nullable|string',
+            'layout_id' => 'nullable|exists:layouts,id',
             'published' => 'boolean',
         ]);
 
         $data['published'] = $request->boolean('published', true);
         $data['tags'] = $request->tags ? array_map('trim', explode(',', $request->tags)) : [];
         $data['position'] = Post::max('position') + 1;
+
+        if ($request->layout_id) {
+            $layout = Layout::findOrFail($request->layout_id);
+            $data['sections'] = $layout->sections ?? [];
+        }
 
         Post::create($data);
 

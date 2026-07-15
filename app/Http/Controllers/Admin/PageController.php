@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Blocks\BlockRegistry;
 use App\Http\Controllers\Controller;
+use App\Models\Layout;
 use App\Models\Page;
 use App\Support\Sections;
 use Illuminate\Http\Request;
@@ -27,6 +28,7 @@ class PageController extends Controller
         $data = $request->validate([
             'title' => 'required|string|max:255',
             'slug' => 'required|string|max:255|unique:pages,slug',
+            'layout_id' => 'nullable|exists:layouts,id',
             'published' => 'boolean',
             'meta' => 'nullable|array',
         ]);
@@ -44,7 +46,12 @@ class PageController extends Controller
             'xCardTitleSource' => 'Inherit',
             'xCardDescriptionSource' => 'Inherit',
         ]);
-        $data['sections'] = Sections::injectGlobals();
+        if ($request->layout_id) {
+            $layout = Layout::findOrFail($request->layout_id);
+            $data['sections'] = [...($layout->sections ?? []), ...Sections::injectGlobals()];
+        } else {
+            $data['sections'] = Sections::injectGlobals();
+        }
         $data['position'] = Page::max('position') + 1;
 
         Page::create($data);
