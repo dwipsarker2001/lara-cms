@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Admin\AssetsController;
+use App\Http\Controllers\Admin\LayoutController;
 use App\Http\Controllers\Admin\PageController;
 use App\Http\Controllers\Admin\PostController;
 use App\Http\Controllers\Admin\PreviewController;
@@ -20,6 +21,11 @@ Route::middleware(['web', 'auth'])->prefix('admin')->name('admin.')->group(funct
     Route::resource('posts', PostController::class)->except(['show']);
     Route::patch('posts/{post}/sections', [PostController::class, 'updateSections'])->name('posts.update-sections');
     Route::get('posts/{post}/editor', [PostController::class, 'editor'])->name('posts.editor');
+
+    Route::patch('layouts/reorder', [LayoutController::class, 'reorder'])->name('layouts.reorder');
+    Route::resource('layouts', LayoutController::class)->except(['show']);
+    Route::patch('layouts/{layout}/sections', [LayoutController::class, 'updateSections'])->name('layouts.update-sections');
+    Route::get('layouts/{layout}/editor', [LayoutController::class, 'editor'])->name('layouts.editor');
 
     Route::get('settings', [SettingsController::class, 'index'])->name('settings');
     Route::put('settings', [SettingsController::class, 'update'])->name('settings.update');
