@@ -57,34 +57,6 @@
         <form method="POST" action="{{ route('admin.pages.store') }}">
             @csrf
 
-            @php $pageLayouts = \App\Models\Layout::where('collection', 'page')->orderBy('position')->orderBy('name')->get(); @endphp
-            @if($pageLayouts->isNotEmpty())
-                <div class="bg-panel-bg rounded-2xl mb-6 p-[7px]">
-                    <div class="px-[18px] pt-3 pb-1 text-sm font-medium text-text-heading">Layout</div>
-                    <p class="px-[18px] pb-3 text-sm text-text-muted">Choose a layout to pre-populate sections.</p>
-                    <div class="px-1.5 pb-2">
-                        <div class="bg-content-bg rounded-xl ring-1 ring-content-border shadow-sm px-3 py-3">
-                            <div class="grid md:grid-cols-2 items-start px-[18px] py-4 gap-y-3 md:gap-y-0 md:gap-x-5">
-                                <div class="flex flex-col gap-1.5">
-                                    <label class="text-sm font-medium text-text-heading">Start from layout</label>
-                                    <div class="text-sm text-text-muted">Optionally pre-fill this page with sections from a layout.</div>
-                                </div>
-                                <div class="flex items-center gap-2">
-                                    <div class="flex-1">
-                                        <select name="layout_id" class="w-full block bg-content-bg border border-content-border text-text-primary text-sm rounded-lg px-3 py-2 h-9 transition-all duration-150 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary">
-                                            <option value="">None (empty page)</option>
-                                            @foreach($pageLayouts as $pl)
-                                                <option value="{{ $pl->id }}" @selected(old('layout_id') == $pl->id)>{{ $pl->name }}</option>
-                                            @endforeach
-                                        </select>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            @endif
-
             <input type="hidden" name="slug" :value="effectiveSlug">
 
             {{-- Header --}}
@@ -222,6 +194,27 @@
                                         </div>
                                     </div>
                                 </div>
+
+                                {{-- Layout --}}
+                                @php $pageLayouts = \App\Models\Layout::where('collection', 'page')->orderBy('position')->orderBy('name')->get(); @endphp
+                                @if($pageLayouts->isNotEmpty())
+                                    <div class="grid md:grid-cols-2 items-start px-[18px] py-4 gap-y-3 md:gap-y-0 md:gap-x-5">
+                                        <div class="flex flex-col gap-1.5">
+                                            <label for="field-layout" class="text-sm font-medium text-text-heading">Layout</label>
+                                            <div class="text-sm text-text-muted">Optionally pre-fill sections from a layout.</div>
+                                        </div>
+                                        <div class="flex items-center gap-2">
+                                            <div class="flex-1">
+                                                <select id="field-layout" name="layout_id" class="w-full block bg-content-bg border border-content-border text-text-primary text-sm rounded-lg px-3 py-2 h-9 transition-all duration-150 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary">
+                                                    <option value="">None (empty page)</option>
+                                                    @foreach($pageLayouts as $pl)
+                                                        <option value="{{ $pl->id }}" @selected(old('layout_id') == $pl->id)>{{ $pl->name }}</option>
+                                                    @endforeach
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+                                @endif
 
                                 {{-- Published --}}
                                 <div class="grid md:grid-cols-2 items-start px-[18px] py-4 gap-y-3 md:gap-y-0 md:gap-x-5">
