@@ -15,7 +15,6 @@ class PreviewController extends Controller
     {
         $request->validate([
             'sections' => 'required|array',
-            'post_id' => 'sometimes|integer|exists:posts,id',
         ]);
 
         $page = null;

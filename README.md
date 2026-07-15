@@ -7,6 +7,17 @@
 <a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
 </p>
 
+## Quick Start
+
+```bash
+docker compose up -d
+php artisan serve
+php artisan migrate:fresh --seed
+```
+
+**Admin login:** `http://localhost:8000/login` — `admin@admin.com` / `password`
+**phpMyAdmin:** `http://localhost:8080` — `root` / `secret`
+
 ## Creating Content Blocks
 
 This CMS uses a schema-driven block system. Every section on a page is a **block** — a PHP class defining editable fields and a Blade view that renders the HTML. Blocks are auto-discovered; just create the files and they appear in the editor.

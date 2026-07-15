@@ -22,6 +22,15 @@ it('loads the editor page', function () {
         ->assertSee('Sections');
 });
 
+it('includes the preview click-to-focus field path resolver', function () {
+    $post = Post::factory()->create();
+
+    get(route('admin.posts.editor', $post))
+        ->assertSuccessful()
+        ->assertSee('buildFieldPath', false)
+        ->assertSee('this.focusField(path, idx)', false);
+});
+
 it('updates post sections', function () {
     $post = Post::factory()->create();
 

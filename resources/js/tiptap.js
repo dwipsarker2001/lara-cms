@@ -221,6 +221,12 @@ export function mountTipTap(fieldName, wrapperEl, initialContent, onUpdate) {
             if (onUpdate) onUpdate(ed.getHTML());
             updateActiveButtons(wrapperEl, ed);
         },
+        onFocus: () => {
+            wrapperEl.classList.add('tt-focused');
+        },
+        onBlur: () => {
+            wrapperEl.classList.remove('tt-focused');
+        },
     });
 
     editor.on('selectionUpdate', () => {

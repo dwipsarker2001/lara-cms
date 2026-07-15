@@ -123,6 +123,11 @@
     box-shadow: none !important;
 }
 
+.tt-wrapper.tt-focused {
+    border-color: #16a34a;
+    box-shadow: 0 0 0 2px rgba(22, 163, 74, 0.15);
+}
+
 .tt-editor p.is-editor-empty:first-child::before {
     content: attr(data-placeholder);
     float: left;

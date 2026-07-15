@@ -62,36 +62,41 @@
                                             <circle cx="16" cy="18" r="2.5" />
                                         </svg>
                                     </div>
-                                    <div
-                                        @click="edit(i)"
-                                        role="button"
-                                        tabindex="0"
-                                        class="flex flex-1 min-w-0 items-center px-1.5 py-2.5 text-xs leading-normal text-left cursor-pointer"
-                                    >
-                                        <div class="flex min-w-0 flex-1 items-center">
+                                    <div class="flex flex-1 min-w-0 flex-col px-1.5 py-2 cursor-pointer">
+                                        <div
+                                            @click="edit(i, 'title')"
+                                            class="flex items-center"
+                                        >
                                             <span class="text-sm font-semibold text-text-heading group-hover:text-primary truncate leading-normal transition-colors" :class="section.enabled === false ? 'opacity-50' : ''" x-text="sectionLabel(section)"></span>
                                         </div>
-                                        <div class="flex items-center gap-0.5 shrink-0 ml-1">
-                                            <button
-                                                @click.stop="edit(i)"
-                                                class="p-1 text-text-muted/60 hover:text-primary group-hover:text-primary transition-colors rounded hover:bg-text-primary/10"
-                                                title="Edit"
-                                            >
-                                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" class="size-4">
-                                                    <path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7" />
-                                                    <path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z" />
-                                                </svg>
-                                            </button>
-                                            <button
-                                                @click.stop="removeSection(i)"
-                                                class="p-1 text-text-muted/60 hover:text-danger transition-colors rounded hover:bg-text-primary/10"
-                                                title="Remove section"
-                                            >
-                                                <svg viewBox="0 0 20 20" fill="currentColor" class="size-4">
-                                                    <path fill-rule="evenodd" d="M8.75 1A2.75 2.75 0 006 3.75v.443c-.795.077-1.584.176-2.365.298a.75.75 0 10.23 1.482l.149-.022.841 10.518A2.75 2.75 0 007.596 19h4.807a2.75 2.75 0 002.742-2.53l.841-10.52.149.023a.75.75 0 00.23-1.482A41.03 41.03 0 0014 4.193V3.75A2.75 2.75 0 0011.25 1h-2.5zM10 4c-.84 0-1.673.025-2.5.075V3.75c0-.69.56-1.25 1.25-1.25h2.5c.69 0 1.25.56 1.25 1.25v.325C11.673 4.025 10.84 4 10 4zM8.58 7.72a.75.75 0 00-1.5.06l.3 7.5a.75.75 0 101.5-.06l-.3-7.5zm4.34.06a.75.75 0 10-1.5-.06l-.3 7.5a.75.75 0 101.5.06l.3-7.5z" clip-rule="evenodd" />
-                                                </svg>
-                                            </button>
+                                        <div
+                                            @click="edit(i, 'description')"
+                                            x-show="sectionDescription(section)"
+                                            class="mt-0.5"
+                                        >
+                                            <span class="text-xs text-text-muted truncate block leading-normal" x-text="sectionDescription(section)"></span>
                                         </div>
+                                    </div>
+                                    <div class="flex items-center gap-0.5 shrink-0 ml-auto pr-1">
+                                        <button
+                                            @click.stop="edit(i)"
+                                            class="p-1 text-text-muted/60 hover:text-primary group-hover:text-primary transition-colors rounded hover:bg-text-primary/10"
+                                            title="Edit"
+                                        >
+                                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" class="size-4">
+                                                <path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7" />
+                                                <path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z" />
+                                            </svg>
+                                        </button>
+                                        <button
+                                            @click.stop="removeSection(i)"
+                                            class="p-1 text-text-muted/60 hover:text-danger transition-colors rounded hover:bg-text-primary/10"
+                                            title="Remove section"
+                                        >
+                                            <svg viewBox="0 0 20 20" fill="currentColor" class="size-4">
+                                                <path fill-rule="evenodd" d="M8.75 1A2.75 2.75 0 006 3.75v.443c-.795.077-1.584.176-2.365.298a.75.75 0 10.23 1.482l.149-.022.841 10.518A2.75 2.75 0 007.596 19h4.807a2.75 2.75 0 002.742-2.53l.841-10.52.149.023a.75.75 0 00.23-1.482A41.03 41.03 0 0014 4.193V3.75A2.75 2.75 0 0011.25 1h-2.5zM10 4c-.84 0-1.673.025-2.5.075V3.75c0-.69.56-1.25 1.25-1.25h2.5c.69 0 1.25.56 1.25 1.25v.325C11.673 4.025 10.84 4 10 4zM8.58 7.72a.75.75 0 00-1.5.06l.3 7.5a.75.75 0 101.5-.06l-.3-7.5zm4.34.06a.75.75 0 10-1.5-.06l-.3 7.5a.75.75 0 101.5.06l.3-7.5z" clip-rule="evenodd" />
+                                            </svg>
+                                        </button>
                                     </div>
                                 </div>
                             </template>
@@ -215,9 +220,10 @@
 
                                 {{-- image --}}
                                 <template x-if="field.type === 'image'">
-                                    <div :data-field-target="field.name">
+                                    <div>
                                         <label class="block text-sm font-semibold text-text-primary mb-1" x-text="field.label"></label>
                                         <div
+                                            :data-field-target="field.name"
                                             @click="window.dispatchEvent(new CustomEvent('open-asset-picker', { detail: { callback: (url) => { setField(field.name, url) } } }))"
                                             @dragover.prevent="$event.currentTarget.classList.add('border-primary', 'bg-primary/5')"
                                             @dragleave.prevent="$event.currentTarget.classList.remove('border-primary', 'bg-primary/5')"
@@ -703,6 +709,7 @@
             crumbs: [],
             homeGlobals: {},
             originalSections: [],
+            _focusField: null,
             dirty: false,
             isSaving: false,
             previewTimer: null,
@@ -726,6 +733,10 @@
                 this.pages = pages;
                 this.homeGlobals = homeGlobals;
                 this.$nextTick(() => this.initSectionSortable());
+                this.$watch('active', () => {
+                    if (this.active === null) return;
+                    this.$nextTick(() => this.focusFirstField());
+                });
                 this.refreshPreview();
             },
 
@@ -891,9 +902,65 @@
                 });
             },
 
-            edit(i) {
+            edit(i, focusField) {
                 this.active = i;
                 this.crumbs = [];
+                this._focusField = focusField || null;
+            },
+
+            focusFirstField() {
+                const targetName = this._focusField ? this.resolveFieldName(this._focusField) : null;
+                const candidates = document.querySelectorAll('[data-field-target]');
+
+                if (targetName) {
+                    const el = document.querySelector(`[data-field-target="${targetName}"]`);
+                    if (el) {
+                        const proseMirror = el.classList.contains('ProseMirror') ? el : el.querySelector('.ProseMirror');
+                        if (proseMirror) { proseMirror.focus(); } else { try { el.focus(); } catch {} }
+                        try { el.scrollIntoView({ behavior: 'smooth', block: 'center' }); } catch {}
+                        return;
+                    }
+                }
+
+                for (const el of candidates) {
+                    const proseMirror = el.classList.contains('ProseMirror') ? el : el.querySelector('.ProseMirror');
+                    if (proseMirror) {
+                        proseMirror.focus();
+                        try { el.scrollIntoView({ behavior: 'smooth', block: 'center' }); } catch {}
+                        return;
+                    }
+                    if (el.matches('input, textarea, button, select, [tabindex]')) {
+                        try { el.focus(); } catch {}
+                        try { el.scrollIntoView({ behavior: 'smooth', block: 'center' }); } catch {}
+                        return;
+                    }
+                }
+            },
+
+            resolveFieldName(type) {
+                if (this.active === null) return null;
+                const section = this.sections[this.active];
+                if (!section) return null;
+                const schema = this.schemas[section.name] || [];
+                if (type === 'title') {
+                    for (const name of ['headline', 'title', 'heading']) {
+                        if (schema.some(f => f.name === name)) return name;
+                    }
+                    const f = schema.find(f => f.type === 'string' && !f.multiline);
+                    return f ? f.name : null;
+                }
+                if (type === 'description') {
+                    for (const name of ['description', 'subtitle', 'subheading']) {
+                        if (schema.some(f => f.name === name)) return name;
+                    }
+                    const f = schema.find(f => (f.type === 'string' && f.multiline) || f.type === 'text');
+                    return f ? f.name : null;
+                }
+                return null;
+            },
+
+            sectionDescription(section) {
+                return section.data?.description || section.data?.subtitle || section.data?.subheading || '';
             },
 
             addSection(name) {
@@ -1061,7 +1128,7 @@
                 })
                 .then(r => r.json())
                 .then(data => { el.innerHTML = data.html; this.attachPreviewListeners(el); })
-                .catch(() => {});
+                .catch(e => console.error('Preview fetch failed:', e));
             },
 
             attachPreviewListeners(el) {
@@ -1074,8 +1141,45 @@
                     const idx = parseInt(sectionEl.getAttribute('data-section-index'), 10);
                     if (isNaN(idx) || idx < 0 || idx >= this.sections.length) return;
 
-                    this.focusField('_root', idx);
+                    const path = this.buildFieldPath(e.target);
+                    this.focusField(path, idx);
                 });
+            },
+
+            buildFieldPath(target) {
+                const fieldEl = target.closest('[data-edit]');
+                const listEl = !fieldEl ? target.closest('[data-list]') : null;
+
+                if (!fieldEl && !listEl) return '_root';
+
+                let leaf = '';
+                let startEl = fieldEl;
+                if (fieldEl) {
+                    leaf = fieldEl.getAttribute('data-edit') || '';
+                    if (!leaf) { startEl = null; leaf = ''; }
+                } else if (listEl) {
+                    startEl = listEl;
+                }
+
+                const listParts = [];
+                let current = startEl;
+                while (current) {
+                    const listName = current.getAttribute('data-list');
+                    if (listName) {
+                        const parent = current.parentElement;
+                        if (parent) {
+                            const siblings = Array.from(parent.querySelectorAll(`[data-list="${listName}"]`));
+                            const index = siblings.indexOf(current);
+                            if (index >= 0) listParts.unshift(`${listName}:${index}`);
+                        }
+                    }
+                    current = current.parentElement?.closest('[data-list]') ?? null;
+                }
+
+                if (leaf) {
+                    return [...listParts, leaf].join('/');
+                }
+                return listParts.join('/') + '/';
             },
 
             focusField(cmd, sectionIdx) {
@@ -1113,20 +1217,31 @@
                 this.$nextTick(() => {
                     const fieldEl = document.querySelector(`[data-field-target="${leaf}"]`);
                     if (fieldEl && fieldEl.offsetParent !== null) {
-                        try { fieldEl.focus(); } catch {}
+                        const proseMirror = fieldEl.classList.contains('ProseMirror') ? fieldEl : fieldEl.querySelector('.ProseMirror');
+                        if (proseMirror) {
+                            proseMirror.focus();
+                        } else if (fieldEl.matches('input, textarea, button, select, [tabindex]')) {
+                            try { fieldEl.focus(); } catch {}
+                        } else {
+                            this.highlightField(fieldEl);
+                        }
                         try { fieldEl.scrollIntoView({ behavior: 'smooth', block: 'center' }); } catch {}
                     } else if (leaf) {
                         const scrollEl = document.querySelector(`[data-field-scroll="${leaf}"]`);
                         if (scrollEl) {
                             try { scrollEl.scrollIntoView({ behavior: 'smooth', block: 'center' }); } catch {}
                             const target = document.querySelector(`[data-field-target="${leaf}"]`);
-                            if (target) {
-                                target.style.boxShadow = '0 0 0 3px rgba(59,130,246,0.5)';
-                                setTimeout(() => { target.style.boxShadow = ''; }, 2000);
-                            }
+                            if (target) this.highlightField(target);
                         }
                     }
                 });
+            },
+
+            highlightField(el) {
+                el.style.boxShadow = '0 0 0 3px rgba(59,130,246,0.5)';
+                el.style.borderRadius = el.style.borderRadius || '8px';
+                clearTimeout(el._highlightTimer);
+                el._highlightTimer = setTimeout(() => { el.style.boxShadow = ''; }, 2000);
             },
 
             selects: {},
