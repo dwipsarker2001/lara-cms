@@ -1,0 +1,111 @@
+@extends('admin.layout')
+
+@section('title', 'Edit Layout')
+@section('breadcrumb', 'Edit Layout')
+
+@section('content')
+    <div class="max-w-5xl mx-auto px-2 sm:px-0">
+        <form method="POST" action="{{ route('admin.layouts.update', $layout) }}">
+            @csrf @method('PATCH')
+
+            <header class="relative flex flex-wrap items-center justify-between gap-4 px-2 sm:px-0 py-6 md:py-8">
+                <h1 class="text-[25px] leading-[1.25] font-medium flex items-center gap-2.5 text-text-heading">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" class="size-6 shrink-0 text-text-muted">
+                        <rect x="3" y="3" width="18" height="18" rx="2" ry="2" />
+                        <line x1="3" y1="9" x2="21" y2="9" />
+                        <line x1="9" y1="21" x2="9" y2="9" />
+                    </svg>
+                    Edit Layout
+                </h1>
+                <div class="flex flex-wrap items-center gap-2 sm:gap-3">
+                    @if ($errors->any())
+                        <span class="text-sm font-medium text-danger" role="alert">{{ $errors->first() }}</span>
+                    @endif
+                    <a href="{{ route('admin.layouts.index') }}"
+                        class="inline-flex items-center justify-center gap-2 whitespace-nowrap shrink-0 font-medium cursor-pointer no-underline rounded-lg transition-colors h-10 text-sm leading-tight px-4 bg-gradient-to-b from-content-bg to-gray-50 hover:to-gray-100 text-text-primary border border-content-border shadow-sm"
+                    >
+                        Cancel
+                    </a>
+                    <button type="submit"
+                        class="inline-flex items-center justify-center gap-2 whitespace-nowrap shrink-0 font-medium cursor-pointer no-underline rounded-lg transition-colors h-10 text-sm leading-tight px-4 bg-primary hover:opacity-90 text-white shadow-sm"
+                    >
+                        <span>Update Layout</span>
+                    </button>
+                </div>
+            </header>
+
+            <div class="bg-panel-bg rounded-2xl mb-8 p-[7px]">
+                <div class="px-[18px] pt-3 pb-1 text-sm font-medium text-text-heading">Layout Details</div>
+                <p class="px-[18px] pb-3 text-sm text-text-muted">Update the name and content type for this layout.</p>
+                <div class="px-1.5 pb-2">
+                    <div class="bg-content-bg rounded-xl ring-1 ring-content-border shadow-sm px-3 py-3">
+                        <div class="divide-y divide-content-border">
+                            <div class="grid md:grid-cols-2 items-start px-[18px] py-4 gap-y-3 md:gap-y-0 md:gap-x-5">
+                                <div class="flex flex-col gap-1.5">
+                                    <label for="field-name" class="text-sm font-medium text-text-heading">Name</label>
+                                    <div class="text-sm text-text-muted">A descriptive name for this layout.</div>
+                                </div>
+                                <div class="flex items-center gap-2">
+                                    <div class="flex-1">
+                                        <input
+                                            id="field-name"
+                                            type="text"
+                                            name="name"
+                                            value="{{ old('name', $layout->name) }}"
+                                            placeholder="e.g. Default Page"
+                                            class="w-full block bg-content-bg border border-content-border text-text-primary placeholder:text-text-muted text-sm rounded-lg px-3 py-2 h-9 transition-all duration-150 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary"
+                                        >
+                                        @error('name') <p class="text-xs text-danger mt-1">{{ $message }}</p> @enderror
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="grid md:grid-cols-2 items-start px-[18px] py-4 gap-y-3 md:gap-y-0 md:gap-x-5">
+                                <div class="flex flex-col gap-1.5">
+                                    <label for="field-collection" class="text-sm font-medium text-text-heading">Collection</label>
+                                    <div class="text-sm text-text-muted">Which content type this layout applies to.</div>
+                                </div>
+                                <div class="flex items-center gap-2">
+                                    <div class="flex-1">
+                                        <select
+                                            id="field-collection"
+                                            name="collection"
+                                            class="w-full block bg-content-bg border border-content-border text-text-primary text-sm rounded-lg px-3 py-2 h-9 transition-all duration-150 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary"
+                                        >
+                                            <option value="page" @selected(old('collection', $layout->collection) === 'page')>Page</option>
+                                            <option value="blog" @selected(old('collection', $layout->collection) === 'blog')>Blog</option>
+                                            <option value="package" @selected(old('collection', $layout->collection) === 'package')>Package</option>
+                                        </select>
+                                        @error('collection') <p class="text-xs text-danger mt-1">{{ $message }}</p> @enderror
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+
+        <div class="mt-12 border-t border-content-border pt-8 px-2 sm:px-0">
+            <div class="bg-panel-bg rounded-2xl p-[7px]">
+                <div class="px-[18px] py-3 text-sm font-medium text-text-heading">Delete Layout</div>
+                <div class="px-1.5 pb-2 max-w-2xl">
+                    <div class="bg-content-bg rounded-xl ring-1 ring-content-border shadow-sm p-4">
+                        <p class="text-sm text-text-muted mb-4">Permanently delete this layout. This action cannot be undone.</p>
+                        <form method="POST" action="{{ route('admin.layouts.destroy', $layout) }}" onsubmit="return confirm('Delete this layout permanently?')">
+                            @csrf @method('DELETE')
+                            <button type="submit"
+                                class="inline-flex items-center justify-center gap-2 whitespace-nowrap shrink-0 font-medium cursor-pointer no-underline rounded-lg transition-colors h-10 text-sm leading-tight px-4 bg-red-600 hover:bg-red-700 text-white shadow-sm"
+                            >
+                                <svg viewBox="0 0 20 20" fill="currentColor" class="size-4">
+                                    <path fill-rule="evenodd" d="M8.75 1A2.75 2.75 0 006 3.75v.443c-.795.077-1.584.176-2.365.298a.75.75 0 10.23 1.482l.149-.022.841 10.518A2.75 2.75 0 007.596 19h4.807a2.75 2.75 0 002.742-2.53l.841-10.52.149.023a.75.75 0 00.23-1.482A41.03 41.03 0 0014 4.193V3.75A2.75 2.75 0 0011.25 1h-2.5zM10 4c-.84 0-1.673.025-2.5.075V3.75c0-.69.56-1.25 1.25-1.25h2.5c.69 0 1.25.56 1.25 1.25v.325C11.673 4.025 10.84 4 10 4zM8.58 7.72a.75.75 0 00-1.5.06l.3 7.5a.75.75 0 101.5-.06l-.3-7.5zm4.34.06a.75.75 0 10-1.5-.06l-.3 7.5a.75.75 0 101.5.06l.3-7.5z" clip-rule="evenodd" />
+                                </svg>
+                                Delete Layout
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+@endsection
