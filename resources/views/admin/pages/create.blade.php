@@ -198,19 +198,69 @@
                                 {{-- Layout --}}
                                 @php $pageLayouts = \App\Models\Layout::where('collection', 'page')->orderBy('position')->orderBy('name')->get(); @endphp
                                 @if($pageLayouts->isNotEmpty())
+                                    @php
+                                        $pageLayoutOptions = $pageLayouts->map(fn($l) => ['value' => (string)$l->id, 'label' => $l->name])->values()->toArray();
+                                    @endphp
                                     <div class="grid md:grid-cols-2 items-start px-[18px] py-4 gap-y-3 md:gap-y-0 md:gap-x-5">
                                         <div class="flex flex-col gap-1.5">
-                                            <label for="field-layout" class="text-sm font-medium text-text-heading">Layout</label>
+                                            <label class="text-sm font-medium text-text-heading">Layout</label>
                                             <div class="text-sm text-text-muted">Optionally pre-fill sections from a layout.</div>
                                         </div>
                                         <div class="flex items-center gap-2">
                                             <div class="flex-1">
-                                                <select id="field-layout" name="layout_id" class="w-full block bg-content-bg border border-content-border text-text-primary text-sm rounded-lg px-3 py-2 h-9 transition-all duration-150 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary">
-                                                    <option value="">None (empty page)</option>
-                                                    @foreach($pageLayouts as $pl)
-                                                        <option value="{{ $pl->id }}" @selected(old('layout_id') == $pl->id)>{{ $pl->name }}</option>
-                                                    @endforeach
-                                                </select>
+                                                <div
+                                                    x-data="{
+                                                        open: false,
+                                                        selected: '{{ old('layout_id', '') }}',
+                                                        options: {{ Js::from($pageLayoutOptions) }},
+                                                        get selectedLabel() {
+                                                            return this.options.find(o => o.value === this.selected)?.label ?? 'None';
+                                                        },
+                                                        select(val) {
+                                                            this.selected = val;
+                                                            this.open = false;
+                                                        },
+                                                    }"
+                                                    @click.outside="open = false"
+                                                    @keydown.escape.window="open = false"
+                                                    class="relative"
+                                                >
+                                                    <button
+                                                        type="button"
+                                                        @click="open = !open"
+                                                        class="w-full flex items-center justify-between bg-content-bg border border-content-border text-text-primary text-sm rounded-lg px-3 py-2 h-9 cursor-pointer transition-all duration-150 hover:bg-content-border/30 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary"
+                                                    >
+                                                        <span class="truncate" x-text="selectedLabel"></span>
+                                                        <svg class="size-4 text-text-muted shrink-0 transition-transform duration-150" :class="open ? 'rotate-180' : ''" viewBox="0 0 20 20" fill="currentColor">
+                                                            <path fill-rule="evenodd" d="M5.22 8.22a.75.75 0 0 1 1.06 0L10 11.94l3.72-3.72a.75.75 0 1 1 1.06 1.06l-4.25 4.25a.75.75 0 0 1-1.06 0L5.22 9.28a.75.75 0 0 1 0-1.06Z" clip-rule="evenodd" />
+                                                        </svg>
+                                                    </button>
+                                                    <div
+                                                        x-show="open"
+                                                        class="absolute z-50 top-full mt-1 left-0 right-0 bg-content-bg border border-content-border rounded-lg shadow-lg p-1 max-h-60 overflow-y-auto space-y-0.5"
+                                                        style="display: none;"
+                                                    >
+                                                        <button
+                                                            type="button"
+                                                            @click="select('')"
+                                                            class="w-full text-left px-3 py-1.5 text-sm rounded-md transition-colors"
+                                                            :class="'' === selected ? 'bg-primary/10 text-primary font-medium' : 'text-text-primary hover:bg-content-border/30'"
+                                                        >
+                                                            <span>None (empty page)</span>
+                                                        </button>
+                                                        <template x-for="opt in options" :key="opt.value">
+                                                            <button
+                                                                type="button"
+                                                                @click="select(opt.value)"
+                                                                class="w-full text-left px-3 py-1.5 text-sm rounded-md transition-colors"
+                                                                :class="opt.value === selected ? 'bg-primary/10 text-primary font-medium' : 'text-text-primary hover:bg-content-border/30'"
+                                                            >
+                                                                <span x-text="opt.label"></span>
+                                                            </button>
+                                                        </template>
+                                                    </div>
+                                                    <input type="hidden" name="layout_id" :value="selected">
+                                                </div>
                                             </div>
                                         </div>
                                     </div>

@@ -67,16 +67,56 @@
                                 </div>
                                 <div class="flex items-center gap-2">
                                     <div class="flex-1">
-                                        <select
-                                            id="field-collection"
-                                            name="collection"
-                                            class="w-full block bg-content-bg border border-content-border text-text-primary text-sm rounded-lg px-3 py-2 h-9 transition-all duration-150 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary"
+                                        <div
+                                            x-data="{
+                                                open: false,
+                                                selected: '{{ old('collection', $layout->collection) }}',
+                                                options: [
+                                                    { value: 'page', label: 'Page' },
+                                                    { value: 'blog', label: 'Blog' },
+                                                    { value: 'package', label: 'Package' },
+                                                ],
+                                                get selectedLabel() {
+                                                    return this.options.find(o => o.value === this.selected)?.label ?? 'Select...';
+                                                },
+                                                select(val) {
+                                                    this.selected = val;
+                                                    this.open = false;
+                                                },
+                                            }"
+                                            @click.outside="open = false"
+                                            @keydown.escape.window="open = false"
+                                            class="relative"
                                         >
-                                            <option value="page" @selected(old('collection', $layout->collection) === 'page')>Page</option>
-                                            <option value="blog" @selected(old('collection', $layout->collection) === 'blog')>Blog</option>
-                                            <option value="package" @selected(old('collection', $layout->collection) === 'package')>Package</option>
-                                        </select>
-                                        @error('collection') <p class="text-xs text-danger mt-1">{{ $message }}</p> @enderror
+                                            <button
+                                                type="button"
+                                                @click="open = !open"
+                                                class="w-full flex items-center justify-between bg-content-bg border border-content-border text-text-primary text-sm rounded-lg px-3 py-2 h-9 cursor-pointer transition-all duration-150 hover:bg-content-border/30 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary"
+                                            >
+                                                <span class="truncate" x-text="selectedLabel"></span>
+                                                <svg class="size-4 text-text-muted shrink-0 transition-transform duration-150" :class="open ? 'rotate-180' : ''" viewBox="0 0 20 20" fill="currentColor">
+                                                    <path fill-rule="evenodd" d="M5.22 8.22a.75.75 0 0 1 1.06 0L10 11.94l3.72-3.72a.75.75 0 1 1 1.06 1.06l-4.25 4.25a.75.75 0 0 1-1.06 0L5.22 9.28a.75.75 0 0 1 0-1.06Z" clip-rule="evenodd" />
+                                                </svg>
+                                            </button>
+                                            <div
+                                                x-show="open"
+                                                class="absolute z-50 top-full mt-1 left-0 right-0 bg-content-bg border border-content-border rounded-lg shadow-lg p-1 max-h-60 overflow-y-auto space-y-0.5"
+                                                style="display: none;"
+                                            >
+                                                <template x-for="opt in options" :key="opt.value">
+                                                    <button
+                                                        type="button"
+                                                        @click="select(opt.value)"
+                                                        class="w-full text-left px-3 py-1.5 text-sm rounded-md transition-colors"
+                                                        :class="opt.value === selected ? 'bg-primary/10 text-primary font-medium' : 'text-text-primary hover:bg-content-border/30'"
+                                                    >
+                                                        <span x-text="opt.label"></span>
+                                                    </button>
+                                                </template>
+                                            </div>
+                                            <input type="hidden" name="collection" :value="selected">
+                                            @error('collection') <p class="text-xs text-danger mt-1">{{ $message }}</p> @enderror
+                                        </div>
                                     </div>
                                 </div>
                             </div>
