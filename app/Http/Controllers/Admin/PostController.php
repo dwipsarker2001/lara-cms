@@ -35,7 +35,7 @@ class PostController extends Controller
             'tags' => 'nullable|string',
             'hero_img' => 'nullable|string',
             'banner_img' => 'nullable|string',
-            'layout_id' => 'nullable|exists:layouts,id',
+            'layout_id' => 'nullable|exists:layouts,id,collection,blog',
             'published' => 'boolean',
         ]);
 
@@ -47,6 +47,8 @@ class PostController extends Controller
             $layout = Layout::findOrFail($request->layout_id);
             $data['sections'] = $layout->sections ?? [];
         }
+
+        unset($data['layout_id']);
 
         Post::create($data);
 

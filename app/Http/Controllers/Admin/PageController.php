@@ -28,7 +28,7 @@ class PageController extends Controller
         $data = $request->validate([
             'title' => 'required|string|max:255',
             'slug' => 'required|string|max:255|unique:pages,slug',
-            'layout_id' => 'nullable|exists:layouts,id',
+            'layout_id' => 'nullable|exists:layouts,id,collection,page',
             'published' => 'boolean',
             'meta' => 'nullable|array',
         ]);
@@ -53,6 +53,8 @@ class PageController extends Controller
             $data['sections'] = Sections::injectGlobals();
         }
         $data['position'] = Page::max('position') + 1;
+
+        unset($data['layout_id']);
 
         Page::create($data);
 

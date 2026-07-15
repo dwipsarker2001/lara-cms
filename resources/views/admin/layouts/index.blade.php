@@ -34,6 +34,8 @@
             reorder-route="admin.layouts.reorder"
             edit-route="admin.layouts.editor"
             delete-route="admin.layouts.destroy"
+            :show-settings="true"
+            settings-route="admin.layouts.edit"
             empty-text="No layouts yet."
             empty-link-text="Create your first layout"
             empty-link-route="admin.layouts.create"

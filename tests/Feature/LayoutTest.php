@@ -38,6 +38,28 @@ it('validates layout creation', function () {
     ])->assertSessionHasErrors(['name', 'collection']);
 });
 
+it('validates collection must be a valid type', function () {
+    post(route('admin.layouts.store'), [
+        'name' => 'Test',
+        'collection' => 'invalid',
+    ])->assertSessionHasErrors(['collection']);
+
+    post(route('admin.layouts.store'), [
+        'name' => 'Test',
+        'collection' => 'page',
+    ])->assertValid('collection');
+
+    post(route('admin.layouts.store'), [
+        'name' => 'Test',
+        'collection' => 'blog',
+    ])->assertValid('collection');
+
+    post(route('admin.layouts.store'), [
+        'name' => 'Test',
+        'collection' => 'package',
+    ])->assertValid('collection');
+});
+
 it('updates a layout', function () {
     $layout = Layout::factory()->create();
 
