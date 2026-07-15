@@ -1,4 +1,21 @@
 services:
+  app:
+    build: .
+    container_name: lara-cms-app
+    restart: unless-stopped
+    ports:
+      - "8000:8000"
+    environment:
+      DB_HOST: mysql
+      DB_DATABASE: ${DB_DATABASE:-lara_cms}
+      DB_USERNAME: ${DB_USERNAME:-root}
+      DB_PASSWORD: ${DB_PASSWORD:-secret}
+    volumes:
+      - .:/app
+    depends_on:
+      mysql:
+        condition: service_healthy
+
   mysql:
     image: mysql:8.0
     container_name: lara-cms-mysql
