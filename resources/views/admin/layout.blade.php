@@ -10,7 +10,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer" />
     <script>window.FA_ICONS = {{ Js::from(json_decode(file_get_contents(public_path('fa-icons.json')))) }};</script>
 </head>
-<body class="admin-root antialiased bg-header-bg text-text-primary min-h-full" x-data="{ navCollapsed: {{ (request()->routeIs('admin.pages.editor') || request()->routeIs('admin.posts.editor') || request()->routeIs('admin.layouts.editor')) ? 'true' : 'false' }}, userMenuOpen: false }">
+<body class="admin-root antialiased bg-header-bg text-text-primary min-h-full" x-data="{ navCollapsed: {{ (request()->routeIs('admin.pages.editor') || request()->routeIs('admin.posts.editor') || request()->routeIs('admin.layouts.editor') || request()->routeIs('admin.packages.editor')) ? 'true' : 'false' }}, userMenuOpen: false }">
     {{-- Fixed header --}}
     <header class="fixed top-0 left-0 right-0 h-14 px-4 flex items-center gap-3 z-[1] bg-header-bg text-header-text">
         <div class="flex items-center gap-3">
@@ -44,6 +44,7 @@
             <button
                 type="button"
                 aria-label="Search"
+                @click="$dispatch('open-command-palette')"
                 class="hidden sm:flex items-center gap-2.5 h-9 w-56 pl-3 pr-2 rounded-lg bg-white/10 hover:bg-white/[0.16] text-white/55 hover:text-white/80 transition-colors"
             >
                 <svg viewBox="0 0 20 20" fill="currentColor" class="w-[18px] h-[18px] shrink-0">
@@ -95,9 +96,13 @@
                     @click="open = !open"
                     class="size-8 rounded-lg overflow-hidden flex items-center justify-center ring-2 ring-transparent hover:ring-white/30 transition"
                 >
-                    <span class="flex size-8 items-center justify-center bg-primary text-white font-medium text-xs rounded-lg">
-                        {{ strtoupper(substr(Auth::user()->name ?? 'U', 0, 2)) }}
-                    </span>
+                    @if (Auth::user()->avatar)
+                        <img src="{{ Auth::user()->avatar }}" alt="{{ Auth::user()->name }}" class="size-8 rounded-lg object-cover">
+                    @else
+                        <span class="flex size-8 items-center justify-center bg-primary text-white font-medium text-xs rounded-lg">
+                            {{ strtoupper(substr(Auth::user()->name ?? 'U', 0, 2)) }}
+                        </span>
+                    @endif
                 </button>
 
                 <div
@@ -112,14 +117,18 @@
                     class="absolute right-0 top-full mt-2 z-50 min-w-64 rounded-xl border border-content-border bg-body-bg shadow-xl overflow-hidden"
                 >
                     <header class="flex items-center gap-2 px-3.5 py-3 bg-content-bg border-b border-content-border">
-                        <span class="flex size-8 shrink-0 items-center justify-center bg-primary text-white font-medium text-xs rounded-lg">
-                            {{ strtoupper(substr(Auth::user()->name ?? 'U', 0, 2)) }}
-                        </span>
+                        @if (Auth::user()->avatar)
+                            <img src="{{ Auth::user()->avatar }}" alt="{{ Auth::user()->name }}" class="size-8 shrink-0 rounded-lg object-cover">
+                        @else
+                            <span class="flex size-8 shrink-0 items-center justify-center bg-primary text-white font-medium text-xs rounded-lg">
+                                {{ strtoupper(substr(Auth::user()->name ?? 'U', 0, 2)) }}
+                            </span>
+                        @endif
                         <div class="min-w-0 text-sm text-text-heading truncate">{{ Auth::user()->email ?? 'admin@ecms.com' }}</div>
                     </header>
 
                     <div class="p-1.5 bg-content-bg border-b border-content-border rounded-b-xl">
-                        <a href="#" role="menuitem" class="flex w-full items-center rounded-lg px-1 py-1.5 text-sm text-text-primary hover:bg-body-bg transition-colors no-underline cursor-pointer">
+                        <a href="{{ route('admin.profile.edit') }}" role="menuitem" class="flex w-full items-center rounded-lg px-1 py-1.5 text-sm text-text-primary hover:bg-body-bg transition-colors no-underline cursor-pointer">
                             <svg viewBox="0 0 14 14" fill="none" class="size-4 shrink-0 text-text-muted mx-1">
                                 <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="m3.17188 12.5625 0.12377 -0.528c0.20645 -0.7775 0.65299 -1.4723 1.27877 -1.9838 0.68452 -0.55951 1.54143 -0.86515 2.42552 -0.86515s1.74099 0.30564 2.42552 0.86515c0.62574 0.5115 1.07234 1.2063 1.27874 1.9838l0.1239 0.5436" />
                                 <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M7 13.5c4.16 0 6.5 -2.34 6.5 -6.5S11.16 0.5 7 0.5 0.5 2.84 0.5 7s2.34 6.5 6.5 6.5Z" />
@@ -129,20 +138,18 @@
                         </a>
                         <a href="#" role="menuitem" class="flex w-full items-center rounded-lg px-1 py-1.5 text-sm text-text-primary hover:bg-body-bg transition-colors no-underline cursor-pointer">
                             <svg viewBox="0 0 14 14" fill="none" class="size-4 shrink-0 text-text-muted mx-1">
-                                <g stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
-                                    <path d="M12.029 7.756q0 .08.05.145l.697.874a.995.995 0 0 1 .085 1.123l-.409.704a1 1 0 0 1-1.02.49l-1.111-.169a.24.24 0 0 0-.153.029l-1.316.756a.24.24 0 0 0-.101.117l-.41 1.04a1 1 0 0 1-.934.635H6.59a1.01 1.01 0 0 1-.934-.635l-.41-1.04a.24.24 0 0 0-.1-.117l-1.317-.756a.24.24 0 0 0-.152-.029l-1.112.168a1.01 1.01 0 0 1-1.02-.49l-.41-.703a.995.995 0 0 1 .086-1.123L1.92 7.9a.23.23 0 0 0 .05-.145V6.244a.23.23 0 0 0-.05-.145l-.701-.874a1 1 0 0 1-.085-1.123l.409-.704a1 1 0 0 1 1.02-.49l1.109.169a.24.24 0 0 0 .152-.029l1.32-.76a.24.24 0 0 0 .1-.117l.412-1.036A1 1 0 0 1 6.591.5h.82a1.01 1.01 0 0 1 .934.635l.41 1.036c.019.05.054.093.1.121l1.317.756c.046.026.1.036.152.029l1.112-.168a1.01 1.01 0 0 1 1.02.49l.41.703a.995.995 0 0 1-.086 1.124l-.701.873a.23.23 0 0 0-.05.145z" />
-                                    <path d="M7 9.076c1.329 0 2.076-.748 2.076-2.076S8.329 4.924 7 4.924 4.924 5.67 4.924 7c0 1.328.747 2.076 2.076 2.076" />
-                                </g>
-                            </svg>
-                            <span class="px-2">Preferences</span>
-                        </a>
-                        <a href="#" role="menuitem" class="flex w-full items-center rounded-lg px-1 py-1.5 text-sm text-text-primary hover:bg-body-bg transition-colors no-underline cursor-pointer">
-                            <svg viewBox="0 0 14 14" fill="none" class="size-4 shrink-0 text-text-muted mx-1">
                                 <path stroke="currentColor" stroke-linecap="round" stroke-width="1" d="M4.78125 9.21875c-1.08301 0.68519 -1.90856 1.51075 -2.59375 2.59375m2.59375 -7.03124C4.09605 3.69825 3.27051 2.8727 2.1875 2.18751m7.03124 7.03124c1.08306 0.68519 1.90856 1.51075 2.59376 2.59375M9.21874 4.78126c0.6852 -1.08301 1.51076 -1.90856 2.59376 -2.59375" />
                                 <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M7 13.5c4.16 0 6.5 -2.34 6.5 -6.5S11.16 0.5 7 0.5 0.5 2.84 0.5 7s2.34 6.5 6.5 6.5Z" />
                                 <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M7 10c1.92 0 3-1.08 3-3S8.92 4 7 4 4 5.08 4 7s1.08 3 3 3Z" />
                             </svg>
                             <span class="px-2">Get support</span>
+                        </a>
+                        <a href="{{ route('admin.settings') }}" role="menuitem" class="flex w-full items-center rounded-lg px-1 py-1.5 text-sm text-text-primary hover:bg-body-bg transition-colors no-underline cursor-pointer">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" class="size-4 shrink-0 text-text-muted mx-1">
+                                <circle cx="12" cy="12" r="3" />
+                                <path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83 0 2 2 0 010-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z" />
+                            </svg>
+                            <span class="px-2">Settings</span>
                         </a>
                         <form method="POST" action="{{ route('logout') }}">
                             @csrf
@@ -219,6 +226,21 @@
                             </a>
                         </li>
                         <li>
+                            <a href="{{ route('admin.packages.index') }}"
+                                class="flex items-center gap-2.5 px-2.5 py-1.5 rounded-md text-sm no-underline transition-colors {{ request()->routeIs('admin.packages.*') ? 'text-text-heading bg-gray-200 font-semibold' : 'text-text-primary hover:bg-gray-100 hover:text-text-heading font-medium' }}"
+                            >
+                                <span class="flex w-4 shrink-0 items-center justify-center">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" class="size-4">
+                                        <path d="M16.5 9.4 7.55 4.24" />
+                                        <path d="M21 16V8a2 2 0 00-1-1.73l-7-4a2 2 0 00-2 0l-7 4A2 2 0 002 8v8a2 2 0 001 1.73l7 4a2 2 0 002 0l7-4A2 2 0 0021 16z" />
+                                        <polyline points="3.29 7 12 12 20.71 7" />
+                                        <line x1="12" y1="22" x2="12" y2="12" />
+                                    </svg>
+                                </span>
+                                Packages
+                            </a>
+                        </li>
+                        <li>
                             <a href="{{ route('admin.layouts.index') }}"
                                 class="flex items-center gap-2.5 px-2.5 py-1.5 rounded-md text-sm no-underline transition-colors @if(request()->routeIs('admin.layouts.*')) text-text-heading bg-gray-200 font-semibold @else text-text-primary hover:bg-gray-100 hover:text-text-heading font-medium @endif"
                             >
@@ -230,21 +252,6 @@
                                     </svg>
                                 </span>
                                 Layouts
-                            </a>
-                        </li>
-                        <li>
-                            <a href="#"
-                                class="flex items-center gap-2.5 px-2.5 py-1.5 rounded-md text-sm no-underline transition-colors text-text-primary hover:bg-gray-100 hover:text-text-heading font-medium"
-                            >
-                                <span class="flex w-4 shrink-0 items-center justify-center">
-                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" class="size-4">
-                                        <path d="M16.5 9.4 7.55 4.24" />
-                                        <path d="M21 16V8a2 2 0 00-1-1.73l-7-4a2 2 0 00-2 0l-7 4A2 2 0 002 8v8a2 2 0 001 1.73l7 4a2 2 0 002 0l7-4A2 2 0 0021 16z" />
-                                        <polyline points="3.29 7 12 12 20.71 7" />
-                                        <line x1="12" y1="22" x2="12" y2="12" />
-                                    </svg>
-                                </span>
-                                Package
                             </a>
                         </li>
                         <li>
@@ -307,9 +314,9 @@
                     </ul>
                 </div>
 
-                {{-- Settings --}}
+                {{-- Preferences --}}
                 <div class="mt-5">
-                    <div class="px-2.5 pb-1.5 text-xs font-semibold uppercase tracking-wider text-text-muted/70">Settings</div>
+                    <div class="px-2.5 pb-1.5 text-xs font-semibold uppercase tracking-wider text-text-muted/70">Preferences</div>
                     <ul class="space-y-0.5">
                         <li>
                             <a href="{{ route('admin.settings') }}"
@@ -317,11 +324,27 @@
                             >
                                 <span class="flex w-4 shrink-0 items-center justify-center">
                                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" class="size-4">
-                                        <circle cx="12" cy="12" r="3" />
-                                        <path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83 0 2 2 0 010-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z" />
+                                        <line x1="21" x2="14" y1="4" y2="4" /><line x1="10" x2="3" y1="4" y2="4" />
+                                        <line x1="21" x2="12" y1="12" y2="12" /><line x1="8" x2="3" y1="12" y2="12" />
+                                        <line x1="21" x2="16" y1="20" y2="20" /><line x1="12" x2="3" y1="20" y2="20" />
+                                        <line x1="14" y1="2" x2="14" y2="6" /><line x1="8" y1="10" x2="8" y2="14" />
+                                        <line x1="16" y1="18" x2="16" y2="22" />
                                     </svg>
                                 </span>
-                                Globals
+                                Preference
+                            </a>
+                        </li>
+                        <li>
+                            <a href="{{ route('admin.seo') }}"
+                                class="flex items-center gap-2.5 px-2.5 py-1.5 rounded-md text-sm no-underline transition-colors @if(request()->routeIs('admin.seo')) text-text-heading bg-gray-200 font-semibold @else text-text-primary hover:bg-gray-100 hover:text-text-heading font-medium @endif"
+                            >
+                                <span class="flex w-4 shrink-0 items-center justify-center">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" class="size-4">
+                                        <polyline points="22 7 13.5 15.5 8.5 10.5 2 17" />
+                                        <polyline points="16 7 22 7 22 13" />
+                                    </svg>
+                                </span>
+                                SEO Pro
                             </a>
                         </li>
                     </ul>
@@ -345,6 +368,7 @@
         </main>
     </div>
 
+    <x-admin::command-palette />
     <x-admin::asset-picker />
     <x-admin::section-picker />
     <x-admin::toast />

@@ -1,0 +1,1096 @@
+{
+  "communities": {
+    "0": [
+      "alpinejs",
+      "autoprefixer",
+      "concurrently",
+      "fortawesome_fontawesome_free",
+      "laravel_vite_plugin",
+      "package",
+      "package_dependencies",
+      "package_dependencies_alpinejs",
+      "package_dependencies_sortablejs",
+      "package_dependencies_tiptap_core",
+      "package_dependencies_tiptap_extension_image",
+      "package_dependencies_tiptap_extension_link",
+      "package_dependencies_tiptap_extension_placeholder",
+      "package_dependencies_tiptap_extension_text_align",
+      "package_dependencies_tiptap_extension_underline",
+      "package_dependencies_tiptap_pm",
+      "package_dependencies_tiptap_starter_kit",
+      "package_devdependencies",
+      "package_devdependencies_alpinejs",
+      "package_devdependencies_autoprefixer",
+      "package_devdependencies_concurrently",
+      "package_devdependencies_fortawesome_fontawesome_free",
+      "package_devdependencies_laravel_vite_plugin",
+      "package_devdependencies_postcss",
+      "package_devdependencies_tailwindcss",
+      "package_devdependencies_tailwindcss_forms",
+      "package_devdependencies_tailwindcss_vite",
+      "package_devdependencies_vite",
+      "package_private",
+      "package_schema",
+      "package_scripts",
+      "package_scripts_build",
+      "package_scripts_dev",
+      "package_type",
+      "postcss",
+      "sortablejs",
+      "tailwindcss",
+      "tailwindcss_forms",
+      "tailwindcss_vite",
+      "tiptap_core",
+      "tiptap_extension_link",
+      "tiptap_extension_placeholder",
+      "tiptap_extension_underline",
+      "tiptap_pm",
+      "tiptap_starter_kit",
+      "vite"
+    ],
+    "1": [
+      "app_http_controllers_admin_layoutcontroller_layoutcontroller",
+      "app_http_controllers_admin_layoutcontroller_layoutcontroller_destroy",
+      "app_http_controllers_admin_layoutcontroller_layoutcontroller_edit",
+      "app_http_controllers_admin_layoutcontroller_layoutcontroller_editor",
+      "app_http_controllers_admin_layoutcontroller_layoutcontroller_index",
+      "app_http_controllers_admin_layoutcontroller_layoutcontroller_reorder",
+      "app_http_controllers_admin_layoutcontroller_layoutcontroller_store",
+      "app_http_controllers_admin_layoutcontroller_layoutcontroller_update",
+      "app_http_controllers_admin_layoutcontroller_layoutcontroller_updatesections",
+      "app_http_controllers_admin_layoutcontroller_php_request",
+      "app_models_layout",
+      "app_models_layout_layout",
+      "app_models_layout_layout_gettitleattribute",
+      "app_models_user",
+      "app_models_user_user",
+      "app_models_user_user_casts",
+      "authenticatable",
+      "database_factories_layoutfactory",
+      "database_factories_layoutfactory_layoutfactory",
+      "database_factories_layoutfactory_layoutfactory_definition",
+      "database_factories_postfactory",
+      "database_factories_postfactory_postfactory",
+      "database_factories_postfactory_postfactory_definition",
+      "database_factories_userfactory",
+      "database_factories_userfactory_userfactory",
+      "database_factories_userfactory_userfactory_definition",
+      "database_factories_userfactory_userfactory_unverified",
+      "database_seeders_databaseseeder",
+      "database_seeders_databaseseeder_databaseseeder",
+      "database_seeders_databaseseeder_databaseseeder_run",
+      "database_seeders_layoutseeder",
+      "database_seeders_layoutseeder_layoutseeder",
+      "database_seeders_layoutseeder_layoutseeder_run",
+      "database_seeders_userseeder",
+      "database_seeders_userseeder_userseeder",
+      "database_seeders_userseeder_userseeder_run",
+      "factory",
+      "hasfactory",
+      "notifiable",
+      "seeder",
+      "tests_feature_commandsearchtest",
+      "tests_feature_layouttest",
+      "tests_feature_posteditortest",
+      "tests_feature_profiletest"
+    ],
+    "2": [
+      "composer",
+      "composer_allow_plugins_pestphp_pest_plugin",
+      "composer_allow_plugins_php_http_discovery",
+      "composer_autoload",
+      "composer_autoload_dev",
+      "composer_autoload_dev_psr_4",
+      "composer_autoload_psr_4",
+      "composer_config",
+      "composer_config_allow_plugins",
+      "composer_config_optimize_autoloader",
+      "composer_config_preferred_install",
+      "composer_config_sort_packages",
+      "composer_description",
+      "composer_extra",
+      "composer_extra_laravel",
+      "composer_keywords",
+      "composer_laravel_dont_discover",
+      "composer_license",
+      "composer_minimum_stability",
+      "composer_name",
+      "composer_prefer_stable",
+      "composer_psr_4_app",
+      "composer_psr_4_database_factories",
+      "composer_psr_4_database_seeders",
+      "composer_psr_4_tests",
+      "composer_require",
+      "composer_require_dev",
+      "composer_require_dev_fakerphp_faker",
+      "composer_require_dev_laravel_boost",
+      "composer_require_dev_laravel_pail",
+      "composer_require_dev_laravel_pao",
+      "composer_require_dev_laravel_pint",
+      "composer_require_dev_mockery_mockery",
+      "composer_require_dev_nunomaduro_collision",
+      "composer_require_dev_pestphp_pest",
+      "composer_require_dev_pestphp_pest_plugin_laravel",
+      "composer_require_laravel_framework",
+      "composer_require_laravel_tinker",
+      "composer_require_php",
+      "composer_schema",
+      "composer_type",
+      "ref_framework",
+      "ref_laravel"
+    ],
+    "3": [
+      "app_blocks_block_block_view",
+      "app_http_controllers_admin_assetscontroller_assetscontroller_page",
+      "app_http_controllers_admin_layoutcontroller_layoutcontroller_create",
+      "app_http_controllers_admin_pagecontroller_pagecontroller",
+      "app_http_controllers_admin_pagecontroller_pagecontroller_create",
+      "app_http_controllers_admin_pagecontroller_pagecontroller_destroy",
+      "app_http_controllers_admin_pagecontroller_pagecontroller_edit",
+      "app_http_controllers_admin_pagecontroller_pagecontroller_editor",
+      "app_http_controllers_admin_pagecontroller_pagecontroller_index",
+      "app_http_controllers_admin_pagecontroller_pagecontroller_reorder",
+      "app_http_controllers_admin_pagecontroller_pagecontroller_store",
+      "app_http_controllers_admin_pagecontroller_pagecontroller_update",
+      "app_http_controllers_admin_pagecontroller_pagecontroller_updatesections",
+      "app_http_controllers_admin_pagecontroller_php_request",
+      "app_http_controllers_admin_previewcontroller_previewcontroller_blockpreview",
+      "app_http_controllers_public_pagecontroller",
+      "app_http_controllers_public_pagecontroller_pagecontroller",
+      "app_http_controllers_public_pagecontroller_pagecontroller_home",
+      "app_http_controllers_public_pagecontroller_pagecontroller_show",
+      "app_models_page_page",
+      "app_models_term_term_booted",
+      "app_support_sections_sections",
+      "app_support_sections_sections_createdefaultsection",
+      "app_support_sections_sections_defaultdata",
+      "app_support_sections_sections_fieldsatpath",
+      "app_support_sections_sections_getatpath",
+      "app_support_sections_sections_injectglobals",
+      "app_support_sections_sections_newlistitem",
+      "app_support_sections_sections_sectionstopropagate",
+      "app_support_sections_sections_setatpath",
+      "app_support_sections_sections_slugify",
+      "app_support_sections_sections_withglobals",
+      "database_seeders_homepageseeder_homepageseeder",
+      "database_seeders_homepageseeder_homepageseeder_run",
+      "static",
+      "tests_feature_exampletest"
+    ],
+    "4": [
+      "app_blocks_blockregistry",
+      "app_http_controllers_admin_commandsearchcontroller",
+      "app_http_controllers_admin_commandsearchcontroller_commandsearchcontroller",
+      "app_http_controllers_admin_commandsearchcontroller_commandsearchcontroller_invoke",
+      "app_http_controllers_admin_commandsearchcontroller_php_request",
+      "app_http_controllers_admin_layoutcontroller",
+      "app_http_controllers_admin_pagecontroller",
+      "app_http_controllers_admin_postcontroller",
+      "app_http_controllers_admin_previewcontroller",
+      "app_http_controllers_admin_previewcontroller_php_request",
+      "app_http_controllers_admin_previewcontroller_previewcontroller",
+      "app_http_controllers_admin_previewcontroller_previewcontroller_render",
+      "app_http_controllers_admin_profilecontroller",
+      "app_http_controllers_admin_profilecontroller_php_redirectresponse",
+      "app_http_controllers_admin_profilecontroller_php_view",
+      "app_http_controllers_admin_profilecontroller_profilecontroller",
+      "app_http_controllers_admin_profilecontroller_profilecontroller_edit",
+      "app_http_controllers_admin_profilecontroller_profilecontroller_update",
+      "app_http_controllers_admin_settingscontroller",
+      "app_http_controllers_admin_settingscontroller_php_request",
+      "app_http_controllers_admin_settingscontroller_settingscontroller",
+      "app_http_controllers_admin_settingscontroller_settingscontroller_index",
+      "app_http_controllers_admin_settingscontroller_settingscontroller_update",
+      "app_http_controllers_controller",
+      "app_http_controllers_controller_controller",
+      "app_models_setting",
+      "app_models_setting_setting",
+      "app_support_blockpreview",
+      "app_support_blockpreview_blockpreview",
+      "app_support_blockpreview_blockpreview_render",
+      "app_support_sections",
+      "database_seeders_homepageseeder",
+      "jsonresponse",
+      "routes_admin"
+    ],
+    "5": [
+      "app_http_controllers_admin_postcontroller_php_request",
+      "app_http_controllers_admin_postcontroller_postcontroller",
+      "app_http_controllers_admin_postcontroller_postcontroller_create",
+      "app_http_controllers_admin_postcontroller_postcontroller_destroy",
+      "app_http_controllers_admin_postcontroller_postcontroller_edit",
+      "app_http_controllers_admin_postcontroller_postcontroller_editor",
+      "app_http_controllers_admin_postcontroller_postcontroller_index",
+      "app_http_controllers_admin_postcontroller_postcontroller_reorder",
+      "app_http_controllers_admin_postcontroller_postcontroller_store",
+      "app_http_controllers_admin_postcontroller_postcontroller_update",
+      "app_http_controllers_admin_postcontroller_postcontroller_updatesections",
+      "app_http_controllers_public_blogcontroller",
+      "app_http_controllers_public_blogcontroller_blogcontroller",
+      "app_http_controllers_public_blogcontroller_blogcontroller_show",
+      "app_models_page_page_route",
+      "app_models_post",
+      "app_models_post_php_belongstomany",
+      "app_models_post_post",
+      "app_models_post_post_terms",
+      "app_support_commandsearch",
+      "app_support_commandsearch_commandsearch",
+      "app_support_commandsearch_commandsearch_dynamiccommands",
+      "app_support_commandsearch_commandsearch_filter",
+      "app_support_commandsearch_commandsearch_group",
+      "app_support_commandsearch_commandsearch_issubsequence",
+      "app_support_commandsearch_commandsearch_score",
+      "app_support_commandsearch_commandsearch_search",
+      "app_support_commandsearch_commandsearch_staticcommands",
+      "routes_web",
+      "tests_unit_commandsearchrankingtest"
+    ],
+    "6": [
+      "composer_scripts",
+      "composer_scripts_dev",
+      "composer_scripts_post_autoload_dump",
+      "composer_scripts_post_create_project_cmd",
+      "composer_scripts_post_root_package_install",
+      "composer_scripts_post_update_cmd",
+      "composer_scripts_pre_package_uninstall",
+      "composer_scripts_setup",
+      "composer_scripts_test",
+      "ref_composer_config_disableprocesstimeout",
+      "ref_composer_install",
+      "ref_illuminate_foundation_composerscripts_postautoloaddump",
+      "ref_illuminate_foundation_composerscripts_prepackageuninstall",
+      "ref_npm_install_ignore_scripts",
+      "ref_npm_run_build",
+      "ref_npx_concurrently_c_93c5fd_c4b5fd_fb7185_fdba74_php_artisan_serve_php_artisan_queue_listen_tries_1_timeout_0_php_artisan_pail_timeout_0_npm_run_dev_names_server_queue_logs_vite_kill_others",
+      "ref_php_artisan_boost_update_ansi",
+      "ref_php_artisan_config_clear_ansi_no_additional_args",
+      "ref_php_artisan_key_generate",
+      "ref_php_artisan_key_generate_ansi",
+      "ref_php_artisan_migrate_force",
+      "ref_php_artisan_migrate_graceful_ansi",
+      "ref_php_artisan_package_discover_ansi",
+      "ref_php_artisan_test",
+      "ref_php_artisan_vendor_publish_tag_laravel_assets_ansi_force",
+      "ref_php_r_file_exists_database_database_sqlite_touch_database_database_sqlite",
+      "ref_php_r_file_exists_env_copy_env_example_env"
+    ],
+    "7": [
+      "app_http_controllers_admin_assetscontroller",
+      "app_http_controllers_admin_assetscontroller_assetscontroller",
+      "app_http_controllers_admin_assetscontroller_assetscontroller_destroy",
+      "app_http_controllers_admin_assetscontroller_assetscontroller_destroydirectory",
+      "app_http_controllers_admin_assetscontroller_assetscontroller_directory",
+      "app_http_controllers_admin_assetscontroller_assetscontroller_file",
+      "app_http_controllers_admin_assetscontroller_assetscontroller_formatsize",
+      "app_http_controllers_admin_assetscontroller_assetscontroller_getimagedimensions",
+      "app_http_controllers_admin_assetscontroller_assetscontroller_index",
+      "app_http_controllers_admin_assetscontroller_assetscontroller_store",
+      "app_http_controllers_admin_assetscontroller_assetscontroller_update",
+      "app_http_controllers_admin_assetscontroller_php_request",
+      "app_models_asset",
+      "app_models_asset_asset",
+      "app_models_asset_asset_casts",
+      "app_models_booking",
+      "app_models_booking_booking",
+      "app_models_destination",
+      "app_models_destination_destination",
+      "app_models_package",
+      "app_models_package_package",
+      "app_models_page",
+      "model"
+    ],
+    "8": [
+      "app_http_controllers_auth_logincontroller",
+      "app_http_controllers_auth_logincontroller_logincontroller",
+      "app_http_controllers_auth_logincontroller_logincontroller_create",
+      "app_http_controllers_auth_logincontroller_logincontroller_destroy",
+      "app_http_controllers_auth_logincontroller_logincontroller_store",
+      "app_http_controllers_auth_logincontroller_php_redirectresponse",
+      "app_http_controllers_auth_logincontroller_php_request",
+      "app_http_controllers_auth_logincontroller_php_view",
+      "app_http_requests_auth_loginrequest",
+      "app_http_requests_auth_loginrequest_loginrequest",
+      "app_http_requests_auth_loginrequest_loginrequest_authenticate",
+      "app_http_requests_auth_loginrequest_loginrequest_authorize",
+      "app_http_requests_auth_loginrequest_loginrequest_ensureisnotratelimited",
+      "app_http_requests_auth_loginrequest_loginrequest_rules",
+      "app_http_requests_auth_loginrequest_loginrequest_throttlekey",
+      "app_http_requests_profileupdaterequest",
+      "app_http_requests_profileupdaterequest_profileupdaterequest",
+      "app_http_requests_profileupdaterequest_profileupdaterequest_authorize",
+      "app_http_requests_profileupdaterequest_profileupdaterequest_rules",
+      "config_auth",
+      "formrequest"
+    ],
+    "9": [
+      "app_http_controllers_admin_taxonomycontroller",
+      "app_http_controllers_admin_taxonomycontroller_php_request",
+      "app_http_controllers_admin_taxonomycontroller_taxonomycontroller",
+      "app_http_controllers_admin_taxonomycontroller_taxonomycontroller_create",
+      "app_http_controllers_admin_taxonomycontroller_taxonomycontroller_destroy",
+      "app_http_controllers_admin_taxonomycontroller_taxonomycontroller_edit",
+      "app_http_controllers_admin_taxonomycontroller_taxonomycontroller_index",
+      "app_http_controllers_admin_taxonomycontroller_taxonomycontroller_store",
+      "app_http_controllers_admin_taxonomycontroller_taxonomycontroller_update",
+      "app_models_taxonomy",
+      "app_models_taxonomy_taxonomy",
+      "app_models_taxonomy_taxonomy_terms",
+      "app_models_term",
+      "app_models_term_php_belongstomany",
+      "app_models_term_term",
+      "app_models_term_term_posts",
+      "app_models_term_term_taxonomy",
+      "belongsto",
+      "hasmany",
+      "tests_feature_postcrudtest"
+    ],
+    "10": [
+      "app_blocks_common_bloglist_bloglist_fields",
+      "app_blocks_field_field",
+      "app_blocks_field_field_background",
+      "app_blocks_field_field_boolean",
+      "app_blocks_field_field_datetime",
+      "app_blocks_field_field_group",
+      "app_blocks_field_field_icon",
+      "app_blocks_field_field_image",
+      "app_blocks_field_field_link",
+      "app_blocks_field_field_list",
+      "app_blocks_field_field_number",
+      "app_blocks_field_field_richtext",
+      "app_blocks_field_field_select",
+      "app_blocks_field_field_string",
+      "app_blocks_field_field_tags",
+      "app_blocks_field_field_text"
+    ],
+    "11": [
+      "app_blocks_block",
+      "app_blocks_block_block",
+      "app_blocks_block_block_fields",
+      "app_blocks_block_block_resolvedfields",
+      "app_blocks_block_block_toarray",
+      "app_blocks_common_bloglist",
+      "app_blocks_common_bloglist_bloglist",
+      "app_blocks_common_blogsection",
+      "app_blocks_common_blogsection_blogsection",
+      "app_blocks_common_blogsection_blogsection_fields",
+      "app_blocks_common_simpletext",
+      "app_blocks_common_simpletext_simpletext",
+      "app_blocks_common_simpletext_simpletext_fields"
+    ],
+    "12": [
+      "opencode",
+      "opencode_laravel_boost_command",
+      "opencode_laravel_boost_enabled",
+      "opencode_laravel_boost_type",
+      "opencode_mcp",
+      "opencode_mcp_laravel_boost",
+      "opencode_plugin",
+      "opencode_schema",
+      "ref_artisan",
+      "ref_boost_mcp",
+      "ref_dietrichgebert_ponytail",
+      "ref_php",
+      "ref_superpowers_git_https_github_com_obra_superpowers_git"
+    ],
+    "13": [
+      "app_blocks_blockregistry_blockregistry",
+      "app_blocks_blockregistry_blockregistry_all",
+      "app_blocks_blockregistry_blockregistry_classfrompath",
+      "app_blocks_blockregistry_blockregistry_discover",
+      "app_blocks_blockregistry_blockregistry_get",
+      "app_blocks_blockregistry_blockregistry_globals",
+      "app_blocks_blockregistry_blockregistry_pickable",
+      "app_blocks_blockregistry_blockregistry_pickerlist",
+      "app_blocks_blockregistry_blockregistry_schemas",
+      "collection"
+    ],
+    "14": [
+      "resources_js_app",
+      "resources_js_tiptap",
+      "resources_js_tiptap_mounttiptap",
+      "resources_js_tiptap_resizableimage",
+      "resources_js_tiptap_setupimagetoolbar",
+      "resources_js_tiptap_setupresizehandle",
+      "resources_js_tiptap_setuptoolbaroverflow",
+      "resources_js_tiptap_updateactivebuttons"
+    ],
+    "15": [
+      "app_blocks_common_aboutintro",
+      "app_blocks_common_aboutintro_aboutintro",
+      "app_blocks_common_aboutintro_aboutintro_fields",
+      "app_blocks_common_profilebento",
+      "app_blocks_common_profilebento_profilebento",
+      "app_blocks_common_profilebento_profilebento_fields",
+      "app_blocks_field"
+    ],
+    "16": [
+      "app_providers_appserviceprovider",
+      "app_providers_appserviceprovider_appserviceprovider",
+      "app_providers_appserviceprovider_appserviceprovider_boot",
+      "app_providers_appserviceprovider_appserviceprovider_register",
+      "bootstrap_providers",
+      "serviceprovider"
+    ],
+    "17": [
+      "basetestcase",
+      "tests_pest",
+      "tests_pest_something",
+      "tests_testcase",
+      "tests_testcase_testcase"
+    ],
+    "18": [
+      "app_blocks_common_blogpostslot",
+      "app_blocks_common_blogpostslot_blogpostslot",
+      "app_blocks_common_blogpostslot_blogpostslot_fields"
+    ],
+    "19": [
+      "app_blocks_common_clienttestimonials",
+      "app_blocks_common_clienttestimonials_clienttestimonials",
+      "app_blocks_common_clienttestimonials_clienttestimonials_fields"
+    ],
+    "20": [
+      "app_blocks_common_destinationsgrid",
+      "app_blocks_common_destinationsgrid_destinationsgrid",
+      "app_blocks_common_destinationsgrid_destinationsgrid_fields"
+    ],
+    "21": [
+      "app_blocks_common_featureimagecards",
+      "app_blocks_common_featureimagecards_featureimagecards",
+      "app_blocks_common_featureimagecards_featureimagecards_fields"
+    ],
+    "22": [
+      "app_blocks_common_herobanner",
+      "app_blocks_common_herobanner_herobanner",
+      "app_blocks_common_herobanner_herobanner_fields"
+    ],
+    "23": [
+      "app_blocks_common_latestblog",
+      "app_blocks_common_latestblog_latestblog",
+      "app_blocks_common_latestblog_latestblog_fields"
+    ],
+    "24": [
+      "app_blocks_common_packagelist",
+      "app_blocks_common_packagelist_packagelist",
+      "app_blocks_common_packagelist_packagelist_fields"
+    ],
+    "25": [
+      "app_blocks_common_packagepostslot",
+      "app_blocks_common_packagepostslot_packagepostslot",
+      "app_blocks_common_packagepostslot_packagepostslot_fields"
+    ],
+    "26": [
+      "app_blocks_common_pagebanner",
+      "app_blocks_common_pagebanner_pagebanner",
+      "app_blocks_common_pagebanner_pagebanner_fields"
+    ],
+    "27": [
+      "app_blocks_common_contact",
+      "app_blocks_common_contact_contact",
+      "app_blocks_common_contact_contact_fields"
+    ],
+    "28": [
+      "app_blocks_common_teamcards",
+      "app_blocks_common_teamcards_teamcards",
+      "app_blocks_common_teamcards_teamcards_fields"
+    ],
+    "29": [
+      "app_blocks_common_traveldeals",
+      "app_blocks_common_traveldeals_traveldeals",
+      "app_blocks_common_traveldeals_traveldeals_fields"
+    ],
+    "30": [
+      "app_blocks_common_whychooseus",
+      "app_blocks_common_whychooseus_whychooseus",
+      "app_blocks_common_whychooseus_whychooseus_fields"
+    ],
+    "31": [
+      "app_blocks_global_sitefooter",
+      "app_blocks_global_sitefooter_sitefooter",
+      "app_blocks_global_sitefooter_sitefooter_fields"
+    ],
+    "32": [
+      "app_blocks_global_sitenavbar",
+      "app_blocks_global_sitenavbar_sitenavbar",
+      "app_blocks_global_sitenavbar_sitenavbar_fields"
+    ],
+    "33": [
+      "app_blocks_global_sitetopbar",
+      "app_blocks_global_sitetopbar_sitetopbar",
+      "app_blocks_global_sitetopbar_sitetopbar_fields"
+    ],
+    "34": [
+      "database_migrations_0001_01_01_000000_create_users_table",
+      "database_migrations_0001_01_01_000000_create_users_table_down",
+      "database_migrations_0001_01_01_000000_create_users_table_up"
+    ],
+    "35": [
+      "database_migrations_0001_01_01_000001_create_cache_table",
+      "database_migrations_0001_01_01_000001_create_cache_table_down",
+      "database_migrations_0001_01_01_000001_create_cache_table_up"
+    ],
+    "36": [
+      "database_migrations_0001_01_01_000002_create_jobs_table",
+      "database_migrations_0001_01_01_000002_create_jobs_table_down",
+      "database_migrations_0001_01_01_000002_create_jobs_table_up"
+    ],
+    "37": [
+      "database_migrations_2026_07_10_184842_create_pages_table",
+      "database_migrations_2026_07_10_184842_create_pages_table_down",
+      "database_migrations_2026_07_10_184842_create_pages_table_up"
+    ],
+    "38": [
+      "database_migrations_2026_07_10_185347_create_bookings_table",
+      "database_migrations_2026_07_10_185347_create_bookings_table_down",
+      "database_migrations_2026_07_10_185347_create_bookings_table_up"
+    ],
+    "39": [
+      "database_migrations_2026_07_10_185347_create_packages_table",
+      "database_migrations_2026_07_10_185347_create_packages_table_down",
+      "database_migrations_2026_07_10_185347_create_packages_table_up"
+    ],
+    "40": [
+      "database_migrations_2026_07_10_185347_create_posts_table",
+      "database_migrations_2026_07_10_185347_create_posts_table_down",
+      "database_migrations_2026_07_10_185347_create_posts_table_up"
+    ],
+    "41": [
+      "database_migrations_2026_07_10_185347_create_taxonomies_table",
+      "database_migrations_2026_07_10_185347_create_taxonomies_table_down",
+      "database_migrations_2026_07_10_185347_create_taxonomies_table_up"
+    ],
+    "42": [
+      "database_migrations_2026_07_10_185348_create_assets_table",
+      "database_migrations_2026_07_10_185348_create_assets_table_down",
+      "database_migrations_2026_07_10_185348_create_assets_table_up"
+    ],
+    "43": [
+      "database_migrations_2026_07_10_185348_create_destinations_table",
+      "database_migrations_2026_07_10_185348_create_destinations_table_down",
+      "database_migrations_2026_07_10_185348_create_destinations_table_up"
+    ],
+    "44": [
+      "database_migrations_2026_07_10_185348_create_settings_table",
+      "database_migrations_2026_07_10_185348_create_settings_table_down",
+      "database_migrations_2026_07_10_185348_create_settings_table_up"
+    ],
+    "45": [
+      "database_migrations_2026_07_10_185348_create_terms_table",
+      "database_migrations_2026_07_10_185348_create_terms_table_down",
+      "database_migrations_2026_07_10_185348_create_terms_table_up"
+    ],
+    "46": [
+      "database_migrations_2026_07_10_210137_add_is_directory_to_assets_table",
+      "database_migrations_2026_07_10_210137_add_is_directory_to_assets_table_down",
+      "database_migrations_2026_07_10_210137_add_is_directory_to_assets_table_up"
+    ],
+    "47": [
+      "database_migrations_2026_07_10_210724_make_directory_nullable_in_assets_table",
+      "database_migrations_2026_07_10_210724_make_directory_nullable_in_assets_table_down",
+      "database_migrations_2026_07_10_210724_make_directory_nullable_in_assets_table_up"
+    ],
+    "48": [
+      "database_migrations_2026_07_10_211052_make_directory_nullable_in_assets_table",
+      "database_migrations_2026_07_10_211052_make_directory_nullable_in_assets_table_down",
+      "database_migrations_2026_07_10_211052_make_directory_nullable_in_assets_table_up"
+    ],
+    "49": [
+      "database_migrations_2026_07_13_172740_add_sections_to_posts_table",
+      "database_migrations_2026_07_13_172740_add_sections_to_posts_table_down",
+      "database_migrations_2026_07_13_172740_add_sections_to_posts_table_up"
+    ],
+    "50": [
+      "database_migrations_2026_07_15_000001_create_layouts_table",
+      "database_migrations_2026_07_15_000001_create_layouts_table_down",
+      "database_migrations_2026_07_15_000001_create_layouts_table_up"
+    ],
+    "51": [
+      "database_migrations_2026_07_15_211911_create_post_term_table",
+      "database_migrations_2026_07_15_211911_create_post_term_table_down",
+      "database_migrations_2026_07_15_211911_create_post_term_table_up"
+    ],
+    "52": [
+      "database_migrations_2026_07_15_232713_add_avatar_to_users_table",
+      "database_migrations_2026_07_15_232713_add_avatar_to_users_table_down",
+      "database_migrations_2026_07_15_232713_add_avatar_to_users_table_up"
+    ],
+    "53": [
+      "mcp",
+      "mcp_command_php",
+      "mcp_mcp_server_laravel_boost"
+    ],
+    "54": [
+      "opencode_plugins_graphify",
+      "opencode_plugins_graphify_graphifyplugin",
+      "opencode_plugins_graphify_rationale_4"
+    ],
+    "55": [
+      "artisan",
+      "routes_console"
+    ],
+    "56": [
+      "docker_entrypoint",
+      "docker_entrypoint_sh__entry"
+    ],
+    "57": [
+      "bootstrap_app"
+    ],
+    "58": [
+      "config_app"
+    ],
+    "59": [
+      "config_cache"
+    ],
+    "60": [
+      "config_database"
+    ],
+    "61": [
+      "config_filesystems"
+    ],
+    "62": [
+      "config_logging"
+    ],
+    "63": [
+      "config_mail"
+    ],
+    "64": [
+      "config_queue"
+    ],
+    "65": [
+      "config_services"
+    ],
+    "66": [
+      "config_session"
+    ],
+    "67": [
+      "postcss_config"
+    ],
+    "68": [
+      "public_index"
+    ],
+    "69": [
+      "resources_views_admin_assets_index_blade"
+    ],
+    "70": [
+      "resources_views_admin_block_preview_iframe_blade"
+    ],
+    "71": [
+      "resources_views_admin_components_asset_picker_blade"
+    ],
+    "72": [
+      "resources_views_admin_components_block_picker_blade"
+    ],
+    "73": [
+      "resources_views_admin_components_command_palette_blade"
+    ],
+    "74": [
+      "resources_views_admin_components_section_picker_blade"
+    ],
+    "75": [
+      "resources_views_admin_components_sortable_list_blade"
+    ],
+    "76": [
+      "resources_views_admin_components_toast_blade"
+    ],
+    "77": [
+      "resources_views_admin_dashboard_blade"
+    ],
+    "78": [
+      "resources_views_admin_layout_blade"
+    ],
+    "79": [
+      "resources_views_admin_layouts_create_blade"
+    ],
+    "80": [
+      "resources_views_admin_layouts_edit_blade"
+    ],
+    "81": [
+      "resources_views_admin_layouts_index_blade"
+    ],
+    "82": [
+      "resources_views_admin_pages_create_blade"
+    ],
+    "83": [
+      "resources_views_admin_pages_edit_blade"
+    ],
+    "84": [
+      "resources_views_admin_pages_editor_blade"
+    ],
+    "85": [
+      "resources_views_admin_pages_index_blade"
+    ],
+    "86": [
+      "resources_views_admin_posts_create_blade"
+    ],
+    "87": [
+      "resources_views_admin_posts_edit_blade"
+    ],
+    "88": [
+      "resources_views_admin_posts_index_blade"
+    ],
+    "89": [
+      "resources_views_admin_profile_edit_blade"
+    ],
+    "90": [
+      "resources_views_admin_settings_global_blade"
+    ],
+    "91": [
+      "resources_views_admin_taxonomies_create_blade"
+    ],
+    "92": [
+      "resources_views_admin_taxonomies_edit_blade"
+    ],
+    "93": [
+      "resources_views_admin_taxonomies_index_blade"
+    ],
+    "94": [
+      "resources_views_blocks_about_intro_blade"
+    ],
+    "95": [
+      "resources_views_blocks_blog_list_blade"
+    ],
+    "96": [
+      "resources_views_blocks_blog_section_blade"
+    ],
+    "97": [
+      "resources_views_blocks_client_testimonials_blade"
+    ],
+    "98": [
+      "resources_views_blocks_contact_blade"
+    ],
+    "99": [
+      "resources_views_blocks_destinations_grid_blade"
+    ],
+    "100": [
+      "resources_views_blocks_feature_image_cards_blade"
+    ],
+    "101": [
+      "resources_views_blocks_hero_banner_blade"
+    ],
+    "102": [
+      "resources_views_blocks_latest_blog_blade"
+    ],
+    "103": [
+      "resources_views_blocks_package_list_blade"
+    ],
+    "104": [
+      "resources_views_blocks_package_post_slot_blade"
+    ],
+    "105": [
+      "resources_views_blocks_page_banner_blade"
+    ],
+    "106": [
+      "resources_views_blocks_profile_bento_blade"
+    ],
+    "107": [
+      "resources_views_blocks_simple_text_blade"
+    ],
+    "108": [
+      "resources_views_blocks_site_footer_blade"
+    ],
+    "109": [
+      "resources_views_blocks_site_navbar_blade"
+    ],
+    "110": [
+      "resources_views_blocks_site_top_bar_blade"
+    ],
+    "111": [
+      "resources_views_blocks_team_cards_blade"
+    ],
+    "112": [
+      "resources_views_blocks_travel_deals_blade"
+    ],
+    "113": [
+      "resources_views_blocks_why_choose_us_blade"
+    ],
+    "114": [
+      "resources_views_login_blade"
+    ],
+    "115": [
+      "resources_views_public_layout_blade"
+    ],
+    "116": [
+      "resources_views_public_page_blade"
+    ],
+    "117": [
+      "resources_views_welcome_blade"
+    ],
+    "118": [
+      "tailwind_config"
+    ],
+    "119": [
+      "tests_unit_exampletest"
+    ],
+    "120": [
+      "vite_config"
+    ]
+  },
+  "cohesion": {
+    "0": 0.0463768115942029,
+    "1": 0.07610993657505286,
+    "2": 0.046511627906976744,
+    "3": 0.1,
+    "4": 0.10695187165775401,
+    "5": 0.10574712643678161,
+    "6": 0.07692307692307693,
+    "7": 0.16205533596837945,
+    "8": 0.14285714285714285,
+    "9": 0.16842105263157894,
+    "10": 0.125,
+    "11": 0.21794871794871795,
+    "12": 0.15384615384615385,
+    "13": 0.26666666666666666,
+    "14": 0.4642857142857143,
+    "15": 0.2857142857142857,
+    "16": 0.4,
+    "17": 0.5,
+    "18": 0.6666666666666666,
+    "19": 0.6666666666666666,
+    "20": 0.6666666666666666,
+    "21": 0.6666666666666666,
+    "22": 0.6666666666666666,
+    "23": 0.6666666666666666,
+    "24": 0.6666666666666666,
+    "25": 0.6666666666666666,
+    "26": 0.6666666666666666,
+    "27": 0.6666666666666666,
+    "28": 0.6666666666666666,
+    "29": 0.6666666666666666,
+    "30": 0.6666666666666666,
+    "31": 0.6666666666666666,
+    "32": 0.6666666666666666,
+    "33": 0.6666666666666666,
+    "34": 0.6666666666666666,
+    "35": 0.6666666666666666,
+    "36": 0.6666666666666666,
+    "37": 0.6666666666666666,
+    "38": 0.6666666666666666,
+    "39": 0.6666666666666666,
+    "40": 0.6666666666666666,
+    "41": 0.6666666666666666,
+    "42": 0.6666666666666666,
+    "43": 0.6666666666666666,
+    "44": 0.6666666666666666,
+    "45": 0.6666666666666666,
+    "46": 0.6666666666666666,
+    "47": 0.6666666666666666,
+    "48": 0.6666666666666666,
+    "49": 0.6666666666666666,
+    "50": 0.6666666666666666,
+    "51": 0.6666666666666666,
+    "52": 0.6666666666666666,
+    "53": 0.6666666666666666,
+    "54": 0.6666666666666666,
+    "55": 1.0,
+    "56": 1.0,
+    "57": 1.0,
+    "58": 1.0,
+    "59": 1.0,
+    "60": 1.0,
+    "61": 1.0,
+    "62": 1.0,
+    "63": 1.0,
+    "64": 1.0,
+    "65": 1.0,
+    "66": 1.0,
+    "67": 1.0,
+    "68": 1.0,
+    "69": 1.0,
+    "70": 1.0,
+    "71": 1.0,
+    "72": 1.0,
+    "73": 1.0,
+    "74": 1.0,
+    "75": 1.0,
+    "76": 1.0,
+    "77": 1.0,
+    "78": 1.0,
+    "79": 1.0,
+    "80": 1.0,
+    "81": 1.0,
+    "82": 1.0,
+    "83": 1.0,
+    "84": 1.0,
+    "85": 1.0,
+    "86": 1.0,
+    "87": 1.0,
+    "88": 1.0,
+    "89": 1.0,
+    "90": 1.0,
+    "91": 1.0,
+    "92": 1.0,
+    "93": 1.0,
+    "94": 1.0,
+    "95": 1.0,
+    "96": 1.0,
+    "97": 1.0,
+    "98": 1.0,
+    "99": 1.0,
+    "100": 1.0,
+    "101": 1.0,
+    "102": 1.0,
+    "103": 1.0,
+    "104": 1.0,
+    "105": 1.0,
+    "106": 1.0,
+    "107": 1.0,
+    "108": 1.0,
+    "109": 1.0,
+    "110": 1.0,
+    "111": 1.0,
+    "112": 1.0,
+    "113": 1.0,
+    "114": 1.0,
+    "115": 1.0,
+    "116": 1.0,
+    "117": 1.0,
+    "118": 1.0,
+    "119": 1.0,
+    "120": 1.0
+  },
+  "gods": [
+    {
+      "id": "app_blocks_block_block",
+      "label": "Block",
+      "degree": 49
+    },
+    {
+      "id": "app_blocks_field_field",
+      "label": "Field",
+      "degree": 37
+    },
+    {
+      "id": "app_models_page_page",
+      "label": "Page",
+      "degree": 26
+    },
+    {
+      "id": "app_http_controllers_controller_controller",
+      "label": "Controller",
+      "degree": 25
+    },
+    {
+      "id": "app_models_layout_layout",
+      "label": "Layout",
+      "degree": 24
+    },
+    {
+      "id": "app_models_post_post",
+      "label": "Post",
+      "degree": 24
+    },
+    {
+      "id": "app_support_sections_sections",
+      "label": "Sections",
+      "degree": 19
+    },
+    {
+      "id": "app_models_taxonomy_taxonomy",
+      "label": "Taxonomy",
+      "degree": 16
+    },
+    {
+      "id": "app_http_controllers_admin_assetscontroller_assetscontroller",
+      "label": "AssetsController",
+      "degree": 12
+    },
+    {
+      "id": "app_http_controllers_admin_layoutcontroller_layoutcontroller",
+      "label": "LayoutController",
+      "degree": 11
+    }
+  ],
+  "surprises": [
+    {
+      "source": "AboutIntro",
+      "target": "Block",
+      "source_files": [
+        "app/Blocks/common/AboutIntro.php",
+        "app/Blocks/Block.php"
+      ],
+      "confidence": "EXTRACTED",
+      "relation": "inherits",
+      "why": "bridges separate communities"
+    },
+    {
+      "source": "BlogPostSlot",
+      "target": "Block",
+      "source_files": [
+        "app/Blocks/common/BlogPostSlot.php",
+        "app/Blocks/Block.php"
+      ],
+      "confidence": "EXTRACTED",
+      "relation": "inherits",
+      "why": "bridges separate communities"
+    },
+    {
+      "source": "ClientTestimonials",
+      "target": "Block",
+      "source_files": [
+        "app/Blocks/common/ClientTestimonials.php",
+        "app/Blocks/Block.php"
+      ],
+      "confidence": "EXTRACTED",
+      "relation": "inherits",
+      "why": "bridges separate communities"
+    },
+    {
+      "source": "Contact",
+      "target": "Block",
+      "source_files": [
+        "app/Blocks/common/Contact.php",
+        "app/Blocks/Block.php"
+      ],
+      "confidence": "EXTRACTED",
+      "relation": "inherits",
+      "why": "bridges separate communities"
+    },
+    {
+      "source": "DestinationsGrid",
+      "target": "Block",
+      "source_files": [
+        "app/Blocks/common/DestinationsGrid.php",
+        "app/Blocks/Block.php"
+      ],
+      "confidence": "EXTRACTED",
+      "relation": "inherits",
+      "why": "bridges separate communities"
+    }
+  ],
+  "questions": [
+    {
+      "type": "bridge_node",
+      "question": "Why does `Block` connect `Block` to `Page`, `BlockRegistry`, `Field.php`, `BlogPostSlot.php`, `ClientTestimonials.php`, `DestinationsGrid.php`, `FeatureImageCards.php`, `HeroBanner.php`, `LatestBlog.php`, `PackageList.php`, `PackagePostSlot.php`, `PageBanner.php`, `Contact.php`, `TeamCards.php`, `TravelDeals.php`, `WhyChooseUs.php`, `SiteFooter.php`, `SiteNavbar.php`, `SiteTopBar.php`?",
+      "why": "High betweenness centrality (0.121) - this node is a cross-community bridge."
+    },
+    {
+      "type": "bridge_node",
+      "question": "Why does `Controller` connect `Controller` to `Layout`, `Page`, `Post`, `Model`, `LoginController.php`, `Taxonomy`?",
+      "why": "High betweenness centrality (0.038) - this node is a cross-community bridge."
+    },
+    {
+      "type": "bridge_node",
+      "question": "Why does `Post` connect `Post` to `Layout`, `Controller`, `Taxonomy`, `Model`?",
+      "why": "High betweenness centrality (0.034) - this node is a cross-community bridge."
+    },
+    {
+      "type": "verify_inferred",
+      "question": "Are the 22 inferred relationships involving `Field` (e.g. with `.resolvedFields()` and `.fields()`) actually correct?",
+      "why": "`Field` has 22 INFERRED edges - model-reasoned connections that need verification."
+    },
+    {
+      "type": "isolated_nodes",
+      "question": "What connects `php`, `$schema`, `name` to the rest of the system?",
+      "why": "78 weakly-connected nodes found - possible documentation gaps or missing edges."
+    },
+    {
+      "type": "low_cohesion",
+      "question": "Should `dependencies` be split into smaller, more focused modules?",
+      "why": "Cohesion score 0.0463768115942029 - nodes in this community are weakly interconnected."
+    },
+    {
+      "type": "low_cohesion",
+      "question": "Should `Layout` be split into smaller, more focused modules?",
+      "why": "Cohesion score 0.07610993657505286 - nodes in this community are weakly interconnected."
+    }
+  ]
+}

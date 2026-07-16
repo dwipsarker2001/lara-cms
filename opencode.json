@@ -13,6 +13,17 @@
                 "artisan",
                 "boost:mcp"
             ]
+        },
+        "firecrawl": {
+            "type": "local",
+            "command": [
+                "npx",
+                "-y",
+                "firecrawl-mcp"
+            ],
+            "env": {
+                "FIRECRAWL_API_KEY": "fc-7af8eb68efd242d0b12e8cdd5fc07f0a"
+            }
         }
     }
 }

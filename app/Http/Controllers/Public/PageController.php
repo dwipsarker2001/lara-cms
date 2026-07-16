@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Public;
 
 use App\Http\Controllers\Controller;
+use App\Models\Package;
 use App\Models\Page;
 
 class PageController extends Controller
@@ -18,6 +19,8 @@ class PageController extends Controller
     {
         $page = Page::where('slug', $slug)->where('published', true)->firstOrFail();
 
-        return view('public.page', ['page' => $page]);
+        $package = Package::where('slug', $slug)->first();
+
+        return view('public.page', ['page' => $page, 'package' => $package]);
     }
 }

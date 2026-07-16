@@ -133,15 +133,11 @@
                                 {{-- Thumbnail --}}
                                 <div class="relative aspect-[1/1] bg-[#F3F4F6] overflow-hidden rounded-t-lg">
                                     <button @click="selectItem(item)" class="size-full flex items-center justify-center">
-                                        <template x-if="item.is_directory">
-                                            <svg viewBox="0 0 48 48" class="size-16" fill="none">
-                                                <path d="M4 10C4 7.79086 5.79086 6 8 6H18.7242C19.9045 6 21.011 6.52552 21.7505 7.43906L25.3218 11.8594C25.6915 12.3162 26.2448 12.5789 26.8323 12.5789H40C42.2091 12.5789 44 14.3681 44 16.5772V38C44 40.2091 42.2091 42 40 42H8C5.79086 42 4 40.2091 4 38V10Z" fill="#F59E0B" />
-                                                <path opacity="0.25" d="M4 16.5771C4 14.368 5.79086 12.5789 8 12.5789H40C42.2091 12.5789 44 14.3681 44 16.5772V38C44 40.2091 42.2091 42 40 42H8C5.79086 42 4 40.2091 4 38V16.5771Z" fill="white" />
-                                            </svg>
-                                        </template>
-                                        <template x-if="!item.is_directory">
-                                            <img :src="`/storage/${item.path}`" :alt="item.name" class="size-full object-cover" x-on:error='if ($el.tagName === "IMG") { $el.style.display="none"; $el.parentElement.innerHTML=`<svg class="size-8 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M14.5 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V7.5L14.5 2z" /><polyline points="14 2 14 8 20 8" /></svg>`; }'>
-                                        </template>
+                                        <svg x-show="item.is_directory" viewBox="0 0 48 48" class="size-16" fill="none">
+                                            <path d="M4 10C4 7.79086 5.79086 6 8 6H18.7242C19.9045 6 21.011 6.52552 21.7505 7.43906L25.3218 11.8594C25.6915 12.3162 26.2448 12.5789 26.8323 12.5789H40C42.2091 12.5789 44 14.3681 44 16.5772V38C44 40.2091 42.2091 42 40 42H8C5.79086 42 4 40.2091 4 38V10Z" fill="#F59E0B" />
+                                            <path opacity="0.25" d="M4 16.5771C4 14.368 5.79086 12.5789 8 12.5789H40C42.2091 12.5789 44 14.3681 44 16.5772V38C44 40.2091 42.2091 42 40 42H8C5.79086 42 4 40.2091 4 38V16.5771Z" fill="white" />
+                                        </svg>
+                                        <img x-show="!item.is_directory" :src="`/storage/${item.path}`" :alt="item.name" class="size-full object-cover" x-on:error="$el.style.display='none'">
                                     </button>
                                 </div>
 

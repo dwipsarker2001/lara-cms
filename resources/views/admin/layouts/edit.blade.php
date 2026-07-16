@@ -21,11 +21,17 @@
                     @if ($errors->any())
                         <span class="text-sm font-medium text-danger" role="alert">{{ $errors->first() }}</span>
                     @endif
-                    <a href="{{ route('admin.layouts.index') }}"
-                        class="inline-flex items-center justify-center gap-2 whitespace-nowrap shrink-0 font-medium cursor-pointer no-underline rounded-lg transition-colors h-10 text-sm leading-tight px-4 bg-gradient-to-b from-content-bg to-gray-50 hover:to-gray-100 text-text-primary border border-content-border shadow-sm"
-                    >
-                        Cancel
-                    </a>
+                    <form method="POST" action="{{ route('admin.layouts.destroy', $layout) }}" onsubmit="return confirm('Delete this layout permanently?')">
+                        @csrf @method('DELETE')
+                        <button type="submit"
+                            class="inline-flex items-center justify-center gap-2 whitespace-nowrap shrink-0 font-medium cursor-pointer no-underline rounded-lg transition-colors h-10 text-sm leading-tight px-4 bg-red-600 hover:bg-red-700 text-white shadow-sm"
+                        >
+                            <svg viewBox="0 0 20 20" fill="currentColor" class="size-4">
+                                <path fill-rule="evenodd" d="M8.75 1A2.75 2.75 0 006 3.75v.443c-.795.077-1.584.176-2.365.298a.75.75 0 10.23 1.482l.149-.022.841 10.518A2.75 2.75 0 007.596 19h4.807a2.75 2.75 0 002.742-2.53l.841-10.52.149.023a.75.75 0 00.23-1.482A41.03 41.03 0 0014 4.193V3.75A2.75 2.75 0 0011.25 1h-2.5zM10 4c-.84 0-1.673.025-2.5.075V3.75c0-.69.56-1.25 1.25-1.25h2.5c.69 0 1.25.56 1.25 1.25v.325C11.673 4.025 10.84 4 10 4zM8.58 7.72a.75.75 0 00-1.5.06l.3 7.5a.75.75 0 101.5-.06l-.3-7.5zm4.34.06a.75.75 0 10-1.5-.06l-.3 7.5a.75.75 0 101.5.06l.3-7.5z" clip-rule="evenodd" />
+                            </svg>
+                            Delete
+                        </button>
+                    </form>
                     <button type="submit"
                         class="inline-flex items-center justify-center gap-2 whitespace-nowrap shrink-0 font-medium cursor-pointer no-underline rounded-lg transition-colors h-10 text-sm leading-tight px-4 bg-primary hover:opacity-90 text-white shadow-sm"
                     >
@@ -126,26 +132,6 @@
             </div>
         </form>
 
-        <div class="mt-12 border-t border-content-border pt-8 px-2 sm:px-0">
-            <div class="bg-panel-bg rounded-2xl p-[7px]">
-                <div class="px-[18px] py-3 text-sm font-medium text-text-heading">Delete Layout</div>
-                <div class="px-1.5 pb-2 max-w-2xl">
-                    <div class="bg-content-bg rounded-xl ring-1 ring-content-border shadow-sm p-4">
-                        <p class="text-sm text-text-muted mb-4">Permanently delete this layout. This action cannot be undone.</p>
-                        <form method="POST" action="{{ route('admin.layouts.destroy', $layout) }}" onsubmit="return confirm('Delete this layout permanently?')">
-                            @csrf @method('DELETE')
-                            <button type="submit"
-                                class="inline-flex items-center justify-center gap-2 whitespace-nowrap shrink-0 font-medium cursor-pointer no-underline rounded-lg transition-colors h-10 text-sm leading-tight px-4 bg-red-600 hover:bg-red-700 text-white shadow-sm"
-                            >
-                                <svg viewBox="0 0 20 20" fill="currentColor" class="size-4">
-                                    <path fill-rule="evenodd" d="M8.75 1A2.75 2.75 0 006 3.75v.443c-.795.077-1.584.176-2.365.298a.75.75 0 10.23 1.482l.149-.022.841 10.518A2.75 2.75 0 007.596 19h4.807a2.75 2.75 0 002.742-2.53l.841-10.52.149.023a.75.75 0 00.23-1.482A41.03 41.03 0 0014 4.193V3.75A2.75 2.75 0 0011.25 1h-2.5zM10 4c-.84 0-1.673.025-2.5.075V3.75c0-.69.56-1.25 1.25-1.25h2.5c.69 0 1.25.56 1.25 1.25v.325C11.673 4.025 10.84 4 10 4zM8.58 7.72a.75.75 0 00-1.5.06l.3 7.5a.75.75 0 101.5-.06l-.3-7.5zm4.34.06a.75.75 0 10-1.5-.06l-.3 7.5a.75.75 0 101.5.06l.3-7.5z" clip-rule="evenodd" />
-                                </svg>
-                                Delete Layout
-                            </button>
-                        </form>
-                    </div>
-                </div>
-            </div>
-        </div>
+
     </div>
 @endsection

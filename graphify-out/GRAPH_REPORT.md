@@ -1,15 +1,16 @@
-# Graph Report - .  (2026-07-16)
+# Graph Report - lara-cms  (2026-07-16)
 
 ## Corpus Check
-- cluster-only mode — file stats not available
+- 223 files · ~99,477 words
+- Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
-- 581 nodes · 812 edges · 121 communities (97 shown, 24 thin omitted)
+- 609 nodes · 839 edges · 122 communities (98 shown, 24 thin omitted)
 - Extraction: 92% EXTRACTED · 8% INFERRED · 0% AMBIGUOUS · INFERRED: 69 edges (avg confidence: 0.8)
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `6878855a`
+- Built from commit: `c03d6c7c`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
@@ -51,6 +52,7 @@
 - laravel-boost
 - graphify.js
 - docker-entrypoint.sh
+- Seeder
 
 ## God Nodes (most connected - your core abstractions)
 1. `Block` - 49 edges
@@ -79,47 +81,47 @@
 ## Import Cycles
 - None detected.
 
-## Communities (121 total, 24 thin omitted)
+## Communities (122 total, 24 thin omitted)
 
 ### Community 0 - "dependencies"
 Cohesion: 0.05
 Nodes (45): alpinejs, autoprefixer, concurrently, @fortawesome/fontawesome-free, laravel-vite-plugin, dependencies, alpinejs, sortablejs (+37 more)
 
 ### Community 1 - "Layout"
-Cohesion: 0.08
-Nodes (15): LayoutController, Request, Layout, User, Authenticatable, LayoutFactory, PostFactory, UserFactory (+7 more)
+Cohesion: 0.10
+Nodes (12): Request, PostController, BelongsToMany, Post, User, Authenticatable, LayoutFactory, PostFactory (+4 more)
 
 ### Community 2 - "composer.json"
 Cohesion: 0.05
 Nodes (42): pestphp/pest-plugin, php-http/discovery, autoload, autoload-dev, psr-4, psr-4, config, allow-plugins (+34 more)
 
 ### Community 3 - "Page"
-Cohesion: 0.10
-Nodes (7): PageController, Request, PageController, Page, Sections, HomePageSeeder, static
+Cohesion: 0.07
+Nodes (10): LayoutController, Request, PageController, Request, PageController, Layout, Page, CommandSearch (+2 more)
 
 ### Community 4 - "Controller"
-Cohesion: 0.11
-Nodes (13): CommandSearchController, Request, Request, PreviewController, RedirectResponse, View, ProfileController, Request (+5 more)
+Cohesion: 0.09
+Nodes (15): CommandSearchController, Request, Request, PreviewController, Request, SettingsController, LoginController, RedirectResponse (+7 more)
 
 ### Community 5 - "Post"
-Cohesion: 0.11
-Nodes (6): Request, PostController, BlogController, BelongsToMany, Post, CommandSearch
+Cohesion: 0.07
+Nodes (27): APIs & Eloquent Resources, Application Structure & Architecture, Artisan, Conventions, Deployment, Do Things the Laravel Way, Documentation Files, Foundational Context (+19 more)
 
 ### Community 6 - "scripts"
 Cohesion: 0.08
 Nodes (27): scripts, dev, post-autoload-dump, post-create-project-cmd, post-root-package-install, post-update-cmd, pre-package-uninstall, setup (+19 more)
 
 ### Community 7 - "Model"
-Cohesion: 0.16
-Nodes (7): AssetsController, Request, Asset, Booking, Destination, Package, Model
+Cohesion: 0.26
+Nodes (3): AssetsController, Request, Asset
 
 ### Community 8 - "LoginController.php"
-Cohesion: 0.14
-Nodes (7): LoginController, RedirectResponse, Request, View, LoginRequest, ProfileUpdateRequest, FormRequest
+Cohesion: 0.16
+Nodes (6): RedirectResponse, View, ProfileController, LoginRequest, ProfileUpdateRequest, FormRequest
 
 ### Community 9 - "Taxonomy"
-Cohesion: 0.17
-Nodes (7): Request, TaxonomyController, Taxonomy, BelongsToMany, Term, BelongsTo, HasMany
+Cohesion: 0.12
+Nodes (11): Request, TaxonomyController, Booking, Destination, Package, Taxonomy, BelongsToMany, Term (+3 more)
 
 ### Community 11 - "Block"
 Cohesion: 0.22
@@ -133,8 +135,12 @@ Nodes (12): command, enabled, type, mcp, laravel-boost, plugin, $schema, artisan
 Cohesion: 0.46
 Nodes (6): mountTipTap(), ResizableImage, setupImageToolbar(), setupResizeHandle(), setupToolbarOverflow(), updateActiveButtons()
 
+### Community 121 - "Seeder"
+Cohesion: 0.21
+Nodes (5): DatabaseSeeder, HomePageSeeder, LayoutSeeder, UserSeeder, Seeder
+
 ## Knowledge Gaps
-- **78 isolated node(s):** `php`, `$schema`, `name`, `type`, `description` (+73 more)
+- **100 isolated node(s):** `Foundational Context`, `Skills Activation`, `Conventions`, `Verification Scripts`, `Application Structure & Architecture` (+95 more)
   These have ≤1 connection - possible missing edges or undocumented components.
 - **24 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
 
@@ -142,16 +148,16 @@ Nodes (6): mountTipTap(), ResizableImage, setupImageToolbar(), setupResizeHandle
 _Questions this graph is uniquely positioned to answer:_
 
 - **Why does `Block` connect `Block` to `Page`, `BlockRegistry`, `Field.php`, `BlogPostSlot.php`, `ClientTestimonials.php`, `DestinationsGrid.php`, `FeatureImageCards.php`, `HeroBanner.php`, `LatestBlog.php`, `PackageList.php`, `PackagePostSlot.php`, `PageBanner.php`, `Contact.php`, `TeamCards.php`, `TravelDeals.php`, `WhyChooseUs.php`, `SiteFooter.php`, `SiteNavbar.php`, `SiteTopBar.php`?**
-  _High betweenness centrality (0.121) - this node is a cross-community bridge._
-- **Why does `Controller` connect `Controller` to `Layout`, `Page`, `Post`, `Model`, `LoginController.php`, `Taxonomy`?**
-  _High betweenness centrality (0.038) - this node is a cross-community bridge._
-- **Why does `Post` connect `Post` to `Layout`, `Controller`, `Taxonomy`, `Model`?**
-  _High betweenness centrality (0.034) - this node is a cross-community bridge._
+  _High betweenness centrality (0.110) - this node is a cross-community bridge._
+- **Why does `Controller` connect `Controller` to `Layout`, `Page`, `Model`, `LoginController.php`, `Taxonomy`?**
+  _High betweenness centrality (0.035) - this node is a cross-community bridge._
+- **Why does `Post` connect `Layout` to `Taxonomy`, `Page`, `Controller`?**
+  _High betweenness centrality (0.031) - this node is a cross-community bridge._
 - **Are the 22 inferred relationships involving `Field` (e.g. with `.resolvedFields()` and `.fields()`) actually correct?**
   _`Field` has 22 INFERRED edges - model-reasoned connections that need verification._
-- **What connects `php`, `$schema`, `name` to the rest of the system?**
-  _78 weakly-connected nodes found - possible documentation gaps or missing edges._
+- **What connects `Foundational Context`, `Skills Activation`, `Conventions` to the rest of the system?**
+  _100 weakly-connected nodes found - possible documentation gaps or missing edges._
 - **Should `dependencies` be split into smaller, more focused modules?**
   _Cohesion score 0.0463768115942029 - nodes in this community are weakly interconnected._
 - **Should `Layout` be split into smaller, more focused modules?**
-  _Cohesion score 0.07610993657505286 - nodes in this community are weakly interconnected._
+  _Cohesion score 0.09682539682539683 - nodes in this community are weakly interconnected._
