@@ -32,10 +32,7 @@
                 {{ config('app.name') }}
             </a>
             <span class="text-[11px] font-normal leading-none text-body-bg bg-white/15 px-[5px] pb-[1px] rounded-[3px]">Pro</span>
-            @hasSection('breadcrumb')
-                <span class="text-[13px] text-white/55">/</span>
-                <span class="text-[13px] text-white/85">@yield('breadcrumb')</span>
-            @endif
+
         </div>
 
         <div class="flex-1"></div>
@@ -96,11 +93,11 @@
                     @click="open = !open"
                     class="size-8 rounded-lg overflow-hidden flex items-center justify-center ring-2 ring-transparent hover:ring-white/30 transition"
                 >
-                    @if (Auth::user()->avatar)
-                        <img src="{{ Auth::user()->avatar }}" alt="{{ Auth::user()->name }}" class="size-8 rounded-lg object-cover">
+                    @if (Auth::guard('admin')->user()->avatar)
+                        <img src="{{ Auth::guard('admin')->user()->avatar }}" alt="{{ Auth::guard('admin')->user()->name }}" class="size-8 rounded-lg object-cover">
                     @else
                         <span class="flex size-8 items-center justify-center bg-primary text-white font-medium text-xs rounded-lg">
-                            {{ strtoupper(substr(Auth::user()->name ?? 'U', 0, 2)) }}
+                            {{ strtoupper(substr(Auth::guard('admin')->user()->name ?? 'U', 0, 2)) }}
                         </span>
                     @endif
                 </button>
@@ -117,14 +114,14 @@
                     class="absolute right-0 top-full mt-2 z-50 min-w-64 rounded-xl border border-content-border bg-body-bg shadow-xl overflow-hidden"
                 >
                     <header class="flex items-center gap-2 px-3.5 py-3 bg-content-bg border-b border-content-border">
-                        @if (Auth::user()->avatar)
-                            <img src="{{ Auth::user()->avatar }}" alt="{{ Auth::user()->name }}" class="size-8 shrink-0 rounded-lg object-cover">
+                        @if (Auth::guard('admin')->user()->avatar)
+                            <img src="{{ Auth::guard('admin')->user()->avatar }}" alt="{{ Auth::guard('admin')->user()->name }}" class="size-8 shrink-0 rounded-lg object-cover">
                         @else
                             <span class="flex size-8 shrink-0 items-center justify-center bg-primary text-white font-medium text-xs rounded-lg">
-                                {{ strtoupper(substr(Auth::user()->name ?? 'U', 0, 2)) }}
+                                {{ strtoupper(substr(Auth::guard('admin')->user()->name ?? 'U', 0, 2)) }}
                             </span>
                         @endif
-                        <div class="min-w-0 text-sm text-text-heading truncate">{{ Auth::user()->email ?? 'admin@ecms.com' }}</div>
+                        <div class="min-w-0 text-sm text-text-heading truncate">{{ Auth::guard('admin')->user()->email ?? 'admin@ecms.com' }}</div>
                     </header>
 
                     <div class="p-1.5 bg-content-bg border-b border-content-border rounded-b-xl">
@@ -314,10 +311,22 @@
                     </ul>
                 </div>
 
-                {{-- Preferences --}}
+                {{-- Advance --}}
                 <div class="mt-5">
-                    <div class="px-2.5 pb-1.5 text-xs font-semibold uppercase tracking-wider text-text-muted/70">Preferences</div>
+                    <div class="px-2.5 pb-1.5 text-xs font-semibold uppercase tracking-wider text-text-muted/70">Advance</div>
                     <ul class="space-y-0.5">
+                        <li>
+                            <a href="{{ route('admin.administrators.index') }}"
+                                class="flex items-center gap-2.5 px-2.5 py-1.5 rounded-md text-sm no-underline transition-colors @if(request()->routeIs('admin.administrators.*')) text-text-heading bg-gray-200 font-semibold @else text-text-primary hover:bg-gray-100 hover:text-text-heading font-medium @endif"
+                            >
+                                <span class="flex w-4 shrink-0 items-center justify-center">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" class="size-4">
+                                        <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+                                    </svg>
+                                </span>
+                                Administrator
+                            </a>
+                        </li>
                         <li>
                             <a href="{{ route('admin.settings') }}"
                                 class="flex items-center gap-2.5 px-2.5 py-1.5 rounded-md text-sm no-underline transition-colors @if(request()->routeIs('admin.settings')) text-text-heading bg-gray-200 font-semibold @else text-text-primary hover:bg-gray-100 hover:text-text-heading font-medium @endif"
@@ -359,7 +368,7 @@
                     @yield('content-full')
                 @else
                     {{-- PageShell --}}
-                    <div class="bg-content-bg min-h-[calc(100%-8px)] mx-2 mt-2 px-6 lg:px-20 rounded-t-2xl border border-content-border border-b-0 relative" style="container-type: inline-size;">
+                    <div class="bg-content-bg min-h-[calc(100%-8px)] mx-2 mt-2 px-6 lg:px-20 pt-6 rounded-t-2xl border border-content-border border-b-0 relative" style="container-type: inline-size;">
 
                         @yield('content')
                     </div>

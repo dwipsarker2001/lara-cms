@@ -1,6 +1,6 @@
 <?php
 
-use App\Models\User;
+use App\Models\Admin;
 use Illuminate\Support\Facades\Hash;
 
 use function Pest\Laravel\actingAs;
@@ -8,13 +8,13 @@ use function Pest\Laravel\get;
 use function Pest\Laravel\put;
 
 beforeEach(function () {
-    $this->user = User::factory()->create([
+    $this->admin = Admin::factory()->create([
         'name' => 'Admin User',
         'email' => 'admin@example.com',
         'password' => 'password',
         'avatar' => null,
     ]);
-    actingAs($this->user);
+    actingAs($this->admin, 'admin');
 });
 
 it('shows the manage profile page for authenticated users', function () {
@@ -30,7 +30,7 @@ it('shows the manage profile page for authenticated users', function () {
 });
 
 it('redirects guests away from the profile page', function () {
-    auth()->logout();
+    auth('admin')->logout();
 
     get(route('admin.profile.edit'))
         ->assertRedirect();
@@ -45,54 +45,54 @@ it('updates name email and avatar', function () {
         ->assertRedirect()
         ->assertSessionHas('success', 'Saved');
 
-    $this->user->refresh();
+    $this->admin->refresh();
 
-    expect($this->user->name)->toBe('New Name')
-        ->and($this->user->email)->toBe('new@example.com')
-        ->and($this->user->avatar)->toBe('/storage/avatars/me.png');
+    expect($this->admin->name)->toBe('New Name')
+        ->and($this->admin->email)->toBe('new@example.com')
+        ->and($this->admin->avatar)->toBe('/storage/avatars/me.png');
 });
 
 it('can clear the avatar', function () {
-    $this->user->update(['avatar' => '/storage/avatars/old.png']);
+    $this->admin->update(['avatar' => '/storage/avatars/old.png']);
 
     put(route('admin.profile.update'), [
-        'name' => $this->user->name,
-        'email' => $this->user->email,
+        'name' => $this->admin->name,
+        'email' => $this->admin->email,
         'avatar' => '',
     ])->assertRedirect();
 
-    expect($this->user->fresh()->avatar)->toBeNull();
+    expect($this->admin->fresh()->avatar)->toBeNull();
 });
 
 it('updates password when provided and confirmed', function () {
     put(route('admin.profile.update'), [
-        'name' => $this->user->name,
-        'email' => $this->user->email,
+        'name' => $this->admin->name,
+        'email' => $this->admin->email,
         'password' => 'new-password',
         'password_confirmation' => 'new-password',
     ])
         ->assertRedirect()
         ->assertSessionHas('success', 'Saved');
 
-    expect(Hash::check('new-password', $this->user->fresh()->password))->toBeTrue();
+    expect(Hash::check('new-password', $this->admin->fresh()->password))->toBeTrue();
 });
 
 it('rejects mismatched password confirmation', function () {
     put(route('admin.profile.update'), [
-        'name' => $this->user->name,
-        'email' => $this->user->email,
+        'name' => $this->admin->name,
+        'email' => $this->admin->email,
         'password' => 'new-password',
         'password_confirmation' => 'different-password',
     ])->assertSessionHasErrors('password');
 
-    expect(Hash::check('password', $this->user->fresh()->password))->toBeTrue();
+    expect(Hash::check('password', $this->admin->fresh()->password))->toBeTrue();
 });
 
 it('requires a unique email', function () {
-    User::factory()->create(['email' => 'taken@example.com']);
+    Admin::factory()->create(['email' => 'taken@example.com']);
 
     put(route('admin.profile.update'), [
-        'name' => $this->user->name,
+        'name' => $this->admin->name,
         'email' => 'taken@example.com',
     ])->assertSessionHasErrors('email');
 });

@@ -13,13 +13,13 @@ class ProfileController extends Controller
     public function edit(): View
     {
         return view('admin.profile.edit', [
-            'user' => Auth::user(),
+            'user' => Auth::guard('admin')->user(),
         ]);
     }
 
     public function update(ProfileUpdateRequest $request): RedirectResponse
     {
-        $user = $request->user();
+        $user = $request->user('admin');
 
         $user->fill([
             'name' => $request->validated('name'),

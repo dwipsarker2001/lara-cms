@@ -20,7 +20,7 @@
     --color-primary-foreground: #fff;
     --color-body-bg: oklch(0.967 0.001 286.375);
     --color-content-bg: #fff;
-    --color-content-border: oklch(0.92 0.004 286.32);
+    --color-content-border: #e5e7eb;
     --color-border: #e7e3e4;
     --color-panel-bg: oklch(0.956 0.0022 286.32);
     --color-text-primary: oklch(0.21 0.006 285.885);

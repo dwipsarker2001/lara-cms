@@ -1,17 +1,17 @@
 <?php
 
+use App\Models\Admin;
 use App\Models\Post;
 use App\Models\Taxonomy;
 use App\Models\Term;
-use App\Models\User;
 
 use function Pest\Laravel\actingAs;
 use function Pest\Laravel\patch;
 use function Pest\Laravel\post;
 
 beforeEach(function () {
-    $this->user = User::factory()->create();
-    actingAs($this->user);
+    $this->admin = Admin::factory()->create();
+    actingAs($this->admin, 'admin');
 });
 
 it('updates a post without writing a non-existent term_ids column', function () {

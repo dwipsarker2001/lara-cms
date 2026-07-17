@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Admin\AdminUserController;
 use App\Http\Controllers\Admin\AssetsController;
 use App\Http\Controllers\Admin\CommandSearchController;
 use App\Http\Controllers\Admin\LayoutController;
@@ -8,11 +9,13 @@ use App\Http\Controllers\Admin\PageController;
 use App\Http\Controllers\Admin\PostController;
 use App\Http\Controllers\Admin\PreviewController;
 use App\Http\Controllers\Admin\ProfileController;
+use App\Http\Controllers\Admin\SeoController;
 use App\Http\Controllers\Admin\SettingsController;
 use App\Http\Controllers\Admin\TaxonomyController;
+use App\Http\Controllers\Admin\UserController;
 use Illuminate\Support\Facades\Route;
 
-Route::middleware(['web', 'auth'])->prefix('admin')->name('admin.')->group(function () {
+Route::middleware(['web', 'auth:admin'])->prefix('admin')->name('admin.')->group(function () {
     Route::get('/', fn () => view('admin.dashboard'))->name('dashboard');
     Route::get('search', CommandSearchController::class)->name('search');
 
@@ -42,7 +45,8 @@ Route::middleware(['web', 'auth'])->prefix('admin')->name('admin.')->group(funct
 
     Route::get('settings', [SettingsController::class, 'index'])->name('settings');
     Route::put('settings', [SettingsController::class, 'update'])->name('settings.update');
-    Route::view('seo', 'admin.settings.seo')->name('seo');
+    Route::get('seo', [SeoController::class, 'index'])->name('seo');
+    Route::put('seo', [SeoController::class, 'update'])->name('seo.update');
 
     Route::resource('taxonomies', TaxonomyController::class)->except(['show']);
 
@@ -53,6 +57,12 @@ Route::middleware(['web', 'auth'])->prefix('admin')->name('admin.')->group(funct
     Route::put('assets/{asset}', [AssetsController::class, 'update'])->name('assets.update');
     Route::delete('assets/{asset}', [AssetsController::class, 'destroy'])->name('assets.destroy');
     Route::get('assets/{asset}/file', [AssetsController::class, 'file'])->name('assets.file');
+
+    Route::resource('users', UserController::class)->except(['show']);
+
+    Route::resource('administrators', AdminUserController::class)
+        ->except(['show'])
+        ->parameters(['administrators' => 'admin']);
 
     Route::post('preview', [PreviewController::class, 'render'])->name('preview');
     Route::get('block-preview/{block}', [PreviewController::class, 'blockPreview'])->name('block-preview');

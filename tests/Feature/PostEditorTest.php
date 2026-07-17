@@ -1,15 +1,15 @@
 <?php
 
+use App\Models\Admin;
 use App\Models\Post;
-use App\Models\User;
 
 use function Pest\Laravel\actingAs;
 use function Pest\Laravel\get;
 use function Pest\Laravel\patch;
 
 beforeEach(function () {
-    $this->user = User::factory()->create();
-    actingAs($this->user);
+    $this->admin = Admin::factory()->create();
+    actingAs($this->admin, 'admin');
 });
 
 it('loads the editor page', function () {

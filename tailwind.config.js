@@ -26,7 +26,7 @@ export default {
                 "header-text": "#fff",
                 "body-bg": "oklch(0.967 0.001 286.375)",
                 "content-bg": "#fff",
-                "content-border": "oklch(0.92 0.004 286.32)",
+                "content-border": "#e5e7eb",
                 "text-primary": "oklch(0.37 0.013 285.805)",
                 "text-muted": "oklch(0.61 0.008 286)",
                 "text-heading": "oklch(0.37 0.013 285.805)",

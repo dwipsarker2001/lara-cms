@@ -1,21 +1,21 @@
 <?php
 
+use App\Models\Admin;
 use App\Models\Layout;
 use App\Models\Page;
 use App\Models\Post;
 use App\Models\Taxonomy;
-use App\Models\User;
 
 use function Pest\Laravel\actingAs;
 use function Pest\Laravel\getJson;
 
 beforeEach(function () {
-    $this->user = User::factory()->create();
-    actingAs($this->user);
+    $this->admin = Admin::factory()->create();
+    actingAs($this->admin, 'admin');
 });
 
 it('requires authentication', function () {
-    auth()->logout();
+    auth('admin')->logout();
 
     getJson(route('admin.search'))->assertRedirect();
 });
