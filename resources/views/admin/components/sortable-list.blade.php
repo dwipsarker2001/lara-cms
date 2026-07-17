@@ -115,7 +115,7 @@
                                     @endif
                                     @if (!in_array($item->slug ?? $item->id, $protectedItems))
                                         <hr class="my-1 border-content-border">
-                                        <form method="POST" action="{{ route($deleteRoute, $item) }}" class="w-full">
+                                        <form method="POST" action="{{ route($deleteRoute, $item) }}" class="w-full mb-0">
                                             @csrf @method('DELETE')
                                             <button type="submit" role="menuitem"
                                                 onclick="return confirm('Delete this item?')"

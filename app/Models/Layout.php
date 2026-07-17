@@ -21,4 +21,14 @@ class Layout extends Model
     {
         return $this->name;
     }
+
+    public function route(): string
+    {
+        return match ($this->collection) {
+            'page' => 'Page',
+            'blog' => 'Blog',
+            'package' => 'Package',
+            default => ucfirst($this->collection),
+        };
+    }
 }

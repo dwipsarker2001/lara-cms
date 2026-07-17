@@ -39,6 +39,7 @@
             empty-text="No layouts yet."
             empty-link-text="Create your first layout"
             empty-link-route="admin.layouts.create"
+            show-route
         />
     </div>
 @endsection

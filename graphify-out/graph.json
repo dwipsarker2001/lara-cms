@@ -162,8 +162,8 @@
       "source_location": "L44",
       "_origin": "ast",
       "id": "app_blocks_block_block_view",
-      "community": 145,
-      "community_name": ".view",
+      "community": 148,
+      "community_name": "Layout",
       "norm_label": ".view()"
     },
     {
@@ -789,8 +789,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "app_blocks_common_latestblog",
-      "community": 23,
-      "community_name": "LatestBlog.php",
+      "community": 11,
+      "community_name": "Block",
       "norm_label": "latestblog.php"
     },
     {
@@ -800,8 +800,8 @@
       "source_location": "L8",
       "_origin": "ast",
       "id": "app_blocks_common_latestblog_latestblog",
-      "community": 23,
-      "community_name": "LatestBlog.php",
+      "community": 11,
+      "community_name": "Block",
       "norm_label": "latestblog"
     },
     {
@@ -811,8 +811,8 @@
       "source_location": "L14",
       "_origin": "ast",
       "id": "app_blocks_common_latestblog_latestblog_fields",
-      "community": 23,
-      "community_name": "LatestBlog.php",
+      "community": 10,
+      "community_name": "Field",
       "norm_label": ".fields()"
     },
     {
@@ -1119,8 +1119,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "app_blocks_common_packageitinerary",
-      "community": 11,
-      "community_name": "Block",
+      "community": 23,
+      "community_name": "LatestBlog.php",
       "norm_label": "packageitinerary.php"
     },
     {
@@ -1130,8 +1130,8 @@
       "source_location": "L8",
       "_origin": "ast",
       "id": "app_blocks_common_packageitinerary_packageitinerary",
-      "community": 11,
-      "community_name": "Block",
+      "community": 23,
+      "community_name": "LatestBlog.php",
       "norm_label": "packageitinerary"
     },
     {
@@ -1141,8 +1141,8 @@
       "source_location": "L14",
       "_origin": "ast",
       "id": "app_blocks_common_packageitinerary_packageitinerary_fields",
-      "community": 10,
-      "community_name": "Field",
+      "community": 23,
+      "community_name": "LatestBlog.php",
       "norm_label": ".fields()"
     },
     {
@@ -1666,7 +1666,7 @@
       "label": ".edit()",
       "file_type": "code",
       "source_file": "app/Http/Controllers/Admin/AdminUserController.php",
-      "source_location": "L39",
+      "source_location": "L42",
       "_origin": "ast",
       "id": "app_http_controllers_admin_adminusercontroller_adminusercontroller_edit",
       "community": 121,
@@ -1677,7 +1677,7 @@
       "label": ".update()",
       "file_type": "code",
       "source_file": "app/Http/Controllers/Admin/AdminUserController.php",
-      "source_location": "L44",
+      "source_location": "L47",
       "_origin": "ast",
       "id": "app_http_controllers_admin_adminusercontroller_adminusercontroller_update",
       "community": 121,
@@ -1688,7 +1688,7 @@
       "label": ".destroy()",
       "file_type": "code",
       "source_file": "app/Http/Controllers/Admin/AdminUserController.php",
-      "source_location": "L64",
+      "source_location": "L68",
       "_origin": "ast",
       "id": "app_http_controllers_admin_adminusercontroller_adminusercontroller_destroy",
       "community": 121,
@@ -1702,8 +1702,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "app_http_controllers_admin_assetscontroller",
-      "community": 7,
-      "community_name": "Model",
+      "community": 136,
+      "community_name": "RedirectResponse",
       "norm_label": "assetscontroller.php"
     },
     {
@@ -1845,8 +1845,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "app_http_controllers_admin_commandsearchcontroller",
-      "community": 4,
-      "community_name": "Controller",
+      "community": 136,
+      "community_name": "RedirectResponse",
       "norm_label": "commandsearchcontroller.php"
     },
     {
@@ -1856,8 +1856,8 @@
       "source_location": "L10",
       "_origin": "ast",
       "id": "app_http_controllers_admin_commandsearchcontroller_commandsearchcontroller",
-      "community": 4,
-      "community_name": "Controller",
+      "community": 136,
+      "community_name": "RedirectResponse",
       "norm_label": "commandsearchcontroller"
     },
     {
@@ -1867,8 +1867,8 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "app_http_controllers_admin_commandsearchcontroller_commandsearchcontroller_invoke",
-      "community": 4,
-      "community_name": "Controller",
+      "community": 136,
+      "community_name": "RedirectResponse",
       "norm_label": ".__invoke()"
     },
     {
@@ -1878,8 +1878,8 @@
       "source_location": "",
       "_origin": "ast",
       "id": "app_http_controllers_admin_commandsearchcontroller_php_request",
-      "community": 4,
-      "community_name": "Controller",
+      "community": 136,
+      "community_name": "RedirectResponse",
       "norm_label": "request"
     },
     {
@@ -1889,9 +1889,141 @@
       "source_location": "",
       "_origin": "ast",
       "id": "jsonresponse",
-      "community": 4,
-      "community_name": "Controller",
+      "community": 136,
+      "community_name": "RedirectResponse",
       "norm_label": "jsonresponse"
+    },
+    {
+      "label": "FormController.php",
+      "file_type": "code",
+      "source_file": "app/Http/Controllers/Admin/FormController.php",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "app_http_controllers_admin_formcontroller",
+      "community": 16,
+      "community_name": "AppServiceProvider.php",
+      "norm_label": "formcontroller.php"
+    },
+    {
+      "label": "FormController",
+      "file_type": "code",
+      "source_file": "app/Http/Controllers/Admin/FormController.php",
+      "source_location": "L10",
+      "_origin": "ast",
+      "id": "app_http_controllers_admin_formcontroller_formcontroller",
+      "community": 16,
+      "community_name": "AppServiceProvider.php",
+      "norm_label": "formcontroller"
+    },
+    {
+      "label": ".index()",
+      "file_type": "code",
+      "source_file": "app/Http/Controllers/Admin/FormController.php",
+      "source_location": "L12",
+      "_origin": "ast",
+      "id": "app_http_controllers_admin_formcontroller_formcontroller_index",
+      "community": 16,
+      "community_name": "AppServiceProvider.php",
+      "norm_label": ".index()"
+    },
+    {
+      "label": ".create()",
+      "file_type": "code",
+      "source_file": "app/Http/Controllers/Admin/FormController.php",
+      "source_location": "L17",
+      "_origin": "ast",
+      "id": "app_http_controllers_admin_formcontroller_formcontroller_create",
+      "community": 148,
+      "community_name": "Layout",
+      "norm_label": ".create()"
+    },
+    {
+      "label": ".store()",
+      "file_type": "code",
+      "source_file": "app/Http/Controllers/Admin/FormController.php",
+      "source_location": "L22",
+      "_origin": "ast",
+      "id": "app_http_controllers_admin_formcontroller_formcontroller_store",
+      "community": 16,
+      "community_name": "AppServiceProvider.php",
+      "norm_label": ".store()"
+    },
+    {
+      "label": "Request",
+      "file_type": "code",
+      "source_file": "",
+      "source_location": "",
+      "_origin": "ast",
+      "id": "app_http_controllers_admin_formcontroller_php_request",
+      "community": 16,
+      "community_name": "AppServiceProvider.php",
+      "norm_label": "request"
+    },
+    {
+      "label": ".edit()",
+      "file_type": "code",
+      "source_file": "app/Http/Controllers/Admin/FormController.php",
+      "source_location": "L36",
+      "_origin": "ast",
+      "id": "app_http_controllers_admin_formcontroller_formcontroller_edit",
+      "community": 16,
+      "community_name": "AppServiceProvider.php",
+      "norm_label": ".edit()"
+    },
+    {
+      "label": ".update()",
+      "file_type": "code",
+      "source_file": "app/Http/Controllers/Admin/FormController.php",
+      "source_location": "L41",
+      "_origin": "ast",
+      "id": "app_http_controllers_admin_formcontroller_formcontroller_update",
+      "community": 16,
+      "community_name": "AppServiceProvider.php",
+      "norm_label": ".update()"
+    },
+    {
+      "label": ".destroy()",
+      "file_type": "code",
+      "source_file": "app/Http/Controllers/Admin/FormController.php",
+      "source_location": "L53",
+      "_origin": "ast",
+      "id": "app_http_controllers_admin_formcontroller_formcontroller_destroy",
+      "community": 16,
+      "community_name": "AppServiceProvider.php",
+      "norm_label": ".destroy()"
+    },
+    {
+      "label": ".reorder()",
+      "file_type": "code",
+      "source_file": "app/Http/Controllers/Admin/FormController.php",
+      "source_location": "L60",
+      "_origin": "ast",
+      "id": "app_http_controllers_admin_formcontroller_formcontroller_reorder",
+      "community": 16,
+      "community_name": "AppServiceProvider.php",
+      "norm_label": ".reorder()"
+    },
+    {
+      "label": ".editor()",
+      "file_type": "code",
+      "source_file": "app/Http/Controllers/Admin/FormController.php",
+      "source_location": "L69",
+      "_origin": "ast",
+      "id": "app_http_controllers_admin_formcontroller_formcontroller_editor",
+      "community": 16,
+      "community_name": "AppServiceProvider.php",
+      "norm_label": ".editor()"
+    },
+    {
+      "label": ".updateFields()",
+      "file_type": "code",
+      "source_file": "app/Http/Controllers/Admin/FormController.php",
+      "source_location": "L77",
+      "_origin": "ast",
+      "id": "app_http_controllers_admin_formcontroller_formcontroller_updatefields",
+      "community": 16,
+      "community_name": "AppServiceProvider.php",
+      "norm_label": ".updatefields()"
     },
     {
       "label": "LayoutController.php",
@@ -1933,8 +2065,8 @@
       "source_location": "L21",
       "_origin": "ast",
       "id": "app_http_controllers_admin_layoutcontroller_layoutcontroller_create",
-      "community": 145,
-      "community_name": ".view",
+      "community": 148,
+      "community_name": "Layout",
       "norm_label": ".create()"
     },
     {
@@ -2065,8 +2197,8 @@
       "source_location": "L21",
       "_origin": "ast",
       "id": "app_http_controllers_admin_packagecontroller_packagecontroller_create",
-      "community": 146,
-      "community_name": "Package",
+      "community": 148,
+      "community_name": "Layout",
       "norm_label": ".create()"
     },
     {
@@ -2142,8 +2274,8 @@
       "source_location": "L115",
       "_origin": "ast",
       "id": "app_http_controllers_admin_packagecontroller_packagecontroller_editor",
-      "community": 4,
-      "community_name": "Controller",
+      "community": 146,
+      "community_name": "Package",
       "norm_label": ".editor()"
     },
     {
@@ -2197,8 +2329,8 @@
       "source_location": "L21",
       "_origin": "ast",
       "id": "app_http_controllers_admin_pagecontroller_pagecontroller_create",
-      "community": 145,
-      "community_name": ".view",
+      "community": 148,
+      "community_name": "Layout",
       "norm_label": ".create()"
     },
     {
@@ -2439,8 +2571,8 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "app_http_controllers_admin_previewcontroller_previewcontroller",
-      "community": 136,
-      "community_name": "RedirectResponse",
+      "community": 221,
+      "community_name": "Sections",
       "norm_label": "previewcontroller"
     },
     {
@@ -2450,8 +2582,8 @@
       "source_location": "L14",
       "_origin": "ast",
       "id": "app_http_controllers_admin_previewcontroller_previewcontroller_render",
-      "community": 136,
-      "community_name": "RedirectResponse",
+      "community": 221,
+      "community_name": "Sections",
       "norm_label": ".render()"
     },
     {
@@ -2461,8 +2593,8 @@
       "source_location": "",
       "_origin": "ast",
       "id": "app_http_controllers_admin_previewcontroller_php_request",
-      "community": 136,
-      "community_name": "RedirectResponse",
+      "community": 221,
+      "community_name": "Sections",
       "norm_label": "request"
     },
     {
@@ -2472,8 +2604,8 @@
       "source_location": "L30",
       "_origin": "ast",
       "id": "app_http_controllers_admin_previewcontroller_previewcontroller_blockpreview",
-      "community": 145,
-      "community_name": ".view",
+      "community": 221,
+      "community_name": "Sections",
       "norm_label": ".blockpreview()"
     },
     {
@@ -2483,8 +2615,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "app_http_controllers_admin_profilecontroller",
-      "community": 136,
-      "community_name": "RedirectResponse",
+      "community": 225,
+      "community_name": "ProfileController.php",
       "norm_label": "profilecontroller.php"
     },
     {
@@ -2494,8 +2626,8 @@
       "source_location": "L11",
       "_origin": "ast",
       "id": "app_http_controllers_admin_profilecontroller_profilecontroller",
-      "community": 136,
-      "community_name": "RedirectResponse",
+      "community": 225,
+      "community_name": "ProfileController.php",
       "norm_label": "profilecontroller"
     },
     {
@@ -2505,8 +2637,8 @@
       "source_location": "L13",
       "_origin": "ast",
       "id": "app_http_controllers_admin_profilecontroller_profilecontroller_edit",
-      "community": 136,
-      "community_name": "RedirectResponse",
+      "community": 225,
+      "community_name": "ProfileController.php",
       "norm_label": ".edit()"
     },
     {
@@ -2516,8 +2648,8 @@
       "source_location": "",
       "_origin": "ast",
       "id": "app_http_controllers_admin_profilecontroller_php_view",
-      "community": 136,
-      "community_name": "RedirectResponse",
+      "community": 225,
+      "community_name": "ProfileController.php",
       "norm_label": "view"
     },
     {
@@ -2527,8 +2659,8 @@
       "source_location": "L20",
       "_origin": "ast",
       "id": "app_http_controllers_admin_profilecontroller_profilecontroller_update",
-      "community": 136,
-      "community_name": "RedirectResponse",
+      "community": 225,
+      "community_name": "ProfileController.php",
       "norm_label": ".update()"
     },
     {
@@ -2538,8 +2670,8 @@
       "source_location": "",
       "_origin": "ast",
       "id": "app_http_controllers_admin_profilecontroller_php_redirectresponse",
-      "community": 136,
-      "community_name": "RedirectResponse",
+      "community": 225,
+      "community_name": "ProfileController.php",
       "norm_label": "redirectresponse"
     },
     {
@@ -2549,7 +2681,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "app_http_controllers_admin_seocontroller",
-      "community": 143,
+      "community": 222,
       "community_name": "SeoController.php",
       "norm_label": "seocontroller.php"
     },
@@ -2560,7 +2692,7 @@
       "source_location": "L9",
       "_origin": "ast",
       "id": "app_http_controllers_admin_seocontroller_seocontroller",
-      "community": 143,
+      "community": 222,
       "community_name": "SeoController.php",
       "norm_label": "seocontroller"
     },
@@ -2571,7 +2703,7 @@
       "source_location": "L46",
       "_origin": "ast",
       "id": "app_http_controllers_admin_seocontroller_seocontroller_index",
-      "community": 143,
+      "community": 222,
       "community_name": "SeoController.php",
       "norm_label": ".index()"
     },
@@ -2582,7 +2714,7 @@
       "source_location": "L54",
       "_origin": "ast",
       "id": "app_http_controllers_admin_seocontroller_seocontroller_update",
-      "community": 143,
+      "community": 222,
       "community_name": "SeoController.php",
       "norm_label": ".update()"
     },
@@ -2593,7 +2725,7 @@
       "source_location": "",
       "_origin": "ast",
       "id": "app_http_controllers_admin_seocontroller_php_request",
-      "community": 143,
+      "community": 222,
       "community_name": "SeoController.php",
       "norm_label": "request"
     },
@@ -2604,7 +2736,7 @@
       "source_location": "L73",
       "_origin": "ast",
       "id": "app_http_controllers_admin_seocontroller_seocontroller_mergeseo",
-      "community": 143,
+      "community": 222,
       "community_name": "SeoController.php",
       "norm_label": ".mergeseo()"
     },
@@ -2615,7 +2747,7 @@
       "source_location": "L98",
       "_origin": "ast",
       "id": "app_http_controllers_admin_seocontroller_seocontroller_validateseo",
-      "community": 143,
+      "community": 222,
       "community_name": "SeoController.php",
       "norm_label": ".validateseo()"
     },
@@ -2626,7 +2758,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "app_http_controllers_admin_settingscontroller",
-      "community": 143,
+      "community": 222,
       "community_name": "SeoController.php",
       "norm_label": "settingscontroller.php"
     },
@@ -2637,7 +2769,7 @@
       "source_location": "L9",
       "_origin": "ast",
       "id": "app_http_controllers_admin_settingscontroller_settingscontroller",
-      "community": 143,
+      "community": 222,
       "community_name": "SeoController.php",
       "norm_label": "settingscontroller"
     },
@@ -2648,7 +2780,7 @@
       "source_location": "L11",
       "_origin": "ast",
       "id": "app_http_controllers_admin_settingscontroller_settingscontroller_index",
-      "community": 143,
+      "community": 222,
       "community_name": "SeoController.php",
       "norm_label": ".index()"
     },
@@ -2659,7 +2791,7 @@
       "source_location": "L18",
       "_origin": "ast",
       "id": "app_http_controllers_admin_settingscontroller_settingscontroller_update",
-      "community": 143,
+      "community": 222,
       "community_name": "SeoController.php",
       "norm_label": ".update()"
     },
@@ -2670,7 +2802,7 @@
       "source_location": "",
       "_origin": "ast",
       "id": "app_http_controllers_admin_settingscontroller_php_request",
-      "community": 143,
+      "community": 222,
       "community_name": "SeoController.php",
       "norm_label": "request"
     },
@@ -2681,8 +2813,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "app_http_controllers_admin_taxonomycontroller",
-      "community": 9,
-      "community_name": "Taxonomy",
+      "community": 136,
+      "community_name": "RedirectResponse",
       "norm_label": "taxonomycontroller.php"
     },
     {
@@ -2780,52 +2912,63 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "app_http_controllers_admin_usercontroller",
-      "community": 136,
-      "community_name": "RedirectResponse",
+      "community": 121,
+      "community_name": "Seeder",
       "norm_label": "usercontroller.php"
     },
     {
       "label": "UserController",
       "file_type": "code",
       "source_file": "app/Http/Controllers/Admin/UserController.php",
-      "source_location": "L10",
+      "source_location": "L11",
       "_origin": "ast",
       "id": "app_http_controllers_admin_usercontroller_usercontroller",
-      "community": 145,
-      "community_name": ".view",
+      "community": 121,
+      "community_name": "Seeder",
       "norm_label": "usercontroller"
     },
     {
       "label": ".index()",
       "file_type": "code",
       "source_file": "app/Http/Controllers/Admin/UserController.php",
-      "source_location": "L12",
+      "source_location": "L13",
       "_origin": "ast",
       "id": "app_http_controllers_admin_usercontroller_usercontroller_index",
-      "community": 145,
-      "community_name": ".view",
+      "community": 121,
+      "community_name": "Seeder",
       "norm_label": ".index()"
+    },
+    {
+      "label": "View",
+      "file_type": "code",
+      "source_file": "",
+      "source_location": "",
+      "_origin": "ast",
+      "id": "app_http_controllers_admin_usercontroller_php_view",
+      "community": 121,
+      "community_name": "Seeder",
+      "norm_label": "view"
     },
     {
       "label": ".create()",
       "file_type": "code",
       "source_file": "app/Http/Controllers/Admin/UserController.php",
-      "source_location": "L19",
+      "source_location": "L20",
       "_origin": "ast",
       "id": "app_http_controllers_admin_usercontroller_usercontroller_create",
-      "community": 145,
-      "community_name": ".view",
+      "community": 121,
+      "community_name": "Seeder",
       "norm_label": ".create()"
     },
     {
       "label": ".store()",
       "file_type": "code",
       "source_file": "app/Http/Controllers/Admin/UserController.php",
-      "source_location": "L24",
+      "source_location": "L25",
       "_origin": "ast",
       "id": "app_http_controllers_admin_usercontroller_usercontroller_store",
-      "community": 145,
-      "community_name": ".view",
+      "community": 121,
+      "community_name": "Seeder",
       "norm_label": ".store()"
     },
     {
@@ -2835,37 +2978,48 @@
       "source_location": "",
       "_origin": "ast",
       "id": "app_http_controllers_admin_usercontroller_php_request",
-      "community": 145,
-      "community_name": ".view",
+      "community": 121,
+      "community_name": "Seeder",
       "norm_label": "request"
+    },
+    {
+      "label": "RedirectResponse",
+      "file_type": "code",
+      "source_file": "",
+      "source_location": "",
+      "_origin": "ast",
+      "id": "app_http_controllers_admin_usercontroller_php_redirectresponse",
+      "community": 121,
+      "community_name": "Seeder",
+      "norm_label": "redirectresponse"
     },
     {
       "label": ".edit()",
       "file_type": "code",
       "source_file": "app/Http/Controllers/Admin/UserController.php",
-      "source_location": "L40",
+      "source_location": "L39",
       "_origin": "ast",
       "id": "app_http_controllers_admin_usercontroller_usercontroller_edit",
-      "community": 145,
-      "community_name": ".view",
+      "community": 121,
+      "community_name": "Seeder",
       "norm_label": ".edit()"
     },
     {
       "label": ".update()",
       "file_type": "code",
       "source_file": "app/Http/Controllers/Admin/UserController.php",
-      "source_location": "L45",
+      "source_location": "L44",
       "_origin": "ast",
       "id": "app_http_controllers_admin_usercontroller_usercontroller_update",
-      "community": 145,
-      "community_name": ".view",
+      "community": 121,
+      "community_name": "Seeder",
       "norm_label": ".update()"
     },
     {
       "label": ".destroy()",
       "file_type": "code",
       "source_file": "app/Http/Controllers/Admin/UserController.php",
-      "source_location": "L65",
+      "source_location": "L64",
       "_origin": "ast",
       "id": "app_http_controllers_admin_usercontroller_usercontroller_destroy",
       "community": 121,
@@ -2989,8 +3143,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "app_http_controllers_public_blogcontroller",
-      "community": 137,
-      "community_name": "View",
+      "community": 136,
+      "community_name": "RedirectResponse",
       "norm_label": "blogcontroller.php"
     },
     {
@@ -3000,8 +3154,8 @@
       "source_location": "L8",
       "_origin": "ast",
       "id": "app_http_controllers_public_blogcontroller_blogcontroller",
-      "community": 137,
-      "community_name": "View",
+      "community": 136,
+      "community_name": "RedirectResponse",
       "norm_label": "blogcontroller"
     },
     {
@@ -3011,8 +3165,8 @@
       "source_location": "L10",
       "_origin": "ast",
       "id": "app_http_controllers_public_blogcontroller_blogcontroller_show",
-      "community": 137,
-      "community_name": "View",
+      "community": 136,
+      "community_name": "RedirectResponse",
       "norm_label": ".show()"
     },
     {
@@ -3022,8 +3176,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "app_http_controllers_public_pagecontroller",
-      "community": 121,
-      "community_name": "Seeder",
+      "community": 3,
+      "community_name": "Page",
       "norm_label": "pagecontroller.php"
     },
     {
@@ -3033,8 +3187,8 @@
       "source_location": "L9",
       "_origin": "ast",
       "id": "app_http_controllers_public_pagecontroller_pagecontroller",
-      "community": 145,
-      "community_name": ".view",
+      "community": 3,
+      "community_name": "Page",
       "norm_label": "pagecontroller"
     },
     {
@@ -3044,8 +3198,8 @@
       "source_location": "L11",
       "_origin": "ast",
       "id": "app_http_controllers_public_pagecontroller_pagecontroller_home",
-      "community": 145,
-      "community_name": ".view",
+      "community": 3,
+      "community_name": "Page",
       "norm_label": ".home()"
     },
     {
@@ -3055,8 +3209,8 @@
       "source_location": "L18",
       "_origin": "ast",
       "id": "app_http_controllers_public_pagecontroller_pagecontroller_show",
-      "community": 145,
-      "community_name": ".view",
+      "community": 3,
+      "community_name": "Page",
       "norm_label": ".show()"
     },
     {
@@ -3250,7 +3404,7 @@
       "label": ".casts()",
       "file_type": "code",
       "source_file": "app/Models/Admin.php",
-      "source_location": "L24",
+      "source_location": "L19",
       "_origin": "ast",
       "id": "app_models_admin_admin_casts",
       "community": 121,
@@ -3264,8 +3418,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "app_models_asset",
-      "community": 9,
-      "community_name": "Taxonomy",
+      "community": 7,
+      "community_name": "Model",
       "norm_label": "asset.php"
     },
     {
@@ -3286,8 +3440,8 @@
       "source_location": "",
       "_origin": "ast",
       "id": "model",
-      "community": 9,
-      "community_name": "Taxonomy",
+      "community": 223,
+      "community_name": "Model",
       "norm_label": "model"
     },
     {
@@ -3308,8 +3462,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "app_models_booking",
-      "community": 9,
-      "community_name": "Taxonomy",
+      "community": 223,
+      "community_name": "Model",
       "norm_label": "booking.php"
     },
     {
@@ -3319,8 +3473,8 @@
       "source_location": "L7",
       "_origin": "ast",
       "id": "app_models_booking_booking",
-      "community": 9,
-      "community_name": "Taxonomy",
+      "community": 223,
+      "community_name": "Model",
       "norm_label": "booking"
     },
     {
@@ -3330,8 +3484,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "app_models_destination",
-      "community": 9,
-      "community_name": "Taxonomy",
+      "community": 223,
+      "community_name": "Model",
       "norm_label": "destination.php"
     },
     {
@@ -3341,9 +3495,42 @@
       "source_location": "L7",
       "_origin": "ast",
       "id": "app_models_destination_destination",
-      "community": 9,
-      "community_name": "Taxonomy",
+      "community": 223,
+      "community_name": "Model",
       "norm_label": "destination"
+    },
+    {
+      "label": "Form.php",
+      "file_type": "code",
+      "source_file": "app/Models/Form.php",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "app_models_form",
+      "community": 145,
+      "community_name": ".view",
+      "norm_label": "form.php"
+    },
+    {
+      "label": "Form",
+      "file_type": "code",
+      "source_file": "app/Models/Form.php",
+      "source_location": "L9",
+      "_origin": "ast",
+      "id": "app_models_form_form",
+      "community": 16,
+      "community_name": "AppServiceProvider.php",
+      "norm_label": "form"
+    },
+    {
+      "label": ".casts()",
+      "file_type": "code",
+      "source_file": "app/Models/Form.php",
+      "source_location": "L16",
+      "_origin": "ast",
+      "id": "app_models_form_form_casts",
+      "community": 16,
+      "community_name": "AppServiceProvider.php",
+      "norm_label": ".casts()"
     },
     {
       "label": "Layout.php",
@@ -3352,8 +3539,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "app_models_layout",
-      "community": 121,
-      "community_name": "Seeder",
+      "community": 145,
+      "community_name": ".view",
       "norm_label": "layout.php"
     },
     {
@@ -3379,14 +3566,25 @@
       "norm_label": ".gettitleattribute()"
     },
     {
+      "label": ".route()",
+      "file_type": "code",
+      "source_file": "app/Models/Layout.php",
+      "source_location": "L25",
+      "_origin": "ast",
+      "id": "app_models_layout_layout_route",
+      "community": 148,
+      "community_name": "Layout",
+      "norm_label": ".route()"
+    },
+    {
       "label": "Package.php",
       "file_type": "code",
       "source_file": "app/Models/Package.php",
       "source_location": "L1",
       "_origin": "ast",
       "id": "app_models_package",
-      "community": 121,
-      "community_name": "Seeder",
+      "community": 145,
+      "community_name": ".view",
       "norm_label": "package.php"
     },
     {
@@ -3429,8 +3627,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "app_models_page",
-      "community": 9,
-      "community_name": "Taxonomy",
+      "community": 223,
+      "community_name": "Model",
       "norm_label": "page.php"
     },
     {
@@ -3451,8 +3649,8 @@
       "source_location": "L23",
       "_origin": "ast",
       "id": "app_models_page_page_route",
-      "community": 4,
-      "community_name": "Controller",
+      "community": 3,
+      "community_name": "Page",
       "norm_label": ".route()"
     },
     {
@@ -3462,8 +3660,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "app_models_post",
-      "community": 121,
-      "community_name": "Seeder",
+      "community": 223,
+      "community_name": "Model",
       "norm_label": "post.php"
     },
     {
@@ -3484,8 +3682,8 @@
       "source_location": "L24",
       "_origin": "ast",
       "id": "app_models_post_post_terms",
-      "community": 121,
-      "community_name": "Seeder",
+      "community": 223,
+      "community_name": "Model",
       "norm_label": ".terms()"
     },
     {
@@ -3495,8 +3693,8 @@
       "source_location": "",
       "_origin": "ast",
       "id": "app_models_post_php_belongstomany",
-      "community": 121,
-      "community_name": "Seeder",
+      "community": 223,
+      "community_name": "Model",
       "norm_label": "belongstomany"
     },
     {
@@ -3506,7 +3704,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "app_models_setting",
-      "community": 143,
+      "community": 222,
       "community_name": "SeoController.php",
       "norm_label": "setting.php"
     },
@@ -3517,7 +3715,7 @@
       "source_location": "L7",
       "_origin": "ast",
       "id": "app_models_setting_setting",
-      "community": 143,
+      "community": 222,
       "community_name": "SeoController.php",
       "norm_label": "setting"
     },
@@ -3572,8 +3770,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "app_models_term",
-      "community": 9,
-      "community_name": "Taxonomy",
+      "community": 224,
+      "community_name": "Term.php",
       "norm_label": "term.php"
     },
     {
@@ -3583,8 +3781,8 @@
       "source_location": "L9",
       "_origin": "ast",
       "id": "app_models_term_term",
-      "community": 9,
-      "community_name": "Taxonomy",
+      "community": 224,
+      "community_name": "Term.php",
       "norm_label": "term"
     },
     {
@@ -3594,8 +3792,8 @@
       "source_location": "L13",
       "_origin": "ast",
       "id": "app_models_term_term_booted",
-      "community": 9,
-      "community_name": "Taxonomy",
+      "community": 224,
+      "community_name": "Term.php",
       "norm_label": ".booted()"
     },
     {
@@ -3605,8 +3803,8 @@
       "source_location": "L28",
       "_origin": "ast",
       "id": "app_models_term_term_taxonomy",
-      "community": 9,
-      "community_name": "Taxonomy",
+      "community": 224,
+      "community_name": "Term.php",
       "norm_label": ".taxonomy()"
     },
     {
@@ -3616,8 +3814,8 @@
       "source_location": "",
       "_origin": "ast",
       "id": "belongsto",
-      "community": 9,
-      "community_name": "Taxonomy",
+      "community": 224,
+      "community_name": "Term.php",
       "norm_label": "belongsto"
     },
     {
@@ -3627,8 +3825,8 @@
       "source_location": "L33",
       "_origin": "ast",
       "id": "app_models_term_term_posts",
-      "community": 9,
-      "community_name": "Taxonomy",
+      "community": 224,
+      "community_name": "Term.php",
       "norm_label": ".posts()"
     },
     {
@@ -3638,8 +3836,8 @@
       "source_location": "",
       "_origin": "ast",
       "id": "app_models_term_php_belongstomany",
-      "community": 9,
-      "community_name": "Taxonomy",
+      "community": 224,
+      "community_name": "Term.php",
       "norm_label": "belongstomany"
     },
     {
@@ -3690,7 +3888,7 @@
       "label": "AppServiceProvider",
       "file_type": "code",
       "source_file": "app/Providers/AppServiceProvider.php",
-      "source_location": "L9",
+      "source_location": "L11",
       "_origin": "ast",
       "id": "app_providers_appserviceprovider_appserviceprovider",
       "community": 16,
@@ -3712,7 +3910,7 @@
       "label": ".register()",
       "file_type": "code",
       "source_file": "app/Providers/AppServiceProvider.php",
-      "source_location": "L11",
+      "source_location": "L13",
       "_origin": "ast",
       "id": "app_providers_appserviceprovider_appserviceprovider_register",
       "community": 16,
@@ -3723,7 +3921,7 @@
       "label": ".boot()",
       "file_type": "code",
       "source_file": "app/Providers/AppServiceProvider.php",
-      "source_location": "L16",
+      "source_location": "L18",
       "_origin": "ast",
       "id": "app_providers_appserviceprovider_appserviceprovider_boot",
       "community": 16,
@@ -3748,8 +3946,8 @@
       "source_location": "L7",
       "_origin": "ast",
       "id": "app_support_blockpreview_blockpreview",
-      "community": 136,
-      "community_name": "RedirectResponse",
+      "community": 221,
+      "community_name": "Sections",
       "norm_label": "blockpreview"
     },
     {
@@ -3759,8 +3957,8 @@
       "source_location": "L9",
       "_origin": "ast",
       "id": "app_support_blockpreview_blockpreview_render",
-      "community": 136,
-      "community_name": "RedirectResponse",
+      "community": 221,
+      "community_name": "Sections",
       "norm_label": ".render()"
     },
     {
@@ -3863,6 +4061,61 @@
       "norm_label": ".issubsequence()"
     },
     {
+      "label": "FormFieldTypes.php",
+      "file_type": "code",
+      "source_file": "app/Support/FormFieldTypes.php",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "app_support_formfieldtypes",
+      "community": 16,
+      "community_name": "AppServiceProvider.php",
+      "norm_label": "formfieldtypes.php"
+    },
+    {
+      "label": "FormFieldTypes",
+      "file_type": "code",
+      "source_file": "app/Support/FormFieldTypes.php",
+      "source_location": "L7",
+      "_origin": "ast",
+      "id": "app_support_formfieldtypes_formfieldtypes",
+      "community": 16,
+      "community_name": "AppServiceProvider.php",
+      "norm_label": "formfieldtypes"
+    },
+    {
+      "label": ".catalog()",
+      "file_type": "code",
+      "source_file": "app/Support/FormFieldTypes.php",
+      "source_location": "L12",
+      "_origin": "ast",
+      "id": "app_support_formfieldtypes_formfieldtypes_catalog",
+      "community": 16,
+      "community_name": "AppServiceProvider.php",
+      "norm_label": ".catalog()"
+    },
+    {
+      "label": ".createDefaultField()",
+      "file_type": "code",
+      "source_file": "app/Support/FormFieldTypes.php",
+      "source_location": "L27",
+      "_origin": "ast",
+      "id": "app_support_formfieldtypes_formfieldtypes_createdefaultfield",
+      "community": 16,
+      "community_name": "AppServiceProvider.php",
+      "norm_label": ".createdefaultfield()"
+    },
+    {
+      "label": ".definitions()",
+      "file_type": "code",
+      "source_file": "app/Support/FormFieldTypes.php",
+      "source_location": "L54",
+      "_origin": "ast",
+      "id": "app_support_formfieldtypes_formfieldtypes_definitions",
+      "community": 16,
+      "community_name": "AppServiceProvider.php",
+      "norm_label": ".definitions()"
+    },
+    {
       "label": "Sections.php",
       "file_type": "code",
       "source_file": "app/Support/Sections.php",
@@ -3880,8 +4133,8 @@
       "source_location": "L9",
       "_origin": "ast",
       "id": "app_support_sections_sections",
-      "community": 3,
-      "community_name": "Page",
+      "community": 221,
+      "community_name": "Sections",
       "norm_label": "sections"
     },
     {
@@ -3891,8 +4144,8 @@
       "source_location": "L11",
       "_origin": "ast",
       "id": "app_support_sections_sections_defaultdata",
-      "community": 3,
-      "community_name": "Page",
+      "community": 221,
+      "community_name": "Sections",
       "norm_label": ".defaultdata()"
     },
     {
@@ -3902,8 +4155,8 @@
       "source_location": "L27",
       "_origin": "ast",
       "id": "app_support_sections_sections_newlistitem",
-      "community": 3,
-      "community_name": "Page",
+      "community": 221,
+      "community_name": "Sections",
       "norm_label": ".newlistitem()"
     },
     {
@@ -3913,8 +4166,8 @@
       "source_location": "L32",
       "_origin": "ast",
       "id": "app_support_sections_sections_createdefaultsection",
-      "community": 3,
-      "community_name": "Page",
+      "community": 221,
+      "community_name": "Sections",
       "norm_label": ".createdefaultsection()"
     },
     {
@@ -3924,8 +4177,8 @@
       "source_location": "L48",
       "_origin": "ast",
       "id": "app_support_sections_sections_withglobals",
-      "community": 3,
-      "community_name": "Page",
+      "community": 221,
+      "community_name": "Sections",
       "norm_label": ".withglobals()"
     },
     {
@@ -3935,8 +4188,8 @@
       "source_location": "L69",
       "_origin": "ast",
       "id": "app_support_sections_sections_injectglobals",
-      "community": 3,
-      "community_name": "Page",
+      "community": 221,
+      "community_name": "Sections",
       "norm_label": ".injectglobals()"
     },
     {
@@ -3946,8 +4199,8 @@
       "source_location": "L90",
       "_origin": "ast",
       "id": "app_support_sections_sections_sectionstopropagate",
-      "community": 3,
-      "community_name": "Page",
+      "community": 221,
+      "community_name": "Sections",
       "norm_label": ".sectionstopropagate()"
     },
     {
@@ -3957,8 +4210,8 @@
       "source_location": "L98",
       "_origin": "ast",
       "id": "app_support_sections_sections_slugify",
-      "community": 3,
-      "community_name": "Page",
+      "community": 221,
+      "community_name": "Sections",
       "norm_label": ".slugify()"
     },
     {
@@ -3968,8 +4221,8 @@
       "source_location": "L107",
       "_origin": "ast",
       "id": "app_support_sections_sections_getatpath",
-      "community": 3,
-      "community_name": "Page",
+      "community": 221,
+      "community_name": "Sections",
       "norm_label": ".getatpath()"
     },
     {
@@ -3979,8 +4232,8 @@
       "source_location": "L124",
       "_origin": "ast",
       "id": "app_support_sections_sections_setatpath",
-      "community": 3,
-      "community_name": "Page",
+      "community": 221,
+      "community_name": "Sections",
       "norm_label": ".setatpath()"
     },
     {
@@ -3990,8 +4243,8 @@
       "source_location": "L145",
       "_origin": "ast",
       "id": "app_support_sections_sections_fieldsatpath",
-      "community": 3,
-      "community_name": "Page",
+      "community": 221,
+      "community_name": "Sections",
       "norm_label": ".fieldsatpath()"
     },
     {
@@ -4914,8 +5167,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "database_factories_adminfactory",
-      "community": 121,
-      "community_name": "Seeder",
+      "community": 145,
+      "community_name": ".view",
       "norm_label": "adminfactory.php"
     },
     {
@@ -4925,8 +5178,8 @@
       "source_location": "L13",
       "_origin": "ast",
       "id": "database_factories_adminfactory_adminfactory",
-      "community": 121,
-      "community_name": "Seeder",
+      "community": 145,
+      "community_name": ".view",
       "norm_label": "adminfactory"
     },
     {
@@ -4936,8 +5189,8 @@
       "source_location": "",
       "_origin": "ast",
       "id": "factory",
-      "community": 121,
-      "community_name": "Seeder",
+      "community": 145,
+      "community_name": ".view",
       "norm_label": "factory"
     },
     {
@@ -4947,19 +5200,19 @@
       "source_location": "L25",
       "_origin": "ast",
       "id": "database_factories_adminfactory_adminfactory_definition",
-      "community": 121,
-      "community_name": "Seeder",
+      "community": 145,
+      "community_name": ".view",
       "norm_label": ".definition()"
     },
     {
       "label": ".unverified()",
       "file_type": "code",
       "source_file": "database/factories/AdminFactory.php",
-      "source_location": "L39",
+      "source_location": "L40",
       "_origin": "ast",
       "id": "database_factories_adminfactory_adminfactory_unverified",
-      "community": 121,
-      "community_name": "Seeder",
+      "community": 145,
+      "community_name": ".view",
       "norm_label": ".unverified()"
     },
     {
@@ -4969,9 +5222,42 @@
       "source_location": "",
       "_origin": "ast",
       "id": "database_factories_adminfactory_php_static",
-      "community": 121,
-      "community_name": "Seeder",
+      "community": 145,
+      "community_name": ".view",
       "norm_label": "static"
+    },
+    {
+      "label": "FormFactory.php",
+      "file_type": "code",
+      "source_file": "database/factories/FormFactory.php",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "database_factories_formfactory",
+      "community": 145,
+      "community_name": ".view",
+      "norm_label": "formfactory.php"
+    },
+    {
+      "label": "FormFactory",
+      "file_type": "code",
+      "source_file": "database/factories/FormFactory.php",
+      "source_location": "L11",
+      "_origin": "ast",
+      "id": "database_factories_formfactory_formfactory",
+      "community": 145,
+      "community_name": ".view",
+      "norm_label": "formfactory"
+    },
+    {
+      "label": ".definition()",
+      "file_type": "code",
+      "source_file": "database/factories/FormFactory.php",
+      "source_location": "L15",
+      "_origin": "ast",
+      "id": "database_factories_formfactory_formfactory_definition",
+      "community": 145,
+      "community_name": ".view",
+      "norm_label": ".definition()"
     },
     {
       "label": "LayoutFactory.php",
@@ -4980,8 +5266,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "database_factories_layoutfactory",
-      "community": 121,
-      "community_name": "Seeder",
+      "community": 145,
+      "community_name": ".view",
       "norm_label": "layoutfactory.php"
     },
     {
@@ -4991,8 +5277,8 @@
       "source_location": "L8",
       "_origin": "ast",
       "id": "database_factories_layoutfactory_layoutfactory",
-      "community": 121,
-      "community_name": "Seeder",
+      "community": 145,
+      "community_name": ".view",
       "norm_label": "layoutfactory"
     },
     {
@@ -5002,8 +5288,8 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "database_factories_layoutfactory_layoutfactory_definition",
-      "community": 121,
-      "community_name": "Seeder",
+      "community": 145,
+      "community_name": ".view",
       "norm_label": ".definition()"
     },
     {
@@ -5013,8 +5299,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "database_factories_packagefactory",
-      "community": 121,
-      "community_name": "Seeder",
+      "community": 145,
+      "community_name": ".view",
       "norm_label": "packagefactory.php"
     },
     {
@@ -5024,8 +5310,8 @@
       "source_location": "L8",
       "_origin": "ast",
       "id": "database_factories_packagefactory_packagefactory",
-      "community": 121,
-      "community_name": "Seeder",
+      "community": 145,
+      "community_name": ".view",
       "norm_label": "packagefactory"
     },
     {
@@ -5035,8 +5321,8 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "database_factories_packagefactory_packagefactory_definition",
-      "community": 121,
-      "community_name": "Seeder",
+      "community": 145,
+      "community_name": ".view",
       "norm_label": ".definition()"
     },
     {
@@ -5046,8 +5332,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "database_factories_postfactory",
-      "community": 121,
-      "community_name": "Seeder",
+      "community": 145,
+      "community_name": ".view",
       "norm_label": "postfactory.php"
     },
     {
@@ -5057,8 +5343,8 @@
       "source_location": "L8",
       "_origin": "ast",
       "id": "database_factories_postfactory_postfactory",
-      "community": 121,
-      "community_name": "Seeder",
+      "community": 145,
+      "community_name": ".view",
       "norm_label": "postfactory"
     },
     {
@@ -5068,8 +5354,8 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "database_factories_postfactory_postfactory_definition",
-      "community": 121,
-      "community_name": "Seeder",
+      "community": 145,
+      "community_name": ".view",
       "norm_label": ".definition()"
     },
     {
@@ -5788,6 +6074,138 @@
       "norm_label": "down()"
     },
     {
+      "label": "2026_07_17_011608_add_is_active_to_admins_table.php",
+      "file_type": "code",
+      "source_file": "database/migrations/2026_07_17_011608_add_is_active_to_admins_table.php",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "database_migrations_2026_07_17_011608_add_is_active_to_admins_table",
+      "community": 143,
+      "community_name": "SeoController.php",
+      "norm_label": "2026_07_17_011608_add_is_active_to_admins_table.php"
+    },
+    {
+      "label": "up()",
+      "file_type": "code",
+      "source_file": "database/migrations/2026_07_17_011608_add_is_active_to_admins_table.php",
+      "source_location": "L12",
+      "_origin": "ast",
+      "id": "database_migrations_2026_07_17_011608_add_is_active_to_admins_table_up",
+      "community": 143,
+      "community_name": "SeoController.php",
+      "norm_label": "up()"
+    },
+    {
+      "label": "down()",
+      "file_type": "code",
+      "source_file": "database/migrations/2026_07_17_011608_add_is_active_to_admins_table.php",
+      "source_location": "L19",
+      "_origin": "ast",
+      "id": "database_migrations_2026_07_17_011608_add_is_active_to_admins_table_down",
+      "community": 143,
+      "community_name": "SeoController.php",
+      "norm_label": "down()"
+    },
+    {
+      "label": "2026_07_17_051648_create_forms_table.php",
+      "file_type": "code",
+      "source_file": "database/migrations/2026_07_17_051648_create_forms_table.php",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "database_migrations_2026_07_17_051648_create_forms_table",
+      "community": 226,
+      "community_name": "2026_07_17_051648_create_forms_table.php",
+      "norm_label": "2026_07_17_051648_create_forms_table.php"
+    },
+    {
+      "label": "up()",
+      "file_type": "code",
+      "source_file": "database/migrations/2026_07_17_051648_create_forms_table.php",
+      "source_location": "L9",
+      "_origin": "ast",
+      "id": "database_migrations_2026_07_17_051648_create_forms_table_up",
+      "community": 226,
+      "community_name": "2026_07_17_051648_create_forms_table.php",
+      "norm_label": "up()"
+    },
+    {
+      "label": "down()",
+      "file_type": "code",
+      "source_file": "database/migrations/2026_07_17_051648_create_forms_table.php",
+      "source_location": "L21",
+      "_origin": "ast",
+      "id": "database_migrations_2026_07_17_051648_create_forms_table_down",
+      "community": 226,
+      "community_name": "2026_07_17_051648_create_forms_table.php",
+      "norm_label": "down()"
+    },
+    {
+      "label": "2026_07_17_052005_add_position_to_forms_table.php",
+      "file_type": "code",
+      "source_file": "database/migrations/2026_07_17_052005_add_position_to_forms_table.php",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "database_migrations_2026_07_17_052005_add_position_to_forms_table",
+      "community": 227,
+      "community_name": "2026_07_17_052005_add_position_to_forms_table.php",
+      "norm_label": "2026_07_17_052005_add_position_to_forms_table.php"
+    },
+    {
+      "label": "up()",
+      "file_type": "code",
+      "source_file": "database/migrations/2026_07_17_052005_add_position_to_forms_table.php",
+      "source_location": "L9",
+      "_origin": "ast",
+      "id": "database_migrations_2026_07_17_052005_add_position_to_forms_table_up",
+      "community": 227,
+      "community_name": "2026_07_17_052005_add_position_to_forms_table.php",
+      "norm_label": "up()"
+    },
+    {
+      "label": "down()",
+      "file_type": "code",
+      "source_file": "database/migrations/2026_07_17_052005_add_position_to_forms_table.php",
+      "source_location": "L16",
+      "_origin": "ast",
+      "id": "database_migrations_2026_07_17_052005_add_position_to_forms_table_down",
+      "community": 227,
+      "community_name": "2026_07_17_052005_add_position_to_forms_table.php",
+      "norm_label": "down()"
+    },
+    {
+      "label": "2026_07_17_053112_add_fields_to_forms_table.php",
+      "file_type": "code",
+      "source_file": "database/migrations/2026_07_17_053112_add_fields_to_forms_table.php",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "database_migrations_2026_07_17_053112_add_fields_to_forms_table",
+      "community": 228,
+      "community_name": "2026_07_17_053112_add_fields_to_forms_table.php",
+      "norm_label": "2026_07_17_053112_add_fields_to_forms_table.php"
+    },
+    {
+      "label": "up()",
+      "file_type": "code",
+      "source_file": "database/migrations/2026_07_17_053112_add_fields_to_forms_table.php",
+      "source_location": "L9",
+      "_origin": "ast",
+      "id": "database_migrations_2026_07_17_053112_add_fields_to_forms_table_up",
+      "community": 228,
+      "community_name": "2026_07_17_053112_add_fields_to_forms_table.php",
+      "norm_label": "up()"
+    },
+    {
+      "label": "down()",
+      "file_type": "code",
+      "source_file": "database/migrations/2026_07_17_053112_add_fields_to_forms_table.php",
+      "source_location": "L16",
+      "_origin": "ast",
+      "id": "database_migrations_2026_07_17_053112_add_fields_to_forms_table_down",
+      "community": 228,
+      "community_name": "2026_07_17_053112_add_fields_to_forms_table.php",
+      "norm_label": "down()"
+    },
+    {
       "label": "AdminSeeder.php",
       "file_type": "code",
       "source_file": "database/seeders/AdminSeeder.php",
@@ -5882,8 +6300,8 @@
       "source_location": "L10",
       "_origin": "ast",
       "id": "database_seeders_homepageseeder_homepageseeder",
-      "community": 3,
-      "community_name": "Page",
+      "community": 221,
+      "community_name": "Sections",
       "norm_label": "homepageseeder"
     },
     {
@@ -5893,8 +6311,8 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "database_seeders_homepageseeder_homepageseeder_run",
-      "community": 3,
-      "community_name": "Page",
+      "community": 221,
+      "community_name": "Sections",
       "norm_label": ".run()"
     },
     {
@@ -6951,6 +7369,28 @@
       "norm_label": "command-palette.blade.php"
     },
     {
+      "label": "field-picker.blade.php",
+      "file_type": "code",
+      "source_file": "resources/views/admin/components/field-picker.blade.php",
+      "source_location": null,
+      "_origin": "ast",
+      "id": "resources_views_admin_components_field_picker_blade",
+      "community": 229,
+      "community_name": "field-picker.blade.php",
+      "norm_label": "field-picker.blade.php"
+    },
+    {
+      "label": "modern-dropdown.blade.php",
+      "file_type": "code",
+      "source_file": "resources/views/admin/components/modern-dropdown.blade.php",
+      "source_location": null,
+      "_origin": "ast",
+      "id": "resources_views_admin_components_modern_dropdown_blade",
+      "community": 220,
+      "community_name": "modern-dropdown.blade.php",
+      "norm_label": "modern-dropdown.blade.php"
+    },
+    {
       "label": "section-picker.blade.php",
       "file_type": "code",
       "source_file": "resources/views/admin/components/section-picker.blade.php",
@@ -6993,6 +7433,50 @@
       "community": 77,
       "community_name": "dashboard.blade.php",
       "norm_label": "dashboard.blade.php"
+    },
+    {
+      "label": "create.blade.php",
+      "file_type": "code",
+      "source_file": "resources/views/admin/forms/create.blade.php",
+      "source_location": null,
+      "_origin": "ast",
+      "id": "resources_views_admin_forms_create_blade",
+      "community": 230,
+      "community_name": "create.blade.php",
+      "norm_label": "create.blade.php"
+    },
+    {
+      "label": "edit.blade.php",
+      "file_type": "code",
+      "source_file": "resources/views/admin/forms/edit.blade.php",
+      "source_location": null,
+      "_origin": "ast",
+      "id": "resources_views_admin_forms_edit_blade",
+      "community": 231,
+      "community_name": "edit.blade.php",
+      "norm_label": "edit.blade.php"
+    },
+    {
+      "label": "editor.blade.php",
+      "file_type": "code",
+      "source_file": "resources/views/admin/forms/editor.blade.php",
+      "source_location": null,
+      "_origin": "ast",
+      "id": "resources_views_admin_forms_editor_blade",
+      "community": 232,
+      "community_name": "editor.blade.php",
+      "norm_label": "editor.blade.php"
+    },
+    {
+      "label": "index.blade.php",
+      "file_type": "code",
+      "source_file": "resources/views/admin/forms/index.blade.php",
+      "source_location": null,
+      "_origin": "ast",
+      "id": "resources_views_admin_forms_index_blade",
+      "community": 233,
+      "community_name": "index.blade.php",
+      "norm_label": "index.blade.php"
     },
     {
       "label": "layout.blade.php",
@@ -7815,8 +8299,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "routes_web",
-      "community": 137,
-      "community_name": "View",
+      "community": 136,
+      "community_name": "RedirectResponse",
       "norm_label": "web.php"
     },
     {
@@ -7848,8 +8332,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "tests_feature_commandsearchtest",
-      "community": 121,
-      "community_name": "Seeder",
+      "community": 9,
+      "community_name": "Taxonomy",
       "norm_label": "commandsearchtest.php"
     },
     {
@@ -7862,6 +8346,17 @@
       "community": 3,
       "community_name": "Page",
       "norm_label": "exampletest.php"
+    },
+    {
+      "label": "FormEditorTest.php",
+      "file_type": "code",
+      "source_file": "tests/Feature/FormEditorTest.php",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "tests_feature_formeditortest",
+      "community": 121,
+      "community_name": "Seeder",
+      "norm_label": "formeditortest.php"
     },
     {
       "label": "LayoutTest.php",
@@ -7881,8 +8376,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "tests_feature_postcrudtest",
-      "community": 9,
-      "community_name": "Taxonomy",
+      "community": 224,
+      "community_name": "Term.php",
       "norm_label": "postcrudtest.php"
     },
     {
@@ -7914,7 +8409,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "tests_feature_seosettingstest",
-      "community": 143,
+      "community": 222,
       "community_name": "SeoController.php",
       "norm_label": "seosettingstest.php"
     },
@@ -8189,8 +8684,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "agents_skills_laravel_best_practices_rules_architecture",
-      "community": 171,
-      "community_name": "SKILL.md",
+      "community": 151,
+      "community_name": "Architecture Best Practices",
       "norm_label": "architecture.md"
     },
     {
@@ -9597,8 +10092,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "agents_skills_laravel_best_practices_rules_security",
-      "community": 171,
-      "community_name": "SKILL.md",
+      "community": 153,
+      "community_name": "Security Best Practices",
       "norm_label": "security.md"
     },
     {
@@ -11599,8 +12094,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "claude_skills_laravel_best_practices_rules_queue_jobs",
-      "community": 176,
-      "community_name": "SKILL.md",
+      "community": 162,
+      "community_name": "Queue & Job Best Practices",
       "norm_label": "queue-jobs.md"
     },
     {
@@ -15488,7 +15983,7 @@
       "confidence": "INFERRED",
       "confidence_score": 0.8,
       "source_file": "app/Http/Controllers/Admin/AdminUserController.php",
-      "source_location": "L41",
+      "source_location": "L44",
       "weight": 1.0,
       "_origin": "ast",
       "source": "app_http_controllers_admin_adminusercontroller_adminusercontroller_edit",
@@ -15516,6 +16011,54 @@
       "weight": 1.0,
       "_origin": "ast",
       "source": "app_http_controllers_admin_assetscontroller_assetscontroller_page",
+      "target": "app_blocks_block_block_view"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "INFERRED",
+      "confidence_score": 0.8,
+      "source_file": "app/Http/Controllers/Admin/FormController.php",
+      "source_location": "L19",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "app_http_controllers_admin_formcontroller_formcontroller_create",
+      "target": "app_blocks_block_block_view"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "INFERRED",
+      "confidence_score": 0.8,
+      "source_file": "app/Http/Controllers/Admin/FormController.php",
+      "source_location": "L38",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "app_http_controllers_admin_formcontroller_formcontroller_edit",
+      "target": "app_blocks_block_block_view"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "INFERRED",
+      "confidence_score": 0.8,
+      "source_file": "app/Http/Controllers/Admin/FormController.php",
+      "source_location": "L71",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "app_http_controllers_admin_formcontroller_formcontroller_editor",
+      "target": "app_blocks_block_block_view"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "INFERRED",
+      "confidence_score": 0.8,
+      "source_file": "app/Http/Controllers/Admin/FormController.php",
+      "source_location": "L14",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "app_http_controllers_admin_formcontroller_formcontroller_index",
       "target": "app_blocks_block_block_view"
     },
     {
@@ -15800,7 +16343,7 @@
       "confidence": "INFERRED",
       "confidence_score": 0.8,
       "source_file": "app/Http/Controllers/Admin/UserController.php",
-      "source_location": "L21",
+      "source_location": "L22",
       "weight": 1.0,
       "_origin": "ast",
       "source": "app_http_controllers_admin_usercontroller_usercontroller_create",
@@ -15812,7 +16355,7 @@
       "confidence": "INFERRED",
       "confidence_score": 0.8,
       "source_file": "app/Http/Controllers/Admin/UserController.php",
-      "source_location": "L42",
+      "source_location": "L41",
       "weight": 1.0,
       "_origin": "ast",
       "source": "app_http_controllers_admin_usercontroller_usercontroller_edit",
@@ -15824,7 +16367,7 @@
       "confidence": "INFERRED",
       "confidence_score": 0.8,
       "source_file": "app/Http/Controllers/Admin/UserController.php",
-      "source_location": "L16",
+      "source_location": "L17",
       "weight": 1.0,
       "_origin": "ast",
       "source": "app_http_controllers_admin_usercontroller_usercontroller_index",
@@ -17962,7 +18505,7 @@
       "relation": "method",
       "confidence": "EXTRACTED",
       "source_file": "app/Http/Controllers/Admin/AdminUserController.php",
-      "source_location": "L64",
+      "source_location": "L68",
       "weight": 1.0,
       "_origin": "ast",
       "source": "app_http_controllers_admin_adminusercontroller_adminusercontroller",
@@ -17973,7 +18516,7 @@
       "relation": "method",
       "confidence": "EXTRACTED",
       "source_file": "app/Http/Controllers/Admin/AdminUserController.php",
-      "source_location": "L39",
+      "source_location": "L42",
       "weight": 1.0,
       "_origin": "ast",
       "source": "app_http_controllers_admin_adminusercontroller_adminusercontroller",
@@ -18006,7 +18549,7 @@
       "relation": "method",
       "confidence": "EXTRACTED",
       "source_file": "app/Http/Controllers/Admin/AdminUserController.php",
-      "source_location": "L44",
+      "source_location": "L47",
       "weight": 1.0,
       "_origin": "ast",
       "source": "app_http_controllers_admin_adminusercontroller_adminusercontroller",
@@ -18064,7 +18607,7 @@
       "relation": "references",
       "confidence": "EXTRACTED",
       "source_file": "app/Http/Controllers/Admin/AdminUserController.php",
-      "source_location": "L39",
+      "source_location": "L42",
       "weight": 1.0,
       "context": "return_type",
       "_origin": "ast",
@@ -18101,7 +18644,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "app/Http/Controllers/Admin/AdminUserController.php",
-      "source_location": "L34",
+      "source_location": "L37",
       "weight": 1.0,
       "_origin": "ast",
       "source": "app_http_controllers_admin_adminusercontroller_adminusercontroller_store",
@@ -18112,7 +18655,7 @@
       "relation": "references",
       "confidence": "EXTRACTED",
       "source_file": "app/Http/Controllers/Admin/AdminUserController.php",
-      "source_location": "L44",
+      "source_location": "L47",
       "weight": 1.0,
       "context": "parameter_type",
       "_origin": "ast",
@@ -18124,7 +18667,7 @@
       "relation": "references",
       "confidence": "EXTRACTED",
       "source_file": "app/Http/Controllers/Admin/AdminUserController.php",
-      "source_location": "L64",
+      "source_location": "L68",
       "weight": 1.0,
       "context": "return_type",
       "_origin": "ast",
@@ -18136,7 +18679,7 @@
       "relation": "references",
       "confidence": "EXTRACTED",
       "source_file": "app/Http/Controllers/Admin/AdminUserController.php",
-      "source_location": "L44",
+      "source_location": "L47",
       "weight": 1.0,
       "context": "return_type",
       "_origin": "ast",
@@ -18148,7 +18691,7 @@
       "relation": "references",
       "confidence": "EXTRACTED",
       "source_file": "app/Http/Controllers/Admin/AdminUserController.php",
-      "source_location": "L39",
+      "source_location": "L42",
       "weight": 1.0,
       "context": "parameter_type",
       "_origin": "ast",
@@ -18160,7 +18703,7 @@
       "relation": "references",
       "confidence": "EXTRACTED",
       "source_file": "app/Http/Controllers/Admin/AdminUserController.php",
-      "source_location": "L44",
+      "source_location": "L47",
       "weight": 1.0,
       "context": "parameter_type",
       "_origin": "ast",
@@ -18172,7 +18715,7 @@
       "relation": "references",
       "confidence": "EXTRACTED",
       "source_file": "app/Http/Controllers/Admin/AdminUserController.php",
-      "source_location": "L64",
+      "source_location": "L68",
       "weight": 1.0,
       "context": "parameter_type",
       "_origin": "ast",
@@ -18672,6 +19215,367 @@
     {
       "relation": "contains",
       "confidence": "EXTRACTED",
+      "source_file": "app/Http/Controllers/Admin/FormController.php",
+      "source_location": "L10",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "app_http_controllers_admin_formcontroller",
+      "target": "app_http_controllers_admin_formcontroller_formcontroller",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "app/Http/Controllers/Admin/FormController.php",
+      "source_location": "L8",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "app_http_controllers_admin_formcontroller",
+      "target": "app_http_controllers_admin_formcontroller_php_request",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "app/Http/Controllers/Admin/FormController.php",
+      "source_location": "L5",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "app_http_controllers_admin_formcontroller",
+      "target": "app_http_controllers_controller_controller",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "app/Http/Controllers/Admin/FormController.php",
+      "source_location": "L6",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "app_http_controllers_admin_formcontroller",
+      "target": "app_models_form_form",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "app/Http/Controllers/Admin/FormController.php",
+      "source_location": "L7",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "app_http_controllers_admin_formcontroller",
+      "target": "app_support_formfieldtypes",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "routes/admin.php",
+      "source_location": "L6",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "routes_admin",
+      "target": "app_http_controllers_admin_formcontroller",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "app/Http/Controllers/Admin/FormController.php",
+      "source_location": "L17",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "app_http_controllers_admin_formcontroller_formcontroller",
+      "target": "app_http_controllers_admin_formcontroller_formcontroller_create",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "app/Http/Controllers/Admin/FormController.php",
+      "source_location": "L53",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "app_http_controllers_admin_formcontroller_formcontroller",
+      "target": "app_http_controllers_admin_formcontroller_formcontroller_destroy",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "app/Http/Controllers/Admin/FormController.php",
+      "source_location": "L36",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "app_http_controllers_admin_formcontroller_formcontroller",
+      "target": "app_http_controllers_admin_formcontroller_formcontroller_edit",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "app/Http/Controllers/Admin/FormController.php",
+      "source_location": "L69",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "app_http_controllers_admin_formcontroller_formcontroller",
+      "target": "app_http_controllers_admin_formcontroller_formcontroller_editor",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "app/Http/Controllers/Admin/FormController.php",
+      "source_location": "L12",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "app_http_controllers_admin_formcontroller_formcontroller",
+      "target": "app_http_controllers_admin_formcontroller_formcontroller_index",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "app/Http/Controllers/Admin/FormController.php",
+      "source_location": "L60",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "app_http_controllers_admin_formcontroller_formcontroller",
+      "target": "app_http_controllers_admin_formcontroller_formcontroller_reorder",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "app/Http/Controllers/Admin/FormController.php",
+      "source_location": "L22",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "app_http_controllers_admin_formcontroller_formcontroller",
+      "target": "app_http_controllers_admin_formcontroller_formcontroller_store",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "app/Http/Controllers/Admin/FormController.php",
+      "source_location": "L41",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "app_http_controllers_admin_formcontroller_formcontroller",
+      "target": "app_http_controllers_admin_formcontroller_formcontroller_update",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "app/Http/Controllers/Admin/FormController.php",
+      "source_location": "L77",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "app_http_controllers_admin_formcontroller_formcontroller",
+      "target": "app_http_controllers_admin_formcontroller_formcontroller_updatefields",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "inherits",
+      "confidence": "EXTRACTED",
+      "source_file": "app/Http/Controllers/Admin/FormController.php",
+      "source_location": "L10",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "app_http_controllers_admin_formcontroller_formcontroller",
+      "target": "app_http_controllers_controller_controller",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "app/Http/Controllers/Admin/FormController.php",
+      "source_location": "L14",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "app_http_controllers_admin_formcontroller_formcontroller_index",
+      "target": "app_models_form_form",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "source_file": "app/Http/Controllers/Admin/FormController.php",
+      "source_location": "L22",
+      "weight": 1.0,
+      "context": "parameter_type",
+      "_origin": "ast",
+      "source": "app_http_controllers_admin_formcontroller_formcontroller_store",
+      "target": "app_http_controllers_admin_formcontroller_php_request",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "app/Http/Controllers/Admin/FormController.php",
+      "source_location": "L30",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "app_http_controllers_admin_formcontroller_formcontroller_store",
+      "target": "app_models_form_form",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "source_file": "app/Http/Controllers/Admin/FormController.php",
+      "source_location": "L60",
+      "weight": 1.0,
+      "context": "parameter_type",
+      "_origin": "ast",
+      "source": "app_http_controllers_admin_formcontroller_formcontroller_reorder",
+      "target": "app_http_controllers_admin_formcontroller_php_request",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "source_file": "app/Http/Controllers/Admin/FormController.php",
+      "source_location": "L41",
+      "weight": 1.0,
+      "context": "parameter_type",
+      "_origin": "ast",
+      "source": "app_http_controllers_admin_formcontroller_formcontroller_update",
+      "target": "app_http_controllers_admin_formcontroller_php_request",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "source_file": "app/Http/Controllers/Admin/FormController.php",
+      "source_location": "L77",
+      "weight": 1.0,
+      "context": "parameter_type",
+      "_origin": "ast",
+      "source": "app_http_controllers_admin_formcontroller_formcontroller_updatefields",
+      "target": "app_http_controllers_admin_formcontroller_php_request",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "source_file": "app/Http/Controllers/Admin/FormController.php",
+      "source_location": "L36",
+      "weight": 1.0,
+      "context": "parameter_type",
+      "_origin": "ast",
+      "source": "app_http_controllers_admin_formcontroller_formcontroller_edit",
+      "target": "app_models_form_form",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "app/Http/Controllers/Admin/FormController.php",
+      "source_location": "L63",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "app_http_controllers_admin_formcontroller_formcontroller_reorder",
+      "target": "app_http_controllers_admin_formcontroller_formcontroller_update",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "source_file": "app/Http/Controllers/Admin/FormController.php",
+      "source_location": "L41",
+      "weight": 1.0,
+      "context": "parameter_type",
+      "_origin": "ast",
+      "source": "app_http_controllers_admin_formcontroller_formcontroller_update",
+      "target": "app_models_form_form",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "app/Http/Controllers/Admin/FormController.php",
+      "source_location": "L87",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "app_http_controllers_admin_formcontroller_formcontroller_updatefields",
+      "target": "app_http_controllers_admin_formcontroller_formcontroller_update",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "source_file": "app/Http/Controllers/Admin/FormController.php",
+      "source_location": "L53",
+      "weight": 1.0,
+      "context": "parameter_type",
+      "_origin": "ast",
+      "source": "app_http_controllers_admin_formcontroller_formcontroller_destroy",
+      "target": "app_models_form_form",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "app/Http/Controllers/Admin/FormController.php",
+      "source_location": "L63",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "app_http_controllers_admin_formcontroller_formcontroller_reorder",
+      "target": "app_models_form_form",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "source_file": "app/Http/Controllers/Admin/FormController.php",
+      "source_location": "L69",
+      "weight": 1.0,
+      "context": "parameter_type",
+      "_origin": "ast",
+      "source": "app_http_controllers_admin_formcontroller_formcontroller_editor",
+      "target": "app_models_form_form",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "INFERRED",
+      "confidence_score": 0.8,
+      "source_file": "app/Http/Controllers/Admin/FormController.php",
+      "source_location": "L73",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "app_http_controllers_admin_formcontroller_formcontroller_editor",
+      "target": "app_support_formfieldtypes_formfieldtypes"
+    },
+    {
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "source_file": "app/Http/Controllers/Admin/FormController.php",
+      "source_location": "L77",
+      "weight": 1.0,
+      "context": "parameter_type",
+      "_origin": "ast",
+      "source": "app_http_controllers_admin_formcontroller_formcontroller_updatefields",
+      "target": "app_models_form_form",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
       "source_file": "app/Http/Controllers/Admin/LayoutController.php",
       "source_location": "L12",
       "weight": 1.0,
@@ -18745,7 +19649,7 @@
       "context": "import",
       "confidence": "EXTRACTED",
       "source_file": "routes/admin.php",
-      "source_location": "L6",
+      "source_location": "L7",
       "weight": 1.0,
       "_origin": "ast",
       "source": "routes_admin",
@@ -19036,18 +19940,6 @@
       "confidence": "INFERRED",
       "confidence_score": 0.8,
       "source_file": "app/Http/Controllers/Admin/LayoutController.php",
-      "source_location": "L99",
-      "weight": 1.0,
-      "_origin": "ast",
-      "source": "app_http_controllers_admin_layoutcontroller_layoutcontroller_editor",
-      "target": "app_models_page_page_route"
-    },
-    {
-      "relation": "calls",
-      "context": "call",
-      "confidence": "INFERRED",
-      "confidence_score": 0.8,
-      "source_file": "app/Http/Controllers/Admin/LayoutController.php",
       "source_location": "L84",
       "weight": 1.0,
       "_origin": "ast",
@@ -19142,7 +20034,7 @@
       "context": "import",
       "confidence": "EXTRACTED",
       "source_file": "routes/admin.php",
-      "source_location": "L7",
+      "source_location": "L8",
       "weight": 1.0,
       "_origin": "ast",
       "source": "routes_admin",
@@ -19438,18 +20330,6 @@
       "source": "app_http_controllers_admin_packagecontroller_packagecontroller_editor",
       "target": "app_models_package_package",
       "confidence_score": 1.0
-    },
-    {
-      "relation": "calls",
-      "context": "call",
-      "confidence": "INFERRED",
-      "confidence_score": 0.8,
-      "source_file": "app/Http/Controllers/Admin/PackageController.php",
-      "source_location": "L140",
-      "weight": 1.0,
-      "_origin": "ast",
-      "source": "app_http_controllers_admin_packagecontroller_packagecontroller_editor",
-      "target": "app_models_page_page_route"
     },
     {
       "relation": "calls",
@@ -19960,7 +20840,7 @@
       "context": "import",
       "confidence": "EXTRACTED",
       "source_file": "routes/admin.php",
-      "source_location": "L9",
+      "source_location": "L10",
       "weight": 1.0,
       "_origin": "ast",
       "source": "routes_admin",
@@ -20258,18 +21138,6 @@
       "confidence_score": 1.0
     },
     {
-      "relation": "calls",
-      "context": "call",
-      "confidence": "INFERRED",
-      "confidence_score": 0.8,
-      "source_file": "app/Http/Controllers/Admin/PostController.php",
-      "source_location": "L159",
-      "weight": 1.0,
-      "_origin": "ast",
-      "source": "app_http_controllers_admin_postcontroller_postcontroller_editor",
-      "target": "app_models_page_page_route"
-    },
-    {
       "relation": "references",
       "confidence": "EXTRACTED",
       "source_file": "app/Http/Controllers/Admin/PostController.php",
@@ -20381,7 +21249,7 @@
       "context": "import",
       "confidence": "EXTRACTED",
       "source_file": "routes/admin.php",
-      "source_location": "L10",
+      "source_location": "L11",
       "weight": 1.0,
       "_origin": "ast",
       "source": "routes_admin",
@@ -20545,7 +21413,7 @@
       "context": "import",
       "confidence": "EXTRACTED",
       "source_file": "routes/admin.php",
-      "source_location": "L11",
+      "source_location": "L12",
       "weight": 1.0,
       "_origin": "ast",
       "source": "routes_admin",
@@ -20673,7 +21541,7 @@
       "context": "import",
       "confidence": "EXTRACTED",
       "source_file": "routes/admin.php",
-      "source_location": "L12",
+      "source_location": "L13",
       "weight": 1.0,
       "_origin": "ast",
       "source": "routes_admin",
@@ -20871,7 +21739,7 @@
       "context": "import",
       "confidence": "EXTRACTED",
       "source_file": "routes/admin.php",
-      "source_location": "L13",
+      "source_location": "L14",
       "weight": 1.0,
       "_origin": "ast",
       "source": "routes_admin",
@@ -21011,7 +21879,7 @@
       "context": "import",
       "confidence": "EXTRACTED",
       "source_file": "routes/admin.php",
-      "source_location": "L14",
+      "source_location": "L15",
       "weight": 1.0,
       "_origin": "ast",
       "source": "routes_admin",
@@ -21212,14 +22080,38 @@
       "weight": 1.0,
       "_origin": "ast",
       "source": "app_http_controllers_admin_usercontroller",
+      "target": "app_http_controllers_admin_usercontroller_php_redirectresponse",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "app/Http/Controllers/Admin/UserController.php",
+      "source_location": "L8",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "app_http_controllers_admin_usercontroller",
       "target": "app_http_controllers_admin_usercontroller_php_request",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "app/Http/Controllers/Admin/UserController.php",
+      "source_location": "L9",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "app_http_controllers_admin_usercontroller",
+      "target": "app_http_controllers_admin_usercontroller_php_view",
       "confidence_score": 1.0
     },
     {
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "app/Http/Controllers/Admin/UserController.php",
-      "source_location": "L10",
+      "source_location": "L11",
       "weight": 1.0,
       "_origin": "ast",
       "source": "app_http_controllers_admin_usercontroller",
@@ -21255,7 +22147,7 @@
       "context": "import",
       "confidence": "EXTRACTED",
       "source_file": "routes/admin.php",
-      "source_location": "L15",
+      "source_location": "L16",
       "weight": 1.0,
       "_origin": "ast",
       "source": "routes_admin",
@@ -21266,7 +22158,7 @@
       "relation": "method",
       "confidence": "EXTRACTED",
       "source_file": "app/Http/Controllers/Admin/UserController.php",
-      "source_location": "L19",
+      "source_location": "L20",
       "weight": 1.0,
       "_origin": "ast",
       "source": "app_http_controllers_admin_usercontroller_usercontroller",
@@ -21277,7 +22169,7 @@
       "relation": "method",
       "confidence": "EXTRACTED",
       "source_file": "app/Http/Controllers/Admin/UserController.php",
-      "source_location": "L65",
+      "source_location": "L64",
       "weight": 1.0,
       "_origin": "ast",
       "source": "app_http_controllers_admin_usercontroller_usercontroller",
@@ -21288,7 +22180,7 @@
       "relation": "method",
       "confidence": "EXTRACTED",
       "source_file": "app/Http/Controllers/Admin/UserController.php",
-      "source_location": "L40",
+      "source_location": "L39",
       "weight": 1.0,
       "_origin": "ast",
       "source": "app_http_controllers_admin_usercontroller_usercontroller",
@@ -21299,7 +22191,7 @@
       "relation": "method",
       "confidence": "EXTRACTED",
       "source_file": "app/Http/Controllers/Admin/UserController.php",
-      "source_location": "L12",
+      "source_location": "L13",
       "weight": 1.0,
       "_origin": "ast",
       "source": "app_http_controllers_admin_usercontroller_usercontroller",
@@ -21310,7 +22202,7 @@
       "relation": "method",
       "confidence": "EXTRACTED",
       "source_file": "app/Http/Controllers/Admin/UserController.php",
-      "source_location": "L24",
+      "source_location": "L25",
       "weight": 1.0,
       "_origin": "ast",
       "source": "app_http_controllers_admin_usercontroller_usercontroller",
@@ -21321,7 +22213,7 @@
       "relation": "method",
       "confidence": "EXTRACTED",
       "source_file": "app/Http/Controllers/Admin/UserController.php",
-      "source_location": "L45",
+      "source_location": "L44",
       "weight": 1.0,
       "_origin": "ast",
       "source": "app_http_controllers_admin_usercontroller_usercontroller",
@@ -21332,7 +22224,7 @@
       "relation": "inherits",
       "confidence": "EXTRACTED",
       "source_file": "app/Http/Controllers/Admin/UserController.php",
-      "source_location": "L10",
+      "source_location": "L11",
       "weight": 1.0,
       "_origin": "ast",
       "source": "app_http_controllers_admin_usercontroller_usercontroller",
@@ -21340,11 +22232,23 @@
       "confidence_score": 1.0
     },
     {
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "source_file": "app/Http/Controllers/Admin/UserController.php",
+      "source_location": "L13",
+      "weight": 1.0,
+      "context": "return_type",
+      "_origin": "ast",
+      "source": "app_http_controllers_admin_usercontroller_usercontroller_index",
+      "target": "app_http_controllers_admin_usercontroller_php_view",
+      "confidence_score": 1.0
+    },
+    {
       "relation": "calls",
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "app/Http/Controllers/Admin/UserController.php",
-      "source_location": "L14",
+      "source_location": "L15",
       "weight": 1.0,
       "_origin": "ast",
       "source": "app_http_controllers_admin_usercontroller_usercontroller_index",
@@ -21355,7 +22259,43 @@
       "relation": "references",
       "confidence": "EXTRACTED",
       "source_file": "app/Http/Controllers/Admin/UserController.php",
-      "source_location": "L24",
+      "source_location": "L20",
+      "weight": 1.0,
+      "context": "return_type",
+      "_origin": "ast",
+      "source": "app_http_controllers_admin_usercontroller_usercontroller_create",
+      "target": "app_http_controllers_admin_usercontroller_php_view",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "source_file": "app/Http/Controllers/Admin/UserController.php",
+      "source_location": "L39",
+      "weight": 1.0,
+      "context": "return_type",
+      "_origin": "ast",
+      "source": "app_http_controllers_admin_usercontroller_usercontroller_edit",
+      "target": "app_http_controllers_admin_usercontroller_php_view",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "source_file": "app/Http/Controllers/Admin/UserController.php",
+      "source_location": "L25",
+      "weight": 1.0,
+      "context": "return_type",
+      "_origin": "ast",
+      "source": "app_http_controllers_admin_usercontroller_usercontroller_store",
+      "target": "app_http_controllers_admin_usercontroller_php_redirectresponse",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "source_file": "app/Http/Controllers/Admin/UserController.php",
+      "source_location": "L25",
       "weight": 1.0,
       "context": "parameter_type",
       "_origin": "ast",
@@ -21368,7 +22308,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "app/Http/Controllers/Admin/UserController.php",
-      "source_location": "L35",
+      "source_location": "L34",
       "weight": 1.0,
       "_origin": "ast",
       "source": "app_http_controllers_admin_usercontroller_usercontroller_store",
@@ -21379,7 +22319,19 @@
       "relation": "references",
       "confidence": "EXTRACTED",
       "source_file": "app/Http/Controllers/Admin/UserController.php",
-      "source_location": "L45",
+      "source_location": "L64",
+      "weight": 1.0,
+      "context": "parameter_type",
+      "_origin": "ast",
+      "source": "app_http_controllers_admin_usercontroller_usercontroller_destroy",
+      "target": "app_http_controllers_admin_usercontroller_php_request",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "source_file": "app/Http/Controllers/Admin/UserController.php",
+      "source_location": "L44",
       "weight": 1.0,
       "context": "parameter_type",
       "_origin": "ast",
@@ -21391,7 +22343,31 @@
       "relation": "references",
       "confidence": "EXTRACTED",
       "source_file": "app/Http/Controllers/Admin/UserController.php",
-      "source_location": "L40",
+      "source_location": "L64",
+      "weight": 1.0,
+      "context": "return_type",
+      "_origin": "ast",
+      "source": "app_http_controllers_admin_usercontroller_usercontroller_destroy",
+      "target": "app_http_controllers_admin_usercontroller_php_redirectresponse",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "source_file": "app/Http/Controllers/Admin/UserController.php",
+      "source_location": "L44",
+      "weight": 1.0,
+      "context": "return_type",
+      "_origin": "ast",
+      "source": "app_http_controllers_admin_usercontroller_usercontroller_update",
+      "target": "app_http_controllers_admin_usercontroller_php_redirectresponse",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "source_file": "app/Http/Controllers/Admin/UserController.php",
+      "source_location": "L39",
       "weight": 1.0,
       "context": "parameter_type",
       "_origin": "ast",
@@ -21403,7 +22379,7 @@
       "relation": "references",
       "confidence": "EXTRACTED",
       "source_file": "app/Http/Controllers/Admin/UserController.php",
-      "source_location": "L45",
+      "source_location": "L44",
       "weight": 1.0,
       "context": "parameter_type",
       "_origin": "ast",
@@ -21415,7 +22391,7 @@
       "relation": "references",
       "confidence": "EXTRACTED",
       "source_file": "app/Http/Controllers/Admin/UserController.php",
-      "source_location": "L65",
+      "source_location": "L64",
       "weight": 1.0,
       "context": "parameter_type",
       "_origin": "ast",
@@ -22086,7 +23062,7 @@
       "relation": "method",
       "confidence": "EXTRACTED",
       "source_file": "app/Models/Admin.php",
-      "source_location": "L24",
+      "source_location": "L19",
       "weight": 1.0,
       "_origin": "ast",
       "source": "app_models_admin_admin",
@@ -22202,6 +23178,18 @@
       "relation": "imports",
       "context": "import",
       "confidence": "EXTRACTED",
+      "source_file": "tests/Feature/FormEditorTest.php",
+      "source_location": "L3",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "tests_feature_formeditortest",
+      "target": "app_models_admin_admin",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
       "source_file": "tests/Feature/LayoutTest.php",
       "source_location": "L3",
       "weight": 1.0,
@@ -22267,6 +23255,29 @@
       "_origin": "ast",
       "source": "app_models_user_user",
       "target": "authenticatable",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "app/Models/Form.php",
+      "source_location": "L6",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "app_models_form",
+      "target": "hasfactory",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "mixes_in",
+      "confidence": "EXTRACTED",
+      "source_file": "app/Models/Form.php",
+      "source_location": "L12",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "app_models_form_form",
+      "target": "hasfactory",
       "confidence_score": 1.0
     },
     {
@@ -22479,6 +23490,29 @@
       "relation": "imports",
       "context": "import",
       "confidence": "EXTRACTED",
+      "source_file": "app/Models/Form.php",
+      "source_location": "L7",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "app_models_form",
+      "target": "model",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "inherits",
+      "confidence": "EXTRACTED",
+      "source_file": "app/Models/Form.php",
+      "source_location": "L9",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "app_models_form_form",
+      "target": "model",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
       "source_file": "app/Models/Layout.php",
       "source_location": "L7",
       "weight": 1.0,
@@ -22661,6 +23695,88 @@
     {
       "relation": "contains",
       "confidence": "EXTRACTED",
+      "source_file": "app/Models/Form.php",
+      "source_location": "L9",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "app_models_form",
+      "target": "app_models_form_form",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "app/Models/Form.php",
+      "source_location": "L5",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "app_models_form",
+      "target": "database_factories_formfactory",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "app/Models/Form.php",
+      "source_location": "L16",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "app_models_form_form",
+      "target": "app_models_form_form_casts",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "app/Providers/AppServiceProvider.php",
+      "source_location": "L6",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "app_providers_appserviceprovider",
+      "target": "app_models_form_form",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "app/Providers/AppServiceProvider.php",
+      "source_location": "L23",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "app_providers_appserviceprovider_appserviceprovider_boot",
+      "target": "app_models_form_form"
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "database/factories/FormFactory.php",
+      "source_location": "L5",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "database_factories_formfactory",
+      "target": "app_models_form_form",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "tests/Feature/FormEditorTest.php",
+      "source_location": "L4",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "tests_feature_formeditortest",
+      "target": "app_models_form_form",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
       "source_file": "app/Models/Layout.php",
       "source_location": "L9",
       "weight": 1.0,
@@ -22690,6 +23806,17 @@
       "_origin": "ast",
       "source": "app_models_layout_layout",
       "target": "app_models_layout_layout_gettitleattribute",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "app/Models/Layout.php",
+      "source_location": "L25",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "app_models_layout_layout",
+      "target": "app_models_layout_layout_route",
       "confidence_score": 1.0
     },
     {
@@ -22950,30 +24077,6 @@
       "source": "tests_feature_exampletest",
       "target": "app_models_page_page",
       "confidence_score": 1.0
-    },
-    {
-      "relation": "calls",
-      "context": "call",
-      "confidence": "INFERRED",
-      "confidence_score": 0.8,
-      "source_file": "app/Support/CommandSearch.php",
-      "source_location": "L53",
-      "weight": 1.0,
-      "_origin": "ast",
-      "source": "app_support_commandsearch_commandsearch_dynamiccommands",
-      "target": "app_models_page_page_route"
-    },
-    {
-      "relation": "calls",
-      "context": "call",
-      "confidence": "INFERRED",
-      "confidence_score": 0.8,
-      "source_file": "app/Support/CommandSearch.php",
-      "source_location": "L24",
-      "weight": 1.0,
-      "_origin": "ast",
-      "source": "app_support_commandsearch_commandsearch_staticcommands",
-      "target": "app_models_page_page_route"
     },
     {
       "relation": "imports",
@@ -23437,7 +24540,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "app/Providers/AppServiceProvider.php",
-      "source_location": "L9",
+      "source_location": "L11",
       "weight": 1.0,
       "_origin": "ast",
       "source": "app_providers_appserviceprovider",
@@ -23449,7 +24552,7 @@
       "context": "import",
       "confidence": "EXTRACTED",
       "source_file": "app/Providers/AppServiceProvider.php",
-      "source_location": "L7",
+      "source_location": "L9",
       "weight": 1.0,
       "_origin": "ast",
       "source": "app_providers_appserviceprovider",
@@ -23472,7 +24575,7 @@
       "relation": "method",
       "confidence": "EXTRACTED",
       "source_file": "app/Providers/AppServiceProvider.php",
-      "source_location": "L16",
+      "source_location": "L18",
       "weight": 1.0,
       "_origin": "ast",
       "source": "app_providers_appserviceprovider_appserviceprovider",
@@ -23483,7 +24586,7 @@
       "relation": "method",
       "confidence": "EXTRACTED",
       "source_file": "app/Providers/AppServiceProvider.php",
-      "source_location": "L11",
+      "source_location": "L13",
       "weight": 1.0,
       "_origin": "ast",
       "source": "app_providers_appserviceprovider_appserviceprovider",
@@ -23494,7 +24597,7 @@
       "relation": "inherits",
       "confidence": "EXTRACTED",
       "source_file": "app/Providers/AppServiceProvider.php",
-      "source_location": "L9",
+      "source_location": "L11",
       "weight": 1.0,
       "_origin": "ast",
       "source": "app_providers_appserviceprovider_appserviceprovider",
@@ -23633,6 +24736,50 @@
       "_origin": "ast",
       "source": "app_support_commandsearch_commandsearch",
       "target": "app_support_commandsearch_commandsearch_staticcommands",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "app/Support/FormFieldTypes.php",
+      "source_location": "L7",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "app_support_formfieldtypes",
+      "target": "app_support_formfieldtypes_formfieldtypes",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "app/Support/FormFieldTypes.php",
+      "source_location": "L12",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "app_support_formfieldtypes_formfieldtypes",
+      "target": "app_support_formfieldtypes_formfieldtypes_catalog",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "app/Support/FormFieldTypes.php",
+      "source_location": "L27",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "app_support_formfieldtypes_formfieldtypes",
+      "target": "app_support_formfieldtypes_formfieldtypes_createdefaultfield",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "app/Support/FormFieldTypes.php",
+      "source_location": "L54",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "app_support_formfieldtypes_formfieldtypes",
+      "target": "app_support_formfieldtypes_formfieldtypes_definitions",
       "confidence_score": 1.0
     },
     {
@@ -24621,7 +25768,7 @@
       "relation": "method",
       "confidence": "EXTRACTED",
       "source_file": "database/factories/AdminFactory.php",
-      "source_location": "L39",
+      "source_location": "L40",
       "weight": 1.0,
       "_origin": "ast",
       "source": "database_factories_adminfactory_adminfactory",
@@ -24636,6 +25783,29 @@
       "weight": 1.0,
       "_origin": "ast",
       "source": "database_factories_adminfactory_adminfactory",
+      "target": "factory",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "database/factories/FormFactory.php",
+      "source_location": "L6",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "database_factories_formfactory",
+      "target": "factory",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "inherits",
+      "confidence": "EXTRACTED",
+      "source_file": "database/factories/FormFactory.php",
+      "source_location": "L11",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "database_factories_formfactory_formfactory",
       "target": "factory",
       "confidence_score": 1.0
     },
@@ -24746,12 +25916,34 @@
       "relation": "references",
       "confidence": "EXTRACTED",
       "source_file": "database/factories/AdminFactory.php",
-      "source_location": "L39",
+      "source_location": "L40",
       "weight": 1.0,
       "context": "return_type",
       "_origin": "ast",
       "source": "database_factories_adminfactory_adminfactory_unverified",
       "target": "database_factories_adminfactory_php_static",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "database/factories/FormFactory.php",
+      "source_location": "L11",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "database_factories_formfactory",
+      "target": "database_factories_formfactory_formfactory",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "database/factories/FormFactory.php",
+      "source_location": "L15",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "database_factories_formfactory_formfactory",
+      "target": "database_factories_formfactory_formfactory_definition",
       "confidence_score": 1.0
     },
     {
@@ -25314,6 +26506,94 @@
       "_origin": "ast",
       "source": "database_migrations_2026_07_17_004534_create_admins_table",
       "target": "database_migrations_2026_07_17_004534_create_admins_table_up",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "database/migrations/2026_07_17_011608_add_is_active_to_admins_table.php",
+      "source_location": "L19",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "database_migrations_2026_07_17_011608_add_is_active_to_admins_table",
+      "target": "database_migrations_2026_07_17_011608_add_is_active_to_admins_table_down",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "database/migrations/2026_07_17_011608_add_is_active_to_admins_table.php",
+      "source_location": "L12",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "database_migrations_2026_07_17_011608_add_is_active_to_admins_table",
+      "target": "database_migrations_2026_07_17_011608_add_is_active_to_admins_table_up",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "database/migrations/2026_07_17_051648_create_forms_table.php",
+      "source_location": "L21",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "database_migrations_2026_07_17_051648_create_forms_table",
+      "target": "database_migrations_2026_07_17_051648_create_forms_table_down",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "database/migrations/2026_07_17_051648_create_forms_table.php",
+      "source_location": "L9",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "database_migrations_2026_07_17_051648_create_forms_table",
+      "target": "database_migrations_2026_07_17_051648_create_forms_table_up",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "database/migrations/2026_07_17_052005_add_position_to_forms_table.php",
+      "source_location": "L16",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "database_migrations_2026_07_17_052005_add_position_to_forms_table",
+      "target": "database_migrations_2026_07_17_052005_add_position_to_forms_table_down",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "database/migrations/2026_07_17_052005_add_position_to_forms_table.php",
+      "source_location": "L9",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "database_migrations_2026_07_17_052005_add_position_to_forms_table",
+      "target": "database_migrations_2026_07_17_052005_add_position_to_forms_table_up",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "database/migrations/2026_07_17_053112_add_fields_to_forms_table.php",
+      "source_location": "L16",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "database_migrations_2026_07_17_053112_add_fields_to_forms_table",
+      "target": "database_migrations_2026_07_17_053112_add_fields_to_forms_table_down",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "database/migrations/2026_07_17_053112_add_fields_to_forms_table.php",
+      "source_location": "L9",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "database_migrations_2026_07_17_053112_add_fields_to_forms_table",
+      "target": "database_migrations_2026_07_17_053112_add_fields_to_forms_table_up",
       "confidence_score": 1.0
     },
     {
@@ -33071,5 +34351,5 @@
     }
   ],
   "hyperedges": [],
-  "built_at_commit": "b9f530c960e60376a76f0250a5d649313505908f"
+  "built_at_commit": "d5b3cf8a1fc705ef2c015f0a8ba3a73f36a470f5"
 }

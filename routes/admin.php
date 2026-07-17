@@ -3,6 +3,7 @@
 use App\Http\Controllers\Admin\AdminUserController;
 use App\Http\Controllers\Admin\AssetsController;
 use App\Http\Controllers\Admin\CommandSearchController;
+use App\Http\Controllers\Admin\FormController;
 use App\Http\Controllers\Admin\LayoutController;
 use App\Http\Controllers\Admin\PackageController;
 use App\Http\Controllers\Admin\PageController;
@@ -45,6 +46,12 @@ Route::middleware(['web', 'auth:admin'])->prefix('admin')->name('admin.')->group
 
     Route::get('settings', [SettingsController::class, 'index'])->name('settings');
     Route::put('settings', [SettingsController::class, 'update'])->name('settings.update');
+
+    Route::patch('forms/reorder', [FormController::class, 'reorder'])->name('forms.reorder');
+    Route::get('forms/{form}/editor', [FormController::class, 'editor'])->name('forms.editor');
+    Route::patch('forms/{form}/fields', [FormController::class, 'updateFields'])->name('forms.update-fields');
+    Route::resource('forms', FormController::class)->except(['show']);
+
     Route::get('seo', [SeoController::class, 'index'])->name('seo');
     Route::put('seo', [SeoController::class, 'update'])->name('seo.update');
 
