@@ -1,16 +1,16 @@
 # Graph Report - lara-cms  (2026-07-17)
 
 ## Corpus Check
-- 270 files · ~116,757 words
+- 284 files · ~120,412 words
 - Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
-- 1329 nodes · 1635 edges · 221 communities (176 shown, 45 thin omitted)
-- Extraction: 95% EXTRACTED · 5% INFERRED · 0% AMBIGUOUS · INFERRED: 81 edges (avg confidence: 0.8)
+- 1367 nodes · 1698 edges · 234 communities (189 shown, 45 thin omitted)
+- Extraction: 95% EXTRACTED · 5% INFERRED · 0% AMBIGUOUS · INFERRED: 88 edges (avg confidence: 0.8)
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `d5b3cf8a`
+- Built from commit: `edd03b43`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
@@ -140,18 +140,23 @@
 - SimpleText.php
 - TravelDeals.php
 - 9. Pages CRUD
+- Sections
+- SeoController.php
+- Model
+- Term.php
+- ProfileController.php
 
 ## God Nodes (most connected - your core abstractions)
 1. `Block` - 73 edges
 2. `Field` - 49 edges
-3. `Page` - 25 edges
-4. `Layout` - 24 edges
-5. `Admin` - 23 edges
-6. `Controller` - 23 edges
-7. `Sections` - 21 edges
-8. `Post` - 20 edges
+3. `Controller` - 33 edges
+4. `Layout` - 27 edges
+5. `Page` - 26 edges
+6. `Post` - 25 edges
+7. `Admin` - 23 edges
+8. `Sections` - 21 edges
 9. `Lara-CMS — Full Rebuild Specification` - 20 edges
-10. `Package` - 15 edges
+10. `Form` - 17 edges
 
 ## Surprising Connections (you probably didn't know these)
 - `AboutIntro` --inherits--> `Block`  [EXTRACTED]
@@ -168,7 +173,7 @@
 ## Import Cycles
 - None detected.
 
-## Communities (221 total, 45 thin omitted)
+## Communities (234 total, 45 thin omitted)
 
 ### Community 0 - "dependencies"
 Cohesion: 0.04
@@ -183,8 +188,8 @@ Cohesion: 0.05
 Nodes (42): pestphp/pest-plugin, php-http/discovery, autoload, autoload-dev, psr-4, psr-4, config, allow-plugins (+34 more)
 
 ### Community 3 - "Page"
-Cohesion: 0.11
-Nodes (6): PageController, Request, PageController, Page, Sections, HomePageSeeder
+Cohesion: 0.19
+Nodes (4): PageController, Request, PageController, Page
 
 ### Community 4 - "Controller"
 Cohesion: 0.16
@@ -199,16 +204,16 @@ Cohesion: 0.08
 Nodes (27): scripts, dev, post-autoload-dump, post-create-project-cmd, post-root-package-install, post-update-cmd, pre-package-uninstall, setup (+19 more)
 
 ### Community 7 - "Model"
-Cohesion: 0.13
-Nodes (9): AssetsController, Request, Asset, Booking, Destination, BelongsToMany, Term, BelongsTo (+1 more)
+Cohesion: 0.25
+Nodes (3): AssetsController, Request, Asset
 
 ### Community 8 - "LoginController.php"
-Cohesion: 0.07
-Nodes (18): RedirectResponse, View, ProfileController, Request, SeoController, RedirectResponse, Request, View (+10 more)
+Cohesion: 0.22
+Nodes (3): LoginRequest, ProfileUpdateRequest, FormRequest
 
 ### Community 9 - "Taxonomy"
 Cohesion: 0.24
-Nodes (3): Request, TaxonomyController, Taxonomy
+Nodes (4): Request, TaxonomyController, Taxonomy, HasMany
 
 ### Community 11 - "Block"
 Cohesion: 0.15
@@ -225,6 +230,10 @@ Nodes (6): mountTipTap(), ResizableImage, setupImageToolbar(), setupResizeHandle
 ### Community 15 - "Field.php"
 Cohesion: 0.15
 Nodes (4): AboutIntro, DestinationsGrid, PackageAbout, PageBanner
+
+### Community 16 - "AppServiceProvider.php"
+Cohesion: 0.13
+Nodes (7): FormController, Form, AppServiceProvider, FormFieldTypes, Controller, Request, ServiceProvider
 
 ### Community 20 - "DestinationsGrid.php"
 Cohesion: 0.10
@@ -243,24 +252,28 @@ Cohesion: 0.12
 Nodes (15): 1. PHP Block Class, 2. Blade View, Architecture Overview, Code of Conduct, Contributing, Creating a Block (Two Files), Creating Content Blocks, Editor Integration Attributes (+7 more)
 
 ### Community 121 - "Seeder"
-Cohesion: 0.05
-Nodes (24): AdminUserController, RedirectResponse, Request, View, Admin, BelongsToMany, User, Authenticatable (+16 more)
+Cohesion: 0.08
+Nodes (16): RedirectResponse, Request, View, UserController, User, AdminFactory, static, FormFactory (+8 more)
 
 ### Community 122 - "opencode.json"
 Cohesion: 0.50
 Nodes (3): plugin, $schema, .opencode/plugins/graphify.js
 
 ### Community 136 - "RedirectResponse"
-Cohesion: 0.16
-Nodes (7): Request, PreviewController, Request, SettingsController, Controller, Setting, BlockPreview
+Cohesion: 0.17
+Nodes (7): Request, PreviewController, RedirectResponse, View, ProfileController, Controller, BlockPreview
 
 ### Community 137 - "View"
-Cohesion: 0.26
-Nodes (4): Request, PostController, BlogController, Post
+Cohesion: 0.08
+Nodes (14): AdminUserController, RedirectResponse, Request, View, Request, PostController, BlogController, Admin (+6 more)
 
 ### Community 144 - "Lara-CMS — Full Rebuild Specification"
 Cohesion: 0.13
 Nodes (14): 11. Field editor widgets (Alpine), 12. Global sections (site-wide navbar/footer), 14. Settings, SEO, Taxonomies, Assets, Users, 15. Theme system, 17. Build order / milestones, 1. Core concept & mental model, 2. Tech stack & project setup, 3. Architecture & directory layout (+6 more)
+
+### Community 145 - ".view"
+Cohesion: 0.21
+Nodes (5): AdminSeeder, DatabaseSeeder, LayoutSeeder, UserSeeder, Seeder
 
 ### Community 146 - "Package"
 Cohesion: 0.31
@@ -271,11 +284,11 @@ Cohesion: 0.17
 Nodes (11): Basic Usage, Common Patterns, Common Pitfalls, Dark Mode, Documentation, Flexbox Layout, Grid Layout, Spacing (+3 more)
 
 ### Community 148 - "Layout"
-Cohesion: 0.35
+Cohesion: 0.27
 Nodes (3): LayoutController, Request, Layout
 
 ### Community 149 - "Security Best Practices"
-Cohesion: 0.18
+Cohesion: 0.17
 Nodes (11): Audit Dependencies, Authorize Every Action, CSRF Protection, Encrypt Sensitive Database Fields, Escape Output to Prevent XSS, Keep Secrets Out of Code, Mass Assignment Protection, Prevent SQL Injection (+3 more)
 
 ### Community 150 - "Tailwind CSS Development"
@@ -283,7 +296,7 @@ Cohesion: 0.17
 Nodes (11): Basic Usage, Common Patterns, Common Pitfalls, Dark Mode, Documentation, Flexbox Layout, Grid Layout, Spacing (+3 more)
 
 ### Community 151 - "Architecture Best Practices"
-Cohesion: 0.18
+Cohesion: 0.17
 Nodes (11): Architecture Best Practices, Code to Interfaces, Convention Over Configuration, Default Sort by Descending, Single-Purpose Action Classes, Use Atomic Locks for Race Conditions, Use `Concurrency::run()` for Parallel Execution, Use `Context` for Request-Scoped Data (+3 more)
 
 ### Community 152 - "Queue & Job Best Practices"
@@ -291,7 +304,7 @@ Cohesion: 0.18
 Nodes (10): Always Implement `failed()`, Batch Related Jobs, Implement `ShouldBeUnique`, Queue & Job Best Practices, Rate Limit External API Calls in Jobs, `retryUntil()` Needs `$tries = 0`, Set `retry_after` Greater Than `timeout`, Use Exponential Backoff (+2 more)
 
 ### Community 153 - "Security Best Practices"
-Cohesion: 0.18
+Cohesion: 0.17
 Nodes (11): Audit Dependencies, Authorize Every Action, CSRF Protection, Encrypt Sensitive Database Fields, Escape Output to Prevent XSS, Keep Secrets Out of Code, Mass Assignment Protection, Prevent SQL Injection (+3 more)
 
 ### Community 154 - "Architecture Best Practices"
@@ -315,7 +328,7 @@ Cohesion: 0.20
 Nodes (9): Always Queue Notifications, Events & Notifications Best Practices, Implement `HasLocalePreference` on Notifiable Models, Rely on Event Discovery, Route Notification Channels to Dedicated Queues, Run `event:cache` in Production Deploy, Use `afterCommit()` on Notifications in Transactions, Use On-Demand Notifications for Non-User Recipients (+1 more)
 
 ### Community 159 - "Advanced Query Patterns"
-Cohesion: 0.22
+Cohesion: 0.20
 Nodes (9): Advanced Query Patterns, Create Dynamic Relationships via Subquery FK, Prefer `whereIn` + Subquery Over `whereHas`, Sometimes Two Simple Queries Beat One Complex Query, Use `addSelect()` Subqueries for Single Values from Has-Many, Use Compound Indexes Matching `orderBy` Column Order, Use Conditional Aggregates Instead of Multiple Count Queries, Use Correlated Subqueries for Has-Many Ordering (+1 more)
 
 ### Community 160 - "Database Performance Best Practices"
@@ -363,7 +376,7 @@ Cohesion: 0.22
 Nodes (8): Layouts Collection Implementation Plan, Task 1: Migration + Model, Task 2: Factory + Seeder, Task 3: Admin Routes + LayoutController, Task 4: Admin Views (index, create, edit), Task 5: Admin Nav Link, Task 6: Integration with Page/Post Create Forms, Task 7: Tests
 
 ### Community 171 - "SKILL.md"
-Cohesion: 0.25
+Cohesion: 0.33
 Nodes (5): Consistency First, Decision Rules, How to Apply, Laravel Best Practices, Rule Index
 
 ### Community 172 - "Blade & Views Best Practices"
@@ -383,7 +396,7 @@ Cohesion: 0.25
 Nodes (7): Call `Event::fake()` After Factory Setup, Testing Best Practices, Use `Exceptions::fake()` to Assert Exception Reporting, Use Factory States and Sequences, Use `LazilyRefreshDatabase` Over `RefreshDatabase`, Use Model Assertions Over Raw Database Assertions, Use `recycle()` to Share Relationship Instances Across Factories
 
 ### Community 176 - "SKILL.md"
-Cohesion: 0.25
+Cohesion: 0.33
 Nodes (5): Consistency First, Decision Rules, How to Apply, Laravel Best Practices, Rule Index
 
 ### Community 177 - "Blade & Views Best Practices"
@@ -490,6 +503,18 @@ Nodes (4): 8.1 Layout (`admin/layout.blade.php`), 8.2 Sidebar nav groups (`nav-c
 Cohesion: 0.67
 Nodes (3): 9.1 List (`/admin/pages`), 9.2 Create / edit page settings (Page Entry Form), 9. Pages CRUD
 
+### Community 222 - "SeoController.php"
+Cohesion: 0.23
+Nodes (5): Request, SeoController, Request, SettingsController, Setting
+
+### Community 223 - "Model"
+Cohesion: 0.47
+Nodes (3): Booking, Destination, Model
+
+### Community 224 - "Term.php"
+Cohesion: 0.43
+Nodes (4): LoginController, RedirectResponse, Request, View
+
 ## Knowledge Gaps
 - **557 isolated node(s):** `php`, `$schema`, `.opencode/plugins/graphify.js`, `$schema`, `name` (+552 more)
   These have ≤1 connection - possible missing edges or undocumented components.
@@ -498,11 +523,11 @@ Nodes (3): 9.1 List (`/admin/pages`), 9.2 Create / edit page settings (Page Entr
 ## Suggested Questions
 _Questions this graph is uniquely positioned to answer:_
 
-- **Why does `Block` connect `Block` to `Taxonomy`, `BlockRegistry`, `Field.php`, `BlogPostSlot.php`, `ClientTestimonials.php`, `FeatureImageCards.php`, `LatestBlog.php`, `PackageList.php`, `PackagePostSlot.php`, `TeamCards.php`, `TravelDeals.php`, `WhyChooseUs.php`, `SiteFooter.php`, `SiteNavbar.php`, `SiteTopBar.php`, `BlogList.php`, `BlogSection.php`, `PackageFaq.php`, `PackageFeatures.php`, `PackageGalleryHero.php`, `PackageHero.php`, `PackageInfo.php`, `PackageLocations.php`, `PackageMap.php`, `SimpleText.php`, `TravelDeals.php`, `ProfileBento.php`?**
-  _High betweenness centrality (0.047) - this node is a cross-community bridge._
-- **Why does `Layout` connect `Layout` to `Page`, `Controller`, `Model`, `RedirectResponse`, `View`, `Package`, `Seeder`?**
-  _High betweenness centrality (0.011) - this node is a cross-community bridge._
-- **Why does `Admin` connect `Seeder` to `LoginController.php`?**
+- **Why does `Block` connect `Block` to `Page`, `BlockRegistry`, `Field.php`, `BlogPostSlot.php`, `ClientTestimonials.php`, `FeatureImageCards.php`, `LatestBlog.php`, `PackageList.php`, `PackagePostSlot.php`, `TeamCards.php`, `TravelDeals.php`, `WhyChooseUs.php`, `SiteFooter.php`, `SiteNavbar.php`, `SiteTopBar.php`, `BlogList.php`, `BlogSection.php`, `PackageFaq.php`, `PackageFeatures.php`, `PackageGalleryHero.php`, `PackageHero.php`, `PackageInfo.php`, `PackageLocations.php`, `PackageMap.php`, `SimpleText.php`, `TravelDeals.php`, `ProfileBento.php`?**
+  _High betweenness centrality (0.048) - this node is a cross-community bridge._
+- **Why does `Controller` connect `RedirectResponse` to `Term.php`, `Page`, `Controller`, `Model`, `View`, `Taxonomy`, `Package`, `Layout`, `Seeder`, `SeoController.php`?**
+  _High betweenness centrality (0.015) - this node is a cross-community bridge._
+- **Why does `Field` connect `Field` to `Block`, `Field.php`, `BlogPostSlot.php`, `ClientTestimonials.php`, `FeatureImageCards.php`, `LatestBlog.php`, `PackageList.php`, `PackagePostSlot.php`, `TeamCards.php`, `TravelDeals.php`, `WhyChooseUs.php`, `SiteFooter.php`, `SiteNavbar.php`, `SiteTopBar.php`, `BlogList.php`, `BlogSection.php`, `PackageFaq.php`, `PackageFeatures.php`, `PackageGalleryHero.php`, `PackageHero.php`, `PackageInfo.php`, `PackageLocations.php`, `PackageMap.php`, `SimpleText.php`, `TravelDeals.php`, `ProfileBento.php`?**
   _High betweenness centrality (0.011) - this node is a cross-community bridge._
 - **Are the 34 inferred relationships involving `Field` (e.g. with `.resolvedFields()` and `.fields()`) actually correct?**
   _`Field` has 34 INFERRED edges - model-reasoned connections that need verification._

@@ -14,9 +14,22 @@
     window.editorSaveRoute = @isset($editorSaveRoute) '{{ $editorSaveRoute }}' @else '{{ route('admin.pages.update-sections', $page) }}' @endisset;
     window.editorPostId = {{ $page->id ?? 'null' }};
 </script>
-<div class="flex h-full gap-3 p-3" x-data="pageEditor()"     x-init="init(window.editorSections, window.editorSchemas, window.editorBlockList, window.editorSlug, window.editorPages, window.editorHomeGlobals)" x-on:section-selected.window="addSection($event.detail.name)">
+<div class="flex h-full gap-3 p-3 relative" x-data="pageEditor()"     x-init="init(window.editorSections, window.editorSchemas, window.editorBlockList, window.editorSlug, window.editorPages, window.editorHomeGlobals)" x-on:section-selected.window="addSection($event.detail.name)">
+    {{-- Toggle sidebar button --}}
+    <button 
+        @click="sidebarOpen = !sidebarOpen" 
+        type="button"
+        class="absolute left-3 top-3 z-20 size-8 flex items-center justify-center rounded-lg bg-white border border-gray-300 shadow-sm hover:bg-gray-50 transition-colors"
+        :class="sidebarOpen ? 'hidden' : ''"
+        title="Toggle sidebar"
+    >
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="size-4">
+            <path d="M4 6h16M4 12h16M4 18h16" stroke-linecap="round" />
+        </svg>
+    </button>
+
     {{-- Editor panel --}}
-    <div class="w-[420px] min-w-[320px] shrink-0 bg-white h-full flex flex-col rounded-2xl border border-[#e8eaed] shadow-[0_1px_2px_rgba(16,24,40,0.04),0_8px_24px_-12px_rgba(16,24,40,0.12)] overflow-hidden">
+    <div class="w-[420px] min-w-[320px] shrink-0 bg-white h-full flex flex-col rounded-2xl border border-[#e8eaed] shadow-[0_1px_2px_rgba(16,24,40,0.04),0_8px_24px_-12px_rgba(16,24,40,0.12)] overflow-hidden" x-show="sidebarOpen">
         <div class="flex-1 overflow-y-auto px-3 pt-3 pb-4 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
             <div class="bg-gray-100 rounded-2xl p-[7px]">
                 {{-- Section list mode --}}
@@ -710,6 +723,7 @@
             iconSearch: '',
             iconLoading: false,
             faIcons: window.FA_ICONS || [],
+            sidebarOpen: false,
 
             init(sections, schemas, blockList, slug, pages, homeGlobals) {
                 if (!sections) sections = [];

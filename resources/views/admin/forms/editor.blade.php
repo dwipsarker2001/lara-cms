@@ -3,59 +3,88 @@
 @section('title', 'Form Editor — '.$form->title)
 @section('breadcrumb', 'Form Editor')
 
-@section('content')
+@section('content-full')
 <script>
     window.formFields = @json($form->fields ?? []);
     window.formFieldList = @json($fieldList);
     window.formSaveRoute = @json(route('admin.forms.update-fields', $form));
 </script>
 
-<div
-    class="max-w-5xl mx-auto px-2 sm:px-0"
-    x-data="formEditor()"
-    x-init="init(window.formFields)"
-    x-on:field-selected.window="addField($event.detail.name)"
->
-    <header class="relative flex flex-wrap items-center justify-between gap-4 py-6 md:py-8">
-        <h1 class="flex items-center gap-2.5 text-[25px] leading-[1.25] font-medium text-text-heading">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" class="size-6 shrink-0 text-text-muted">
-                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
-                <polyline points="14 2 14 8 20 8" />
-                <line x1="12" y1="18" x2="12" y2="12" />
-                <line x1="9" y1="15" x2="15" y2="15" />
-            </svg>
-            Form Editor
-        </h1>
-        <div class="flex flex-wrap items-center gap-2 sm:gap-3">
-            <button type="button"
-                class="inline-flex items-center justify-center gap-2 whitespace-nowrap shrink-0 font-medium cursor-pointer no-underline rounded-lg transition-colors h-10 text-sm leading-tight px-4 bg-gradient-to-b from-content-bg to-gray-50 hover:to-gray-100 text-text-primary border border-content-border shadow-sm"
-            >
-                <i class="fa-solid fa-wand-magic-sparkles text-sm"></i>
-                Generate UI
-            </button>
-            <button type="button"
-                @click="save()"
-                x-bind:disabled="isSaving || !dirty"
-                class="inline-flex items-center justify-center gap-2 whitespace-nowrap shrink-0 font-medium cursor-pointer no-underline rounded-lg transition-colors h-10 text-sm leading-tight px-4 bg-primary hover:opacity-90 text-white shadow-sm disabled:opacity-60 disabled:cursor-not-allowed"
-            >
-                <template x-if="!isSaving">
-                    <span class="inline-flex items-center gap-2">
-                        <i class="fa-regular fa-floppy-disk"></i>
-                        Save
-                    </span>
-                </template>
-                <template x-if="isSaving">
-                    <span class="inline-flex items-center gap-2">
-                        <svg class="animate-spin size-4" viewBox="0 0 24 24" fill="none">
-                            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" />
-                            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
-                        </svg>
-                        Saving...
-                    </span>
-                </template>
-            </button>
+
+<div class="flex h-full gap-3 p-3">
+    {{-- Sidepanel --}}
+    <div class="w-[420px] min-w-[320px] shrink-0 bg-white h-full flex flex-col rounded-2xl border border-[#e8eaed] shadow-[0_1px_2px_rgba(16,24,40,0.04),0_8px_24px_-12px_rgba(16,24,40,0.12)] overflow-hidden" x-data="{}">
+        <div class="flex-1 overflow-y-auto px-3 pt-3 pb-4 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+            <div class="bg-gray-100 rounded-2xl p-[7px]">
+                <div class="flex items-center justify-between pr-3 py-3 text-sm font-medium text-text-heading">
+                    <div class="font-bold">Field Types</div>
+                </div>
+                <div class="space-y-0.5">
+                    <template x-for="(ft, i) in window.formFieldList || []" :key="i">
+                        <button
+                            type="button"
+                            @click="window.dispatchEvent(new CustomEvent('field-selected', { detail: { name: ft.name } }))"
+                            class="w-full flex items-center gap-2.5 px-3 py-2 rounded-lg text-sm text-left text-text-primary hover:bg-white hover:shadow-sm transition-all"
+                        >
+                            <span class="text-sm font-medium" x-text="ft.label"></span>
+                            <span class="text-[11px] text-text-muted" x-text="ft.name"></span>
+                        </button>
+                    </template>
+                    <template x-if="!(window.formFieldList || []).length">
+                        <p class="text-xs text-text-muted px-3 py-4">No field types available.</p>
+                    </template>
+                </div>
+            </div>
         </div>
-    </header>
+    </div>
+
+    {{-- Form area --}}
+    <div class="flex-1 min-w-0 overflow-y-auto bg-white rounded-2xl border border-[#e8eaed] shadow-[0_1px_2px_rgba(16,24,40,0.04),0_8px_24px_-12px_rgba(16,24,40,0.12)]">
+        <div class="max-w-5xl mx-auto px-2 sm:px-0 py-6"
+        x-data="formEditor()"
+        x-init="init(window.formFields)"
+        x-on:field-selected.window="addField($event.detail.name)"
+    >
+        <header class="relative flex flex-wrap items-center justify-between gap-4 py-6 md:py-8">
+            <h1 class="flex items-center gap-2.5 text-[25px] leading-[1.25] font-medium text-text-heading">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" class="size-6 shrink-0 text-text-muted">
+                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+                    <polyline points="14 2 14 8 20 8" />
+                    <line x1="12" y1="18" x2="12" y2="12" />
+                    <line x1="9" y1="15" x2="15" y2="15" />
+                </svg>
+                Form Editor
+            </h1>
+            <div class="flex flex-wrap items-center gap-2 sm:gap-3">
+                <button type="button"
+                    class="inline-flex items-center justify-center gap-2 whitespace-nowrap shrink-0 font-medium cursor-pointer no-underline rounded-lg transition-colors h-10 text-sm leading-tight px-4 bg-gradient-to-b from-content-bg to-gray-50 hover:to-gray-100 text-text-primary border border-content-border shadow-sm"
+                >
+                    <i class="fa-solid fa-wand-magic-sparkles text-sm"></i>
+                    Generate UI
+                </button>
+                <button type="button"
+                    @click="save()"
+                    x-bind:disabled="isSaving || !dirty"
+                    class="inline-flex items-center justify-center gap-2 whitespace-nowrap shrink-0 font-medium cursor-pointer no-underline rounded-lg transition-colors h-10 text-sm leading-tight px-4 bg-primary hover:opacity-90 text-white shadow-sm disabled:opacity-60 disabled:cursor-not-allowed"
+                >
+                    <template x-if="!isSaving">
+                        <span class="inline-flex items-center gap-2">
+                            <i class="fa-regular fa-floppy-disk"></i>
+                            Save
+                        </span>
+                    </template>
+                    <template x-if="isSaving">
+                        <span class="inline-flex items-center gap-2">
+                            <svg class="animate-spin size-4" viewBox="0 0 24 24" fill="none">
+                                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" />
+                                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
+                            </svg>
+                            Saving...
+                        </span>
+                    </template>
+                </button>
+            </div>
+        </header>
 
     <div class="bg-panel-bg rounded-2xl mb-8 p-[7px]">
         <div class="p-1.5">
@@ -128,6 +157,7 @@
     </div>
 
     <x-admin::field-picker />
+</div>
 </div>
 @endsection
 
