@@ -289,7 +289,7 @@
                     <ul class="space-y-0.5">
                         <li>
                             <a href="{{ route('admin.forms.index') }}"
-                                class="flex items-center gap-2.5 px-2.5 py-1.5 rounded-md text-sm no-underline transition-colors @if(request()->routeIs('admin.forms.index') || request()->routeIs('admin.forms.create')) text-text-heading bg-gray-200 font-semibold @else text-text-primary hover:bg-gray-100 hover:text-text-heading font-medium @endif"
+                                class="flex items-center gap-2.5 px-2.5 py-1.5 rounded-md text-sm no-underline transition-colors @if(request()->routeIs('admin.forms.index') || request()->routeIs('admin.forms.create') || request()->routeIs('admin.forms.editor')) text-text-heading bg-gray-200 font-semibold @else text-text-primary hover:bg-gray-100 hover:text-text-heading font-medium @endif"
                             >
                                 <span class="flex w-4 shrink-0 items-center justify-center">
                                     <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="size-4">
@@ -301,34 +301,23 @@
                         </li>
                         @foreach($sidebarForms ?? [] as $sidebarForm)
                             <li>
-                                <a href="{{ route('admin.forms.editor', $sidebarForm) }}"
-                                    class="flex items-center gap-2.5 px-2.5 py-1.5 rounded-md text-sm no-underline transition-colors @if(request()->routeIs('admin.forms.editor') && request()->route('form')?->id === $sidebarForm->id) text-text-heading bg-gray-200 font-semibold @else text-text-primary hover:bg-gray-100 hover:text-text-heading font-medium @endif"
+                                <a href="{{ route('admin.forms.entries', $sidebarForm) }}"
+                                    class="flex items-center gap-2.5 px-2.5 py-1.5 rounded-md text-sm no-underline transition-colors @if(request()->routeIs('admin.forms.entries') && request()->route('form')?->id === $sidebarForm->id) text-text-heading bg-gray-200 font-semibold @else text-text-primary hover:bg-gray-100 hover:text-text-heading font-medium @endif"
                                 >
                                     <span class="flex w-4 shrink-0 items-center justify-center">
                                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" class="size-4">
-                                            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
-                                            <polyline points="14 2 14 8 20 8" />
-                                            <line x1="12" y1="18" x2="12" y2="12" />
-                                            <line x1="9" y1="15" x2="15" y2="15" />
+                                            <rect x="3" y="3" width="18" height="18" rx="2" ry="2" />
+                                            <line x1="3" y1="9" x2="21" y2="9" />
+                                            <line x1="9" y1="21" x2="9" y2="9" />
                                         </svg>
                                     </span>
                                     {{ $sidebarForm->title }}
+                                    @if(($sidebarForm->entries_count ?? 0) > 0)
+                                        <span class="ml-auto text-[11px] font-semibold bg-primary/10 text-primary px-1.5 py-0.5 rounded-full">{{ $sidebarForm->entries_count }}</span>
+                                    @endif
                                 </a>
                             </li>
                         @endforeach
-                        <li>
-                            <a href="#"
-                                class="flex items-center gap-2.5 px-2.5 py-1.5 rounded-md text-sm no-underline transition-colors text-text-primary hover:bg-gray-100 hover:text-text-heading font-medium"
-                            >
-                                <span class="flex w-4 shrink-0 items-center justify-center">
-                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" class="size-4">
-                                        <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" />
-                                        <polyline points="22,6 12,13 2,6" />
-                                    </svg>
-                                </span>
-                                Submissions
-                            </a>
-                        </li>
                     </ul>
                 </div>
 

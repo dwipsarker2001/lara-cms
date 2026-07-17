@@ -232,5 +232,7 @@
   "230": "create.blade.php",
   "231": "edit.blade.php",
   "232": "editor.blade.php",
-  "233": "index.blade.php"
+  "233": "index.blade.php",
+  "234": "BlockRegistry.php",
+  "235": "sortable-item.blade.php"
 }

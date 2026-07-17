@@ -1425,8 +1425,8 @@
     "semantic_hash": ""
   },
   "resources/views/admin/forms/editor.blade.php": {
-    "mtime": 1784279575.5255268,
-    "ast_hash": "72cbfa0ea23e0f0979d2186797a70c07",
+    "mtime": 1784285939.2707973,
+    "ast_hash": "b30495bbe5b35c91de2f2abf36e4ab5d",
     "semantic_hash": ""
   },
   "resources/views/admin/forms/index.blade.php": {
@@ -1442,6 +1442,11 @@
   ".claude/settings.local.json": {
     "mtime": 1784272948.8943012,
     "ast_hash": "57863ce54161e8b2e2acdbc9ffade548",
+    "semantic_hash": ""
+  },
+  "resources/views/admin/components/sortable-item.blade.php": {
+    "mtime": 1784285610.1532705,
+    "ast_hash": "0f827df86879f4557c4f1c7af7228e51",
     "semantic_hash": ""
   }
 }

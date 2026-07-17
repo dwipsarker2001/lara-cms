@@ -575,8 +575,8 @@
     "semantic_hash": ""
   },
   "resources/views/admin/layout.blade.php": {
-    "mtime": 1784268538.1610942,
-    "ast_hash": "c829566ad6ba29f5d874a341fed5fd1f",
+    "mtime": 1784279377.3561082,
+    "ast_hash": "eaf0f5c1c227421d1e80151c1b9d5cf1",
     "semantic_hash": ""
   },
   "resources/views/admin/layouts/create.blade.php": {
@@ -605,9 +605,9 @@
     "semantic_hash": "80dbdeb5b229eb6d3fa430b80e75c869"
   },
   "resources/views/admin/pages/editor.blade.php": {
-    "mtime": 1784083222.988042,
-    "ast_hash": "1159da7bf1cbe1bdca8d0d8691cf6ea8",
-    "semantic_hash": "1159da7bf1cbe1bdca8d0d8691cf6ea8"
+    "mtime": 1784278942.4988348,
+    "ast_hash": "bf2dfdb662c4314993c33d064af6edaf",
+    "semantic_hash": ""
   },
   "resources/views/admin/pages/index.blade.php": {
     "mtime": 1784162101.4975243,
@@ -1425,8 +1425,8 @@
     "semantic_hash": ""
   },
   "resources/views/admin/forms/editor.blade.php": {
-    "mtime": 1784270231.0653682,
-    "ast_hash": "645ccc600ea63acf0685fd780c426cb6",
+    "mtime": 1784279575.5255268,
+    "ast_hash": "72cbfa0ea23e0f0979d2186797a70c07",
     "semantic_hash": ""
   },
   "resources/views/admin/forms/index.blade.php": {

@@ -49,6 +49,9 @@ Route::middleware(['web', 'auth:admin'])->prefix('admin')->name('admin.')->group
 
     Route::patch('forms/reorder', [FormController::class, 'reorder'])->name('forms.reorder');
     Route::get('forms/{form}/editor', [FormController::class, 'editor'])->name('forms.editor');
+    Route::get('forms/{form}/entries', [FormController::class, 'entries'])->name('forms.entries');
+    Route::get('forms/{form}/entries/export', [FormController::class, 'export'])->name('forms.export');
+    Route::get('forms/{form}/entries/{entry}', [FormController::class, 'entryJson'])->name('forms.entries.json');
     Route::patch('forms/{form}/fields', [FormController::class, 'updateFields'])->name('forms.update-fields');
     Route::resource('forms', FormController::class)->except(['show']);
 

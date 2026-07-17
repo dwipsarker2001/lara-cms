@@ -5,6 +5,7 @@ namespace App\Models;
 use Database\Factories\FormFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Form extends Model
 {
@@ -16,5 +17,10 @@ class Form extends Model
     protected function casts(): array
     {
         return ['fields' => 'array'];
+    }
+
+    public function entries(): HasMany
+    {
+        return $this->hasMany(FormEntry::class);
     }
 }

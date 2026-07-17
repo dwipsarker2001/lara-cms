@@ -6,6 +6,8 @@ use App\Http\Controllers\Controller;
 use App\Models\Form;
 use App\Support\FormFieldTypes;
 use Illuminate\Http\Request;
+use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Support\Facades\Schema;
 
 class FormController extends Controller
 {
@@ -64,6 +66,53 @@ class FormController extends Controller
         }
 
         return response()->noContent();
+    }
+
+    public function entries(Form $form)
+    {
+        $entries = Schema::hasTable('form_entries')
+            ? $form->entries()->latest()->paginate(15)
+            : new LengthAwarePaginator([], 0, 15);
+
+        return view('admin.forms.entries', compact('form', 'entries'));
+    }
+
+    public function entryJson(Form $form, FormEntry $entry)
+    {
+        abort_if($entry->form_id !== $form->id, 404);
+
+        return response()->json($entry);
+    }
+
+    public function export(Form $form)
+    {
+        if (! Schema::hasTable('form_entries')) {
+            return redirect()->route('admin.forms.entries', $form);
+        }
+
+        $entries = $form->entries()->latest()->get();
+
+        $fields = collect($form->fields ?? [])->pluck('label', 'name');
+
+        $csv = fopen('php://temp', 'r+');
+        fputcsv($csv, ['ID', 'Submitted', ...$fields->values()->toArray()]);
+
+        foreach ($entries as $entry) {
+            $row = [$entry->id, $entry->created_at->format('Y-m-d H:i:s')];
+            foreach ($fields->keys() as $name) {
+                $row[] = $entry->data[$name] ?? '';
+            }
+            fputcsv($csv, $row);
+        }
+
+        rewind($csv);
+        $output = stream_get_contents($csv);
+        fclose($csv);
+
+        return response($output, 200, [
+            'Content-Type' => 'text/csv',
+            'Content-Disposition' => 'attachment; filename="'.$form->title.'-entries.csv"',
+        ]);
     }
 
     public function editor(Form $form)
