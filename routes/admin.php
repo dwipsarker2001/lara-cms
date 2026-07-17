@@ -2,6 +2,8 @@
 
 use App\Http\Controllers\Admin\AdminUserController;
 use App\Http\Controllers\Admin\AssetsController;
+use App\Http\Controllers\Admin\CollectionController;
+use App\Http\Controllers\Admin\CollectionEntryController;
 use App\Http\Controllers\Admin\CommandSearchController;
 use App\Http\Controllers\Admin\FormController;
 use App\Http\Controllers\Admin\LayoutController;
@@ -54,6 +56,14 @@ Route::middleware(['web', 'auth:admin'])->prefix('admin')->name('admin.')->group
     Route::get('forms/{form}/entries/{entry}', [FormController::class, 'entryJson'])->name('forms.entries.json');
     Route::patch('forms/{form}/fields', [FormController::class, 'updateFields'])->name('forms.update-fields');
     Route::resource('forms', FormController::class)->except(['show']);
+
+    Route::patch('collections/reorder', [CollectionController::class, 'reorder'])->name('collections.reorder');
+    Route::resource('collections', CollectionController::class)->except(['show']);
+
+    Route::patch('collections/{collection}/entries/reorder', [CollectionEntryController::class, 'reorder'])->name('collections.entries.reorder');
+    Route::get('collections/{collection}/entries/{entry}/editor', [CollectionEntryController::class, 'editor'])->name('collections.entries.editor');
+    Route::patch('collections/{collection}/entries/{entry}/sections', [CollectionEntryController::class, 'updateSections'])->name('collections.entries.update-sections');
+    Route::resource('collections.entries', CollectionEntryController::class);
 
     Route::get('seo', [SeoController::class, 'index'])->name('seo');
     Route::put('seo', [SeoController::class, 'update'])->name('seo.update');

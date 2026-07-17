@@ -27,6 +27,7 @@
     <div class="px-1.5 pb-2" id="{{ $sortableId }}">
         @if ($items->isEmpty())
             <div class="flex flex-col items-center justify-center py-8">
+                <img src="/empty-collection.svg" alt="No items" class="size-32 mb-4 opacity-60">
                 <p class="text-sm font-medium text-text-heading">{{ $emptyText }}</p>
                 @if ($emptyLinkRoute && $emptyLinkText)
                     <p class="text-sm text-text-muted mt-1">
@@ -54,6 +55,9 @@
                         <div class="flex gap-2 sm:gap-3 grow items-center py-3 min-w-0">
                             <a href="{{ route($editRoute, $item) }}" class="flex items-center gap-2 no-underline min-w-0">
                                 <span class="inline-block w-2 h-2 rounded-full shrink-0 {{ $item->published ? 'bg-success' : 'bg-text-muted' }}"></span>
+                                @if ($item->icon ?? null)
+                                    <i class="{{ $item->icon }} text-sm w-4 text-center text-text-muted shrink-0"></i>
+                                @endif
                                 <span class="text-sm font-semibold text-text-heading truncate group-hover:text-primary transition-colors">
                                     {{ $item->title }}
                                     @if ($badgeField && ($item->{$badgeField} ?? null) === $badgeValue)

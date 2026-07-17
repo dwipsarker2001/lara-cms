@@ -3,6 +3,7 @@
 namespace App\Providers;
 
 use App\Blocks\BlockRegistry;
+use App\Models\Collection;
 use App\Models\Form;
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\Facades\Schema;
@@ -26,6 +27,12 @@ class AppServiceProvider extends ServiceProvider
                 : Form::orderBy('position')->get();
 
             $view->with('sidebarForms', $forms);
+
+            $collections = Schema::hasTable('collections')
+                ? Collection::where('show_in_menu', true)->orderBy('position')->get()
+                : collect();
+
+            $view->with('sidebarCollections', $collections);
         });
     }
 }

@@ -10,7 +10,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer" />
     <script>window.FA_ICONS = {{ Js::from(json_decode(file_get_contents(public_path('fa-icons.json')))) }};</script>
 </head>
-<body class="admin-root antialiased bg-header-bg text-text-primary min-h-full" x-data="{ navCollapsed: {{ (request()->routeIs('admin.pages.editor') || request()->routeIs('admin.posts.editor') || request()->routeIs('admin.layouts.editor') || request()->routeIs('admin.packages.editor') || request()->routeIs('admin.forms.editor')) ? 'true' : 'false' }}, userMenuOpen: false }">
+<body class="admin-root antialiased bg-header-bg text-text-primary min-h-full" x-data="{ navCollapsed: {{ (request()->routeIs('admin.pages.editor') || request()->routeIs('admin.posts.editor') || request()->routeIs('admin.layouts.editor') || request()->routeIs('admin.packages.editor') || request()->routeIs('admin.forms.editor') || request()->routeIs('admin.collections.entries.editor')) ? 'true' : 'false' }}, userMenuOpen: false }">
     {{-- Fixed header --}}
     <header class="fixed top-0 left-0 right-0 h-14 px-4 flex items-center gap-3 z-[1] bg-header-bg text-header-text">
         <div class="flex items-center gap-3">
@@ -194,6 +194,18 @@
                     <div class="px-2.5 pb-1.5 text-xs font-semibold uppercase tracking-wider text-text-muted/70">Collection</div>
                     <ul class="space-y-0.5">
                         <li>
+                            <a href="{{ route('admin.collections.index') }}"
+                                class="flex items-center gap-2.5 px-2.5 py-1.5 rounded-md text-sm no-underline transition-colors @if(request()->routeIs('admin.collections.*')) text-text-heading bg-gray-200 font-semibold @else text-text-primary hover:bg-gray-100 hover:text-text-heading font-medium @endif"
+                            >
+                                <span class="flex w-4 shrink-0 items-center justify-center">
+                                    <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="size-4">
+                                        <path d="M8 3v10M3 8h10" />
+                                    </svg>
+                                </span>
+                                Create
+                            </a>
+                        </li>
+                        <li>
                             <a href="{{ route('admin.pages.index') }}"
                                 class="flex items-center gap-2.5 px-2.5 py-1.5 rounded-md text-sm no-underline transition-colors @if(request()->routeIs('admin.pages.*')) text-text-heading bg-gray-200 font-semibold @else text-text-primary hover:bg-gray-100 hover:text-text-heading font-medium @endif"
                             >
@@ -280,6 +292,27 @@
                                 Assets
                             </a>
                         </li>
+                        @foreach($sidebarCollections ?? [] as $sidebarCollection)
+                            <li>
+                                <a href="{{ route('admin.collections.entries.index', $sidebarCollection) }}"
+                                    class="flex items-center gap-2.5 px-2.5 py-1.5 rounded-md text-sm no-underline transition-colors @if(request()->route('collection')?->id === $sidebarCollection->id) text-text-heading bg-gray-200 font-semibold @else text-text-primary hover:bg-gray-100 hover:text-text-heading font-medium @endif"
+                                >
+                                    <span class="flex w-4 shrink-0 items-center justify-center">
+                                        @if($sidebarCollection->icon)
+                                            <i class="{{ $sidebarCollection->icon }} text-xs"></i>
+                                        @else
+                                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" class="size-4">
+                                                <rect x="3" y="3" width="7" height="7" rx="1" />
+                                                <rect x="14" y="3" width="7" height="7" rx="1" />
+                                                <rect x="3" y="14" width="7" height="7" rx="1" />
+                                                <rect x="14" y="14" width="7" height="7" rx="1" />
+                                            </svg>
+                                        @endif
+                                    </span>
+                                    {{ $sidebarCollection->name }}
+                                </a>
+                            </li>
+                        @endforeach
                     </ul>
                 </div>
 
