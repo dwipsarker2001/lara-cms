@@ -2,6 +2,7 @@
 
 namespace App\Blocks;
 
+use App\Models\DynamicBlock;
 use Illuminate\Support\Collection;
 use Symfony\Component\Finder\Finder;
 
@@ -54,10 +55,9 @@ class BlockRegistry
     /** @return array<string, Block> */
     protected function discover(): array
     {
-        $dir = app_path('Blocks');
         $blocks = [];
 
-        foreach (Finder::create()->files()->in($dir)->name('*.php') as $file) {
+        foreach (Finder::create()->files()->in(app_path('Blocks'))->name('*.php')->notName(['TemplateBlock.php', 'JsonBlock.php']) as $file) {
             $class = $this->classFromPath($file->getRealPath());
 
             if (! $class || ! class_exists($class)) {
@@ -72,6 +72,10 @@ class BlockRegistry
             /** @var Block $block */
             $block = $ref->newInstance();
             $blocks[$block->name] = $block;
+        }
+
+        foreach (DynamicBlock::all() as $dbBlock) {
+            $blocks[$dbBlock->name] = new TemplateBlock($dbBlock);
         }
 
         return $blocks;

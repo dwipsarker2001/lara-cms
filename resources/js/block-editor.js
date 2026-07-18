@@ -1,0 +1,57 @@
+import { EditorView, basicSetup } from 'codemirror';
+import { json } from '@codemirror/lang-json';
+import { html } from '@codemirror/lang-html';
+
+window.__cmViews = {};
+
+document.querySelectorAll('[data-cm-editor]').forEach(function (el) {
+    var textarea = document.getElementById(el.dataset.cmTextarea);
+    var lang = el.dataset.cmLang;
+    var ext = lang === 'json' ? json() : html();
+
+    var view = new EditorView({
+        doc: textarea.value,
+        extensions: [basicSetup, ext],
+        parent: el,
+    });
+
+    window.__cmViews[el.dataset.cmTextarea] = view;
+
+    el.closest('form').addEventListener('submit', function () {
+        textarea.value = view.state.doc.toString();
+    });
+});
+
+window.renderPreview = function () {
+    var cmViews = window.__cmViews || {};
+    if (cmViews['field-fields']) document.getElementById('field-fields').value = cmViews['field-fields'].state.doc.toString();
+    if (cmViews['field-template']) document.getElementById('field-template').value = cmViews['field-template'].state.doc.toString();
+
+    var fieldsText = document.getElementById('field-fields').value;
+    var templateText = document.getElementById('field-template').value;
+    var fields = {};
+    try {
+        var parsed = JSON.parse(fieldsText);
+        if (Array.isArray(parsed)) {
+            parsed.forEach(function (f) { if (f.name) fields[f.name] = f.defaultValue ?? ''; });
+        }
+    } catch (_) {}
+
+    function resolve(obj, path) {
+        return path.split('.').reduce(function (acc, key) { return acc && acc[key] !== undefined ? acc[key] : ''; }, obj);
+    }
+
+    var rendered = templateText.replace(/\{\{\s*(.+?)\s*\}\}/g, function (_, key) {
+        return String(resolve(fields, key.trim()));
+    });
+
+    var cssLinks = Array.from(document.querySelectorAll('link[rel="stylesheet"]')).map(function (l) { return l.outerHTML; }).join('');
+    rendered = '<!DOCTYPE html><html><head><meta charset="utf-8">' + cssLinks + '</head><body>' + rendered + '</body></html>';
+
+    var iframe = document.getElementById('preview-frame');
+    if (!iframe) { console.error('preview-frame not found'); return; }
+    var doc = iframe.contentDocument || iframe.contentWindow.document;
+    doc.open();
+    doc.write(rendered);
+    doc.close();
+};

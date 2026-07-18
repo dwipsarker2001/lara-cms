@@ -61,6 +61,15 @@ abstract class Block
         return $this->fields();
     }
 
+    public function render(array $data, string $_key = '', bool $preview = false, $page = null): string
+    {
+        if (! view()->exists($this->view())) {
+            return '';
+        }
+
+        return view($this->view(), compact('data', '_key', 'preview', 'page'))->render();
+    }
+
     /** Serializable shape handed to the admin editor (JSON). */
     public function toArray(): array
     {

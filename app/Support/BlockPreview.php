@@ -15,16 +15,16 @@ class BlockPreview
         foreach ($resolved as $i => $section) {
             $block = $registry->get($section['name'] ?? '');
 
-            if (($section['enabled'] ?? true) === false || ! $block || ! view()->exists($block->view())) {
+            if (($section['enabled'] ?? true) === false || ! $block) {
                 continue;
             }
 
-            $inner = view($block->view(), [
-                'data' => $section['data'] ?? [],
-                '_key' => $section['_key'] ?? '',
-                'preview' => true,
-                'page' => $page,
-            ])->render();
+            $inner = $block->render(
+                data: $section['data'] ?? [],
+                _key: $section['_key'] ?? '',
+                preview: true,
+                page: $page,
+            );
 
             $html .= '<div data-section-index="'.$i.'" class="p-0.5">'.$inner.'</div>';
         }

@@ -265,8 +265,8 @@
     "semantic_hash": "115d948ba7fab674ed98495d8f2fa046"
   },
   "app/Providers/AppServiceProvider.php": {
-    "mtime": 1784287303.4968877,
-    "ast_hash": "2e42cab0eabc7d72c6bef983d737c284",
+    "mtime": 1784295113.090811,
+    "ast_hash": "5c15385af67a2eee8d072d3cc988e90a",
     "semantic_hash": ""
   },
   "app/Support/BlockPreview.php": {
@@ -560,8 +560,8 @@
     "semantic_hash": "b94269b2e490fa90eda3c669878f9c5e"
   },
   "resources/views/admin/components/sortable-list.blade.php": {
-    "mtime": 1784265739.4916546,
-    "ast_hash": "b13645c50312f6918984f27e33293ab9",
+    "mtime": 1784291080.8732631,
+    "ast_hash": "f4ada79860f497215a35f2d44a9d4427",
     "semantic_hash": ""
   },
   "resources/views/admin/components/toast.blade.php": {
@@ -575,8 +575,8 @@
     "semantic_hash": ""
   },
   "resources/views/admin/layout.blade.php": {
-    "mtime": 1784288571.7654977,
-    "ast_hash": "836b91df45e0766fec607494ef6bf430",
+    "mtime": 1784300151.7920148,
+    "ast_hash": "32143b8853188f8fdd1637081c1abe77",
     "semantic_hash": ""
   },
   "resources/views/admin/layouts/create.blade.php": {
@@ -775,8 +775,8 @@
     "semantic_hash": "1a03818ea91deb4f3989c6c994e5867c"
   },
   "routes/admin.php": {
-    "mtime": 1784287954.656342,
-    "ast_hash": "5b37adcdcc9a9c6309311d10c79d4389",
+    "mtime": 1784299786.700525,
+    "ast_hash": "8d2688b510ec368e11e8ff961388ccb0",
     "semantic_hash": ""
   },
   "routes/console.php": {
@@ -1462,6 +1462,96 @@
   "resources/views/admin/forms/entries.blade.php": {
     "mtime": 1784288162.0826356,
     "ast_hash": "88a17197fb4c10e14fa4d00d541959ea",
+    "semantic_hash": ""
+  },
+  "app/Http/Controllers/Admin/CollectionController.php": {
+    "mtime": 1784295101.7567215,
+    "ast_hash": "cbf3edfcb1d030176f79632d1210d264",
+    "semantic_hash": ""
+  },
+  "app/Http/Controllers/Admin/CollectionEntryController.php": {
+    "mtime": 1784299780.9069703,
+    "ast_hash": "87f9a13e03679e7645e61a705a99b79e",
+    "semantic_hash": ""
+  },
+  "app/Models/Collection.php": {
+    "mtime": 1784295940.5622907,
+    "ast_hash": "44d912b1abd7b7dbd70a79a0bbb3f014",
+    "semantic_hash": ""
+  },
+  "app/Models/CollectionEntry.php": {
+    "mtime": 1784299767.836719,
+    "ast_hash": "f1f8cbe80ee60e58c7a0c243c100b06b",
+    "semantic_hash": ""
+  },
+  "database/factories/CollectionFactory.php": {
+    "mtime": 1784289543.9131935,
+    "ast_hash": "40016757e1e3acbddba8fd4150b05999",
+    "semantic_hash": ""
+  },
+  "database/migrations/2026_07_17_115903_create_collections_table.php": {
+    "mtime": 1784289724.944782,
+    "ast_hash": "bb6f8632f64fa83c0a2d7ee7911914b1",
+    "semantic_hash": ""
+  },
+  "database/migrations/2026_07_17_122351_add_icon_to_collections_table.php": {
+    "mtime": 1784291038.1121616,
+    "ast_hash": "ec1e427d37055f1dc8aabb2be06b1464",
+    "semantic_hash": ""
+  },
+  "database/migrations/2026_07_17_133029_add_show_in_menu_to_collections_table.php": {
+    "mtime": 1784295037.8795812,
+    "ast_hash": "8b418df8df9136232b242cc6b0be1317",
+    "semantic_hash": ""
+  },
+  "database/migrations/2026_07_17_134454_create_collection_entries_table.php": {
+    "mtime": 1784295919.6082869,
+    "ast_hash": "3e55da3bf247c5e8aa41b989e2582aed",
+    "semantic_hash": ""
+  },
+  "database/migrations/2026_07_17_140949_add_page_id_to_collection_entries_table.php": {
+    "mtime": 1784297433.24931,
+    "ast_hash": "da4710db300b264d247a06806d3e602d",
+    "semantic_hash": ""
+  },
+  "database/migrations/2026_07_17_144854_add_sections_to_collection_entries_table.php": {
+    "mtime": 1784299739.600019,
+    "ast_hash": "167afa8e1e8630b019780fa3c6d637c0",
+    "semantic_hash": ""
+  },
+  "resources/views/admin/collections/create.blade.php": {
+    "mtime": 1784295448.962097,
+    "ast_hash": "3d74fffd11fd541a39280697e2c268dd",
+    "semantic_hash": ""
+  },
+  "resources/views/admin/collections/edit.blade.php": {
+    "mtime": 1784295452.9984848,
+    "ast_hash": "9cd03f0f5ceb80f2af827022a7604710",
+    "semantic_hash": ""
+  },
+  "resources/views/admin/collections/entries/create.blade.php": {
+    "mtime": 1784297636.218466,
+    "ast_hash": "7a2d9899ddd8a60dbd55fb18bff61625",
+    "semantic_hash": ""
+  },
+  "resources/views/admin/collections/entries/edit.blade.php": {
+    "mtime": 1784296283.0430436,
+    "ast_hash": "0111e2627d2ecf14b54d3d5215abdce9",
+    "semantic_hash": ""
+  },
+  "resources/views/admin/collections/entries/editor.blade.php": {
+    "mtime": 1784303525.8181987,
+    "ast_hash": "b5e3c58fb8fb8570e54141a8150c3d4f",
+    "semantic_hash": ""
+  },
+  "resources/views/admin/collections/entries/index.blade.php": {
+    "mtime": 1784297472.8150442,
+    "ast_hash": "620e9aef30aa355effd0b5463c6899ff",
+    "semantic_hash": ""
+  },
+  "resources/views/admin/collections/index.blade.php": {
+    "mtime": 1784289745.5357666,
+    "ast_hash": "c2ae9a469a2d8615645c32cdb6b62c6f",
     "semantic_hash": ""
   }
 }

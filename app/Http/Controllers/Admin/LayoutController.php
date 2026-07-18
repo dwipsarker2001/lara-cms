@@ -83,12 +83,12 @@ class LayoutController extends Controller
             $block = $registry->get($item['name']);
             $section = Sections::createDefaultSection($item['name']);
             $html = '';
-            if ($block && $section && view()->exists($block->view())) {
-                $html = view($block->view(), [
-                    'data' => $section['data'],
-                    '_key' => '',
-                    'preview' => true,
-                ])->render();
+            if ($block && $section) {
+                $html = $block->render(
+                    data: $section['data'],
+                    _key: '',
+                    preview: true,
+                );
             }
 
             return [...$item, 'previewHtml' => $html];

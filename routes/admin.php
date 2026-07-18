@@ -5,6 +5,7 @@ use App\Http\Controllers\Admin\AssetsController;
 use App\Http\Controllers\Admin\CollectionController;
 use App\Http\Controllers\Admin\CollectionEntryController;
 use App\Http\Controllers\Admin\CommandSearchController;
+use App\Http\Controllers\Admin\DynamicBlockController;
 use App\Http\Controllers\Admin\FormController;
 use App\Http\Controllers\Admin\LayoutController;
 use App\Http\Controllers\Admin\PackageController;
@@ -86,4 +87,8 @@ Route::middleware(['web', 'auth:admin'])->prefix('admin')->name('admin.')->group
 
     Route::post('preview', [PreviewController::class, 'render'])->name('preview');
     Route::get('block-preview/{block}', [PreviewController::class, 'blockPreview'])->name('block-preview');
+
+    Route::resource('dynamic-blocks', DynamicBlockController::class)->except(['show']);
+    Route::get('dynamic-blocks/{dynamic_block}/editor', [DynamicBlockController::class, 'editor'])->name('dynamic-blocks.editor');
+    Route::put('dynamic-blocks/{dynamic_block}/editor', [DynamicBlockController::class, 'updateEditor'])->name('dynamic-blocks.update-editor');
 });

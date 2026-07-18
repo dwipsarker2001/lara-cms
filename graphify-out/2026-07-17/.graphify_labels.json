@@ -120,7 +120,6 @@
   "118": "tailwind.config.js",
   "119": "ExampleTest.php",
   "120": "vite.config.js",
-  "121": "Seeder",
   "122": "opencode.json",
   "123": "ProfileBento.php",
   "124": "package-about.blade.php",
@@ -221,10 +220,6 @@
   "219": "index.blade.php",
   "220": "modern-dropdown.blade.php",
   "221": "Sections",
-  "222": "SeoController.php",
-  "223": "Model",
-  "224": "Term.php",
-  "225": "ProfileController.php",
   "226": "2026_07_17_051648_create_forms_table.php",
   "227": "2026_07_17_052005_add_position_to_forms_table.php",
   "228": "2026_07_17_053112_add_fields_to_forms_table.php",
@@ -235,6 +230,5 @@
   "233": "index.blade.php",
   "234": "BlockRegistry.php",
   "235": "sortable-item.blade.php",
-  "236": "Request",
   "237": "entries.blade.php"
 }

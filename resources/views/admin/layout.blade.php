@@ -9,6 +9,7 @@
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer" />
     <script>window.FA_ICONS = {{ Js::from(json_decode(file_get_contents(public_path('fa-icons.json')))) }};</script>
+    @stack('styles')
 </head>
 <body class="admin-root antialiased bg-header-bg text-text-primary min-h-full" x-data="{ navCollapsed: {{ (request()->routeIs('admin.pages.editor') || request()->routeIs('admin.posts.editor') || request()->routeIs('admin.layouts.editor') || request()->routeIs('admin.packages.editor') || request()->routeIs('admin.forms.editor') || request()->routeIs('admin.collections.entries.editor')) ? 'true' : 'false' }}, userMenuOpen: false }">
     {{-- Fixed header --}}
@@ -397,6 +398,19 @@
                                     </svg>
                                 </span>
                                 SEO Pro
+                            </a>
+                        </li>
+                        <li>
+                            <a href="{{ route('admin.dynamic-blocks.index') }}"
+                                class="flex items-center gap-2.5 px-2.5 py-1.5 rounded-md text-sm no-underline transition-colors @if(request()->routeIs('admin.dynamic-blocks.*')) text-text-heading bg-gray-200 font-semibold @else text-text-primary hover:bg-gray-100 hover:text-text-heading font-medium @endif"
+                            >
+                                <span class="flex w-4 shrink-0 items-center justify-center">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" class="size-4">
+                                        <rect x="3" y="3" width="18" height="18" rx="2" />
+                                        <path d="M21 12H3" />
+                                    </svg>
+                                </span>
+                                Blocks
                             </a>
                         </li>
                     </ul>
