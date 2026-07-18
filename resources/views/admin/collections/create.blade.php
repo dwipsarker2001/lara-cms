@@ -4,7 +4,7 @@
 @section('breadcrumb', 'Create Collection')
 
 @section('content')
-<div class="max-w-5xl mx-auto px-2 sm:px-0" x-data="iconPicker()">
+<div class="max-w-5xl mx-auto px-2 sm:px-0" x-data="collectionForm([])">
     <header class="relative flex flex-wrap items-center justify-between gap-4 py-6 md:py-8">
         <h1 class="flex items-center gap-2.5 text-[25px] leading-[1.25] font-medium text-text-heading">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" class="size-6 shrink-0 text-text-muted">
@@ -16,6 +16,12 @@
             Create Collection
         </h1>
         <div class="flex flex-wrap items-center gap-2 sm:gap-3">
+            <button type="button" @click="openFieldModal()" class="inline-flex items-center justify-center gap-1.5 shrink-0 font-medium cursor-pointer no-underline rounded-lg transition-colors h-10 px-3 bg-white hover:bg-gray-50 text-text-heading shadow-sm border border-gray-200 text-sm">
+                <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="size-4">
+                    <path d="M8 3v10M3 8h10" />
+                </svg>
+                Add Input
+            </button>
             <button type="submit" form="collection-form"
                 class="inline-flex items-center justify-center gap-2 whitespace-nowrap shrink-0 font-medium cursor-pointer no-underline rounded-lg transition-colors h-10 text-sm leading-tight px-4 bg-primary hover:opacity-90 text-white shadow-sm"
             >
@@ -26,12 +32,13 @@
 
     <form id="collection-form" method="POST" action="{{ route('admin.collections.store') }}">
         @csrf
+        <input type="hidden" name="fields" :value="JSON.stringify(fields)">
 
         <div class="bg-panel-bg rounded-2xl mb-8 p-[7px]">
             <div class="flex items-center justify-between px-[18px] pt-3 pb-1">
                 <div>
                     <div class="text-sm font-medium text-text-heading">Collection Details</div>
-                    <p class="text-sm text-text-muted mt-1">Configure the name and icon for this collection.</p>
+                    <p class="text-sm text-text-muted mt-1 mb-2">Configure the name and icon for this collection.</p>
                 </div>
             </div>
             <div class="px-1.5 pb-2">
@@ -108,17 +115,37 @@
                                     </button>
                                 </div>
                             </div>
-                        <div class="flex items-center justify-between px-[18px] py-4">
-                            <div class="flex flex-col gap-1">
-                                <div class="text-sm font-medium text-text-heading">Add to Menu</div>
-                                <div class="text-sm text-text-muted">When enabled, this collection will appear in the admin sidebar menu for quick access to manage its entries.</div>
-                            </div>
-                            <div class="flex items-center gap-2 shrink-0">
-                                <input type="hidden" name="show_in_menu" :value="showInMenu ? '1' : '0'">
-                                <button type="button" role="switch" :aria-checked="showInMenu" :data-state="showInMenu ? 'checked' : 'unchecked'" @click="showInMenu = !showInMenu" class="relative flex h-6 w-11 shrink-0 cursor-pointer rounded-full border-2 transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-primary/30 data-[state=checked]:shadow-inner data-[state=checked]:border-emerald-500 data-[state=checked]:bg-emerald-500 data-[state=unchecked]:!border-gray-300 data-[state=unchecked]:bg-gray-200">
-                                    <span class="sr-only">Add to menu</span>
-                                    <span aria-hidden="true" class="pointer-events-none inline-block size-[18px] rounded-full bg-white shadow-sm ring-0 transition duration-200 ease-in-out translate-x-0 data-[state=checked]:translate-x-5" :data-state="showInMenu ? 'checked' : 'unchecked'"></span>
-                                </button>
+                        <div x-show="fields.length > 0" class="px-[18px] py-4">
+                            <div id="sortable-fields" class="space-y-1">
+                                <template x-for="(field, index) in fields" :key="field._key || index">
+                                    <div class="flex rounded-lg shadow-sm bg-content-bg border border-content-border group overflow-hidden px-2">
+                                        <div class="w-6 shrink-0 flex items-center justify-center cursor-grab active:cursor-grabbing opacity-70 hover:opacity-100 touch-none transition-opacity text-text-muted/70" data-drag-handle>
+                                            <svg viewBox="0 0 24 24" fill="currentColor" class="size-[14px]">
+                                                <circle cx="8" cy="6" r="2.5" /><circle cx="16" cy="6" r="2.5" />
+                                                <circle cx="8" cy="12" r="2.5" /><circle cx="16" cy="12" r="2.5" />
+                                                <circle cx="8" cy="18" r="2.5" /><circle cx="16" cy="18" r="2.5" />
+                                            </svg>
+                                        </div>
+                                        <div class="flex flex-1 min-w-0 items-center px-1.5 py-2.5 text-xs leading-normal">
+                                            <div class="flex min-w-0 flex-1 items-center gap-1.5">
+                                                <span class="text-sm font-semibold text-text-heading group-hover:text-primary truncate leading-normal transition-colors" x-text="field.title"></span>
+                                            </div>
+                                            <div class="flex items-center gap-0.5 shrink-0 ml-1">
+                                                <button type="button" @click="editField(index)" class="p-1 text-text-muted/60 hover:text-primary transition-colors rounded hover:bg-text-primary/10" title="Edit">
+                                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" class="size-4">
+                                                        <path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7" />
+                                                        <path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z" />
+                                                    </svg>
+                                                </button>
+                                                <button type="button" @click="fields.splice(index, 1)" class="p-1 text-text-muted/60 hover:text-danger transition-colors rounded hover:bg-text-primary/10" title="Remove">
+                                                    <svg viewBox="0 0 20 20" fill="currentColor" class="size-4">
+                                                        <path fill-rule="evenodd" d="M8.75 1A2.75 2.75 0 006 3.75v.443c-.795.077-1.584.176-2.365.298a.75.75 0 10.23 1.482l.149-.022.841 10.518A2.75 2.75 0 007.596 19h4.807a2.75 2.75 0 002.742-2.53l.841-10.52.149.023a.75.75 0 00.23-1.482A41.03 41.03 0 0014 4.193V3.75A2.75 2.75 0 0011.25 1h-2.5zM10 4c-.84 0-1.673.025-2.5.075V3.75c0-.69.56-1.25 1.25-1.25h2.5c.69 0 1.25.56 1.25 1.25v.325C11.673 4.025 10.84 4 10 4zM8.58 7.72a.75.75 0 00-1.5.06l.3 7.5a.75.75 0 101.5-.06l-.3-7.5zm4.34.06a.75.75 0 10-1.5-.06l-.3 7.5a.75.75 0 101.5.06l.3-7.5z" clip-rule="evenodd" />
+                                                    </svg>
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </template>
                             </div>
                         </div>
                     </div>
@@ -126,19 +153,67 @@
             </div>
         </div>
     </form>
+
+    <div x-show="showFieldModal" class="fixed inset-0 z-[9999] flex items-center justify-center bg-black/40" @click.self="showFieldModal = false" style="display: none;">
+            <div class="bg-white rounded-2xl shadow-xl w-full max-w-lg mx-4 overflow-hidden">
+                <div class="flex items-center justify-between px-6 pt-5 pb-3">
+                    <h3 class="text-lg font-semibold text-text-heading" x-text="editingFieldIndex !== null ? 'Edit Field' : 'Add Field'"></h3>
+                    <button type="button" @click="showFieldModal = false" class="size-8 flex items-center justify-center rounded-lg hover:bg-gray-100 text-text-muted transition-colors">
+                        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="size-4">
+                            <path d="M4 4l8 8M12 4l-8 8" />
+                        </svg>
+                    </button>
+                </div>
+                <div class="px-6 pb-5 space-y-4">
+                    <div>
+                        <label class="block text-sm font-medium text-text-heading mb-1">Title</label>
+                        <input type="text" x-model="fieldForm.title" @input="generateTemplate" placeholder="Full Name" class="w-full block bg-white border border-gray-300 text-text-primary placeholder:text-text-muted text-sm rounded-lg px-3 py-2 h-9 transition-all duration-150 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-text-heading mb-1">Description</label>
+                        <input type="text" x-model="fieldForm.description" placeholder="Enter your full name" class="w-full block bg-white border border-gray-300 text-text-primary placeholder:text-text-muted text-sm rounded-lg px-3 py-2 h-9 transition-all duration-150 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-text-heading mb-1">Input Type</label>
+                        <select x-model="fieldForm.type" class="w-full block bg-white border border-gray-300 text-text-primary text-sm rounded-lg px-3 py-2 h-9 transition-all duration-150 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary">
+                            <option value="text">Text</option>
+                            <option value="textarea">Textarea</option>
+                            <option value="number">Number</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-text-heading mb-1">Template String</label>
+                        <input type="text" x-model="fieldForm.template" readonly class="w-full block bg-gray-50 border border-gray-200 text-text-muted text-sm rounded-lg px-3 py-2 h-9 cursor-not-allowed">
+                    </div>
+                </div>
+                <div class="flex items-center justify-end gap-3 px-6 py-4 bg-gray-50 border-t border-gray-100">
+                    <button type="button" @click="showFieldModal = false" class="inline-flex items-center justify-center gap-2 shrink-0 font-medium cursor-pointer no-underline rounded-lg transition-colors h-9 text-sm leading-tight px-4 bg-white hover:bg-gray-50 text-text-primary shadow-sm border border-gray-200">
+                        Cancel
+                    </button>
+                    <button type="button" @click="saveField" class="inline-flex items-center justify-center gap-2 shrink-0 font-medium cursor-pointer no-underline rounded-lg transition-colors h-9 text-sm leading-tight px-4 bg-primary hover:opacity-90 text-white shadow-sm">
+                        <span x-text="editingFieldIndex !== null ? 'Update' : 'Add'"></span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 @endsection
 
 @push('scripts')
 <script>
-    function iconPicker() {
+    function collectionForm(existingFields) {
         return {
             selectedIcon: '',
-            showInMenu: false,
             iconPickerOpen: false,
             iconSearch: '',
             iconLoading: false,
             faIcons: window.FA_ICONS || [],
+            fields: (existingFields || []).map(f => ({ ...f, _key: f._key || (crypto.randomUUID ? crypto.randomUUID() : Date.now().toString(36) + Math.random().toString(36).slice(2)) })),
+            showFieldModal: false,
+            editingFieldIndex: null,
+            fieldForm: { title: '', description: '', type: 'text', template: '' },
+
             get filteredIcons() {
                 let icons = this.faIcons;
                 if (this.iconSearch.trim()) {
@@ -151,7 +226,76 @@
                 const found = this.faIcons.find(i => i.c === cls);
                 return found ? found.l : cls;
             },
+
+            generateTemplate() {
+                const slug = this.fieldForm.title.replace(/[^a-zA-Z0-9]+/g, '_').replace(/^_|_$/g, '').toLowerCase();
+                this.fieldForm.template = slug ? '@{{' + slug + '@}}' : '';
+            },
+
+            openFieldModal() {
+                this.editingFieldIndex = null;
+                this.fieldForm = { title: '', description: '', type: 'text', template: '' };
+                this.showFieldModal = true;
+            },
+
+            editField(index) {
+                this.editingFieldIndex = index;
+                this.fieldForm = { ...this.fields[index] };
+                this.showFieldModal = true;
+            },
+
+            saveField() {
+                if (!this.fieldForm.title.trim()) return;
+                if (this.editingFieldIndex !== null) {
+                    this.fields[this.editingFieldIndex] = { ...this.fieldForm, _key: this.fields[this.editingFieldIndex]._key };
+                    this.fields = [...this.fields]; // Force Alpine reactivity update
+                } else {
+                    this.fields.push({ ...this.fieldForm, _key: crypto.randomUUID ? crypto.randomUUID() : Date.now().toString(36) + Math.random().toString(36).slice(2) });
+                }
+                this.showFieldModal = false;
+                this.$nextTick(() => {
+                    const el = document.getElementById('sortable-fields');
+                    if (!el || el._sortable) return;
+                    el._sortable = new Sortable(el, {
+                        handle: '[data-drag-handle]',
+                        animation: 200,
+                        easing: 'cubic-bezier(0.25, 0.1, 0.25, 1)',
+                        onEnd: (evt) => {
+                            if (evt.oldIndex === evt.newIndex) return;
+                            const item = this.fields.splice(evt.oldIndex, 1)[0];
+                            this.fields.splice(evt.newIndex, 0, item);
+                        },
+                    });
+                });
+            },
+
+            init() {
+                const el = document.getElementById('sortable-fields');
+                if (!el || el._sortable) return;
+                el._sortable = new Sortable(el, {
+                    handle: '[data-drag-handle]',
+                    animation: 200,
+                    easing: 'cubic-bezier(0.25, 0.1, 0.25, 1)',
+                    onEnd: (evt) => {
+                        if (evt.oldIndex === evt.newIndex) return;
+                        const item = this.fields.splice(evt.oldIndex, 1)[0];
+                        this.fields.splice(evt.newIndex, 0, item);
+                    },
+                });
+            },
         };
     }
 </script>
+
+<style>
+    #sortable-fields .sortable-ghost {
+        opacity: 0 !important;
+    }
+    #sortable-fields .sortable-drag {
+        opacity: 0.9 !important;
+        box-shadow: none !important;
+        border-radius: 0.75rem !important;
+        background: var(--color-content-bg, #fff) !important;
+    }
+</style>
 @endpush

@@ -19,9 +19,23 @@ class Page extends Model
         'published' => 'boolean',
     ];
 
-    /** Route path for this page ("/" for home, "/{slug}" otherwise). */
+    public function collectionEntry()
+    {
+        return $this->hasOne(CollectionEntry::class);
+    }
+
+    /** Route path for this page ("/" for home, "/{slug}" otherwise, or "/{collectionSlug}/{slug}" if it belongs to a collection entry). */
     public function route(): string
     {
-        return $this->slug === 'home' ? '/' : '/'.$this->slug;
+        if ($this->slug === 'home') {
+            return '/';
+        }
+
+        $this->loadMissing('collectionEntry.collection');
+        if ($this->collectionEntry && $this->collectionEntry->collection) {
+            return '/'.$this->collectionEntry->collection->slug.'/'.$this->slug;
+        }
+
+        return '/'.$this->slug;
     }
 }

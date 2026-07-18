@@ -2,11 +2,16 @@
 
 namespace App\Models;
 
+use Database\Factories\FormEntryFactory;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class FormEntry extends Model
 {
+    /** @use HasFactory<FormEntryFactory> */
+    use HasFactory;
+
     protected $fillable = ['form_id', 'data'];
 
     protected function casts(): array

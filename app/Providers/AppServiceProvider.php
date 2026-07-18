@@ -5,6 +5,7 @@ namespace App\Providers;
 use App\Blocks\BlockRegistry;
 use App\Models\Collection;
 use App\Models\Form;
+use App\Widgets\WidgetRegistry;
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\View;
@@ -15,6 +16,7 @@ class AppServiceProvider extends ServiceProvider
     public function register(): void
     {
         $this->app->singleton(BlockRegistry::class);
+        $this->app->singleton(WidgetRegistry::class);
     }
 
     public function boot(): void
@@ -29,7 +31,7 @@ class AppServiceProvider extends ServiceProvider
             $view->with('sidebarForms', $forms);
 
             $collections = Schema::hasTable('collections')
-                ? Collection::where('show_in_menu', true)->orderBy('position')->get()
+                ? Collection::orderBy('position')->get()
                 : collect();
 
             $view->with('sidebarCollections', $collections);

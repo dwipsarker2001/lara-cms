@@ -24,14 +24,18 @@ class CollectionController extends Controller
         $data = $request->validate([
             'name' => 'required|string|max:255',
             'icon' => 'nullable|string|max:255',
-            'show_in_menu' => 'nullable|boolean',
         ]);
-        $data['show_in_menu'] = $request->boolean('show_in_menu');
-        $data['slug'] = Str::slug($data['name']);
+        $slug = Str::slug($data['name']);
+        $original = $slug;
+        $i = 1;
+        while (Collection::where('slug', $slug)->exists()) {
+            $slug = $original.'-'.$i++;
+        }
+        $data['slug'] = $slug;
         $data['position'] = Collection::max('position') + 1;
-        Collection::create($data);
+        $collection = Collection::create($data);
 
-        return redirect()->route('admin.collections.index')->with('success', 'Collection created successfully.');
+        return redirect()->route('admin.collections.entries.index', $collection)->with('success', 'Collection created successfully.');
     }
 
     public function edit(Collection $collection)
@@ -44,10 +48,16 @@ class CollectionController extends Controller
         $data = $request->validate([
             'name' => 'required|string|max:255',
             'icon' => 'nullable|string|max:255',
-            'show_in_menu' => 'nullable|boolean',
             'fields' => 'nullable|json',
         ]);
-        $data['show_in_menu'] = $request->boolean('show_in_menu');
+
+        $slug = Str::slug($data['name']);
+        $original = $slug;
+        $i = 1;
+        while (Collection::where('slug', $slug)->where('id', '!=', $collection->id)->exists()) {
+            $slug = $original.'-'.$i++;
+        }
+        $data['slug'] = $slug;
 
         if (isset($data['fields'])) {
             $data['fields'] = json_decode($data['fields'], true);
@@ -55,14 +65,14 @@ class CollectionController extends Controller
 
         $collection->update($data);
 
-        return redirect()->route('admin.collections.index')->with('success', 'Collection updated successfully.');
+        return redirect()->route('admin.collections.edit', $collection)->with('success', 'Collection updated successfully.');
     }
 
     public function destroy(Collection $collection)
     {
         $collection->delete();
 
-        return redirect()->route('admin.collections.index')->with('success', 'Collection deleted successfully.');
+        return redirect()->route('admin.collections.create')->with('success', 'Collection deleted successfully.');
     }
 
     public function reorder(Request $request)

@@ -2,6 +2,7 @@
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
 <head>
     <meta charset="utf-8">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>@yield('title', 'Admin') — {{ config('app.name') }}</title>
     <link rel="preconnect" href="https://fonts.bunny.net">
@@ -195,8 +196,8 @@
                     <div class="px-2.5 pb-1.5 text-xs font-semibold uppercase tracking-wider text-text-muted/70">Collection</div>
                     <ul class="space-y-0.5">
                         <li>
-                            <a href="{{ route('admin.collections.index') }}"
-                                class="flex items-center gap-2.5 px-2.5 py-1.5 rounded-md text-sm no-underline transition-colors @if(request()->routeIs('admin.collections.*')) text-text-heading bg-gray-200 font-semibold @else text-text-primary hover:bg-gray-100 hover:text-text-heading font-medium @endif"
+                            <a href="{{ route('admin.collections.create') }}"
+                                class="flex items-center gap-2.5 px-2.5 py-1.5 rounded-md text-sm no-underline transition-colors @if(request()->routeIs('admin.collections.create') || request()->routeIs('admin.collections.edit')) text-text-heading bg-gray-200 font-semibold @else text-text-primary hover:bg-gray-100 hover:text-text-heading font-medium @endif"
                             >
                                 <span class="flex w-4 shrink-0 items-center justify-center">
                                     <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="size-4">
@@ -206,6 +207,27 @@
                                 Create
                             </a>
                         </li>
+                        @foreach($sidebarCollections ?? [] as $sidebarCollection)
+                            <li>
+                                <a href="{{ route('admin.collections.entries.index', $sidebarCollection) }}"
+                                    class="flex items-center gap-2.5 px-2.5 py-1.5 rounded-md text-sm no-underline transition-colors @if(request()->route('collection')?->id === $sidebarCollection->id) text-text-heading bg-gray-200 font-semibold @else text-text-primary hover:bg-gray-100 hover:text-text-heading font-medium @endif"
+                                >
+                                    <span class="flex w-4 shrink-0 items-center justify-center">
+                                        @if($sidebarCollection->icon)
+                                            <i class="{{ $sidebarCollection->icon }} text-xs"></i>
+                                        @else
+                                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" class="size-4">
+                                                <rect x="3" y="3" width="7" height="7" rx="1" />
+                                                <rect x="14" y="3" width="7" height="7" rx="1" />
+                                                <rect x="3" y="14" width="7" height="7" rx="1" />
+                                                <rect x="14" y="14" width="7" height="7" rx="1" />
+                                            </svg>
+                                        @endif
+                                    </span>
+                                    <span class="truncate">{{ $sidebarCollection->name }}</span>
+                                </a>
+                            </li>
+                        @endforeach
                         <li>
                             <a href="{{ route('admin.pages.index') }}"
                                 class="flex items-center gap-2.5 px-2.5 py-1.5 rounded-md text-sm no-underline transition-colors @if(request()->routeIs('admin.pages.*')) text-text-heading bg-gray-200 font-semibold @else text-text-primary hover:bg-gray-100 hover:text-text-heading font-medium @endif"
@@ -293,27 +315,6 @@
                                 Assets
                             </a>
                         </li>
-                        @foreach($sidebarCollections ?? [] as $sidebarCollection)
-                            <li>
-                                <a href="{{ route('admin.collections.entries.index', $sidebarCollection) }}"
-                                    class="flex items-center gap-2.5 px-2.5 py-1.5 rounded-md text-sm no-underline transition-colors @if(request()->route('collection')?->id === $sidebarCollection->id) text-text-heading bg-gray-200 font-semibold @else text-text-primary hover:bg-gray-100 hover:text-text-heading font-medium @endif"
-                                >
-                                    <span class="flex w-4 shrink-0 items-center justify-center">
-                                        @if($sidebarCollection->icon)
-                                            <i class="{{ $sidebarCollection->icon }} text-xs"></i>
-                                        @else
-                                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" class="size-4">
-                                                <rect x="3" y="3" width="7" height="7" rx="1" />
-                                                <rect x="14" y="3" width="7" height="7" rx="1" />
-                                                <rect x="3" y="14" width="7" height="7" rx="1" />
-                                                <rect x="14" y="14" width="7" height="7" rx="1" />
-                                            </svg>
-                                        @endif
-                                    </span>
-                                    {{ $sidebarCollection->name }}
-                                </a>
-                            </li>
-                        @endforeach
                     </ul>
                 </div>
 
@@ -322,15 +323,15 @@
                     <div class="px-2.5 pb-1.5 text-xs font-semibold uppercase tracking-wider text-text-muted/70">Forms</div>
                     <ul class="space-y-0.5">
                         <li>
-                            <a href="{{ route('admin.forms.index') }}"
-                                class="flex items-center gap-2.5 px-2.5 py-1.5 rounded-md text-sm no-underline transition-colors @if(request()->routeIs('admin.forms.index') || request()->routeIs('admin.forms.create') || request()->routeIs('admin.forms.editor')) text-text-heading bg-gray-200 font-semibold @else text-text-primary hover:bg-gray-100 hover:text-text-heading font-medium @endif"
+                            <a href="{{ route('admin.forms.create') }}"
+                                class="flex items-center gap-2.5 px-2.5 py-1.5 rounded-md text-sm no-underline transition-colors @if(request()->routeIs('admin.forms.create') || request()->routeIs('admin.forms.editor')) text-text-heading bg-gray-200 font-semibold @else text-text-primary hover:bg-gray-100 hover:text-text-heading font-medium @endif"
                             >
                                 <span class="flex w-4 shrink-0 items-center justify-center">
                                     <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="size-4">
                                         <path d="M8 3v10M3 8h10" />
                                     </svg>
                                 </span>
-                                Form Builder
+                                Create
                             </a>
                         </li>
                         @foreach($sidebarForms ?? [] as $sidebarForm)

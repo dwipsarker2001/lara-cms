@@ -28,7 +28,7 @@
             @csrf
             @method('PUT')
 
-            <div class="bg-panel-bg rounded-2xl mb-8 p-[7px]">
+        <div class="bg-panel-bg rounded-2xl mb-8 p-[7px]">
                 <div class="px-[18px] pt-3 pb-1 text-sm font-medium text-text-heading">Form Details</div>
                 <p class="px-[18px] pb-3 text-sm text-text-muted">Configure the title, description, and submission settings for this form.</p>
                 <div class="px-1.5 pb-2">
@@ -81,10 +81,38 @@
                                     </div>
                                 </div>
                             </div>
+
                         </div>
                     </div>
                 </div>
             </div>
         </form>
+
+        <div class="bg-panel-bg rounded-2xl mb-8 p-[7px]">
+            <div class="px-1.5 pb-2 pt-2">
+                <div class="bg-content-bg rounded-xl ring-1 ring-content-border shadow-sm px-3 py-3">
+                    <div class="divide-y divide-content-border">
+                        <div class="grid md:grid-cols-2 items-center px-[18px] py-4 gap-y-3 md:gap-y-0 md:gap-x-5">
+                            <div class="flex flex-col gap-1.5">
+                                <div class="text-sm font-medium text-text-heading">Delete Form</div>
+                                <div class="text-sm text-text-muted">Permanently delete this form and all its entries.</div>
+                            </div>
+                            <div class="flex items-center justify-end gap-2">
+                                <form method="POST" action="{{ route('admin.forms.destroy', $form) }}" onsubmit="return confirm('Are you sure you want to delete this form? All entries will be lost.')">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button type="submit"
+                                        class="inline-flex items-center justify-center gap-2 whitespace-nowrap shrink-0 font-medium cursor-pointer no-underline rounded-lg transition-colors h-9 text-sm leading-tight px-3 bg-red-500 hover:bg-red-600 text-white shadow-sm"
+                                    >
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><line x1="10" y1="11" x2="10" y2="17"/><line x1="14" y1="11" x2="14" y2="17"/></svg>
+                                        <span>Delete form</span>
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 @endsection

@@ -4,8 +4,10 @@ namespace App\Http\Controllers\Admin;
 
 use App\Blocks\BlockRegistry;
 use App\Http\Controllers\Controller;
+use App\Models\Admin;
 use App\Models\Collection;
 use App\Models\CollectionEntry;
+use App\Models\Layout;
 use App\Models\Page;
 use App\Support\Sections;
 use Illuminate\Http\Request;
@@ -14,24 +16,63 @@ class CollectionEntryController extends Controller
 {
     public function index(Collection $collection)
     {
-        $entries = $collection->entries()->orderBy('position')->get();
+        $entries = $collection->entries()->with('page')->orderBy('position')->get();
 
         return view('admin.collections.entries.index', compact('collection', 'entries'));
     }
 
     public function create(Collection $collection)
     {
-        return view('admin.collections.entries.create', compact('collection'));
+        $admins = Admin::orderBy('name')->get();
+        $layouts = Layout::where('collection', 'page')->orderBy('position')->orderBy('name')->get();
+
+        return view('admin.collections.entries.create', compact('collection', 'admins', 'layouts'));
     }
 
     public function store(Request $request, Collection $collection)
     {
         $data = $request->validate([
-            'data' => 'nullable|array',
+            'data' => 'required|array',
+            'data.title' => 'required|string|max:255',
+            'slug' => 'required|string|max:255|unique:pages,slug',
+            'meta' => 'nullable|array',
+            'layout_id' => 'nullable|exists:layouts,id,collection,page',
+            'published' => 'boolean',
         ]);
+
+        $pageData = [
+            'title' => $data['data']['title'],
+            'slug' => $data['slug'],
+            'published' => $request->boolean('published', true),
+            'meta' => array_merge($request->meta ?? [], [
+                'metaTitleSource' => 'From Field',
+                'metaDescriptionSource' => 'Inherit',
+                'canonicalUrlSource' => 'Inherit',
+                'schemaSource' => 'Inherit',
+                'maxSnippetSource' => 'Inherit',
+                'maxVideoPreviewSource' => 'Inherit',
+                'socialImageSource' => 'Inherit',
+                'xHandleSource' => 'Inherit',
+                'xCardTitleSource' => 'Inherit',
+                'xCardDescriptionSource' => 'Inherit',
+            ]),
+        ];
+
+        if ($request->layout_id) {
+            $layout = Layout::findOrFail($request->layout_id);
+            $pageData['sections'] = [...($layout->sections ?? []), ...Sections::injectGlobals()];
+        } else {
+            $pageData['sections'] = Sections::injectGlobals();
+        }
+
+        $pageData['position'] = Page::max('position') + 1;
+
+        $page = Page::create($pageData);
 
         $entry = $collection->entries()->create([
             'data' => $data['data'] ?? [],
+            'page_id' => $page->id,
+            'sections' => $page->sections,
             'position' => $collection->entries()->max('position') + 1,
         ]);
 
@@ -54,6 +95,10 @@ class CollectionEntryController extends Controller
         ]);
 
         $entry->update($data);
+
+        if ($entry->page_id && isset($data['data']['title'])) {
+            $entry->page->update(['title' => $data['data']['title']]);
+        }
 
         return redirect()->route('admin.collections.entries.index', $collection)
             ->with('success', 'Entry updated successfully.');
@@ -109,6 +154,10 @@ class CollectionEntryController extends Controller
 
         $entry->update(['sections' => $request->sections]);
 
+        if ($entry->page_id) {
+            $entry->page->update(['sections' => $request->sections]);
+        }
+
         $registry = app(BlockRegistry::class);
         $globalNames = $registry->globals()->pluck('name')->toArray();
 
@@ -135,7 +184,11 @@ class CollectionEntryController extends Controller
     {
         abort_if($entry->collection_id !== $collection->id, 404);
 
+        $page = $entry->page;
         $entry->delete();
+        if ($page) {
+            $page->delete();
+        }
 
         return redirect()->route('admin.collections.entries.index', $collection)
             ->with('success', 'Entry deleted successfully.');

@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Form;
+use App\Models\FormEntry;
 use App\Support\FormFieldTypes;
 use Illuminate\Http\Request;
 use Illuminate\Pagination\LengthAwarePaginator;
