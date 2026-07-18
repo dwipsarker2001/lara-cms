@@ -8,15 +8,15 @@
     {{-- Header bar --}}
     <div class="shrink-0 flex items-center justify-between pr-4 pl-0 border-b border-content-border bg-white">
         {{-- Tab strip --}}
-        <div class="flex items-end gap-0.5">
+        <div class="flex items-end">
             <a href="{{ route('admin.dynamic-blocks.index') }}" class="flex items-center justify-center size-9  -mb-px text-text-muted hover:text-text-heading transition-colors border-r border-content-border">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" class="size-4"><polyline points="15 18 9 12 15 6"/></svg>
             </a>
             <button type="button" @click="tab = 'generate'"
 :class="tab === 'generate'
-    ? 'bg-content-bg text-text-heading border-content-border border-b-content-bg border-t-0'
+    ? 'bg-gray-100 text-text-heading border-content-border border-t-0'
     : 'bg-transparent text-text-muted border-transparent hover:bg-gray-50 hover:text-text-heading'"
-                class="flex items-center gap-2 px-6 h-10 text-xs font-medium border border-b-0 -mb-px transition-colors "
+                class="flex items-center gap-2 px-6 h-10 text-xs font-medium border border-r-0 -mb-px -ml-px transition-colors editor-tab hover:border-b-gray-300"
             >
                 <span class="flex items-center justify-center size-5 rounded bg-emerald-50 shrink-0">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" class="size-3 text-emerald-500">
@@ -31,9 +31,9 @@
             </button>
             <button type="button" @click="tab = 'fields'"
 :class="tab === 'fields'
-    ? 'bg-content-bg text-text-heading border-content-border border-b-content-bg border-t-0'
+    ? 'bg-gray-100 text-text-heading border-content-border border-t-0'
     : 'bg-transparent text-text-muted border-transparent hover:bg-gray-50 hover:text-text-heading'"
-                class="flex items-center gap-2 px-6 h-10 text-xs font-medium border border-b-0 -mb-px transition-colors "
+                class="flex items-center gap-2 px-6 h-10 text-xs font-medium border -mb-px -ml-px transition-colors editor-tab hover:border-b-gray-300"
             >
                 <span class="flex items-center justify-center size-5 rounded bg-amber-50 shrink-0">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" class="size-3 text-amber-500">
@@ -45,9 +45,9 @@
             </button>
             <button type="button" @click="tab = 'template'"
 :class="tab === 'template'
-    ? 'bg-content-bg text-text-heading border-content-border border-b-content-bg border-t-0'
+    ? 'bg-gray-100 text-text-heading border-content-border border-t-0'
     : 'bg-transparent text-text-muted border-transparent hover:bg-gray-50 hover:text-text-heading'"
-                class="flex items-center gap-2 px-6 h-10 text-xs font-medium border border-b-0 -mb-px transition-colors "
+                class="flex items-center gap-2 px-6 h-10 text-xs font-medium border -mb-px -ml-px transition-colors editor-tab hover:border-b-gray-300"
             >
                 <span class="flex items-center justify-center size-5 rounded bg-sky-50 shrink-0">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" class="size-3 text-sky-500">
@@ -58,9 +58,9 @@
             </button>
             <button type="button" @click="tab = 'preview'; $nextTick(() => window.renderPreview())"
 :class="tab === 'preview'
-    ? 'bg-content-bg text-text-heading border-content-border border-b-content-bg border-t-0'
+    ? 'bg-gray-100 text-text-heading border-content-border border-t-0'
     : 'bg-transparent text-text-muted border-transparent hover:bg-gray-50 hover:text-text-heading'"
-                class="flex items-center gap-2 px-6 h-10 text-xs font-medium border border-b-0 -mb-px transition-colors "
+                class="flex items-center gap-2 px-6 h-10 text-xs font-medium border -mb-px -ml-px transition-colors editor-tab hover:border-b-gray-300"
             >
                 <span class="flex items-center justify-center size-5 rounded bg-purple-50 shrink-0">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" class="size-3 text-purple-500">
@@ -72,9 +72,9 @@
             </button>
             <button type="button" @click="tab = 'readme'"
 :class="tab === 'readme'
-    ? 'bg-content-bg text-text-heading border-content-border border-b-content-bg border-t-0'
+    ? 'bg-gray-100 text-text-heading border-content-border border-t-0'
     : 'bg-transparent text-text-muted border-transparent hover:bg-gray-50 hover:text-text-heading'"
-                class="flex items-center gap-2 px-6 h-10 text-xs font-medium border border-b-0 -mb-px transition-colors "
+                class="flex items-center gap-2 px-6 h-10 text-xs font-medium border -mb-px -ml-px transition-colors hover:border-b-gray-300"
             >
                 <span class="flex items-center justify-center size-5 rounded bg-gray-100 shrink-0">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" class="size-3 text-gray-500">
@@ -258,6 +258,9 @@
     .cm-editor .cm-content { padding: 16px; }
     .cm-editor .cm-gutters { border-right: 1px solid #e5e7eb; background: #f9fafb; }
     .cm-editor .cm-activeLineGutter { background: #e5e7eb; }
+    .editor-tab { border-right-color: #d1d5db !important; }
+    .editor-tab + .editor-tab { border-left-color: #d1d5db !important; }
+    .editor-tab:last-of-type { border-right-color: transparent !important; }
 </style>
 @endpush
 

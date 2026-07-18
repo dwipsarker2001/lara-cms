@@ -251,18 +251,5 @@
   "249": "edit.blade.php",
   "250": "editor.blade.php",
   "251": "index.blade.php",
-  "252": "index.blade.php",
-  "253": "@codemirror/lang-html",
-  "254": "@codemirror/lang-json",
-  "255": "@tiptap/core",
-  "256": "@tiptap/extension-link",
-  "257": "@tiptap/extension-placeholder",
-  "258": "@tailwindcss/vite",
-  "259": "vite",
-  "260": "block-editor.js",
-  "261": "toggle-switch.blade.php",
-  "262": "create.blade.php",
-  "263": "edit.blade.php",
-  "264": "editor.blade.php",
-  "265": "index.blade.php"
+  "252": "index.blade.php"
 }
