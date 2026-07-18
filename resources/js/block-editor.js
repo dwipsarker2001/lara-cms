@@ -1,6 +1,7 @@
 import { EditorView, basicSetup } from 'codemirror';
 import { json } from '@codemirror/lang-json';
 import { html } from '@codemirror/lang-html';
+import { indentSelection } from '@codemirror/commands';
 
 window.__cmViews = {};
 
@@ -54,4 +55,16 @@ window.renderPreview = function () {
     doc.open();
     doc.write(rendered);
     doc.close();
+};
+
+window.formatDocument = function () {
+    var cmViews = window.__cmViews || {};
+    Object.keys(cmViews).forEach(function (key) {
+        var view = cmViews[key];
+        if (!view) return;
+        var all = { from: 0, to: view.state.doc.length };
+        view.dispatch({ selection: { anchor: 0, head: view.state.doc.length } });
+        indentSelection({ state: view.state, dispatch: view.dispatch });
+        view.dispatch({ selection: { anchor: 0 } });
+    });
 };

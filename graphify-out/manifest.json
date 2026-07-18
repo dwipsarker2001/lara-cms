@@ -1595,8 +1595,8 @@
     "semantic_hash": ""
   },
   "resources/views/admin/dynamic-blocks/editor.blade.php": {
-    "mtime": 1784347914.6102602,
-    "ast_hash": "8933240b85d323a5261436a0f6a539f8",
+    "mtime": 1784350028.3505578,
+    "ast_hash": "6d6dfc296fcf7cf388c7ef2f02606b77",
     "semantic_hash": ""
   },
   "resources/views/admin/dynamic-blocks/index.blade.php": {

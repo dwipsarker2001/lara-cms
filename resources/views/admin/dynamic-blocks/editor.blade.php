@@ -6,7 +6,7 @@
 @section('content-full')
 <div class="bg-content-bg min-h-[calc(100%-8px)] mx-2 overflow-hidden mt-2 rounded-t-2xl border border-content-border border-b-0 relative" style="container-type: inline-size;"  x-data="{ tab: 'fields' }">
     {{-- Header bar --}}
-    <div class="shrink-0 flex items-center justify-between pr-4 pl-0 border-b border-content-border bg-white">
+    <div class="shrink-0 flex items-center justify-between pl-0 border-b border-content-border bg-white">
         {{-- Tab strip --}}
         <div class="flex items-end">
             <a href="{{ route('admin.dynamic-blocks.index') }}" class="flex items-center justify-center size-9  -mb-px text-text-muted hover:text-text-heading transition-colors border-r border-content-border">
@@ -90,13 +90,13 @@
         </div>
 
         {{-- Actions --}}
-        <div class="flex items-center gap-2">
-            <a href="{{ route('admin.dynamic-blocks.index') }}"
-                class="inline-flex items-center justify-center gap-2 whitespace-nowrap shrink-0 font-medium cursor-pointer no-underline rounded-lg transition-colors h-8 text-sm leading-tight px-3.5 bg-white hover:bg-gray-100 text-text-muted hover:text-text-heading border border-gray-200 hover:border-gray-300"
-            >Cancel</a>
+        <div class="flex items-end -mb-px">
+            <button type="button" onclick="window.formatDocument()"
+                class="flex items-center gap-2 px-5 h-10 text-xs font-medium border -mb-px transition-colors text-text-muted hover:text-text-heading hover:bg-gray-50 border-transparent hover:border-b-gray-300"
+            >Format</button>
             <button type="submit" form="editor-form"
-                class="inline-flex items-center justify-center gap-2 whitespace-nowrap shrink-0 font-medium cursor-pointer no-underline rounded-lg transition-colors h-8 text-sm leading-tight px-4 bg-primary hover:bg-primary/90 text-white shadow-sm"
-            >Save</button>
+                class="flex items-center gap-2 px-5 h-10 text-xs font-medium border -mb-px transition-colors text-white bg-emerald-600 hover:bg-emerald-700 border-emerald-600 hover:border-emerald-700"
+            >Save Document</button>
         </div>
     </div>
 

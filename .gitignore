@@ -27,7 +27,7 @@ Homestead.yaml
 Thumbs.db
 
 # graphify (local-only artifacts)
-graphify-out/cost.json
+/graphify-out/
 
 # awesome-design-md (reference design-system collection, re-cloneable)
 design-md/
