@@ -287,5 +287,14 @@
   "285": "@tailwindcss/forms",
   "286": "PostEditorTest.php",
   "287": "form-entries-table.blade.php",
-  "288": "2026_07_18_171139_add_enable_seo_to_collections_table.php"
+  "288": "2026_07_18_171139_add_enable_seo_to_collections_table.php",
+  "289": "BlogList.php",
+  "290": "2026_07_19_013457_add_cms_version_to_settings_table.php",
+  "291": "@tiptap/starter-kit",
+  "292": "HasMany",
+  "293": "cms.php",
+  "294": "admin.php",
+  "295": "dashboard.blade.php",
+  "296": "subscribers.blade.php",
+  "297": "table.blade.php"
 }

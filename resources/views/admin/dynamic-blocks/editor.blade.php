@@ -4,8 +4,8 @@
 @section('breadcrumb', 'Edit Block')
 
 @section('content-full')
-<div class="bg-content-bg min-h-[calc(100%-8px)] mx-2 overflow-hidden mt-2 rounded-t-2xl border border-content-border border-b-0 relative" style="container-type: inline-size;"
-     x-data="blockGenerator"
+<div class="bg-content-bg h-[calc(100%-8px)] mx-2 overflow-hidden mt-2 rounded-t-2xl border border-content-border border-b-0 relative flex flex-col" style="container-type: inline-size;"
+     x-data="blockGenerator()"
 >
     {{-- Header bar --}}
     <div class="shrink-0 flex items-center justify-between pl-0 border-b border-content-border bg-white">
@@ -93,13 +93,8 @@
             @csrf @method('PUT')
 
             {{-- Dynamic AI Generator UI Tab --}}
-            <div x-show="tab === 'generate'" x-cloak class="h-full relative overflow-y-auto bg-white flex flex-col justify-center items-center px-4">
+            <div x-show="tab === 'generate'" x-cloak class="absolute inset-0 overflow-y-auto bg-white flex flex-col justify-center items-center px-4">
                 
-                {{-- OpenCode watermark text in background --}}
-                <div class="absolute inset-0 flex items-center justify-center pointer-events-none select-none overflow-hidden pb-32">
-                    <span class="text-[90px] md:text-[130px] font-black text-gray-100/60 uppercase tracking-widest font-mono select-none">opencode</span>
-                </div>
-
                 {{-- Central Container --}}
                 <div class="relative z-10 w-full max-w-2xl flex flex-col items-center">
                     
@@ -168,8 +163,8 @@
                                             <polyline points="2 17 12 22 22 17"/>
                                             <polyline points="2 12 12 17 22 12"/>
                                         </svg>
-                                        <span x-text="providerLabel()"></span>
-                                        <svg class="size-3 text-text-muted" viewBox="0 0 20 20" fill="currentColor">
+                                        <span class="max-w-[240px] truncate" x-text="providerLabel()"></span>
+                                        <svg class="size-3 text-text-muted shrink-0" viewBox="0 0 20 20" fill="currentColor">
                                             <path fill-rule="evenodd" d="M5.22 8.22a.75.75 0 0 1 1.06 0L10 11.94l3.72-3.72a.75.75 0 1 1 1.06 1.06l-4.25 4.25a.75.75 0 0 1-1.06 0L5.22 9.28a.75.75 0 0 1 0-1.06Z" clip-rule="evenodd"/>
                                         </svg>
                                     </button>
@@ -177,24 +172,65 @@
                                         x-show="openProvider"
                                         @click.outside="openProvider = false"
                                         style="display: none;"
-                                        class="absolute left-0 bottom-full mb-1.5 z-50 min-w-[240px] bg-content-bg border border-content-border rounded-xl shadow-xl p-1"
+                                        class="absolute left-0 bottom-full mb-1.5 z-50 min-w-[280px] bg-content-bg border border-content-border rounded-xl shadow-xl p-1 max-h-64 overflow-y-auto"
                                     >
-                                        <button type="button" @click="setProvider('opencode'); openProvider = false;" class="w-full text-left px-3 py-2 text-xs rounded-lg text-text-primary hover:bg-body-bg flex items-center gap-2.5">
+                                        <div class="px-2.5 py-1 text-[10px] font-bold text-text-muted uppercase tracking-wider">Simulation</div>
+                                        <button type="button" @click="selectProviderModel('opencode', null, null); openProvider = false;" class="w-full text-left px-3 py-2 text-xs rounded-lg text-text-primary hover:bg-body-bg flex items-center gap-2.5 font-medium">
                                             <span class="size-2 rounded-full bg-emerald-400"></span>
-                                            <span>OpenCode (Free AI Simulation)</span>
+                                            <span>Block CMS (Free AI Simulation)</span>
                                         </button>
-                                        <button type="button" @click="setProvider('gemini'); openProvider = false;" class="w-full text-left px-3 py-2 text-xs rounded-lg text-text-primary hover:bg-body-bg flex items-center gap-2.5">
-                                            <span class="size-2 rounded-full bg-blue-400"></span>
-                                            <span>Google Gemini API</span>
+
+                                        <div class="px-2.5 py-1 mt-2 border-t border-content-border pt-2 text-[10px] font-bold text-text-muted uppercase tracking-wider">Pre-configured APIs</div>
+                                        
+                                        {{-- Google Gemini Option (only if connected) --}}
+                                        <button type="button" @click="selectProviderModel('gemini', null, 'gemini-2.0-flash'); openProvider = false;" class="w-full text-left px-3 py-2 text-xs rounded-lg text-text-primary hover:bg-body-bg flex items-center gap-2.5">
+                                            <span class="size-2 rounded-full bg-blue-400" :class="geminiKey ? '' : 'opacity-30'"></span>
+                                            <span :class="geminiKey ? 'text-text-primary font-medium' : 'text-text-muted opacity-50'">Google Gemini (gemini-2.0-flash)</span>
                                         </button>
-                                        <button type="button" @click="setProvider('custom'); openProvider = false;" class="w-full text-left px-3 py-2 text-xs rounded-lg text-text-primary hover:bg-body-bg flex items-center gap-2.5">
-                                            <span class="size-2 rounded-full bg-purple-400"></span>
-                                            <span>Custom API Endpoint</span>
+                                        
+                                        {{-- OpenRouter Options (only if connected) --}}
+                                        <button type="button" @click="selectProviderModel('openrouter', null, 'anthropic/claude-3.5-sonnet'); openProvider = false;" class="w-full text-left px-3 py-2 text-xs rounded-lg text-text-primary hover:bg-body-bg flex items-center gap-2.5">
+                                            <span class="size-2 rounded-full bg-orange-400" :class="openrouterKey ? '' : 'opacity-30'"></span>
+                                            <span :class="openrouterKey ? 'text-text-primary font-medium' : 'text-text-muted opacity-50'">OpenRouter (Claude 3.5 Sonnet)</span>
                                         </button>
+                                        <button type="button" @click="selectProviderModel('openrouter', null, 'google/gemini-2.0-flash-exp'); openProvider = false;" class="w-full text-left px-3 py-2 text-xs rounded-lg text-text-primary hover:bg-body-bg flex items-center gap-2.5">
+                                            <span class="size-2 rounded-full bg-orange-400" :class="openrouterKey ? '' : 'opacity-30'"></span>
+                                            <span :class="openrouterKey ? 'text-text-primary font-medium' : 'text-text-muted opacity-50'">OpenRouter (Gemini 2.0 Flash)</span>
+                                        </button>
+                                        
+                                        {{-- z.ai Option (only if connected) --}}
+                                        <button type="button" @click="selectProviderModel('zai', null, 'z-ai/glm-5.2-free'); openProvider = false;" class="w-full text-left px-3 py-2 text-xs rounded-lg text-text-primary hover:bg-body-bg flex items-center gap-2.5">
+                                            <span class="size-2 rounded-full bg-indigo-400" :class="zaiKey ? '' : 'opacity-30'"></span>
+                                            <span :class="zaiKey ? 'text-text-primary font-medium' : 'text-text-muted opacity-50'">z.ai (GLM 5.2 Free)</span>
+                                        </button>
+
+                                        {{-- Dynamic Custom Providers List --}}
+                                        <template x-if="customProviders.length > 0">
+                                            <div>
+                                                <div class="px-2.5 py-1 mt-2 border-t border-content-border pt-2 text-[10px] font-bold text-text-muted uppercase tracking-wider">Custom Providers</div>
+                                                <template x-for="p in customProviders" :key="p.id">
+                                                    <div class="space-y-0.5">
+                                                        <template x-if="p.models.length === 0">
+                                                            <button type="button" @click="selectProviderModel('custom', p.id, null); openProvider = false;" class="w-full text-left px-3 py-2 text-xs rounded-lg text-text-primary hover:bg-body-bg flex items-center gap-2.5">
+                                                                <span class="size-2 rounded-full bg-purple-400"></span>
+                                                                <span x-text="p.name + ' (Default)'"></span>
+                                                            </button>
+                                                        </template>
+                                                        <template x-for="m in p.models" :key="m.id">
+                                                            <button type="button" @click="selectProviderModel('custom', p.id, m.id); openProvider = false;" class="w-full text-left px-3 py-2 text-xs rounded-lg text-text-primary hover:bg-body-bg flex items-center gap-2.5">
+                                                                <span class="size-2 rounded-full bg-purple-400"></span>
+                                                                <span x-text="p.name + ' (' + m.name + ')'"></span>
+                                                            </button>
+                                                        </template>
+                                                    </div>
+                                                </template>
+                                            </div>
+                                        </template>
+
                                         <hr class="my-1 border-content-border">
-                                        <button type="button" @click="showSettings = true; openProvider = false;" class="w-full text-left px-3 py-2 text-xs rounded-lg text-primary hover:bg-body-bg flex items-center gap-2.5 font-medium">
-                                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="size-3.5"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
-                                            <span>Configure API Keys</span>
+                                        <button type="button" @click="showConnectModal = true; openProvider = false;" class="w-full text-left px-3 py-2 text-xs rounded-lg text-primary hover:bg-body-bg flex items-center gap-2.5 font-semibold">
+                                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="size-3.5"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+                                            <span>Connect Provider</span>
                                         </button>
                                     </div>
                                 </div>
@@ -214,15 +250,6 @@
                                 </svg>
                             </button>
                         </div>
-                    </div>
-
-                    {{-- Green Project Indicator --}}
-                    <div class="flex items-center gap-1.5 text-xs text-text-muted mt-3 select-none bg-gray-50 border border-gray-200/60 rounded-full px-3.5 py-1 shadow-sm">
-                        <span class="w-3.5 h-3.5 rounded bg-emerald-500 text-white font-bold flex items-center justify-center text-[9px]">L</span>
-                        <span class="font-semibold text-text-heading">lara-cms</span>
-                        <svg class="size-3 text-text-muted" viewBox="0 0 20 20" fill="currentColor">
-                            <path fill-rule="evenodd" d="M5.22 8.22a.75.75 0 0 1 1.06 0L10 11.94l3.72-3.72a.75.75 0 1 1 1.06 1.06l-4.25 4.25a.75.75 0 0 1-1.06 0L5.22 9.28a.75.75 0 0 1 0-1.06Z" clip-rule="evenodd"/>
-                        </svg>
                     </div>
 
                 </div>
@@ -322,45 +349,238 @@
         </form>
     </div>
 
-    {{-- API Provider Configuration Modal --}}
-    <div x-show="showSettings" x-cloak class="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4" @keydown.escape.window="showSettings = false">
-        <div class="bg-white rounded-2xl shadow-xl w-full max-w-md overflow-hidden" @click.outside="showSettings = false">
+    {{-- Connect Provider Modal (Shows popular list) --}}
+    <div x-show="showConnectModal" x-cloak class="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4" @keydown.escape.window="showConnectModal = false">
+        <div class="bg-white rounded-2xl shadow-xl w-full max-w-sm overflow-hidden flex flex-col" @click.outside="showConnectModal = false">
             <div class="flex items-center justify-between px-5 py-4 border-b border-content-border">
-                <h3 class="text-base font-semibold text-text-heading">AI Provider Settings</h3>
-                <button @click="showSettings = false" class="p-1 text-text-muted hover:text-text-primary transition-colors">
+                <h3 class="text-base font-semibold text-text-heading">Connect AI Provider</h3>
+                <button @click="showConnectModal = false" class="p-1 text-text-muted hover:text-text-primary transition-colors">
                     <svg viewBox="0 0 20 20" fill="currentColor" class="size-5">
-                        <path d="M6.28 5.22a.75.75 0 00-1.06 1.06L8.94 10l-3.72 3.72a.75.75 0 101.06 1.06L10 11.06l3.72 3.72a.75.75 0 1 1-1.06-1.06L11.06 10l3.72-3.72a.75.75 0 00-1.06-1.06L10 8.94 6.28 5.22z" />
+                        <path d="M6.28 5.22a.75.75 0 00-1.06 1.06L8.94 10l-3.72 3.72a.75.75 0 1 1 1.06 1.06L10 11.06l3.72 3.72a.75.75 0 1 1-1.06-1.06L11.06 10l3.72-3.72a.75.75 0 00-1.06-1.06L10 8.94 6.28 5.22z" />
                     </svg>
                 </button>
             </div>
-            <div class="p-5 space-y-4 text-sm">
+            
+            <div class="p-4 space-y-2">
+                <div class="text-xs text-text-muted font-medium uppercase tracking-wider px-1 pb-1">Popular Providers</div>
                 
-                {{-- Gemini Section --}}
-                <div class="space-y-2">
-                    <label class="block font-medium text-text-heading">Google Gemini API Key</label>
-                    <input type="password" x-model="geminiKey" placeholder="AIzaSy..." class="w-full block bg-white border border-content-border text-text-primary text-sm rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary">
-                    <p class="text-xs text-text-muted">Enter your Gemini key to use the live <code class="font-mono bg-gray-50 px-1 py-0.5 rounded">gemini-2.0-flash</code> model.</p>
+                {{-- Gemini Item --}}
+                <div class="flex items-center justify-between p-2 rounded-xl hover:bg-gray-50 transition-colors border border-gray-100 bg-white">
+                    <button type="button" @click="startConnectPredefined('gemini')" class="flex-1 flex items-center gap-2.5 text-left font-medium text-text-primary text-xs">
+                        <span class="size-2.5 rounded-full bg-blue-400"></span>
+                        <span>Google Gemini</span>
+                        <template x-if="geminiKey">
+                            <span class="text-[9px] bg-emerald-50 text-emerald-600 px-1.5 py-0.5 rounded font-bold uppercase tracking-wider">Connected</span>
+                        </template>
+                    </button>
+                    <template x-if="geminiKey">
+                        <button type="button" @click="disconnectProvider('gemini')" class="text-[10px] text-danger font-semibold hover:underline px-2 py-1 cursor-pointer">Disconnect</button>
+                    </template>
                 </div>
 
-                <hr class="border-content-border">
+                {{-- OpenRouter Item --}}
+                <div class="flex items-center justify-between p-2 rounded-xl hover:bg-gray-50 transition-colors border border-gray-100 bg-white">
+                    <button type="button" @click="startConnectPredefined('openrouter')" class="flex-1 flex items-center gap-2.5 text-left font-medium text-text-primary text-xs">
+                        <span class="size-2.5 rounded-full bg-orange-400"></span>
+                        <span>OpenRouter</span>
+                        <template x-if="openrouterKey">
+                            <span class="text-[9px] bg-emerald-50 text-emerald-600 px-1.5 py-0.5 rounded font-bold uppercase tracking-wider">Connected</span>
+                        </template>
+                    </button>
+                    <template x-if="openrouterKey">
+                        <button type="button" @click="disconnectProvider('openrouter')" class="text-[10px] text-danger font-semibold hover:underline px-2 py-1 cursor-pointer">Disconnect</button>
+                    </template>
+                </div>
 
-                {{-- Custom API Section --}}
-                <div class="space-y-3">
-                    <h4 class="font-semibold text-text-heading">Custom Provider Settings</h4>
-                    <div class="space-y-1.5">
-                        <label class="block text-xs font-medium text-text-muted">API Endpoint URL</label>
-                        <input type="text" x-model="customUrl" placeholder="https://api.openai.com/v1/chat/completions" class="w-full block bg-white border border-content-border text-text-primary text-sm rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary">
+                {{-- z.ai Item --}}
+                <div class="flex items-center justify-between p-2 rounded-xl hover:bg-gray-50 transition-colors border border-gray-100 bg-white">
+                    <button type="button" @click="startConnectPredefined('zai')" class="flex-1 flex items-center gap-2.5 text-left font-medium text-text-primary text-xs">
+                        <span class="size-2.5 rounded-full bg-indigo-400"></span>
+                        <span>z.ai</span>
+                        <template x-if="zaiKey">
+                            <span class="text-[9px] bg-emerald-50 text-emerald-600 px-1.5 py-0.5 rounded font-bold uppercase tracking-wider">Connected</span>
+                        </template>
+                    </button>
+                    <template x-if="zaiKey">
+                        <button type="button" @click="disconnectProvider('zai')" class="text-[10px] text-danger font-semibold hover:underline px-2 py-1 cursor-pointer">Disconnect</button>
+                    </template>
+                </div>
+
+                <div class="text-xs text-text-muted font-medium uppercase tracking-wider px-1 pt-3 pb-1">Advanced Settings</div>
+
+                {{-- Custom Provider trigger --}}
+                <button type="button" @click="showConnectModal = false; showCustomFormModal = true;" class="w-full flex items-center justify-between p-2.5 rounded-xl hover:bg-gray-50 transition-colors border border-gray-100 bg-white text-left font-medium text-text-primary text-xs">
+                    <div class="flex items-center gap-2.5">
+                        <span class="size-2.5 rounded-full bg-purple-400"></span>
+                        <span>Custom OpenAI Endpoint</span>
                     </div>
-                    <div class="space-y-1.5">
-                        <label class="block text-xs font-medium text-text-muted">API Key / Authorization Token</label>
-                        <input type="password" x-model="customKey" placeholder="sk-..." class="w-full block bg-white border border-content-border text-text-primary text-sm rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary">
+                    <svg viewBox="0 0 20 20" fill="currentColor" class="size-4 text-text-muted">
+                        <path fill-rule="evenodd" d="M7.21 14.77a.75.75 0 01.02-1.06L11.168 10 7.23 6.29a.75.75 0 111.04-1.08l4.5 4.25a.75.75 0 010 1.08l-4.5 4.25a.75.75 0 01-1.06-.02z" clip-rule="evenodd"/>
+                    </svg>
+                </button>
+            </div>
+            <div class="p-4 border-t border-content-border bg-gray-50 flex justify-end">
+                <button type="button" @click="showConnectModal = false" class="px-4 py-1.5 border border-content-border rounded-lg text-xs font-semibold text-text-primary bg-white hover:bg-gray-50 cursor-pointer">Close</button>
+            </div>
+        </div>
+    </div>
+
+    {{-- API Key Input Modal (Ask for API popup) --}}
+    <div x-show="showApiKeyModal" x-cloak class="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4" @keydown.escape.window="showApiKeyModal = false">
+        <div class="bg-white rounded-2xl shadow-xl w-full max-w-sm overflow-hidden flex flex-col" @click.outside="showApiKeyModal = false">
+            <div class="flex items-center justify-between px-5 py-4 border-b border-content-border">
+                <h3 class="text-base font-semibold text-text-heading">
+                    Connect <span x-text="connectingProvider === 'gemini' ? 'Google Gemini' : (connectingProvider === 'openrouter' ? 'OpenRouter' : (connectingProvider === 'zai' ? 'z.ai' : 'AI Provider'))"></span>
+                </h3>
+                <button @click="showApiKeyModal = false" class="p-1 text-text-muted hover:text-text-primary transition-colors">
+                    <svg viewBox="0 0 20 20" fill="currentColor" class="size-5">
+                        <path d="M6.28 5.22a.75.75 0 00-1.06 1.06L8.94 10l-3.72 3.72a.75.75 0 1 1 1.06 1.06L10 11.06l3.72 3.72a.75.75 0 1 1-1.06-1.06L11.06 10l3.72-3.72a.75.75 0 00-1.06-1.06L10 8.94 6.28 5.22z" />
+                    </svg>
+                </button>
+            </div>
+            
+            <div class="p-5 space-y-4">
+                <div class="space-y-1.5">
+                    <label class="block text-xs font-bold text-text-heading">
+                        <span x-text="connectingProvider === 'gemini' ? 'Google Gemini' : (connectingProvider === 'openrouter' ? 'OpenRouter' : (connectingProvider === 'zai' ? 'z.ai' : 'AI Provider'))"></span> API Key
+                    </label>
+                    <input type="password" x-model="tempApiKey" @keydown.enter="saveApiKey()" placeholder="Enter key..." class="w-full block bg-white border border-content-border text-text-primary text-xs rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary">
+                </div>
+                <p class="text-[11px] text-text-muted">Required to complete the integration. Key is saved locally in your browser.</p>
+            </div>
+            
+            <div class="p-4 border-t border-content-border bg-gray-50 flex justify-end gap-2">
+                <button type="button" @click="showApiKeyModal = false; showConnectModal = true;" class="px-4 py-1.5 border border-content-border rounded-lg text-xs font-semibold text-text-primary bg-white hover:bg-gray-50 cursor-pointer">Back</button>
+                <button type="button" @click="saveApiKey()" class="px-4 py-1.5 rounded-lg text-xs font-semibold text-white bg-primary hover:opacity-90 cursor-pointer">Connect</button>
+            </div>
+        </div>
+    </div>
+
+    {{-- Custom Providers List Modal --}}
+    <div x-show="showCustomFormModal" x-cloak class="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4" @keydown.escape.window="showCustomFormModal = false">
+        <div class="bg-white rounded-2xl shadow-xl w-full max-w-md overflow-hidden flex flex-col max-h-[85vh]" @click.outside="showCustomFormModal = false">
+            <div class="flex items-center justify-between px-5 py-4 border-b border-content-border shrink-0">
+                <h3 class="text-base font-semibold text-text-heading">Openai compatablel provider</h3>
+                <button @click="showCustomFormModal = false" class="p-1 text-text-muted hover:text-text-primary transition-colors">
+                    <svg viewBox="0 0 20 20" fill="currentColor" class="size-5">
+                        <path d="M6.28 5.22a.75.75 0 00-1.06 1.06L8.94 10l-3.72 3.72a.75.75 0 1 1 1.06 1.06L10 11.06l3.72 3.72a.75.75 0 1 1-1.06-1.06L11.06 10l3.72-3.72a.75.75 0 00-1.06-1.06L10 8.94 6.28 5.22z" />
+                    </svg>
+                </button>
+            </div>
+            
+            <div class="p-5 space-y-4 overflow-y-auto flex-1 text-xs">
+                {{-- Add Custom Provider Button --}}
+                <div class="flex justify-end">
+                    <button type="button" @click="showCustomFormModal = false; showAddCustomModal = true;" class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-primary text-white font-semibold rounded-lg hover:opacity-90 transition-opacity cursor-pointer">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="size-3.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                        <span>Add Custom Provider</span>
+                    </button>
+                </div>
+
+                {{-- Dynamic list of already configured custom endpoints --}}
+                <template x-if="customProviders.length > 0">
+                    <div class="space-y-2">
+                        <label class="block font-bold text-text-heading text-xs uppercase tracking-wider">Configured Providers</label>
+                        <div class="space-y-2 bg-gray-50 rounded-xl p-2.5 border border-content-border">
+                            <template x-for="(cp, idx) in customProviders" :key="cp.id">
+                                <div class="p-2.5 bg-white rounded-lg border border-content-border flex items-center justify-between shadow-sm">
+                                    <div class="min-w-0 flex-1">
+                                        <div class="font-semibold text-text-heading text-xs truncate" x-text="cp.name"></div>
+                                        <div class="text-[10px] text-text-muted font-mono truncate mt-0.5" x-text="cp.baseUrl"></div>
+                                    </div>
+                                    <button type="button" @click="removeCustomProvider(idx)" class="text-[10px] font-semibold text-danger hover:underline ml-4 cursor-pointer">Remove</button>
+                                </div>
+                            </template>
+                        </div>
+                    </div>
+                </template>
+
+                <template x-if="customProviders.length === 0">
+                    <div class="text-center py-6 text-text-muted font-medium border border-dashed border-content-border rounded-xl bg-gray-50/50">
+                        No custom providers configured yet. Click above to connect one.
+                    </div>
+                </template>
+            </div>
+
+            <div class="flex items-center justify-end gap-2 p-5 border-t border-content-border shrink-0 bg-gray-50">
+                <button type="button" @click="showCustomFormModal = false; showConnectModal = true;" class="px-4 py-1.5 border border-content-border rounded-lg text-xs font-semibold text-text-primary bg-white hover:bg-gray-50 cursor-pointer">Back</button>
+                <button type="button" @click="showCustomFormModal = false" class="px-4 py-1.5 border border-transparent rounded-lg text-xs font-semibold text-text-primary bg-transparent hover:bg-gray-100 cursor-pointer">Close</button>
+            </div>
+        </div>
+    </div>
+
+    {{-- Add Custom Provider Form Modal --}}
+    <div x-show="showAddCustomModal" x-cloak class="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4" @keydown.escape.window="showAddCustomModal = false">
+        <div class="bg-white rounded-2xl shadow-xl w-full max-w-md overflow-hidden flex flex-col max-h-[85vh]" @click.outside="showAddCustomModal = false">
+            <div class="flex items-center justify-between px-5 py-4 border-b border-content-border shrink-0">
+                <h3 class="text-base font-semibold text-text-heading">Add Custom Provider</h3>
+                <button @click="showAddCustomModal = false" class="p-1 text-text-muted hover:text-text-primary transition-colors">
+                    <svg viewBox="0 0 20 20" fill="currentColor" class="size-5">
+                        <path d="M6.28 5.22a.75.75 0 00-1.06 1.06L8.94 10l-3.72 3.72a.75.75 0 1 1 1.06 1.06L10 11.06l3.72 3.72a.75.75 0 1 1-1.06-1.06L11.06 10l3.72-3.72a.75.75 0 00-1.06-1.06L10 8.94 6.28 5.22z" />
+                    </svg>
+                </button>
+            </div>
+            
+            <div class="p-5 space-y-4 overflow-y-auto flex-1 text-xs">
+                <div class="grid grid-cols-2 gap-3 mb-3">
+                    <div class="space-y-1">
+                        <label class="block text-[11px] font-medium text-text-muted">Provider ID</label>
+                        <input type="text" x-model="newProvider.id" placeholder="myprovider" class="w-full block bg-white border border-content-border text-text-primary text-xs rounded-lg px-2.5 py-1.5 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary">
+                        <span class="text-[9px] text-text-muted block">Lowercase, hyphens, underscores</span>
+                    </div>
+                    <div class="space-y-1">
+                        <label class="block text-[11px] font-medium text-text-muted">Display Name</label>
+                        <input type="text" x-model="newProvider.name" placeholder="My AI Provider" class="w-full block bg-white border border-content-border text-text-primary text-xs rounded-lg px-2.5 py-1.5 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary">
                     </div>
                 </div>
 
-                <div class="flex items-center justify-end gap-2 pt-2">
-                    <button type="button" @click="showSettings = false" class="px-4 py-2 border border-content-border rounded-lg text-xs font-medium text-text-primary bg-white hover:bg-gray-50">Cancel</button>
-                    <button type="button" @click="saveSettings()" class="px-4 py-2 rounded-lg text-xs font-medium text-white bg-primary hover:opacity-90">Save Settings</button>
+                <div class="space-y-1.5 mb-3">
+                    <label class="block text-[11px] font-medium text-text-muted">Base URL</label>
+                    <input type="text" x-model="newProvider.baseUrl" placeholder="https://api.myprovider.com/v1" class="w-full block bg-white border border-content-border text-text-primary text-xs rounded-lg px-2.5 py-1.5 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary">
                 </div>
+
+                <div class="space-y-1.5 mb-3">
+                    <label class="block text-[11px] font-medium text-text-muted">API key</label>
+                    <input type="password" x-model="newProvider.apiKey" placeholder="API key" class="w-full block bg-white border border-content-border text-text-primary text-xs rounded-lg px-2.5 py-1.5 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary">
+                    <span class="text-[9px] text-text-muted block">Optional. Leave empty for header auth.</span>
+                </div>
+
+                {{-- Models list and adding --}}
+                <div class="border-t border-content-border pt-3 space-y-2">
+                    <label class="block text-[11px] font-bold text-text-heading">Models</label>
+                    
+                    <template x-if="newProvider.models.length > 0">
+                        <div class="flex flex-wrap gap-1.5 mb-2">
+                            <template x-for="(m, mIdx) in newProvider.models" :key="m.id">
+                                <div class="inline-flex items-center gap-1 bg-white border border-content-border px-2 py-0.5 rounded text-[10px]">
+                                    <span x-text="m.name"></span>
+                                    <button type="button" @click="removeModelFromNewProvider(mIdx)" class="text-text-muted hover:text-danger font-bold">×</button>
+                                </div>
+                            </template>
+                        </div>
+                    </template>
+
+                    <div class="grid grid-cols-2 gap-3 items-end">
+                        <div class="space-y-1">
+                            <label class="block text-[10px] text-text-muted">Model ID</label>
+                            <input type="text" x-model="newModel.id" placeholder="model-id" class="w-full block bg-white border border-content-border text-text-primary text-xs rounded-lg px-2.5 py-1 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary">
+                        </div>
+                        <div class="space-y-1 flex items-center gap-2">
+                            <div class="flex-1">
+                                <label class="block text-[10px] text-text-muted">Model Name</label>
+                                <input type="text" x-model="newModel.name" placeholder="Model Name" class="w-full block bg-white border border-content-border text-text-primary text-xs rounded-lg px-2.5 py-1 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary">
+                            </div>
+                            <button type="button" @click="addModelToNewProvider()" class="flex h-7 items-center justify-center px-3 border border-content-border rounded-lg text-[10px] font-semibold bg-white hover:bg-gray-100 shrink-0 cursor-pointer">
+                                Add
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="flex items-center justify-end gap-2 p-5 border-t border-content-border shrink-0 bg-gray-50">
+                <button type="button" @click="showAddCustomModal = false; showCustomFormModal = true;" class="px-4 py-1.5 border border-content-border rounded-lg text-xs font-semibold text-text-primary bg-white hover:bg-gray-50 cursor-pointer">Back</button>
+                <button type="button" @click="addCustomProvider()" class="px-4 py-1.5 rounded-lg text-xs font-semibold text-white bg-primary hover:opacity-90 cursor-pointer">Save Provider</button>
             </div>
         </div>
     </div>
@@ -401,19 +621,36 @@
             }
         });
 
-        document.addEventListener('alpine:init', () => {
-            Alpine.data('blockGenerator', () => ({
-                tab: 'fields',
+        function blockGenerator() {
+            return {
+                tab: 'generate',
                 prompt: '',
                 generating: false,
                 logs: '',
                 provider: localStorage.getItem('lara_cms_ai_provider') || 'opencode',
-                showSettings: false,
+                selectedCustomProviderId: localStorage.getItem('lara_cms_ai_provider_id') || '',
+                selectedCustomModelId: localStorage.getItem('lara_cms_ai_model_id') || '',
                 
-                // API keys & Configuration (loaded from localStorage)
+                // Modals
+                showConnectModal: false,
+                showApiKeyModal: false,
+                showCustomFormModal: false,
+                showAddCustomModal: false,
+                showCustomForm: true, // Show form fields inside custom modal by default
+
+                // Active connection setup state
+                connectingProvider: '',
+                tempApiKey: '',
+
+                // Configurations
                 geminiKey: localStorage.getItem('lara_cms_gemini_key') || '',
-                customUrl: localStorage.getItem('lara_cms_custom_url') || '',
-                customKey: localStorage.getItem('lara_cms_custom_key') || '',
+                openrouterKey: localStorage.getItem('lara_cms_openrouter_key') || '',
+                zaiKey: localStorage.getItem('lara_cms_zai_key') || '',
+                customProviders: JSON.parse(localStorage.getItem('lara_cms_custom_providers') || '[]'),
+
+                // Sub-form temp state
+                newProvider: { id: '', name: '', baseUrl: '', apiKey: '', models: [] },
+                newModel: { id: '', name: '' },
 
                 // Attachment wireframe state
                 attachmentName: null,
@@ -421,22 +658,139 @@
                 attachmentMime: null,
 
                 providerLabel() {
-                    if (this.provider === 'opencode') return 'opencode/gemini-2.0-flash';
+                    if (this.provider === 'opencode') return 'block-cms/gemini-2.0-flash';
                     if (this.provider === 'gemini') return 'gemini/gemini-2.0-flash';
+                    if (this.provider === 'openrouter') return 'OpenRouter (' + (this.selectedCustomModelId ? this.selectedCustomModelId.split('/').pop() : 'Claude 3.5 Sonnet') + ')';
+                    if (this.provider === 'zai') return 'z.ai (GLM 5.2 Free)';
+                    
+                    const p = this.customProviders.find(cp => cp.id === this.selectedCustomProviderId);
+                    if (p) {
+                        const m = p.models.find(cm => cm.id === this.selectedCustomModelId);
+                        return p.name + ' (' + (m ? m.name : 'Default') + ')';
+                    }
                     return 'custom/api-provider';
                 },
 
-                setProvider(val) {
-                    this.provider = val;
-                    localStorage.setItem('lara_cms_ai_provider', val);
+                selectProviderModel(providerType, providerId, modelId) {
+                    this.provider = providerType;
+                    this.selectedCustomProviderId = providerId || '';
+                    this.selectedCustomModelId = modelId || '';
+                    localStorage.setItem('lara_cms_ai_provider', providerType);
+                    localStorage.setItem('lara_cms_ai_provider_id', this.selectedCustomProviderId);
+                    localStorage.setItem('lara_cms_ai_model_id', this.selectedCustomModelId);
                 },
 
-                saveSettings() {
-                    localStorage.setItem('lara_cms_gemini_key', this.geminiKey);
-                    localStorage.setItem('lara_cms_custom_url', this.customUrl);
-                    localStorage.setItem('lara_cms_custom_key', this.customKey);
-                    this.showSettings = false;
-                    window.showToast?.('✓ API configurations saved.', 'success');
+                startConnectPredefined(providerName) {
+                    this.connectingProvider = providerName;
+                    if (providerName === 'gemini') this.tempApiKey = this.geminiKey;
+                    else if (providerName === 'openrouter') this.tempApiKey = this.openrouterKey;
+                    else if (providerName === 'zai') this.tempApiKey = this.zaiKey;
+
+                    this.showConnectModal = false;
+                    this.showApiKeyModal = true;
+                },
+
+                saveApiKey() {
+                    const val = this.tempApiKey.trim();
+                    if (this.connectingProvider === 'gemini') {
+                        this.geminiKey = val;
+                        localStorage.setItem('lara_cms_gemini_key', val);
+                        this.selectProviderModel('gemini', null, 'gemini-2.0-flash');
+                    } else if (this.connectingProvider === 'openrouter') {
+                        this.openrouterKey = val;
+                        localStorage.setItem('lara_cms_openrouter_key', val);
+                        this.selectProviderModel('openrouter', null, 'anthropic/claude-3.5-sonnet');
+                    } else if (this.connectingProvider === 'zai') {
+                        this.zaiKey = val;
+                        localStorage.setItem('lara_cms_zai_key', val);
+                        this.selectProviderModel('zai', null, 'z-ai/glm-5.2-free');
+                    }
+
+                    this.showApiKeyModal = false;
+                    window.showToast?.('✓ Connected successfully.', 'success');
+                },
+
+                disconnectProvider(providerName) {
+                    if (providerName === 'gemini') {
+                        this.geminiKey = '';
+                        localStorage.removeItem('lara_cms_gemini_key');
+                        if (this.provider === 'gemini') this.selectProviderModel('opencode', null, null);
+                    } else if (providerName === 'openrouter') {
+                        this.openrouterKey = '';
+                        localStorage.removeItem('lara_cms_openrouter_key');
+                        if (this.provider === 'openrouter') this.selectProviderModel('opencode', null, null);
+                    } else if (providerName === 'zai') {
+                        this.zaiKey = '';
+                        localStorage.removeItem('lara_cms_zai_key');
+                        if (this.provider === 'zai') this.selectProviderModel('opencode', null, null);
+                    }
+                    window.showToast?.('✓ Disconnected ' + providerName, 'success');
+                },
+
+                addModelToNewProvider() {
+                    if (!this.newModel.id || !this.newModel.name) {
+                        window.showToast?.('Please specify Model ID and Name.', 'danger');
+                        return;
+                    }
+                    this.newProvider.models.push({
+                        id: this.newModel.id.trim(),
+                        name: this.newModel.name.trim()
+                    });
+                    this.newModel = { id: '', name: '' };
+                },
+
+                removeModelFromNewProvider(index) {
+                    this.newProvider.models.splice(index, 1);
+                },
+
+                addCustomProvider() {
+                    if (!this.newProvider.id || !this.newProvider.name || !this.newProvider.baseUrl) {
+                        window.showToast?.('Please fill in Provider ID, Name, and Base URL.', 'danger');
+                        return;
+                    }
+                    
+                    const idPattern = /^[a-z0-9-_]+$/;
+                    if (!idPattern.test(this.newProvider.id)) {
+                        window.showToast?.('Provider ID must contain only lowercase letters, hyphens, or underscores.', 'danger');
+                        return;
+                    }
+
+                    if (this.customProviders.some(cp => cp.id === this.newProvider.id)) {
+                        window.showToast?.('Provider ID must be unique.', 'danger');
+                        return;
+                    }
+
+                    const savedProvider = {
+                        id: this.newProvider.id.trim(),
+                        name: this.newProvider.name.trim(),
+                        baseUrl: this.newProvider.baseUrl.trim(),
+                        apiKey: this.newProvider.apiKey.trim(),
+                        models: [...this.newProvider.models]
+                    };
+
+                    this.customProviders.push(savedProvider);
+                    this.newProvider = { id: '', name: '', baseUrl: '', apiKey: '', models: [] };
+                    this.newModel = { id: '', name: '' };
+                    
+                    localStorage.setItem('lara_cms_custom_providers', JSON.stringify(this.customProviders));
+                    
+                    // Automatically select this new custom provider
+                    const defaultModelId = savedProvider.models.length > 0 ? savedProvider.models[0].id : null;
+                    this.selectProviderModel('custom', savedProvider.id, defaultModelId);
+
+                    this.showCustomFormModal = false;
+                    window.showToast?.('✓ Custom provider saved to list.', 'success');
+                },
+
+                removeCustomProvider(index) {
+                    const p = this.customProviders[index];
+                    this.customProviders.splice(index, 1);
+                    localStorage.setItem('lara_cms_custom_providers', JSON.stringify(this.customProviders));
+                    
+                    if (this.provider === 'custom' && this.selectedCustomProviderId === p.id) {
+                        this.selectProviderModel('opencode', null, null);
+                    }
+                    window.showToast?.('✓ Custom provider removed.', 'success');
                 },
 
                 handleFileSelect(e) {
@@ -529,25 +883,48 @@
                         } else {
                             let apiKey = '';
                             let url = '';
-                            let model = 'gemini-2.0-flash';
+                            let modelId = '';
 
                             if (this.provider === 'gemini') {
                                 apiKey = this.geminiKey;
                                 if (!apiKey) {
-                                    this.showSettings = true;
-                                    throw new Error('Please configure your Gemini API Key.');
+                                    this.showConnectModal = true;
+                                    throw new Error('Please connect Google Gemini API first.');
                                 }
-                                url = 'https://generativelanguage.googleapis.com/v1beta/models/' + model + ':generateContent?key=' + apiKey;
+                                url = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=' + apiKey;
+                            } else if (this.provider === 'openrouter') {
+                                apiKey = this.openrouterKey;
+                                if (!apiKey) {
+                                    this.showConnectModal = true;
+                                    throw new Error('Please connect OpenRouter first.');
+                                }
+                                url = 'https://openrouter.ai/api/v1/chat/completions';
+                                modelId = this.selectedCustomModelId || 'anthropic/claude-3.5-sonnet';
+                            } else if (this.provider === 'zai') {
+                                apiKey = this.zaiKey;
+                                if (!apiKey) {
+                                    this.showConnectModal = true;
+                                    throw new Error('Please connect z.ai first.');
+                                }
+                                url = 'https://api.z-ai.com/v1/chat/completions';
+                                modelId = 'z-ai/glm-5.2-free';
                             } else {
-                                url = this.customUrl;
-                                apiKey = this.customKey;
-                                if (!url) {
-                                    this.showSettings = true;
-                                    throw new Error('Please configure your Custom API Endpoint URL.');
+                                // Custom Provider selection
+                                const p = this.customProviders.find(cp => cp.id === this.selectedCustomProviderId);
+                                if (!p) {
+                                    this.showConnectModal = true;
+                                    throw new Error('Please select or configure a Custom AI Provider.');
                                 }
+                                
+                                url = p.baseUrl;
+                                if (!url.endsWith('/chat/completions')) {
+                                    url = url.replace(/\/$/, '') + '/chat/completions';
+                                }
+                                apiKey = p.apiKey;
+                                modelId = this.selectedCustomModelId || 'default-model';
                             }
 
-                            this.logs = 'Sending request to ' + (this.provider === 'gemini' ? 'Google Gemini' : 'Custom Provider') + '...';
+                            this.logs = 'Sending request to ' + this.providerLabel() + '...';
 
                             const systemPrompt = `You are a professional web developer component creator.
 Your task is to output a new custom block according to this prompt: "${this.prompt}".
@@ -558,11 +935,11 @@ You MUST output ONLY a valid JSON object matching the following structure. No ma
     {
       "name": "field_name",
       "label": "Human Label",
-      "type": "string",
+      "type": "string", // can be: string, text, image, link, boolean, select
       "defaultValue": "some value"
     }
   ],
-  "template": "<div class=\\"my-component\\">\\n  <h2>@{{ field_name }}</h2>\\n</div>"
+  "template": "<div class=\"my-component\\">\\n  <h2>@{{ field_name }}</h2>\\n</div>"
 }
 
 Ensure the template uses standard Tailwind CSS classes. Always escape inner double quotes inside the template property string. Do not output anything else than the JSON object.`;
@@ -587,15 +964,21 @@ Ensure the template uses standard Tailwind CSS classes. Always escape inner doub
                                     })
                                 });
                             } else {
+                                // OpenAI compatible standard format
                                 response = await fetch(url, {
                                     method: 'POST',
                                     headers: {
                                         'Content-Type': 'application/json',
-                                        'Authorization': apiKey ? 'Bearer ' + apiKey : ''
+                                        ...(apiKey ? { 'Authorization': 'Bearer ' + apiKey } : {}),
+                                        ...(this.provider === 'openrouter' ? {
+                                            'HTTP-Referer': 'http://localhost:8000',
+                                            'X-Title': 'Lara CMS'
+                                        } : {})
                                     },
                                     body: JSON.stringify({
-                                        model: 'custom-model',
-                                        messages: [{ role: 'user', content: systemPrompt }]
+                                        model: modelId,
+                                        messages: [{ role: 'user', content: systemPrompt }],
+                                        temperature: 0.2
                                     })
                                 });
                             }
@@ -641,7 +1024,7 @@ Ensure the template uses standard Tailwind CSS classes. Always escape inner doub
                         this.generating = false;
                     }
                 }
-            }));
-        });
+            };
+        }
     </script>
 @endpush
