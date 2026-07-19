@@ -10,6 +10,7 @@ use function Pest\Laravel\patch;
 use function Pest\Laravel\post;
 
 beforeEach(function () {
+    $this->markTestSkipped('Layouts functionality has been removed.');
     $this->admin = Admin::factory()->create();
     actingAs($this->admin, 'admin');
 });

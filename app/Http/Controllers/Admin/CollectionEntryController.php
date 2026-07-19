@@ -58,7 +58,25 @@ class CollectionEntryController extends Controller
             ]),
         ];
 
-        if ($request->layout_id) {
+        // Copy sections from selected collection reference if exists
+        $copiedSections = null;
+        foreach ($collection->fields ?? [] as $field) {
+            if (($field['type'] ?? '') === 'collection') {
+                $key = $field['template'] ?? null;
+                $val = $request->input("data.{$key}");
+                if ($key && ! empty($val)) {
+                    $selectedEntry = CollectionEntry::find($val);
+                    if ($selectedEntry && $selectedEntry->page) {
+                        $copiedSections = $selectedEntry->page->sections ?? [];
+                        break;
+                    }
+                }
+            }
+        }
+
+        if ($copiedSections !== null) {
+            $pageData['sections'] = $copiedSections;
+        } elseif ($request->layout_id) {
             $layout = Layout::findOrFail($request->layout_id);
             $pageData['sections'] = [...($layout->sections ?? []), ...Sections::injectGlobals()];
         } else {
@@ -82,8 +100,9 @@ class CollectionEntryController extends Controller
     public function edit(Collection $collection, CollectionEntry $entry)
     {
         abort_if($entry->collection_id !== $collection->id, 404);
+        $admins = Admin::orderBy('name')->get();
 
-        return view('admin.collections.entries.edit', compact('collection', 'entry'));
+        return view('admin.collections.entries.edit', compact('collection', 'entry', 'admins'));
     }
 
     public function update(Request $request, Collection $collection, CollectionEntry $entry)
@@ -92,12 +111,25 @@ class CollectionEntryController extends Controller
 
         $data = $request->validate([
             'data' => 'nullable|array',
+            'meta' => 'nullable|array',
+            'published' => 'boolean',
         ]);
 
-        $entry->update($data);
+        $entry->update([
+            'data' => $data['data'] ?? [],
+        ]);
 
-        if ($entry->page_id && isset($data['data']['title'])) {
-            $entry->page->update(['title' => $data['data']['title']]);
+        if ($entry->page_id) {
+            $pageData = [
+                'published' => $request->boolean('published', $entry->page->published),
+            ];
+            if (isset($data['data']['title'])) {
+                $pageData['title'] = $data['data']['title'];
+            }
+            if ($request->has('meta')) {
+                $pageData['meta'] = $request->meta;
+            }
+            $entry->page->update($pageData);
         }
 
         return redirect()->route('admin.collections.entries.index', $collection)

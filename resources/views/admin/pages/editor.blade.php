@@ -11,7 +11,7 @@
     window.editorSlug = '{{ $page->slug }}';
     window.editorPages = @json($pages);
     window.editorHomeGlobals = @json($homeGlobals);
-    window.editorSaveRoute = @isset($editorSaveRoute) '{{ $editorSaveRoute }}' @else '{{ route('admin.pages.update-sections', $page) }}' @endisset;
+    window.editorSaveRoute = @isset($editorSaveRoute) '{{ $editorSaveRoute }}' @else '#' @endisset;
     window.editorPostId = {{ $page->id ?? 'null' }};
 </script>
 <div class="flex h-full gap-3 p-3 relative" x-data="pageEditor()"     x-init="init(window.editorSections, window.editorSchemas, window.editorBlockList, window.editorSlug, window.editorPages, window.editorHomeGlobals)" x-on:section-selected.window="addSection($event.detail.name)">
@@ -36,7 +36,7 @@
                     <div x-show="active === null">
                         <div class="flex items-center justify-between pr-3 py-3 text-sm font-medium text-text-heading">
                             <div class="flex items-center gap-2">
-                                <a href="{{ route('admin.pages.index') }}" aria-label="Back" class="size-7 shrink-0 flex items-center justify-center rounded-full border border-gray-300 bg-white text-text-primary hover:bg-gray-100 transition-colors">
+                                <a href="@isset($editorBackRoute){{ $editorBackRoute }}@else{{ route('admin.dashboard') }}@endisset" aria-label="Back" class="size-7 shrink-0 flex items-center justify-center rounded-full border border-gray-300 bg-white text-text-primary hover:bg-gray-100 transition-colors">
                                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="size-3">
                                         <path d="M19 12H5M12 19l-7-7 7-7" stroke-linecap="round" stroke-linejoin="round" />
                                     </svg>
@@ -1298,7 +1298,7 @@
 
             async save() {
                 this.isSaving = true;
-                const route = window.editorSaveRoute || '{{ route('admin.pages.update-sections', $page) }}';
+                const route = window.editorSaveRoute || '#';
                 try {
                     const r = await fetch(route, {
                         method: 'PATCH',

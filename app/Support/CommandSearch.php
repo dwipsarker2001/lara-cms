@@ -2,9 +2,6 @@
 
 namespace App\Support;
 
-use App\Models\Layout;
-use App\Models\Page;
-use App\Models\Post;
 use App\Models\Taxonomy;
 
 /**
@@ -22,15 +19,9 @@ class CommandSearch
     {
         return [
             ['id' => 'nav-dashboard', 'group' => 'Navigation', 'title' => 'Dashboard', 'keywords' => 'home overview', 'href' => route('admin.dashboard')],
-            ['id' => 'nav-pages', 'group' => 'Navigation', 'title' => 'Collection » Pages', 'keywords' => 'page entries', 'href' => route('admin.pages.index')],
-            ['id' => 'nav-blog', 'group' => 'Navigation', 'title' => 'Collection » Blog', 'keywords' => 'posts articles news', 'href' => route('admin.posts.index')],
-            ['id' => 'nav-layouts', 'group' => 'Navigation', 'title' => 'Collection » Layouts', 'keywords' => 'templates structure', 'href' => route('admin.layouts.index')],
             ['id' => 'nav-taxonomies', 'group' => 'Navigation', 'title' => 'Collection » Taxonomies', 'keywords' => 'tags categories', 'href' => route('admin.taxonomies.index')],
             ['id' => 'nav-assets', 'group' => 'Navigation', 'title' => 'Collection » Assets', 'keywords' => 'media images files', 'href' => route('admin.assets.index')],
             ['id' => 'nav-globals', 'group' => 'Navigation', 'title' => 'Settings » Globals', 'keywords' => 'site settings', 'href' => route('admin.settings')],
-            ['id' => 'act-new-page', 'group' => 'Navigation', 'title' => 'Create » New Page', 'keywords' => 'add new page', 'href' => route('admin.pages.create')],
-            ['id' => 'act-new-post', 'group' => 'Navigation', 'title' => 'Create » New Blog Post', 'keywords' => 'add new post article', 'href' => route('admin.posts.create')],
-            ['id' => 'act-new-layout', 'group' => 'Navigation', 'title' => 'Create » New Layout', 'keywords' => 'add new layout template', 'href' => route('admin.layouts.create')],
             ['id' => 'act-new-taxonomy', 'group' => 'Navigation', 'title' => 'Create » New Taxonomy', 'keywords' => 'add new taxonomy category', 'href' => route('admin.taxonomies.create')],
         ];
     }
@@ -43,36 +34,6 @@ class CommandSearch
     public static function dynamicCommands(): array
     {
         $commands = [];
-
-        foreach (Page::query()->orderBy('title')->get(['id', 'title', 'slug']) as $page) {
-            $commands[] = [
-                'id' => 'page-'.$page->id,
-                'group' => 'Pages',
-                'title' => $page->title ?: $page->slug,
-                'subtitle' => '/'.$page->slug,
-                'href' => route('admin.pages.editor', $page),
-            ];
-        }
-
-        foreach (Post::query()->orderBy('title')->get(['id', 'title', 'slug']) as $post) {
-            $commands[] = [
-                'id' => 'post-'.$post->id,
-                'group' => 'Blog',
-                'title' => $post->title,
-                'subtitle' => $post->slug,
-                'href' => route('admin.posts.editor', $post),
-            ];
-        }
-
-        foreach (Layout::query()->orderBy('name')->get(['id', 'name']) as $layout) {
-            $commands[] = [
-                'id' => 'layout-'.$layout->id,
-                'group' => 'Layouts',
-                'title' => $layout->name,
-                'subtitle' => null,
-                'href' => route('admin.layouts.editor', $layout),
-            ];
-        }
 
         foreach (Taxonomy::query()->orderBy('title')->get(['id', 'title', 'slug']) as $taxonomy) {
             $commands[] = [

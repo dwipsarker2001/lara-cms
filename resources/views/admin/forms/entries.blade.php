@@ -4,6 +4,19 @@
 @section('breadcrumb', 'Form Entries')
 
 @section('content')
+@php
+    $fields = collect($form->fields ?? [])
+        ->filter(fn ($field) => is_array($field) && filled($field['name'] ?? null))
+        ->values();
+
+    $headers = ['#'];
+    foreach ($fields as $field) {
+        $headers[] = $field['label'] ?? $field['name'];
+    }
+    $headers[] = 'Submitted';
+    $headers[] = 'Actions';
+@endphp
+
 <div class="max-w-5xl mx-auto px-2 sm:px-0">
     <header class="relative flex flex-wrap items-center justify-between gap-4 py-6 md:py-8">
         <h1 class="flex items-center gap-2.5 text-[25px] leading-[1.25] font-medium text-text-heading">
@@ -39,64 +52,64 @@
         </div>
     </header>
 
-<div class="bg-panel-bg rounded-2xl p-[7px]">
-    @if($entries->isEmpty())
-        <div class="flex flex-col items-center justify-center py-16 text-center px-6">
-            <img src="/empty-collection.svg" alt="No items" class="size-32 mb-4 opacity-60">
-            <p class="text-sm font-medium text-text-heading">No entries yet.</p>
-            <p class="text-xs text-text-muted mt-1">Entries will appear here once the form is submitted.</p>
-        </div>
-        @else
-            <div class="bg-content-bg rounded-xl ring-1 ring-content-border shadow-sm overflow-hidden">
-            <div class="overflow-x-auto">
-                <table class="w-full text-sm">
-                    <thead>
-                        <tr class="border-b border-content-border">
-                            <th class="text-left text-xs font-semibold text-text-muted uppercase tracking-wider px-4 py-3">#</th>
-                            <th class="text-left text-xs font-semibold text-text-muted uppercase tracking-wider px-4 py-3">Submitted</th>
-                            <th class="text-right text-xs font-semibold text-text-muted uppercase tracking-wider px-4 py-3">Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @foreach($entries as $entry)
-                            <tr class="border-b border-content-border last:border-0 hover:bg-body-bg/50 transition-colors">
-                                <td class="px-4 py-3 text-text-muted text-xs">#{{ $entry->id }}</td>
-                                <td class="px-4 py-3 text-text-primary">
-                                    <span class="font-medium">{{ $entry->created_at->format('M j, Y g:i A') }}</span>
-                                </td>
-                                <td class="px-4 py-3 text-right">
-                                    <a href="#" @click.prevent="$dispatch('open-entry-detail', { id: {{ $entry->id }} })"
-                                        class="inline-flex items-center gap-1.5 text-sm font-medium text-primary hover:text-primary/80 transition-colors"
-                                    >
-                                        View
-                                        <svg viewBox="0 0 20 20" fill="currentColor" class="size-4">
-                                            <path d="M10 12.5a2.5 2.5 0 100-5 2.5 2.5 0 000 5z" />
-                                            <path fill-rule="evenodd" d="M.664 10.59a1.651 1.651 0 010-1.186A10.004 10.004 0 0110 3c4.257 0 7.893 2.66 9.336 6.41.147.381.146.804 0 1.186A10.004 10.004 0 0110 17c-4.257 0-7.893-2.66-9.336-6.41zM14 10a4 4 0 11-8 0 4 4 0 018 0z" clip-rule="evenodd" />
-                                        </svg>
-                                    </a>
-                                </td>
-                            </tr>
-                        @endforeach
-                    </tbody>
-                </table>
-            </div>
-            @if($entries->hasPages())
-                <div class="flex items-center justify-between px-4 py-3 border-t border-content-border">
-                    <span class="text-xs text-text-muted">Showing {{ $entries->firstItem() }}-{{ $entries->lastItem() }} of {{ $entries->total() }}</span>
-                    <div class="flex items-center gap-1">
-                        @if($entries->onFirstPage())
-                            <span class="px-2 py-1 text-xs text-text-muted/40">Prev</span>
-                        @else
-                            <a href="{{ $entries->previousPageUrl() }}" class="px-2 py-1 text-xs text-text-muted hover:text-text-primary transition-colors">Prev</a>
-                        @endif
-                        @if($entries->hasMorePages())
-                            <a href="{{ $entries->nextPageUrl() }}" class="px-2 py-1 text-xs text-text-muted hover:text-text-primary transition-colors">Next</a>
-                        @else
-                            <span class="px-2 py-1 text-xs text-text-muted/40">Next</span>
-                        @endif
-                    </div>
+    <div class="bg-panel-bg rounded-2xl p-[7px] mb-8">
+        <x-admin::table
+            :headers="$headers"
+            :items="$entries"
+            emptyText="No entries yet."
+            emptySubtext="Submissions for “{{ $form->title }}” will appear here."
+        >
+            @foreach($entries as $entry)
+                <tr class="border-b border-content-border last:border-0 hover:bg-body-bg/50 transition-colors">
+                    <td class="px-4 py-3 text-text-muted text-xs">#{{ $entry->id }}</td>
+                    
+                    @foreach ($fields as $field)
+                        @php
+                            $value = $entry->data[$field['name']] ?? null;
+                            if (is_array($value)) {
+                                $value = implode(', ', $value);
+                            } elseif (is_bool($value)) {
+                                $value = $value ? 'Yes' : 'No';
+                            }
+                        @endphp
+                        <td class="px-4 py-3 text-text-primary max-w-[220px] truncate" title="{{ is_scalar($value) ? $value : '' }}">
+                            {{ filled($value) || $value === 0 || $value === '0' ? $value : '—' }}
+                        </td>
+                    @endforeach
+
+                    <td class="px-4 py-3 text-text-primary">
+                        <span class="font-medium">{{ $entry->created_at->format('M j, Y g:i A') }}</span>
+                    </td>
+                    <td class="px-4 py-3 text-right">
+                        <a href="#" @click.prevent="$dispatch('open-entry-detail', { id: {{ $entry->id }} })"
+                            class="inline-flex items-center gap-1.5 text-sm font-medium text-primary hover:text-primary/80 transition-colors"
+                        >
+                            View
+                            <svg viewBox="0 0 20 20" fill="currentColor" class="size-4">
+                                <path d="M10 12.5a2.5 2.5 0 100-5 2.5 2.5 0 000 5z" />
+                                <path fill-rule="evenodd" d="M.664 10.59a1.651 1.651 0 010-1.186A10.004 10.004 0 0110 3c4.257 0 7.893 2.66 9.336 6.41.147.381.146.804 0 1.186A10.004 10.004 0 0110 17c-4.257 0-7.893-2.66-9.336-6.41zM14 10a4 4 0 11-8 0 4 4 0 018 0z" clip-rule="evenodd" />
+                            </svg>
+                        </a>
+                    </td>
+                </tr>
+            @endforeach
+        </x-admin::table>
+
+        @if($entries->hasPages())
+            <div class="flex items-center justify-between px-4 py-3 border-t border-content-border mt-3 bg-content-bg rounded-xl ring-1 ring-content-border shadow-sm">
+                <span class="text-xs text-text-muted">Showing {{ $entries->firstItem() }}-{{ $entries->lastItem() }} of {{ $entries->total() }}</span>
+                <div class="flex items-center gap-1">
+                    @if($entries->onFirstPage())
+                        <span class="px-2 py-1 text-xs text-text-muted/40">Prev</span>
+                    @else
+                        <a href="{{ $entries->previousPageUrl() }}" class="px-2 py-1 text-xs text-text-muted hover:text-text-primary transition-colors">Prev</a>
+                    @endif
+                    @if($entries->hasMorePages())
+                        <a href="{{ $entries->nextPageUrl() }}" class="px-2 py-1 text-xs text-text-muted hover:text-text-primary transition-colors">Next</a>
+                    @else
+                        <span class="px-2 py-1 text-xs text-text-muted/40">Next</span>
+                    @endif
                 </div>
-            @endif
             </div>
         @endif
     </div>
@@ -115,7 +128,7 @@
             <h3 class="text-base font-semibold text-text-heading">Entry #<span x-text="entry?.id"></span></h3>
             <button @click="open = false" class="p-1 text-text-muted hover:text-text-primary transition-colors">
                 <svg viewBox="0 0 20 20" fill="currentColor" class="size-5">
-                    <path d="M6.28 5.22a.75.75 0 00-1.06 1.06L8.94 10l-3.72 3.72a.75.75 0 101.06 1.06L10 11.06l3.72 3.72a.75.75 0 101.06-1.06L11.06 10l3.72-3.72a.75.75 0 00-1.06-1.06L10 8.94 6.28 5.22z" />
+                    <path d="M6.28 5.22a.75.75 0 00-1.06 1.06L8.94 10l-3.72 3.72a.75.75 0 1 1.06 1.06L10 11.06l3.72 3.72a.75.75 0 1 1-1.06-1.06L11.06 10l3.72-3.72a.75.75 0 00-1.06-1.06L10 8.94 6.28 5.22z" />
                 </svg>
             </button>
         </div>
@@ -136,6 +149,5 @@
             </template>
         </div>
     </div>
-</div>
 </div>
 @endsection

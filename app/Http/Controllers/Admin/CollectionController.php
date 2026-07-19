@@ -16,7 +16,9 @@ class CollectionController extends Controller
 
     public function create()
     {
-        return view('admin.collections.create');
+        return view('admin.collections.create', [
+            'collections' => Collection::orderBy('name')->get(),
+        ]);
     }
 
     public function store(Request $request)
@@ -24,6 +26,8 @@ class CollectionController extends Controller
         $data = $request->validate([
             'name' => 'required|string|max:255',
             'icon' => 'nullable|string|max:255',
+            'enable_seo' => 'nullable|boolean',
+            'fields' => 'nullable|json',
         ]);
         $slug = Str::slug($data['name']);
         $original = $slug;
@@ -33,6 +37,12 @@ class CollectionController extends Controller
         }
         $data['slug'] = $slug;
         $data['position'] = Collection::max('position') + 1;
+        $data['enable_seo'] = (bool) ($data['enable_seo'] ?? false);
+
+        if (isset($data['fields'])) {
+            $data['fields'] = json_decode($data['fields'], true);
+        }
+
         $collection = Collection::create($data);
 
         return redirect()->route('admin.collections.entries.index', $collection)->with('success', 'Collection created successfully.');
@@ -40,7 +50,10 @@ class CollectionController extends Controller
 
     public function edit(Collection $collection)
     {
-        return view('admin.collections.edit', ['collection' => $collection]);
+        return view('admin.collections.edit', [
+            'collection' => $collection,
+            'collections' => Collection::orderBy('name')->get(),
+        ]);
     }
 
     public function update(Request $request, Collection $collection)
@@ -48,6 +61,7 @@ class CollectionController extends Controller
         $data = $request->validate([
             'name' => 'required|string|max:255',
             'icon' => 'nullable|string|max:255',
+            'enable_seo' => 'nullable|boolean',
             'fields' => 'nullable|json',
         ]);
 
@@ -58,6 +72,7 @@ class CollectionController extends Controller
             $slug = $original.'-'.$i++;
         }
         $data['slug'] = $slug;
+        $data['enable_seo'] = (bool) ($data['enable_seo'] ?? false);
 
         if (isset($data['fields'])) {
             $data['fields'] = json_decode($data['fields'], true);

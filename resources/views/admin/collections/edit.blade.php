@@ -140,6 +140,19 @@
                                 </div>
                             </div>
 
+                            <div class="border-t border-content-border grid md:grid-cols-2 items-start px-[18px] py-4 gap-y-3 md:gap-y-0 md:gap-x-5">
+                                <div class="flex flex-col gap-1.5">
+                                    <label class="text-sm font-medium text-text-heading">Enable SEO</label>
+                                    <div class="text-sm text-text-muted">By enabling SEO, you will enable the SEO feature on your collection.</div>
+                                </div>
+                                <div class="flex items-center justify-end h-full">
+                                    <button type="button" role="switch" :aria-checked="enableSeo" :data-state="enableSeo ? 'checked' : 'unchecked'" @click="enableSeo = !enableSeo" class="relative flex h-6 w-11 shrink-0 cursor-pointer rounded-full border-2 transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-primary/30 data-[state=checked]:shadow-inner data-[state=checked]:border-emerald-500 data-[state=checked]:bg-emerald-500 data-[state=unchecked]:!border-gray-300 data-[state=unchecked]:bg-gray-200">
+                                        <span :data-state="enableSeo ? 'checked' : 'unchecked'" class="my-auto flex items-center justify-center size-5 rounded-full bg-white text-xs shadow-[0_10px_15px_-3px_rgba(0,0,0,0.1),0_4px_6px_-4px_rgba(0,0,0,0.1)] transition-transform will-change-transform data-[state=checked]:translate-x-[20px] data-[state=unchecked]:translate-x-0"></span>
+                                    </button>
+                                    <input type="hidden" name="enable_seo" :value="enableSeo ? '1' : '0'">
+                                </div>
+                            </div>
+
                             <div x-show="fields.length > 0" class="px-[18px] py-4">
                                 <div id="sortable-fields" class="space-y-1">
                                     <template x-for="(field, index) in fields" :key="field._key || index">
@@ -249,9 +262,19 @@
                             <option value="text">Text</option>
                             <option value="textarea">Textarea</option>
                             <option value="number">Number</option>
+                            <option value="collection">Collection</option>
                         </select>
                     </div>
-                    <div>
+                    <div x-show="fieldForm.type === 'collection'" style="display: none;">
+                        <label class="block text-sm font-medium text-text-heading mb-1">Target Collection</label>
+                        <select x-model="fieldForm.collection_id" class="w-full block bg-white border border-gray-300 text-text-primary text-sm rounded-lg px-3 py-2 h-9 transition-all duration-150 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary">
+                            <option value="">Choose a collection...</option>
+                            @foreach($collections as $col)
+                                <option value="{{ $col->id }}">{{ $col->name }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+                    <div x-show="fieldForm.type !== 'collection'">
                         <label class="block text-sm font-medium text-text-heading mb-1">Template String</label>
                         <input type="text" x-model="fieldForm.template" readonly
                             class="w-full block bg-gray-50 border border-gray-200 text-text-muted text-sm rounded-lg px-3 py-2 h-9 cursor-not-allowed">
@@ -293,8 +316,10 @@
                 title: '',
                 description: '',
                 type: 'text',
-                template: ''
+                template: '',
+                collection_id: ''
             },
+            enableSeo: @json($collection->enable_seo ?? true),
 
             get filteredIcons() {
                 let icons = this.faIcons;
@@ -307,6 +332,7 @@
             get isDirty() {
                 return this.name !== initialName ||
                     this.selectedIcon !== initialIcon ||
+                    this.enableSeo !== @json($collection->enable_seo ?? true) ||
                     JSON.stringify(this.fields.filter(Boolean).map(({ _key, ...rest }) => rest)) !== JSON.stringify(initialFields);
             },
             iconLabel(cls) {
@@ -325,7 +351,8 @@
                     title: '',
                     description: '',
                     type: 'text',
-                    template: ''
+                    template: '',
+                    collection_id: ''
                 };
                 this.showFieldModal = true;
             },

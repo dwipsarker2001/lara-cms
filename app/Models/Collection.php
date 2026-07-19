@@ -12,7 +12,7 @@ class Collection extends Model
     /** @use HasFactory<CollectionFactory> */
     use HasFactory;
 
-    protected $fillable = ['name', 'slug', 'icon', 'show_in_menu', 'description', 'fields', 'position'];
+    protected $fillable = ['name', 'slug', 'icon', 'show_in_menu', 'enable_seo', 'description', 'fields', 'position'];
 
     public function entries(): HasMany
     {
@@ -26,6 +26,9 @@ class Collection extends Model
 
     protected function casts(): array
     {
-        return ['fields' => 'array'];
+        return [
+            'fields' => 'array',
+            'enable_seo' => 'boolean',
+        ];
     }
 }

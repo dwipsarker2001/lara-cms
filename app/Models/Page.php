@@ -33,6 +33,10 @@ class Page extends Model
 
         $this->loadMissing('collectionEntry.collection');
         if ($this->collectionEntry && $this->collectionEntry->collection) {
+            if ($this->collectionEntry->collection->slug === 'pages') {
+                return '/'.$this->slug;
+            }
+
             return '/'.$this->collectionEntry->collection->slug.'/'.$this->slug;
         }
 

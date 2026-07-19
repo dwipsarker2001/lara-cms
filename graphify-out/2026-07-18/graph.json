@@ -162,8 +162,8 @@
       "source_location": "L44",
       "_origin": "ast",
       "id": "app_blocks_block_block_view",
-      "community": 266,
-      "community_name": "Package",
+      "community": 16,
+      "community_name": "AppServiceProvider.php",
       "norm_label": ".view()"
     },
     {
@@ -184,8 +184,8 @@
       "source_location": "L64",
       "_origin": "ast",
       "id": "app_blocks_block_block_render",
-      "community": 266,
-      "community_name": "Package",
+      "community": 11,
+      "community_name": "Block",
       "norm_label": ".render()"
     },
     {
@@ -206,8 +206,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "app_blocks_blockregistry",
-      "community": 3,
-      "community_name": "Page",
+      "community": 221,
+      "community_name": "Sections",
       "norm_label": "blockregistry.php"
     },
     {
@@ -217,8 +217,8 @@
       "source_location": "L16",
       "_origin": "ast",
       "id": "app_blocks_blockregistry_blockregistry",
-      "community": 13,
-      "community_name": "BlockRegistry",
+      "community": 121,
+      "community_name": "Collection",
       "norm_label": "blockregistry"
     },
     {
@@ -228,8 +228,8 @@
       "source_location": "L22",
       "_origin": "ast",
       "id": "app_blocks_blockregistry_blockregistry_all",
-      "community": 13,
-      "community_name": "BlockRegistry",
+      "community": 121,
+      "community_name": "Collection",
       "norm_label": ".all()"
     },
     {
@@ -239,8 +239,8 @@
       "source_location": "L27",
       "_origin": "ast",
       "id": "app_blocks_blockregistry_blockregistry_get",
-      "community": 13,
-      "community_name": "BlockRegistry",
+      "community": 121,
+      "community_name": "Collection",
       "norm_label": ".get()"
     },
     {
@@ -250,8 +250,8 @@
       "source_location": "L33",
       "_origin": "ast",
       "id": "app_blocks_blockregistry_blockregistry_pickable",
-      "community": 13,
-      "community_name": "BlockRegistry",
+      "community": 121,
+      "community_name": "Collection",
       "norm_label": ".pickable()"
     },
     {
@@ -261,8 +261,8 @@
       "source_location": "L38",
       "_origin": "ast",
       "id": "app_blocks_blockregistry_blockregistry_globals",
-      "community": 13,
-      "community_name": "BlockRegistry",
+      "community": 121,
+      "community_name": "Collection",
       "norm_label": ".globals()"
     },
     {
@@ -272,8 +272,8 @@
       "source_location": "L44",
       "_origin": "ast",
       "id": "app_blocks_blockregistry_blockregistry_pickerlist",
-      "community": 13,
-      "community_name": "BlockRegistry",
+      "community": 121,
+      "community_name": "Collection",
       "norm_label": ".pickerlist()"
     },
     {
@@ -283,8 +283,8 @@
       "source_location": "L50",
       "_origin": "ast",
       "id": "app_blocks_blockregistry_blockregistry_schemas",
-      "community": 13,
-      "community_name": "BlockRegistry",
+      "community": 121,
+      "community_name": "Collection",
       "norm_label": ".schemas()"
     },
     {
@@ -294,8 +294,8 @@
       "source_location": "L56",
       "_origin": "ast",
       "id": "app_blocks_blockregistry_blockregistry_discover",
-      "community": 13,
-      "community_name": "BlockRegistry",
+      "community": 121,
+      "community_name": "Collection",
       "norm_label": ".discover()"
     },
     {
@@ -305,8 +305,8 @@
       "source_location": "L85",
       "_origin": "ast",
       "id": "app_blocks_blockregistry_blockregistry_classfrompath",
-      "community": 13,
-      "community_name": "BlockRegistry",
+      "community": 121,
+      "community_name": "Collection",
       "norm_label": ".classfrompath()"
     },
     {
@@ -591,8 +591,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "app_blocks_common_bloglist",
-      "community": 283,
-      "community_name": "BlogList.php",
+      "community": 11,
+      "community_name": "Block",
       "norm_label": "bloglist.php"
     },
     {
@@ -602,8 +602,8 @@
       "source_location": "L8",
       "_origin": "ast",
       "id": "app_blocks_common_bloglist_bloglist",
-      "community": 283,
-      "community_name": "BlogList.php",
+      "community": 11,
+      "community_name": "Block",
       "norm_label": "bloglist"
     },
     {
@@ -613,8 +613,8 @@
       "source_location": "L16",
       "_origin": "ast",
       "id": "app_blocks_common_bloglist_bloglist_fields",
-      "community": 283,
-      "community_name": "BlogList.php",
+      "community": 10,
+      "community_name": "Field",
       "norm_label": ".fields()"
     },
     {
@@ -756,8 +756,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "app_blocks_common_destinationsgrid",
-      "community": 15,
-      "community_name": "Field.php",
+      "community": 11,
+      "community_name": "Block",
       "norm_label": "destinationsgrid.php"
     },
     {
@@ -767,8 +767,8 @@
       "source_location": "L8",
       "_origin": "ast",
       "id": "app_blocks_common_destinationsgrid_destinationsgrid",
-      "community": 15,
-      "community_name": "Field.php",
+      "community": 11,
+      "community_name": "Block",
       "norm_label": "destinationsgrid"
     },
     {
@@ -778,8 +778,8 @@
       "source_location": "L14",
       "_origin": "ast",
       "id": "app_blocks_common_destinationsgrid_destinationsgrid_fields",
-      "community": 15,
-      "community_name": "Field.php",
+      "community": 11,
+      "community_name": "Block",
       "norm_label": ".fields()"
     },
     {
@@ -855,8 +855,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "app_blocks_common_latestblog",
-      "community": 11,
-      "community_name": "Block",
+      "community": 254,
+      "community_name": "@codemirror/lang-json",
       "norm_label": "latestblog.php"
     },
     {
@@ -866,8 +866,8 @@
       "source_location": "L8",
       "_origin": "ast",
       "id": "app_blocks_common_latestblog_latestblog",
-      "community": 11,
-      "community_name": "Block",
+      "community": 254,
+      "community_name": "@codemirror/lang-json",
       "norm_label": "latestblog"
     },
     {
@@ -877,8 +877,8 @@
       "source_location": "L14",
       "_origin": "ast",
       "id": "app_blocks_common_latestblog_latestblog_fields",
-      "community": 10,
-      "community_name": "Field",
+      "community": 254,
+      "community_name": "@codemirror/lang-json",
       "norm_label": ".fields()"
     },
     {
@@ -1119,8 +1119,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "app_blocks_common_packagehighlights",
-      "community": 11,
-      "community_name": "Block",
+      "community": 256,
+      "community_name": "@tiptap/extension-link",
       "norm_label": "packagehighlights.php"
     },
     {
@@ -1130,8 +1130,8 @@
       "source_location": "L8",
       "_origin": "ast",
       "id": "app_blocks_common_packagehighlights_packagehighlights",
-      "community": 11,
-      "community_name": "Block",
+      "community": 256,
+      "community_name": "@tiptap/extension-link",
       "norm_label": "packagehighlights"
     },
     {
@@ -1141,8 +1141,8 @@
       "source_location": "L14",
       "_origin": "ast",
       "id": "app_blocks_common_packagehighlights_packagehighlights_fields",
-      "community": 11,
-      "community_name": "Block",
+      "community": 256,
+      "community_name": "@tiptap/extension-link",
       "norm_label": ".fields()"
     },
     {
@@ -1185,8 +1185,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "app_blocks_common_packageitinerary",
-      "community": 23,
-      "community_name": "LatestBlog.php",
+      "community": 9,
+      "community_name": "Taxonomy",
       "norm_label": "packageitinerary.php"
     },
     {
@@ -1196,8 +1196,8 @@
       "source_location": "L8",
       "_origin": "ast",
       "id": "app_blocks_common_packageitinerary_packageitinerary",
-      "community": 23,
-      "community_name": "LatestBlog.php",
+      "community": 9,
+      "community_name": "Taxonomy",
       "norm_label": "packageitinerary"
     },
     {
@@ -1207,8 +1207,8 @@
       "source_location": "L14",
       "_origin": "ast",
       "id": "app_blocks_common_packageitinerary_packageitinerary_fields",
-      "community": 23,
-      "community_name": "LatestBlog.php",
+      "community": 9,
+      "community_name": "Taxonomy",
       "norm_label": ".fields()"
     },
     {
@@ -1944,15 +1944,15 @@
       "source_location": "L17",
       "_origin": "ast",
       "id": "app_http_controllers_admin_collectioncontroller_collectioncontroller_create",
-      "community": 266,
-      "community_name": "Package",
+      "community": 121,
+      "community_name": "Collection",
       "norm_label": ".create()"
     },
     {
       "label": ".store()",
       "file_type": "code",
       "source_file": "app/Http/Controllers/Admin/CollectionController.php",
-      "source_location": "L22",
+      "source_location": "L24",
       "_origin": "ast",
       "id": "app_http_controllers_admin_collectioncontroller_collectioncontroller_store",
       "community": 121,
@@ -1974,7 +1974,7 @@
       "label": ".edit()",
       "file_type": "code",
       "source_file": "app/Http/Controllers/Admin/CollectionController.php",
-      "source_location": "L41",
+      "source_location": "L49",
       "_origin": "ast",
       "id": "app_http_controllers_admin_collectioncontroller_collectioncontroller_edit",
       "community": 121,
@@ -1985,7 +1985,7 @@
       "label": ".update()",
       "file_type": "code",
       "source_file": "app/Http/Controllers/Admin/CollectionController.php",
-      "source_location": "L46",
+      "source_location": "L57",
       "_origin": "ast",
       "id": "app_http_controllers_admin_collectioncontroller_collectioncontroller_update",
       "community": 121,
@@ -1996,7 +1996,7 @@
       "label": ".destroy()",
       "file_type": "code",
       "source_file": "app/Http/Controllers/Admin/CollectionController.php",
-      "source_location": "L71",
+      "source_location": "L82",
       "_origin": "ast",
       "id": "app_http_controllers_admin_collectioncontroller_collectioncontroller_destroy",
       "community": 121,
@@ -2007,7 +2007,7 @@
       "label": ".reorder()",
       "file_type": "code",
       "source_file": "app/Http/Controllers/Admin/CollectionController.php",
-      "source_location": "L78",
+      "source_location": "L89",
       "_origin": "ast",
       "id": "app_http_controllers_admin_collectioncontroller_collectioncontroller_reorder",
       "community": 121,
@@ -2021,8 +2021,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "app_http_controllers_admin_collectionentrycontroller",
-      "community": 3,
-      "community_name": "Page",
+      "community": 221,
+      "community_name": "Sections",
       "norm_label": "collectionentrycontroller.php"
     },
     {
@@ -2084,7 +2084,7 @@
       "label": ".edit()",
       "file_type": "code",
       "source_file": "app/Http/Controllers/Admin/CollectionEntryController.php",
-      "source_location": "L82",
+      "source_location": "L100",
       "_origin": "ast",
       "id": "app_http_controllers_admin_collectionentrycontroller_collectionentrycontroller_edit",
       "community": 121,
@@ -2095,7 +2095,7 @@
       "label": ".update()",
       "file_type": "code",
       "source_file": "app/Http/Controllers/Admin/CollectionEntryController.php",
-      "source_location": "L89",
+      "source_location": "L107",
       "_origin": "ast",
       "id": "app_http_controllers_admin_collectionentrycontroller_collectionentrycontroller_update",
       "community": 121,
@@ -2106,7 +2106,7 @@
       "label": ".editor()",
       "file_type": "code",
       "source_file": "app/Http/Controllers/Admin/CollectionEntryController.php",
-      "source_location": "L107",
+      "source_location": "L125",
       "_origin": "ast",
       "id": "app_http_controllers_admin_collectionentrycontroller_collectionentrycontroller_editor",
       "community": 121,
@@ -2117,7 +2117,7 @@
       "label": ".updateSections()",
       "file_type": "code",
       "source_file": "app/Http/Controllers/Admin/CollectionEntryController.php",
-      "source_location": "L144",
+      "source_location": "L162",
       "_origin": "ast",
       "id": "app_http_controllers_admin_collectionentrycontroller_collectionentrycontroller_updatesections",
       "community": 121,
@@ -2128,7 +2128,7 @@
       "label": ".destroy()",
       "file_type": "code",
       "source_file": "app/Http/Controllers/Admin/CollectionEntryController.php",
-      "source_location": "L183",
+      "source_location": "L201",
       "_origin": "ast",
       "id": "app_http_controllers_admin_collectionentrycontroller_collectionentrycontroller_destroy",
       "community": 121,
@@ -2139,7 +2139,7 @@
       "label": ".reorder()",
       "file_type": "code",
       "source_file": "app/Http/Controllers/Admin/CollectionEntryController.php",
-      "source_location": "L197",
+      "source_location": "L215",
       "_origin": "ast",
       "id": "app_http_controllers_admin_collectionentrycontroller_collectionentrycontroller_reorder",
       "community": 121,
@@ -2153,8 +2153,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "app_http_controllers_admin_commandsearchcontroller",
-      "community": 7,
-      "community_name": "Model",
+      "community": 137,
+      "community_name": "View",
       "norm_label": "commandsearchcontroller.php"
     },
     {
@@ -2164,8 +2164,8 @@
       "source_location": "L10",
       "_origin": "ast",
       "id": "app_http_controllers_admin_commandsearchcontroller_commandsearchcontroller",
-      "community": 7,
-      "community_name": "Model",
+      "community": 137,
+      "community_name": "View",
       "norm_label": "commandsearchcontroller"
     },
     {
@@ -2175,8 +2175,8 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "app_http_controllers_admin_commandsearchcontroller_commandsearchcontroller_invoke",
-      "community": 7,
-      "community_name": "Model",
+      "community": 137,
+      "community_name": "View",
       "norm_label": ".__invoke()"
     },
     {
@@ -2186,8 +2186,8 @@
       "source_location": "",
       "_origin": "ast",
       "id": "app_http_controllers_admin_commandsearchcontroller_php_request",
-      "community": 7,
-      "community_name": "Model",
+      "community": 137,
+      "community_name": "View",
       "norm_label": "request"
     },
     {
@@ -2197,8 +2197,8 @@
       "source_location": "",
       "_origin": "ast",
       "id": "jsonresponse",
-      "community": 7,
-      "community_name": "Model",
+      "community": 137,
+      "community_name": "View",
       "norm_label": "jsonresponse"
     },
     {
@@ -2362,8 +2362,8 @@
       "source_location": "L20",
       "_origin": "ast",
       "id": "app_http_controllers_admin_formcontroller_formcontroller_create",
-      "community": 266,
-      "community_name": "Package",
+      "community": 16,
+      "community_name": "AppServiceProvider.php",
       "norm_label": ".create()"
     },
     {
@@ -2494,8 +2494,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "app_http_controllers_admin_layoutcontroller",
-      "community": 3,
-      "community_name": "Page",
+      "community": 225,
+      "community_name": "UserController",
       "norm_label": "layoutcontroller.php"
     },
     {
@@ -2505,8 +2505,8 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "app_http_controllers_admin_layoutcontroller_layoutcontroller",
-      "community": 238,
-      "community_name": "Post.php",
+      "community": 225,
+      "community_name": "UserController",
       "norm_label": "layoutcontroller"
     },
     {
@@ -2516,8 +2516,8 @@
       "source_location": "L14",
       "_origin": "ast",
       "id": "app_http_controllers_admin_layoutcontroller_layoutcontroller_index",
-      "community": 238,
-      "community_name": "Post.php",
+      "community": 225,
+      "community_name": "UserController",
       "norm_label": ".index()"
     },
     {
@@ -2527,8 +2527,8 @@
       "source_location": "L21",
       "_origin": "ast",
       "id": "app_http_controllers_admin_layoutcontroller_layoutcontroller_create",
-      "community": 266,
-      "community_name": "Package",
+      "community": 225,
+      "community_name": "UserController",
       "norm_label": ".create()"
     },
     {
@@ -2538,8 +2538,8 @@
       "source_location": "L26",
       "_origin": "ast",
       "id": "app_http_controllers_admin_layoutcontroller_layoutcontroller_store",
-      "community": 238,
-      "community_name": "Post.php",
+      "community": 225,
+      "community_name": "UserController",
       "norm_label": ".store()"
     },
     {
@@ -2549,8 +2549,8 @@
       "source_location": "",
       "_origin": "ast",
       "id": "app_http_controllers_admin_layoutcontroller_php_request",
-      "community": 238,
-      "community_name": "Post.php",
+      "community": 225,
+      "community_name": "UserController",
       "norm_label": "request"
     },
     {
@@ -2560,8 +2560,8 @@
       "source_location": "L40",
       "_origin": "ast",
       "id": "app_http_controllers_admin_layoutcontroller_layoutcontroller_edit",
-      "community": 238,
-      "community_name": "Post.php",
+      "community": 225,
+      "community_name": "UserController",
       "norm_label": ".edit()"
     },
     {
@@ -2571,8 +2571,8 @@
       "source_location": "L45",
       "_origin": "ast",
       "id": "app_http_controllers_admin_layoutcontroller_layoutcontroller_update",
-      "community": 238,
-      "community_name": "Post.php",
+      "community": 225,
+      "community_name": "UserController",
       "norm_label": ".update()"
     },
     {
@@ -2582,8 +2582,8 @@
       "source_location": "L57",
       "_origin": "ast",
       "id": "app_http_controllers_admin_layoutcontroller_layoutcontroller_destroy",
-      "community": 238,
-      "community_name": "Post.php",
+      "community": 225,
+      "community_name": "UserController",
       "norm_label": ".destroy()"
     },
     {
@@ -2593,8 +2593,8 @@
       "source_location": "L64",
       "_origin": "ast",
       "id": "app_http_controllers_admin_layoutcontroller_layoutcontroller_reorder",
-      "community": 238,
-      "community_name": "Post.php",
+      "community": 225,
+      "community_name": "UserController",
       "norm_label": ".reorder()"
     },
     {
@@ -2604,19 +2604,19 @@
       "source_location": "L78",
       "_origin": "ast",
       "id": "app_http_controllers_admin_layoutcontroller_layoutcontroller_editor",
-      "community": 238,
-      "community_name": "Post.php",
+      "community": 225,
+      "community_name": "UserController",
       "norm_label": ".editor()"
     },
     {
       "label": ".updateSections()",
       "file_type": "code",
       "source_file": "app/Http/Controllers/Admin/LayoutController.php",
-      "source_location": "L111",
+      "source_location": "L112",
       "_origin": "ast",
       "id": "app_http_controllers_admin_layoutcontroller_layoutcontroller_updatesections",
-      "community": 238,
-      "community_name": "Post.php",
+      "community": 225,
+      "community_name": "UserController",
       "norm_label": ".updatesections()"
     },
     {
@@ -2626,8 +2626,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "app_http_controllers_admin_packagecontroller",
-      "community": 3,
-      "community_name": "Page",
+      "community": 221,
+      "community_name": "Sections",
       "norm_label": "packagecontroller.php"
     },
     {
@@ -2637,8 +2637,8 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "app_http_controllers_admin_packagecontroller_packagecontroller",
-      "community": 266,
-      "community_name": "Package",
+      "community": 16,
+      "community_name": "AppServiceProvider.php",
       "norm_label": "packagecontroller"
     },
     {
@@ -2648,8 +2648,8 @@
       "source_location": "L14",
       "_origin": "ast",
       "id": "app_http_controllers_admin_packagecontroller_packagecontroller_index",
-      "community": 266,
-      "community_name": "Package",
+      "community": 16,
+      "community_name": "AppServiceProvider.php",
       "norm_label": ".index()"
     },
     {
@@ -2659,8 +2659,8 @@
       "source_location": "L21",
       "_origin": "ast",
       "id": "app_http_controllers_admin_packagecontroller_packagecontroller_create",
-      "community": 266,
-      "community_name": "Package",
+      "community": 16,
+      "community_name": "AppServiceProvider.php",
       "norm_label": ".create()"
     },
     {
@@ -2670,8 +2670,8 @@
       "source_location": "L26",
       "_origin": "ast",
       "id": "app_http_controllers_admin_packagecontroller_packagecontroller_store",
-      "community": 266,
-      "community_name": "Package",
+      "community": 16,
+      "community_name": "AppServiceProvider.php",
       "norm_label": ".store()"
     },
     {
@@ -2681,8 +2681,8 @@
       "source_location": "",
       "_origin": "ast",
       "id": "app_http_controllers_admin_packagecontroller_php_request",
-      "community": 266,
-      "community_name": "Package",
+      "community": 16,
+      "community_name": "AppServiceProvider.php",
       "norm_label": "request"
     },
     {
@@ -2692,8 +2692,8 @@
       "source_location": "L63",
       "_origin": "ast",
       "id": "app_http_controllers_admin_packagecontroller_packagecontroller_edit",
-      "community": 266,
-      "community_name": "Package",
+      "community": 16,
+      "community_name": "AppServiceProvider.php",
       "norm_label": ".edit()"
     },
     {
@@ -2703,8 +2703,8 @@
       "source_location": "L68",
       "_origin": "ast",
       "id": "app_http_controllers_admin_packagecontroller_packagecontroller_update",
-      "community": 266,
-      "community_name": "Package",
+      "community": 16,
+      "community_name": "AppServiceProvider.php",
       "norm_label": ".update()"
     },
     {
@@ -2714,8 +2714,8 @@
       "source_location": "L94",
       "_origin": "ast",
       "id": "app_http_controllers_admin_packagecontroller_packagecontroller_destroy",
-      "community": 266,
-      "community_name": "Package",
+      "community": 16,
+      "community_name": "AppServiceProvider.php",
       "norm_label": ".destroy()"
     },
     {
@@ -2725,8 +2725,8 @@
       "source_location": "L101",
       "_origin": "ast",
       "id": "app_http_controllers_admin_packagecontroller_packagecontroller_reorder",
-      "community": 266,
-      "community_name": "Package",
+      "community": 16,
+      "community_name": "AppServiceProvider.php",
       "norm_label": ".reorder()"
     },
     {
@@ -2736,8 +2736,8 @@
       "source_location": "L115",
       "_origin": "ast",
       "id": "app_http_controllers_admin_packagecontroller_packagecontroller_editor",
-      "community": 266,
-      "community_name": "Package",
+      "community": 16,
+      "community_name": "AppServiceProvider.php",
       "norm_label": ".editor()"
     },
     {
@@ -2747,8 +2747,8 @@
       "source_location": "L143",
       "_origin": "ast",
       "id": "app_http_controllers_admin_packagecontroller_packagecontroller_updatesections",
-      "community": 266,
-      "community_name": "Package",
+      "community": 16,
+      "community_name": "AppServiceProvider.php",
       "norm_label": ".updatesections()"
     },
     {
@@ -2758,8 +2758,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "app_http_controllers_admin_pagecontroller",
-      "community": 3,
-      "community_name": "Page",
+      "community": 221,
+      "community_name": "Sections",
       "norm_label": "pagecontroller.php"
     },
     {
@@ -2769,8 +2769,8 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "app_http_controllers_admin_pagecontroller_pagecontroller",
-      "community": 137,
-      "community_name": "View",
+      "community": 202,
+      "community_name": "BlogList.php",
       "norm_label": "pagecontroller"
     },
     {
@@ -2780,8 +2780,8 @@
       "source_location": "L14",
       "_origin": "ast",
       "id": "app_http_controllers_admin_pagecontroller_pagecontroller_index",
-      "community": 137,
-      "community_name": "View",
+      "community": 202,
+      "community_name": "BlogList.php",
       "norm_label": ".index()"
     },
     {
@@ -2791,8 +2791,8 @@
       "source_location": "L21",
       "_origin": "ast",
       "id": "app_http_controllers_admin_pagecontroller_pagecontroller_create",
-      "community": 137,
-      "community_name": "View",
+      "community": 202,
+      "community_name": "BlogList.php",
       "norm_label": ".create()"
     },
     {
@@ -2802,8 +2802,8 @@
       "source_location": "L26",
       "_origin": "ast",
       "id": "app_http_controllers_admin_pagecontroller_pagecontroller_store",
-      "community": 137,
-      "community_name": "View",
+      "community": 202,
+      "community_name": "BlogList.php",
       "norm_label": ".store()"
     },
     {
@@ -2813,8 +2813,8 @@
       "source_location": "",
       "_origin": "ast",
       "id": "app_http_controllers_admin_pagecontroller_php_request",
-      "community": 137,
-      "community_name": "View",
+      "community": 202,
+      "community_name": "BlogList.php",
       "norm_label": "request"
     },
     {
@@ -2824,8 +2824,8 @@
       "source_location": "L64",
       "_origin": "ast",
       "id": "app_http_controllers_admin_pagecontroller_pagecontroller_edit",
-      "community": 137,
-      "community_name": "View",
+      "community": 202,
+      "community_name": "BlogList.php",
       "norm_label": ".edit()"
     },
     {
@@ -2835,8 +2835,8 @@
       "source_location": "L69",
       "_origin": "ast",
       "id": "app_http_controllers_admin_pagecontroller_pagecontroller_update",
-      "community": 137,
-      "community_name": "View",
+      "community": 202,
+      "community_name": "BlogList.php",
       "norm_label": ".update()"
     },
     {
@@ -2846,8 +2846,8 @@
       "source_location": "L84",
       "_origin": "ast",
       "id": "app_http_controllers_admin_pagecontroller_pagecontroller_destroy",
-      "community": 137,
-      "community_name": "View",
+      "community": 202,
+      "community_name": "BlogList.php",
       "norm_label": ".destroy()"
     },
     {
@@ -2857,8 +2857,8 @@
       "source_location": "L95",
       "_origin": "ast",
       "id": "app_http_controllers_admin_pagecontroller_pagecontroller_reorder",
-      "community": 137,
-      "community_name": "View",
+      "community": 202,
+      "community_name": "BlogList.php",
       "norm_label": ".reorder()"
     },
     {
@@ -2868,8 +2868,8 @@
       "source_location": "L109",
       "_origin": "ast",
       "id": "app_http_controllers_admin_pagecontroller_pagecontroller_editor",
-      "community": 137,
-      "community_name": "View",
+      "community": 202,
+      "community_name": "BlogList.php",
       "norm_label": ".editor()"
     },
     {
@@ -2879,8 +2879,8 @@
       "source_location": "L143",
       "_origin": "ast",
       "id": "app_http_controllers_admin_pagecontroller_pagecontroller_updatesections",
-      "community": 137,
-      "community_name": "View",
+      "community": 202,
+      "community_name": "BlogList.php",
       "norm_label": ".updatesections()"
     },
     {
@@ -2890,8 +2890,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "app_http_controllers_admin_postcontroller",
-      "community": 3,
-      "community_name": "Page",
+      "community": 221,
+      "community_name": "Sections",
       "norm_label": "postcontroller.php"
     },
     {
@@ -2901,8 +2901,8 @@
       "source_location": "L13",
       "_origin": "ast",
       "id": "app_http_controllers_admin_postcontroller_postcontroller",
-      "community": 136,
-      "community_name": "RedirectResponse",
+      "community": 236,
+      "community_name": "User",
       "norm_label": "postcontroller"
     },
     {
@@ -2912,8 +2912,8 @@
       "source_location": "L15",
       "_origin": "ast",
       "id": "app_http_controllers_admin_postcontroller_postcontroller_index",
-      "community": 136,
-      "community_name": "RedirectResponse",
+      "community": 236,
+      "community_name": "User",
       "norm_label": ".index()"
     },
     {
@@ -2923,8 +2923,8 @@
       "source_location": "L22",
       "_origin": "ast",
       "id": "app_http_controllers_admin_postcontroller_postcontroller_create",
-      "community": 136,
-      "community_name": "RedirectResponse",
+      "community": 236,
+      "community_name": "User",
       "norm_label": ".create()"
     },
     {
@@ -2934,8 +2934,8 @@
       "source_location": "L29",
       "_origin": "ast",
       "id": "app_http_controllers_admin_postcontroller_postcontroller_store",
-      "community": 136,
-      "community_name": "RedirectResponse",
+      "community": 236,
+      "community_name": "User",
       "norm_label": ".store()"
     },
     {
@@ -2945,8 +2945,8 @@
       "source_location": "",
       "_origin": "ast",
       "id": "app_http_controllers_admin_postcontroller_php_request",
-      "community": 136,
-      "community_name": "RedirectResponse",
+      "community": 236,
+      "community_name": "User",
       "norm_label": "request"
     },
     {
@@ -2956,8 +2956,8 @@
       "source_location": "L66",
       "_origin": "ast",
       "id": "app_http_controllers_admin_postcontroller_postcontroller_edit",
-      "community": 136,
-      "community_name": "RedirectResponse",
+      "community": 236,
+      "community_name": "User",
       "norm_label": ".edit()"
     },
     {
@@ -2967,8 +2967,8 @@
       "source_location": "L83",
       "_origin": "ast",
       "id": "app_http_controllers_admin_postcontroller_postcontroller_update",
-      "community": 136,
-      "community_name": "RedirectResponse",
+      "community": 236,
+      "community_name": "User",
       "norm_label": ".update()"
     },
     {
@@ -2978,8 +2978,8 @@
       "source_location": "L113",
       "_origin": "ast",
       "id": "app_http_controllers_admin_postcontroller_postcontroller_destroy",
-      "community": 136,
-      "community_name": "RedirectResponse",
+      "community": 236,
+      "community_name": "User",
       "norm_label": ".destroy()"
     },
     {
@@ -2989,8 +2989,8 @@
       "source_location": "L120",
       "_origin": "ast",
       "id": "app_http_controllers_admin_postcontroller_postcontroller_reorder",
-      "community": 136,
-      "community_name": "RedirectResponse",
+      "community": 236,
+      "community_name": "User",
       "norm_label": ".reorder()"
     },
     {
@@ -3000,8 +3000,8 @@
       "source_location": "L134",
       "_origin": "ast",
       "id": "app_http_controllers_admin_postcontroller_postcontroller_editor",
-      "community": 136,
-      "community_name": "RedirectResponse",
+      "community": 236,
+      "community_name": "User",
       "norm_label": ".editor()"
     },
     {
@@ -3011,8 +3011,8 @@
       "source_location": "L162",
       "_origin": "ast",
       "id": "app_http_controllers_admin_postcontroller_postcontroller_updatesections",
-      "community": 136,
-      "community_name": "RedirectResponse",
+      "community": 236,
+      "community_name": "User",
       "norm_label": ".updatesections()"
     },
     {
@@ -3022,8 +3022,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "app_http_controllers_admin_previewcontroller",
-      "community": 3,
-      "community_name": "Page",
+      "community": 221,
+      "community_name": "Sections",
       "norm_label": "previewcontroller.php"
     },
     {
@@ -3066,8 +3066,8 @@
       "source_location": "L30",
       "_origin": "ast",
       "id": "app_http_controllers_admin_previewcontroller_previewcontroller_blockpreview",
-      "community": 221,
-      "community_name": "Sections",
+      "community": 23,
+      "community_name": "LatestBlog.php",
       "norm_label": ".blockpreview()"
     },
     {
@@ -3077,8 +3077,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "app_http_controllers_admin_profilecontroller",
-      "community": 3,
-      "community_name": "Page",
+      "community": 259,
+      "community_name": "ProfileController.php",
       "norm_label": "profilecontroller.php"
     },
     {
@@ -3088,8 +3088,8 @@
       "source_location": "L11",
       "_origin": "ast",
       "id": "app_http_controllers_admin_profilecontroller_profilecontroller",
-      "community": 3,
-      "community_name": "Page",
+      "community": 259,
+      "community_name": "ProfileController.php",
       "norm_label": "profilecontroller"
     },
     {
@@ -3099,8 +3099,8 @@
       "source_location": "L13",
       "_origin": "ast",
       "id": "app_http_controllers_admin_profilecontroller_profilecontroller_edit",
-      "community": 3,
-      "community_name": "Page",
+      "community": 259,
+      "community_name": "ProfileController.php",
       "norm_label": ".edit()"
     },
     {
@@ -3110,8 +3110,8 @@
       "source_location": "",
       "_origin": "ast",
       "id": "app_http_controllers_admin_profilecontroller_php_view",
-      "community": 3,
-      "community_name": "Page",
+      "community": 259,
+      "community_name": "ProfileController.php",
       "norm_label": "view"
     },
     {
@@ -3121,8 +3121,8 @@
       "source_location": "L20",
       "_origin": "ast",
       "id": "app_http_controllers_admin_profilecontroller_profilecontroller_update",
-      "community": 3,
-      "community_name": "Page",
+      "community": 259,
+      "community_name": "ProfileController.php",
       "norm_label": ".update()"
     },
     {
@@ -3132,8 +3132,8 @@
       "source_location": "",
       "_origin": "ast",
       "id": "app_http_controllers_admin_profilecontroller_php_redirectresponse",
-      "community": 3,
-      "community_name": "Page",
+      "community": 259,
+      "community_name": "ProfileController.php",
       "norm_label": "redirectresponse"
     },
     {
@@ -3143,8 +3143,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "app_http_controllers_admin_seocontroller",
-      "community": 202,
-      "community_name": "BlogList.php",
+      "community": 7,
+      "community_name": "Model",
       "norm_label": "seocontroller.php"
     },
     {
@@ -3154,8 +3154,8 @@
       "source_location": "L9",
       "_origin": "ast",
       "id": "app_http_controllers_admin_seocontroller_seocontroller",
-      "community": 202,
-      "community_name": "BlogList.php",
+      "community": 7,
+      "community_name": "Model",
       "norm_label": "seocontroller"
     },
     {
@@ -3165,8 +3165,8 @@
       "source_location": "L46",
       "_origin": "ast",
       "id": "app_http_controllers_admin_seocontroller_seocontroller_index",
-      "community": 202,
-      "community_name": "BlogList.php",
+      "community": 7,
+      "community_name": "Model",
       "norm_label": ".index()"
     },
     {
@@ -3176,8 +3176,8 @@
       "source_location": "L54",
       "_origin": "ast",
       "id": "app_http_controllers_admin_seocontroller_seocontroller_update",
-      "community": 202,
-      "community_name": "BlogList.php",
+      "community": 7,
+      "community_name": "Model",
       "norm_label": ".update()"
     },
     {
@@ -3187,8 +3187,8 @@
       "source_location": "",
       "_origin": "ast",
       "id": "app_http_controllers_admin_seocontroller_php_request",
-      "community": 202,
-      "community_name": "BlogList.php",
+      "community": 7,
+      "community_name": "Model",
       "norm_label": "request"
     },
     {
@@ -3198,8 +3198,8 @@
       "source_location": "L73",
       "_origin": "ast",
       "id": "app_http_controllers_admin_seocontroller_seocontroller_mergeseo",
-      "community": 202,
-      "community_name": "BlogList.php",
+      "community": 7,
+      "community_name": "Model",
       "norm_label": ".mergeseo()"
     },
     {
@@ -3209,8 +3209,8 @@
       "source_location": "L98",
       "_origin": "ast",
       "id": "app_http_controllers_admin_seocontroller_seocontroller_validateseo",
-      "community": 202,
-      "community_name": "BlogList.php",
+      "community": 7,
+      "community_name": "Model",
       "norm_label": ".validateseo()"
     },
     {
@@ -3220,8 +3220,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "app_http_controllers_admin_settingscontroller",
-      "community": 3,
-      "community_name": "Page",
+      "community": 7,
+      "community_name": "Model",
       "norm_label": "settingscontroller.php"
     },
     {
@@ -3231,8 +3231,8 @@
       "source_location": "L9",
       "_origin": "ast",
       "id": "app_http_controllers_admin_settingscontroller_settingscontroller",
-      "community": 3,
-      "community_name": "Page",
+      "community": 7,
+      "community_name": "Model",
       "norm_label": "settingscontroller"
     },
     {
@@ -3242,8 +3242,8 @@
       "source_location": "L11",
       "_origin": "ast",
       "id": "app_http_controllers_admin_settingscontroller_settingscontroller_index",
-      "community": 202,
-      "community_name": "BlogList.php",
+      "community": 7,
+      "community_name": "Model",
       "norm_label": ".index()"
     },
     {
@@ -3253,8 +3253,8 @@
       "source_location": "L18",
       "_origin": "ast",
       "id": "app_http_controllers_admin_settingscontroller_settingscontroller_update",
-      "community": 3,
-      "community_name": "Page",
+      "community": 7,
+      "community_name": "Model",
       "norm_label": ".update()"
     },
     {
@@ -3264,8 +3264,8 @@
       "source_location": "",
       "_origin": "ast",
       "id": "app_http_controllers_admin_settingscontroller_php_request",
-      "community": 3,
-      "community_name": "Page",
+      "community": 7,
+      "community_name": "Model",
       "norm_label": "request"
     },
     {
@@ -3275,8 +3275,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "app_http_controllers_admin_taxonomycontroller",
-      "community": 136,
-      "community_name": "RedirectResponse",
+      "community": 223,
+      "community_name": "Seeder",
       "norm_label": "taxonomycontroller.php"
     },
     {
@@ -3286,8 +3286,8 @@
       "source_location": "L10",
       "_origin": "ast",
       "id": "app_http_controllers_admin_taxonomycontroller_taxonomycontroller",
-      "community": 136,
-      "community_name": "RedirectResponse",
+      "community": 223,
+      "community_name": "Seeder",
       "norm_label": "taxonomycontroller"
     },
     {
@@ -3297,8 +3297,8 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "app_http_controllers_admin_taxonomycontroller_taxonomycontroller_index",
-      "community": 136,
-      "community_name": "RedirectResponse",
+      "community": 223,
+      "community_name": "Seeder",
       "norm_label": ".index()"
     },
     {
@@ -3308,8 +3308,8 @@
       "source_location": "L19",
       "_origin": "ast",
       "id": "app_http_controllers_admin_taxonomycontroller_taxonomycontroller_create",
-      "community": 136,
-      "community_name": "RedirectResponse",
+      "community": 223,
+      "community_name": "Seeder",
       "norm_label": ".create()"
     },
     {
@@ -3319,8 +3319,8 @@
       "source_location": "L24",
       "_origin": "ast",
       "id": "app_http_controllers_admin_taxonomycontroller_taxonomycontroller_store",
-      "community": 136,
-      "community_name": "RedirectResponse",
+      "community": 223,
+      "community_name": "Seeder",
       "norm_label": ".store()"
     },
     {
@@ -3330,8 +3330,8 @@
       "source_location": "",
       "_origin": "ast",
       "id": "app_http_controllers_admin_taxonomycontroller_php_request",
-      "community": 136,
-      "community_name": "RedirectResponse",
+      "community": 223,
+      "community_name": "Seeder",
       "norm_label": "request"
     },
     {
@@ -3341,8 +3341,8 @@
       "source_location": "L37",
       "_origin": "ast",
       "id": "app_http_controllers_admin_taxonomycontroller_taxonomycontroller_edit",
-      "community": 136,
-      "community_name": "RedirectResponse",
+      "community": 223,
+      "community_name": "Seeder",
       "norm_label": ".edit()"
     },
     {
@@ -3352,8 +3352,8 @@
       "source_location": "L44",
       "_origin": "ast",
       "id": "app_http_controllers_admin_taxonomycontroller_taxonomycontroller_update",
-      "community": 136,
-      "community_name": "RedirectResponse",
+      "community": 223,
+      "community_name": "Seeder",
       "norm_label": ".update()"
     },
     {
@@ -3363,8 +3363,8 @@
       "source_location": "L90",
       "_origin": "ast",
       "id": "app_http_controllers_admin_taxonomycontroller_taxonomycontroller_destroy",
-      "community": 136,
-      "community_name": "RedirectResponse",
+      "community": 223,
+      "community_name": "Seeder",
       "norm_label": ".destroy()"
     },
     {
@@ -3374,8 +3374,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "app_http_controllers_admin_usercontroller",
-      "community": 225,
-      "community_name": "UserController",
+      "community": 3,
+      "community_name": "Page",
       "norm_label": "usercontroller.php"
     },
     {
@@ -3385,8 +3385,8 @@
       "source_location": "L11",
       "_origin": "ast",
       "id": "app_http_controllers_admin_usercontroller_usercontroller",
-      "community": 225,
-      "community_name": "UserController",
+      "community": 3,
+      "community_name": "Page",
       "norm_label": "usercontroller"
     },
     {
@@ -3396,8 +3396,8 @@
       "source_location": "L13",
       "_origin": "ast",
       "id": "app_http_controllers_admin_usercontroller_usercontroller_index",
-      "community": 225,
-      "community_name": "UserController",
+      "community": 3,
+      "community_name": "Page",
       "norm_label": ".index()"
     },
     {
@@ -3407,8 +3407,8 @@
       "source_location": "",
       "_origin": "ast",
       "id": "app_http_controllers_admin_usercontroller_php_view",
-      "community": 225,
-      "community_name": "UserController",
+      "community": 3,
+      "community_name": "Page",
       "norm_label": "view"
     },
     {
@@ -3418,8 +3418,8 @@
       "source_location": "L20",
       "_origin": "ast",
       "id": "app_http_controllers_admin_usercontroller_usercontroller_create",
-      "community": 225,
-      "community_name": "UserController",
+      "community": 3,
+      "community_name": "Page",
       "norm_label": ".create()"
     },
     {
@@ -3429,8 +3429,8 @@
       "source_location": "L25",
       "_origin": "ast",
       "id": "app_http_controllers_admin_usercontroller_usercontroller_store",
-      "community": 225,
-      "community_name": "UserController",
+      "community": 3,
+      "community_name": "Page",
       "norm_label": ".store()"
     },
     {
@@ -3440,8 +3440,8 @@
       "source_location": "",
       "_origin": "ast",
       "id": "app_http_controllers_admin_usercontroller_php_request",
-      "community": 225,
-      "community_name": "UserController",
+      "community": 3,
+      "community_name": "Page",
       "norm_label": "request"
     },
     {
@@ -3451,8 +3451,8 @@
       "source_location": "",
       "_origin": "ast",
       "id": "app_http_controllers_admin_usercontroller_php_redirectresponse",
-      "community": 225,
-      "community_name": "UserController",
+      "community": 3,
+      "community_name": "Page",
       "norm_label": "redirectresponse"
     },
     {
@@ -3462,8 +3462,8 @@
       "source_location": "L39",
       "_origin": "ast",
       "id": "app_http_controllers_admin_usercontroller_usercontroller_edit",
-      "community": 225,
-      "community_name": "UserController",
+      "community": 3,
+      "community_name": "Page",
       "norm_label": ".edit()"
     },
     {
@@ -3473,8 +3473,8 @@
       "source_location": "L44",
       "_origin": "ast",
       "id": "app_http_controllers_admin_usercontroller_usercontroller_update",
-      "community": 225,
-      "community_name": "UserController",
+      "community": 3,
+      "community_name": "Page",
       "norm_label": ".update()"
     },
     {
@@ -3484,8 +3484,8 @@
       "source_location": "L64",
       "_origin": "ast",
       "id": "app_http_controllers_admin_usercontroller_usercontroller_destroy",
-      "community": 225,
-      "community_name": "UserController",
+      "community": 3,
+      "community_name": "Page",
       "norm_label": ".destroy()"
     },
     {
@@ -3583,8 +3583,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "app_http_controllers_controller",
-      "community": 3,
-      "community_name": "Page",
+      "community": 221,
+      "community_name": "Sections",
       "norm_label": "controller.php"
     },
     {
@@ -3594,8 +3594,8 @@
       "source_location": "L5",
       "_origin": "ast",
       "id": "app_http_controllers_controller_controller",
-      "community": 3,
-      "community_name": "Page",
+      "community": 221,
+      "community_name": "Sections",
       "norm_label": "controller"
     },
     {
@@ -3605,8 +3605,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "app_http_controllers_public_blogcontroller",
-      "community": 136,
-      "community_name": "RedirectResponse",
+      "community": 236,
+      "community_name": "User",
       "norm_label": "blogcontroller.php"
     },
     {
@@ -3616,8 +3616,8 @@
       "source_location": "L8",
       "_origin": "ast",
       "id": "app_http_controllers_public_blogcontroller_blogcontroller",
-      "community": 136,
-      "community_name": "RedirectResponse",
+      "community": 236,
+      "community_name": "User",
       "norm_label": "blogcontroller"
     },
     {
@@ -3627,8 +3627,8 @@
       "source_location": "L10",
       "_origin": "ast",
       "id": "app_http_controllers_public_blogcontroller_blogcontroller_show",
-      "community": 136,
-      "community_name": "RedirectResponse",
+      "community": 236,
+      "community_name": "User",
       "norm_label": ".show()"
     },
     {
@@ -3638,8 +3638,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "app_http_controllers_public_pagecontroller",
-      "community": 281,
-      "community_name": "UpdatesListWidget",
+      "community": 16,
+      "community_name": "AppServiceProvider.php",
       "norm_label": "pagecontroller.php"
     },
     {
@@ -3649,8 +3649,8 @@
       "source_location": "L10",
       "_origin": "ast",
       "id": "app_http_controllers_public_pagecontroller_pagecontroller",
-      "community": 266,
-      "community_name": "Package",
+      "community": 16,
+      "community_name": "AppServiceProvider.php",
       "norm_label": "pagecontroller"
     },
     {
@@ -3660,8 +3660,8 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "app_http_controllers_public_pagecontroller_pagecontroller_home",
-      "community": 266,
-      "community_name": "Package",
+      "community": 16,
+      "community_name": "AppServiceProvider.php",
       "norm_label": ".home()"
     },
     {
@@ -3671,19 +3671,19 @@
       "source_location": "L19",
       "_origin": "ast",
       "id": "app_http_controllers_public_pagecontroller_pagecontroller_show",
-      "community": 266,
-      "community_name": "Package",
+      "community": 16,
+      "community_name": "AppServiceProvider.php",
       "norm_label": ".show()"
     },
     {
       "label": ".showCollectionEntry()",
       "file_type": "code",
       "source_file": "app/Http/Controllers/Public/PageController.php",
-      "source_location": "L28",
+      "source_location": "L32",
       "_origin": "ast",
       "id": "app_http_controllers_public_pagecontroller_pagecontroller_showcollectionentry",
-      "community": 266,
-      "community_name": "Package",
+      "community": 16,
+      "community_name": "AppServiceProvider.php",
       "norm_label": ".showcollectionentry()"
     },
     {
@@ -3693,8 +3693,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "app_http_middleware_trackpageviews",
-      "community": 9,
-      "community_name": "Taxonomy",
+      "community": 255,
+      "community_name": "@tiptap/core",
       "norm_label": "trackpageviews.php"
     },
     {
@@ -3704,8 +3704,8 @@
       "source_location": "L10",
       "_origin": "ast",
       "id": "app_http_middleware_trackpageviews_trackpageviews",
-      "community": 9,
-      "community_name": "Taxonomy",
+      "community": 255,
+      "community_name": "@tiptap/core",
       "norm_label": "trackpageviews"
     },
     {
@@ -3715,8 +3715,8 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "app_http_middleware_trackpageviews_trackpageviews_handle",
-      "community": 9,
-      "community_name": "Taxonomy",
+      "community": 255,
+      "community_name": "@tiptap/core",
       "norm_label": ".handle()"
     },
     {
@@ -3726,8 +3726,8 @@
       "source_location": "",
       "_origin": "ast",
       "id": "app_http_middleware_trackpageviews_php_request",
-      "community": 9,
-      "community_name": "Taxonomy",
+      "community": 255,
+      "community_name": "@tiptap/core",
       "norm_label": "request"
     },
     {
@@ -3737,8 +3737,8 @@
       "source_location": "",
       "_origin": "ast",
       "id": "closure",
-      "community": 9,
-      "community_name": "Taxonomy",
+      "community": 255,
+      "community_name": "@tiptap/core",
       "norm_label": "closure"
     },
     {
@@ -3748,8 +3748,8 @@
       "source_location": "",
       "_origin": "ast",
       "id": "response",
-      "community": 9,
-      "community_name": "Taxonomy",
+      "community": 255,
+      "community_name": "@tiptap/core",
       "norm_label": "response"
     },
     {
@@ -3759,8 +3759,8 @@
       "source_location": "L17",
       "_origin": "ast",
       "id": "app_http_middleware_trackpageviews_trackpageviews_terminate",
-      "community": 9,
-      "community_name": "Taxonomy",
+      "community": 255,
+      "community_name": "@tiptap/core",
       "norm_label": ".terminate()"
     },
     {
@@ -3781,8 +3781,8 @@
       "source_location": "L13",
       "_origin": "ast",
       "id": "app_http_requests_auth_loginrequest_loginrequest",
-      "community": 8,
-      "community_name": "LoginController.php",
+      "community": 238,
+      "community_name": "Post.php",
       "norm_label": "loginrequest"
     },
     {
@@ -3792,8 +3792,8 @@
       "source_location": "",
       "_origin": "ast",
       "id": "formrequest",
-      "community": 8,
-      "community_name": "LoginController.php",
+      "community": 238,
+      "community_name": "Post.php",
       "norm_label": "formrequest"
     },
     {
@@ -3803,8 +3803,8 @@
       "source_location": "L18",
       "_origin": "ast",
       "id": "app_http_requests_auth_loginrequest_loginrequest_authorize",
-      "community": 8,
-      "community_name": "LoginController.php",
+      "community": 238,
+      "community_name": "Post.php",
       "norm_label": ".authorize()"
     },
     {
@@ -3814,8 +3814,8 @@
       "source_location": "L28",
       "_origin": "ast",
       "id": "app_http_requests_auth_loginrequest_loginrequest_rules",
-      "community": 8,
-      "community_name": "LoginController.php",
+      "community": 238,
+      "community_name": "Post.php",
       "norm_label": ".rules()"
     },
     {
@@ -3825,8 +3825,8 @@
       "source_location": "L41",
       "_origin": "ast",
       "id": "app_http_requests_auth_loginrequest_loginrequest_authenticate",
-      "community": 8,
-      "community_name": "LoginController.php",
+      "community": 238,
+      "community_name": "Post.php",
       "norm_label": ".authenticate()"
     },
     {
@@ -3836,8 +3836,8 @@
       "source_location": "L61",
       "_origin": "ast",
       "id": "app_http_requests_auth_loginrequest_loginrequest_ensureisnotratelimited",
-      "community": 8,
-      "community_name": "LoginController.php",
+      "community": 238,
+      "community_name": "Post.php",
       "norm_label": ".ensureisnotratelimited()"
     },
     {
@@ -3847,8 +3847,8 @@
       "source_location": "L82",
       "_origin": "ast",
       "id": "app_http_requests_auth_loginrequest_loginrequest_throttlekey",
-      "community": 8,
-      "community_name": "LoginController.php",
+      "community": 238,
+      "community_name": "Post.php",
       "norm_label": ".throttlekey()"
     },
     {
@@ -3858,8 +3858,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "app_http_requests_profileupdaterequest",
-      "community": 8,
-      "community_name": "LoginController.php",
+      "community": 238,
+      "community_name": "Post.php",
       "norm_label": "profileupdaterequest.php"
     },
     {
@@ -3869,8 +3869,8 @@
       "source_location": "L11",
       "_origin": "ast",
       "id": "app_http_requests_profileupdaterequest_profileupdaterequest",
-      "community": 8,
-      "community_name": "LoginController.php",
+      "community": 238,
+      "community_name": "Post.php",
       "norm_label": "profileupdaterequest"
     },
     {
@@ -3880,8 +3880,8 @@
       "source_location": "L13",
       "_origin": "ast",
       "id": "app_http_requests_profileupdaterequest_profileupdaterequest_authorize",
-      "community": 8,
-      "community_name": "LoginController.php",
+      "community": 238,
+      "community_name": "Post.php",
       "norm_label": ".authorize()"
     },
     {
@@ -3891,8 +3891,8 @@
       "source_location": "L21",
       "_origin": "ast",
       "id": "app_http_requests_profileupdaterequest_profileupdaterequest_rules",
-      "community": 8,
-      "community_name": "LoginController.php",
+      "community": 238,
+      "community_name": "Post.php",
       "norm_label": ".rules()"
     },
     {
@@ -3902,8 +3902,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "app_models_admin",
-      "community": 270,
-      "community_name": "LatestBlog.php",
+      "community": 3,
+      "community_name": "Page",
       "norm_label": "admin.php"
     },
     {
@@ -3935,8 +3935,8 @@
       "source_location": "",
       "_origin": "ast",
       "id": "hasfactory",
-      "community": 270,
-      "community_name": "LatestBlog.php",
+      "community": 3,
+      "community_name": "Page",
       "norm_label": "hasfactory"
     },
     {
@@ -3946,8 +3946,8 @@
       "source_location": "",
       "_origin": "ast",
       "id": "notifiable",
-      "community": 270,
-      "community_name": "LatestBlog.php",
+      "community": 3,
+      "community_name": "Page",
       "norm_label": "notifiable"
     },
     {
@@ -3990,8 +3990,8 @@
       "source_location": "",
       "_origin": "ast",
       "id": "model",
-      "community": 269,
-      "community_name": "BlogController.php",
+      "community": 16,
+      "community_name": "AppServiceProvider.php",
       "norm_label": "model"
     },
     {
@@ -4012,8 +4012,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "app_models_booking",
-      "community": 269,
-      "community_name": "BlogController.php",
+      "community": 16,
+      "community_name": "AppServiceProvider.php",
       "norm_label": "booking.php"
     },
     {
@@ -4023,8 +4023,8 @@
       "source_location": "L7",
       "_origin": "ast",
       "id": "app_models_booking_booking",
-      "community": 269,
-      "community_name": "BlogController.php",
+      "community": 16,
+      "community_name": "AppServiceProvider.php",
       "norm_label": "booking"
     },
     {
@@ -4034,8 +4034,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "app_models_collection",
-      "community": 281,
-      "community_name": "UpdatesListWidget",
+      "community": 121,
+      "community_name": "Collection",
       "norm_label": "collection.php"
     },
     {
@@ -4056,8 +4056,8 @@
       "source_location": "L17",
       "_origin": "ast",
       "id": "app_models_collection_collection_entries",
-      "community": 281,
-      "community_name": "UpdatesListWidget",
+      "community": 121,
+      "community_name": "Collection",
       "norm_label": ".entries()"
     },
     {
@@ -4067,8 +4067,8 @@
       "source_location": "",
       "_origin": "ast",
       "id": "app_models_collection_php_hasmany",
-      "community": 281,
-      "community_name": "UpdatesListWidget",
+      "community": 121,
+      "community_name": "Collection",
       "norm_label": "hasmany"
     },
     {
@@ -4177,8 +4177,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "app_models_destination",
-      "community": 269,
-      "community_name": "BlogController.php",
+      "community": 16,
+      "community_name": "AppServiceProvider.php",
       "norm_label": "destination.php"
     },
     {
@@ -4188,8 +4188,8 @@
       "source_location": "L7",
       "_origin": "ast",
       "id": "app_models_destination_destination",
-      "community": 269,
-      "community_name": "BlogController.php",
+      "community": 16,
+      "community_name": "AppServiceProvider.php",
       "norm_label": "destination"
     },
     {
@@ -4199,8 +4199,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "app_models_dynamicblock",
-      "community": 269,
-      "community_name": "BlogController.php",
+      "community": 16,
+      "community_name": "AppServiceProvider.php",
       "norm_label": "dynamicblock.php"
     },
     {
@@ -4243,8 +4243,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "app_models_form",
-      "community": 271,
-      "community_name": "PackageHighlights.php",
+      "community": 16,
+      "community_name": "AppServiceProvider.php",
       "norm_label": "form.php"
     },
     {
@@ -4276,8 +4276,8 @@
       "source_location": "L22",
       "_origin": "ast",
       "id": "app_models_form_form_entries",
-      "community": 271,
-      "community_name": "PackageHighlights.php",
+      "community": 16,
+      "community_name": "AppServiceProvider.php",
       "norm_label": ".entries()"
     },
     {
@@ -4287,8 +4287,8 @@
       "source_location": "",
       "_origin": "ast",
       "id": "app_models_form_php_hasmany",
-      "community": 271,
-      "community_name": "PackageHighlights.php",
+      "community": 16,
+      "community_name": "AppServiceProvider.php",
       "norm_label": "hasmany"
     },
     {
@@ -4298,8 +4298,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "app_models_formentry",
-      "community": 254,
-      "community_name": "@codemirror/lang-json",
+      "community": 16,
+      "community_name": "AppServiceProvider.php",
       "norm_label": "formentry.php"
     },
     {
@@ -4309,8 +4309,8 @@
       "source_location": "L10",
       "_origin": "ast",
       "id": "app_models_formentry_formentry",
-      "community": 254,
-      "community_name": "@codemirror/lang-json",
+      "community": 16,
+      "community_name": "AppServiceProvider.php",
       "norm_label": "formentry"
     },
     {
@@ -4320,8 +4320,8 @@
       "source_location": "L17",
       "_origin": "ast",
       "id": "app_models_formentry_formentry_casts",
-      "community": 254,
-      "community_name": "@codemirror/lang-json",
+      "community": 16,
+      "community_name": "AppServiceProvider.php",
       "norm_label": ".casts()"
     },
     {
@@ -4331,8 +4331,8 @@
       "source_location": "L22",
       "_origin": "ast",
       "id": "app_models_formentry_formentry_form",
-      "community": 254,
-      "community_name": "@codemirror/lang-json",
+      "community": 16,
+      "community_name": "AppServiceProvider.php",
       "norm_label": ".form()"
     },
     {
@@ -4342,8 +4342,8 @@
       "source_location": "",
       "_origin": "ast",
       "id": "app_models_formentry_php_belongsto",
-      "community": 254,
-      "community_name": "@codemirror/lang-json",
+      "community": 16,
+      "community_name": "AppServiceProvider.php",
       "norm_label": "belongsto"
     },
     {
@@ -4364,8 +4364,8 @@
       "source_location": "L9",
       "_origin": "ast",
       "id": "app_models_layout_layout",
-      "community": 238,
-      "community_name": "Post.php",
+      "community": 225,
+      "community_name": "UserController",
       "norm_label": "layout"
     },
     {
@@ -4375,8 +4375,8 @@
       "source_location": "L20",
       "_origin": "ast",
       "id": "app_models_layout_layout_gettitleattribute",
-      "community": 238,
-      "community_name": "Post.php",
+      "community": 225,
+      "community_name": "UserController",
       "norm_label": ".gettitleattribute()"
     },
     {
@@ -4386,8 +4386,8 @@
       "source_location": "L25",
       "_origin": "ast",
       "id": "app_models_layout_layout_route",
-      "community": 238,
-      "community_name": "Post.php",
+      "community": 225,
+      "community_name": "UserController",
       "norm_label": ".route()"
     },
     {
@@ -4397,8 +4397,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "app_models_package",
-      "community": 281,
-      "community_name": "UpdatesListWidget",
+      "community": 16,
+      "community_name": "AppServiceProvider.php",
       "norm_label": "package.php"
     },
     {
@@ -4408,8 +4408,8 @@
       "source_location": "L9",
       "_origin": "ast",
       "id": "app_models_package_package",
-      "community": 266,
-      "community_name": "Package",
+      "community": 16,
+      "community_name": "AppServiceProvider.php",
       "norm_label": "package"
     },
     {
@@ -4419,8 +4419,8 @@
       "source_location": "L24",
       "_origin": "ast",
       "id": "app_models_package_package_getsectionsattribute",
-      "community": 266,
-      "community_name": "Package",
+      "community": 16,
+      "community_name": "AppServiceProvider.php",
       "norm_label": ".getsectionsattribute()"
     },
     {
@@ -4430,8 +4430,8 @@
       "source_location": "L29",
       "_origin": "ast",
       "id": "app_models_package_package_setsectionsattribute",
-      "community": 266,
-      "community_name": "Package",
+      "community": 16,
+      "community_name": "AppServiceProvider.php",
       "norm_label": ".setsectionsattribute()"
     },
     {
@@ -4441,8 +4441,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "app_models_page",
-      "community": 269,
-      "community_name": "BlogController.php",
+      "community": 202,
+      "community_name": "BlogList.php",
       "norm_label": "page.php"
     },
     {
@@ -4452,8 +4452,8 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "app_models_page_page",
-      "community": 137,
-      "community_name": "View",
+      "community": 202,
+      "community_name": "BlogList.php",
       "norm_label": "page"
     },
     {
@@ -4463,8 +4463,8 @@
       "source_location": "L22",
       "_origin": "ast",
       "id": "app_models_page_page_collectionentry",
-      "community": 137,
-      "community_name": "View",
+      "community": 202,
+      "community_name": "BlogList.php",
       "norm_label": ".collectionentry()"
     },
     {
@@ -4474,8 +4474,8 @@
       "source_location": "L28",
       "_origin": "ast",
       "id": "app_models_page_page_route",
-      "community": 137,
-      "community_name": "View",
+      "community": 202,
+      "community_name": "BlogList.php",
       "norm_label": ".route()"
     },
     {
@@ -4485,8 +4485,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "app_models_pageview",
-      "community": 9,
-      "community_name": "Taxonomy",
+      "community": 255,
+      "community_name": "@tiptap/core",
       "norm_label": "pageview.php"
     },
     {
@@ -4496,8 +4496,8 @@
       "source_location": "L8",
       "_origin": "ast",
       "id": "app_models_pageview_pageview",
-      "community": 9,
-      "community_name": "Taxonomy",
+      "community": 255,
+      "community_name": "@tiptap/core",
       "norm_label": "pageview"
     },
     {
@@ -4507,8 +4507,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "app_models_post",
-      "community": 136,
-      "community_name": "RedirectResponse",
+      "community": 236,
+      "community_name": "User",
       "norm_label": "post.php"
     },
     {
@@ -4518,8 +4518,8 @@
       "source_location": "L10",
       "_origin": "ast",
       "id": "app_models_post_post",
-      "community": 136,
-      "community_name": "RedirectResponse",
+      "community": 236,
+      "community_name": "User",
       "norm_label": "post"
     },
     {
@@ -4529,8 +4529,8 @@
       "source_location": "L24",
       "_origin": "ast",
       "id": "app_models_post_post_terms",
-      "community": 136,
-      "community_name": "RedirectResponse",
+      "community": 236,
+      "community_name": "User",
       "norm_label": ".terms()"
     },
     {
@@ -4540,8 +4540,8 @@
       "source_location": "",
       "_origin": "ast",
       "id": "app_models_post_php_belongstomany",
-      "community": 136,
-      "community_name": "RedirectResponse",
+      "community": 236,
+      "community_name": "User",
       "norm_label": "belongstomany"
     },
     {
@@ -4551,8 +4551,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "app_models_setting",
-      "community": 202,
-      "community_name": "BlogList.php",
+      "community": 7,
+      "community_name": "Model",
       "norm_label": "setting.php"
     },
     {
@@ -4562,8 +4562,8 @@
       "source_location": "L7",
       "_origin": "ast",
       "id": "app_models_setting_setting",
-      "community": 202,
-      "community_name": "BlogList.php",
+      "community": 7,
+      "community_name": "Model",
       "norm_label": "setting"
     },
     {
@@ -4573,8 +4573,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "app_models_taxonomy",
-      "community": 136,
-      "community_name": "RedirectResponse",
+      "community": 223,
+      "community_name": "Seeder",
       "norm_label": "taxonomy.php"
     },
     {
@@ -4584,8 +4584,8 @@
       "source_location": "L8",
       "_origin": "ast",
       "id": "app_models_taxonomy_taxonomy",
-      "community": 136,
-      "community_name": "RedirectResponse",
+      "community": 223,
+      "community_name": "Seeder",
       "norm_label": "taxonomy"
     },
     {
@@ -4595,8 +4595,8 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "app_models_taxonomy_taxonomy_terms",
-      "community": 136,
-      "community_name": "RedirectResponse",
+      "community": 223,
+      "community_name": "Seeder",
       "norm_label": ".terms()"
     },
     {
@@ -4606,8 +4606,8 @@
       "source_location": "",
       "_origin": "ast",
       "id": "app_models_taxonomy_php_hasmany",
-      "community": 136,
-      "community_name": "RedirectResponse",
+      "community": 223,
+      "community_name": "Seeder",
       "norm_label": "hasmany"
     },
     {
@@ -4617,8 +4617,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "app_models_term",
-      "community": 136,
-      "community_name": "RedirectResponse",
+      "community": 223,
+      "community_name": "Seeder",
       "norm_label": "term.php"
     },
     {
@@ -4628,8 +4628,8 @@
       "source_location": "L9",
       "_origin": "ast",
       "id": "app_models_term_term",
-      "community": 136,
-      "community_name": "RedirectResponse",
+      "community": 223,
+      "community_name": "Seeder",
       "norm_label": "term"
     },
     {
@@ -4639,8 +4639,8 @@
       "source_location": "L13",
       "_origin": "ast",
       "id": "app_models_term_term_booted",
-      "community": 136,
-      "community_name": "RedirectResponse",
+      "community": 223,
+      "community_name": "Seeder",
       "norm_label": ".booted()"
     },
     {
@@ -4650,8 +4650,8 @@
       "source_location": "L28",
       "_origin": "ast",
       "id": "app_models_term_term_taxonomy",
-      "community": 136,
-      "community_name": "RedirectResponse",
+      "community": 223,
+      "community_name": "Seeder",
       "norm_label": ".taxonomy()"
     },
     {
@@ -4661,8 +4661,8 @@
       "source_location": "",
       "_origin": "ast",
       "id": "app_models_term_php_belongsto",
-      "community": 136,
-      "community_name": "RedirectResponse",
+      "community": 223,
+      "community_name": "Seeder",
       "norm_label": "belongsto"
     },
     {
@@ -4672,8 +4672,8 @@
       "source_location": "L33",
       "_origin": "ast",
       "id": "app_models_term_term_posts",
-      "community": 136,
-      "community_name": "RedirectResponse",
+      "community": 223,
+      "community_name": "Seeder",
       "norm_label": ".posts()"
     },
     {
@@ -4683,8 +4683,8 @@
       "source_location": "",
       "_origin": "ast",
       "id": "app_models_term_php_belongstomany",
-      "community": 136,
-      "community_name": "RedirectResponse",
+      "community": 223,
+      "community_name": "Seeder",
       "norm_label": "belongstomany"
     },
     {
@@ -4694,8 +4694,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "app_models_user",
-      "community": 270,
-      "community_name": "LatestBlog.php",
+      "community": 3,
+      "community_name": "Page",
       "norm_label": "user.php"
     },
     {
@@ -4705,8 +4705,8 @@
       "source_location": "L13",
       "_origin": "ast",
       "id": "app_models_user_user",
-      "community": 270,
-      "community_name": "LatestBlog.php",
+      "community": 3,
+      "community_name": "Page",
       "norm_label": "user"
     },
     {
@@ -4716,8 +4716,8 @@
       "source_location": "L25",
       "_origin": "ast",
       "id": "app_models_user_user_casts",
-      "community": 270,
-      "community_name": "LatestBlog.php",
+      "community": 3,
+      "community_name": "Page",
       "norm_label": ".casts()"
     },
     {
@@ -4727,8 +4727,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "app_models_widgetlayout",
-      "community": 269,
-      "community_name": "BlogController.php",
+      "community": 16,
+      "community_name": "AppServiceProvider.php",
       "norm_label": "widgetlayout.php"
     },
     {
@@ -4738,8 +4738,8 @@
       "source_location": "L7",
       "_origin": "ast",
       "id": "app_models_widgetlayout_widgetlayout",
-      "community": 269,
-      "community_name": "BlogController.php",
+      "community": 16,
+      "community_name": "AppServiceProvider.php",
       "norm_label": "widgetlayout"
     },
     {
@@ -4749,8 +4749,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "app_providers_appserviceprovider",
-      "community": 268,
-      "community_name": "PagesWidget",
+      "community": 121,
+      "community_name": "Collection",
       "norm_label": "appserviceprovider.php"
     },
     {
@@ -4760,8 +4760,8 @@
       "source_location": "L14",
       "_origin": "ast",
       "id": "app_providers_appserviceprovider_appserviceprovider",
-      "community": 268,
-      "community_name": "PagesWidget",
+      "community": 121,
+      "community_name": "Collection",
       "norm_label": "appserviceprovider"
     },
     {
@@ -4771,8 +4771,8 @@
       "source_location": "",
       "_origin": "ast",
       "id": "serviceprovider",
-      "community": 268,
-      "community_name": "PagesWidget",
+      "community": 121,
+      "community_name": "Collection",
       "norm_label": "serviceprovider"
     },
     {
@@ -4782,8 +4782,8 @@
       "source_location": "L16",
       "_origin": "ast",
       "id": "app_providers_appserviceprovider_appserviceprovider_register",
-      "community": 268,
-      "community_name": "PagesWidget",
+      "community": 121,
+      "community_name": "Collection",
       "norm_label": ".register()"
     },
     {
@@ -4793,8 +4793,8 @@
       "source_location": "L22",
       "_origin": "ast",
       "id": "app_providers_appserviceprovider_appserviceprovider_boot",
-      "community": 268,
-      "community_name": "PagesWidget",
+      "community": 121,
+      "community_name": "Collection",
       "norm_label": ".boot()"
     },
     {
@@ -4804,8 +4804,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "app_support_blockpreview",
-      "community": 3,
-      "community_name": "Page",
+      "community": 221,
+      "community_name": "Sections",
       "norm_label": "blockpreview.php"
     },
     {
@@ -4837,96 +4837,96 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "app_support_commandsearch",
-      "community": 7,
-      "community_name": "Model",
+      "community": 223,
+      "community_name": "Seeder",
       "norm_label": "commandsearch.php"
     },
     {
       "label": "CommandSearch",
       "file_type": "code",
       "source_file": "app/Support/CommandSearch.php",
-      "source_location": "L14",
+      "source_location": "L11",
       "_origin": "ast",
       "id": "app_support_commandsearch_commandsearch",
-      "community": 7,
-      "community_name": "Model",
+      "community": 223,
+      "community_name": "Seeder",
       "norm_label": "commandsearch"
     },
     {
       "label": ".staticCommands()",
       "file_type": "code",
       "source_file": "app/Support/CommandSearch.php",
-      "source_location": "L21",
+      "source_location": "L18",
       "_origin": "ast",
       "id": "app_support_commandsearch_commandsearch_staticcommands",
-      "community": 7,
-      "community_name": "Model",
+      "community": 223,
+      "community_name": "Seeder",
       "norm_label": ".staticcommands()"
     },
     {
       "label": ".dynamicCommands()",
       "file_type": "code",
       "source_file": "app/Support/CommandSearch.php",
-      "source_location": "L43",
+      "source_location": "L34",
       "_origin": "ast",
       "id": "app_support_commandsearch_commandsearch_dynamiccommands",
-      "community": 7,
-      "community_name": "Model",
+      "community": 223,
+      "community_name": "Seeder",
       "norm_label": ".dynamiccommands()"
     },
     {
       "label": ".score()",
       "file_type": "code",
       "source_file": "app/Support/CommandSearch.php",
-      "source_location": "L97",
+      "source_location": "L58",
       "_origin": "ast",
       "id": "app_support_commandsearch_commandsearch_score",
-      "community": 7,
-      "community_name": "Model",
+      "community": 223,
+      "community_name": "Seeder",
       "norm_label": ".score()"
     },
     {
       "label": ".filter()",
       "file_type": "code",
       "source_file": "app/Support/CommandSearch.php",
-      "source_location": "L135",
+      "source_location": "L96",
       "_origin": "ast",
       "id": "app_support_commandsearch_commandsearch_filter",
-      "community": 7,
-      "community_name": "Model",
+      "community": 223,
+      "community_name": "Seeder",
       "norm_label": ".filter()"
     },
     {
       "label": ".group()",
       "file_type": "code",
       "source_file": "app/Support/CommandSearch.php",
-      "source_location": "L162",
+      "source_location": "L123",
       "_origin": "ast",
       "id": "app_support_commandsearch_commandsearch_group",
-      "community": 7,
-      "community_name": "Model",
+      "community": 223,
+      "community_name": "Seeder",
       "norm_label": ".group()"
     },
     {
       "label": ".search()",
       "file_type": "code",
       "source_file": "app/Support/CommandSearch.php",
-      "source_location": "L187",
+      "source_location": "L148",
       "_origin": "ast",
       "id": "app_support_commandsearch_commandsearch_search",
-      "community": 7,
-      "community_name": "Model",
+      "community": 223,
+      "community_name": "Seeder",
       "norm_label": ".search()"
     },
     {
       "label": ".isSubsequence()",
       "file_type": "code",
       "source_file": "app/Support/CommandSearch.php",
-      "source_location": "L204",
+      "source_location": "L165",
       "_origin": "ast",
       "id": "app_support_commandsearch_commandsearch_issubsequence",
-      "community": 7,
-      "community_name": "Model",
+      "community": 223,
+      "community_name": "Seeder",
       "norm_label": ".issubsequence()"
     },
     {
@@ -4936,8 +4936,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "app_support_formfieldtypes",
-      "community": 259,
-      "community_name": "vite",
+      "community": 16,
+      "community_name": "AppServiceProvider.php",
       "norm_label": "formfieldtypes.php"
     },
     {
@@ -4947,8 +4947,8 @@
       "source_location": "L7",
       "_origin": "ast",
       "id": "app_support_formfieldtypes_formfieldtypes",
-      "community": 259,
-      "community_name": "vite",
+      "community": 16,
+      "community_name": "AppServiceProvider.php",
       "norm_label": "formfieldtypes"
     },
     {
@@ -4958,8 +4958,8 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "app_support_formfieldtypes_formfieldtypes_catalog",
-      "community": 259,
-      "community_name": "vite",
+      "community": 16,
+      "community_name": "AppServiceProvider.php",
       "norm_label": ".catalog()"
     },
     {
@@ -4969,8 +4969,8 @@
       "source_location": "L27",
       "_origin": "ast",
       "id": "app_support_formfieldtypes_formfieldtypes_createdefaultfield",
-      "community": 259,
-      "community_name": "vite",
+      "community": 16,
+      "community_name": "AppServiceProvider.php",
       "norm_label": ".createdefaultfield()"
     },
     {
@@ -4980,8 +4980,8 @@
       "source_location": "L54",
       "_origin": "ast",
       "id": "app_support_formfieldtypes_formfieldtypes_definitions",
-      "community": 259,
-      "community_name": "vite",
+      "community": 16,
+      "community_name": "AppServiceProvider.php",
       "norm_label": ".definitions()"
     },
     {
@@ -4991,8 +4991,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "app_support_sections",
-      "community": 3,
-      "community_name": "Page",
+      "community": 221,
+      "community_name": "Sections",
       "norm_label": "sections.php"
     },
     {
@@ -5002,8 +5002,8 @@
       "source_location": "L9",
       "_origin": "ast",
       "id": "app_support_sections_sections",
-      "community": 221,
-      "community_name": "Sections",
+      "community": 23,
+      "community_name": "LatestBlog.php",
       "norm_label": "sections"
     },
     {
@@ -5013,8 +5013,8 @@
       "source_location": "L11",
       "_origin": "ast",
       "id": "app_support_sections_sections_defaultdata",
-      "community": 221,
-      "community_name": "Sections",
+      "community": 23,
+      "community_name": "LatestBlog.php",
       "norm_label": ".defaultdata()"
     },
     {
@@ -5024,8 +5024,8 @@
       "source_location": "L27",
       "_origin": "ast",
       "id": "app_support_sections_sections_newlistitem",
-      "community": 221,
-      "community_name": "Sections",
+      "community": 23,
+      "community_name": "LatestBlog.php",
       "norm_label": ".newlistitem()"
     },
     {
@@ -5035,8 +5035,8 @@
       "source_location": "L32",
       "_origin": "ast",
       "id": "app_support_sections_sections_createdefaultsection",
-      "community": 221,
-      "community_name": "Sections",
+      "community": 23,
+      "community_name": "LatestBlog.php",
       "norm_label": ".createdefaultsection()"
     },
     {
@@ -5046,8 +5046,8 @@
       "source_location": "L48",
       "_origin": "ast",
       "id": "app_support_sections_sections_withglobals",
-      "community": 221,
-      "community_name": "Sections",
+      "community": 23,
+      "community_name": "LatestBlog.php",
       "norm_label": ".withglobals()"
     },
     {
@@ -5057,8 +5057,8 @@
       "source_location": "L69",
       "_origin": "ast",
       "id": "app_support_sections_sections_injectglobals",
-      "community": 221,
-      "community_name": "Sections",
+      "community": 202,
+      "community_name": "BlogList.php",
       "norm_label": ".injectglobals()"
     },
     {
@@ -5068,8 +5068,8 @@
       "source_location": "L90",
       "_origin": "ast",
       "id": "app_support_sections_sections_sectionstopropagate",
-      "community": 221,
-      "community_name": "Sections",
+      "community": 23,
+      "community_name": "LatestBlog.php",
       "norm_label": ".sectionstopropagate()"
     },
     {
@@ -5079,8 +5079,8 @@
       "source_location": "L98",
       "_origin": "ast",
       "id": "app_support_sections_sections_slugify",
-      "community": 221,
-      "community_name": "Sections",
+      "community": 23,
+      "community_name": "LatestBlog.php",
       "norm_label": ".slugify()"
     },
     {
@@ -5090,8 +5090,8 @@
       "source_location": "L107",
       "_origin": "ast",
       "id": "app_support_sections_sections_getatpath",
-      "community": 221,
-      "community_name": "Sections",
+      "community": 23,
+      "community_name": "LatestBlog.php",
       "norm_label": ".getatpath()"
     },
     {
@@ -5101,8 +5101,8 @@
       "source_location": "L124",
       "_origin": "ast",
       "id": "app_support_sections_sections_setatpath",
-      "community": 221,
-      "community_name": "Sections",
+      "community": 23,
+      "community_name": "LatestBlog.php",
       "norm_label": ".setatpath()"
     },
     {
@@ -5112,8 +5112,8 @@
       "source_location": "L145",
       "_origin": "ast",
       "id": "app_support_sections_sections_fieldsatpath",
-      "community": 221,
-      "community_name": "Sections",
+      "community": 23,
+      "community_name": "LatestBlog.php",
       "norm_label": ".fieldsatpath()"
     },
     {
@@ -5123,8 +5123,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "app_widgets_formentriestablewidget",
-      "community": 271,
-      "community_name": "PackageHighlights.php",
+      "community": 16,
+      "community_name": "AppServiceProvider.php",
       "norm_label": "formentriestablewidget.php"
     },
     {
@@ -5134,8 +5134,8 @@
       "source_location": "L8",
       "_origin": "ast",
       "id": "app_widgets_formentriestablewidget_formentriestablewidget",
-      "community": 258,
-      "community_name": "@tailwindcss/vite",
+      "community": 16,
+      "community_name": "AppServiceProvider.php",
       "norm_label": "formentriestablewidget"
     },
     {
@@ -5145,8 +5145,8 @@
       "source_location": "L10",
       "_origin": "ast",
       "id": "app_widgets_formentriestablewidget_formentriestablewidget_construct",
-      "community": 258,
-      "community_name": "@tailwindcss/vite",
+      "community": 16,
+      "community_name": "AppServiceProvider.php",
       "norm_label": ".__construct()"
     },
     {
@@ -5156,8 +5156,8 @@
       "source_location": "L14",
       "_origin": "ast",
       "id": "app_widgets_formentriestablewidget_formentriestablewidget_type",
-      "community": 258,
-      "community_name": "@tailwindcss/vite",
+      "community": 16,
+      "community_name": "AppServiceProvider.php",
       "norm_label": ".type()"
     },
     {
@@ -5167,8 +5167,8 @@
       "source_location": "L19",
       "_origin": "ast",
       "id": "app_widgets_formentriestablewidget_formentriestablewidget_zone",
-      "community": 258,
-      "community_name": "@tailwindcss/vite",
+      "community": 16,
+      "community_name": "AppServiceProvider.php",
       "norm_label": ".zone()"
     },
     {
@@ -5178,8 +5178,8 @@
       "source_location": "L24",
       "_origin": "ast",
       "id": "app_widgets_formentriestablewidget_formentriestablewidget_make",
-      "community": 258,
-      "community_name": "@tailwindcss/vite",
+      "community": 16,
+      "community_name": "AppServiceProvider.php",
       "norm_label": ".make()"
     },
     {
@@ -5189,8 +5189,8 @@
       "source_location": "",
       "_origin": "ast",
       "id": "app_widgets_formentriestablewidget_php_static",
-      "community": 258,
-      "community_name": "@tailwindcss/vite",
+      "community": 16,
+      "community_name": "AppServiceProvider.php",
       "norm_label": "static"
     },
     {
@@ -5200,8 +5200,8 @@
       "source_location": "L31",
       "_origin": "ast",
       "id": "app_widgets_formentriestablewidget_formentriestablewidget_label",
-      "community": 258,
-      "community_name": "@tailwindcss/vite",
+      "community": 16,
+      "community_name": "AppServiceProvider.php",
       "norm_label": ".label()"
     },
     {
@@ -5211,8 +5211,8 @@
       "source_location": "L36",
       "_origin": "ast",
       "id": "app_widgets_formentriestablewidget_formentriestablewidget_render",
-      "community": 258,
-      "community_name": "@tailwindcss/vite",
+      "community": 16,
+      "community_name": "AppServiceProvider.php",
       "norm_label": ".render()"
     },
     {
@@ -5222,8 +5222,8 @@
       "source_location": "L67",
       "_origin": "ast",
       "id": "app_widgets_formentriestablewidget_formentriestablewidget_resolveform",
-      "community": 258,
-      "community_name": "@tailwindcss/vite",
+      "community": 16,
+      "community_name": "AppServiceProvider.php",
       "norm_label": ".resolveform()"
     },
     {
@@ -5233,8 +5233,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "app_widgets_pageswidget",
-      "community": 255,
-      "community_name": "@tiptap/core",
+      "community": 266,
+      "community_name": "PagesWidget",
       "norm_label": "pageswidget.php"
     },
     {
@@ -5244,8 +5244,8 @@
       "source_location": "L7",
       "_origin": "ast",
       "id": "app_widgets_pageswidget_pageswidget",
-      "community": 255,
-      "community_name": "@tiptap/core",
+      "community": 266,
+      "community_name": "PagesWidget",
       "norm_label": "pageswidget"
     },
     {
@@ -5255,8 +5255,8 @@
       "source_location": "L11",
       "_origin": "ast",
       "id": "app_widgets_pageswidget_pageswidget_type",
-      "community": 255,
-      "community_name": "@tiptap/core",
+      "community": 266,
+      "community_name": "PagesWidget",
       "norm_label": ".type()"
     },
     {
@@ -5266,8 +5266,8 @@
       "source_location": "L16",
       "_origin": "ast",
       "id": "app_widgets_pageswidget_pageswidget_zone",
-      "community": 255,
-      "community_name": "@tiptap/core",
+      "community": 266,
+      "community_name": "PagesWidget",
       "norm_label": ".zone()"
     },
     {
@@ -5277,8 +5277,8 @@
       "source_location": "L21",
       "_origin": "ast",
       "id": "app_widgets_pageswidget_pageswidget_label",
-      "community": 255,
-      "community_name": "@tiptap/core",
+      "community": 266,
+      "community_name": "PagesWidget",
       "norm_label": ".label()"
     },
     {
@@ -5288,8 +5288,8 @@
       "source_location": "L26",
       "_origin": "ast",
       "id": "app_widgets_pageswidget_pageswidget_render",
-      "community": 255,
-      "community_name": "@tiptap/core",
+      "community": 266,
+      "community_name": "PagesWidget",
       "norm_label": ".render()"
     },
     {
@@ -5497,8 +5497,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "app_widgets_visitorwidget",
-      "community": 9,
-      "community_name": "Taxonomy",
+      "community": 255,
+      "community_name": "@tiptap/core",
       "norm_label": "visitorwidget.php"
     },
     {
@@ -5508,8 +5508,8 @@
       "source_location": "L8",
       "_origin": "ast",
       "id": "app_widgets_visitorwidget_visitorwidget",
-      "community": 9,
-      "community_name": "Taxonomy",
+      "community": 255,
+      "community_name": "@tiptap/core",
       "norm_label": "visitorwidget"
     },
     {
@@ -5519,8 +5519,8 @@
       "source_location": "L10",
       "_origin": "ast",
       "id": "app_widgets_visitorwidget_visitorwidget_type",
-      "community": 9,
-      "community_name": "Taxonomy",
+      "community": 255,
+      "community_name": "@tiptap/core",
       "norm_label": ".type()"
     },
     {
@@ -5530,8 +5530,8 @@
       "source_location": "L15",
       "_origin": "ast",
       "id": "app_widgets_visitorwidget_visitorwidget_zone",
-      "community": 9,
-      "community_name": "Taxonomy",
+      "community": 255,
+      "community_name": "@tiptap/core",
       "norm_label": ".zone()"
     },
     {
@@ -5541,8 +5541,8 @@
       "source_location": "L20",
       "_origin": "ast",
       "id": "app_widgets_visitorwidget_visitorwidget_label",
-      "community": 9,
-      "community_name": "Taxonomy",
+      "community": 255,
+      "community_name": "@tiptap/core",
       "norm_label": ".label()"
     },
     {
@@ -5552,8 +5552,8 @@
       "source_location": "L25",
       "_origin": "ast",
       "id": "app_widgets_visitorwidget_visitorwidget_render",
-      "community": 9,
-      "community_name": "Taxonomy",
+      "community": 255,
+      "community_name": "@tiptap/core",
       "norm_label": ".render()"
     },
     {
@@ -5717,8 +5717,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "app_widgets_widgetregistry",
-      "community": 268,
-      "community_name": "PagesWidget",
+      "community": 121,
+      "community_name": "Collection",
       "norm_label": "widgetregistry.php"
     },
     {
@@ -5728,8 +5728,8 @@
       "source_location": "L7",
       "_origin": "ast",
       "id": "app_widgets_widgetregistry_widgetregistry",
-      "community": 268,
-      "community_name": "PagesWidget",
+      "community": 121,
+      "community_name": "Collection",
       "norm_label": "widgetregistry"
     },
     {
@@ -5739,8 +5739,8 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "app_widgets_widgetregistry_widgetregistry_all",
-      "community": 268,
-      "community_name": "PagesWidget",
+      "community": 121,
+      "community_name": "Collection",
       "norm_label": ".all()"
     },
     {
@@ -5750,8 +5750,8 @@
       "source_location": "L17",
       "_origin": "ast",
       "id": "app_widgets_widgetregistry_widgetregistry_get",
-      "community": 268,
-      "community_name": "PagesWidget",
+      "community": 121,
+      "community_name": "Collection",
       "norm_label": ".get()"
     },
     {
@@ -5761,8 +5761,8 @@
       "source_location": "L23",
       "_origin": "ast",
       "id": "app_widgets_widgetregistry_widgetregistry_types",
-      "community": 268,
-      "community_name": "PagesWidget",
+      "community": 121,
+      "community_name": "Collection",
       "norm_label": ".types()"
     },
     {
@@ -5772,8 +5772,8 @@
       "source_location": "L29",
       "_origin": "ast",
       "id": "app_widgets_widgetregistry_widgetregistry_discover",
-      "community": 268,
-      "community_name": "PagesWidget",
+      "community": 121,
+      "community_name": "Collection",
       "norm_label": ".discover()"
     },
     {
@@ -5783,8 +5783,8 @@
       "source_location": "L53",
       "_origin": "ast",
       "id": "app_widgets_widgetregistry_widgetregistry_classfrompath",
-      "community": 268,
-      "community_name": "PagesWidget",
+      "community": 121,
+      "community_name": "Collection",
       "norm_label": ".classfrompath()"
     },
     {
@@ -5816,8 +5816,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "bootstrap_providers",
-      "community": 268,
-      "community_name": "PagesWidget",
+      "community": 121,
+      "community_name": "Collection",
       "norm_label": "providers.php"
     },
     {
@@ -6707,8 +6707,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "database_factories_adminfactory",
-      "community": 282,
-      "community_name": "WebsiteAnalyticsWidget",
+      "community": 236,
+      "community_name": "User",
       "norm_label": "adminfactory.php"
     },
     {
@@ -6718,8 +6718,8 @@
       "source_location": "L13",
       "_origin": "ast",
       "id": "database_factories_adminfactory_adminfactory",
-      "community": 282,
-      "community_name": "WebsiteAnalyticsWidget",
+      "community": 236,
+      "community_name": "User",
       "norm_label": "adminfactory"
     },
     {
@@ -6740,8 +6740,8 @@
       "source_location": "L25",
       "_origin": "ast",
       "id": "database_factories_adminfactory_adminfactory_definition",
-      "community": 282,
-      "community_name": "WebsiteAnalyticsWidget",
+      "community": 236,
+      "community_name": "User",
       "norm_label": ".definition()"
     },
     {
@@ -6751,8 +6751,8 @@
       "source_location": "L40",
       "_origin": "ast",
       "id": "database_factories_adminfactory_adminfactory_unverified",
-      "community": 282,
-      "community_name": "WebsiteAnalyticsWidget",
+      "community": 236,
+      "community_name": "User",
       "norm_label": ".unverified()"
     },
     {
@@ -6762,8 +6762,8 @@
       "source_location": "",
       "_origin": "ast",
       "id": "database_factories_adminfactory_php_static",
-      "community": 282,
-      "community_name": "WebsiteAnalyticsWidget",
+      "community": 236,
+      "community_name": "User",
       "norm_label": "static"
     },
     {
@@ -6806,8 +6806,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "database_factories_formentryfactory",
-      "community": 254,
-      "community_name": "@codemirror/lang-json",
+      "community": 16,
+      "community_name": "AppServiceProvider.php",
       "norm_label": "formentryfactory.php"
     },
     {
@@ -6817,8 +6817,8 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "database_factories_formentryfactory_formentryfactory",
-      "community": 254,
-      "community_name": "@codemirror/lang-json",
+      "community": 16,
+      "community_name": "AppServiceProvider.php",
       "norm_label": "formentryfactory"
     },
     {
@@ -6828,8 +6828,8 @@
       "source_location": "L16",
       "_origin": "ast",
       "id": "database_factories_formentryfactory_formentryfactory_definition",
-      "community": 254,
-      "community_name": "@codemirror/lang-json",
+      "community": 16,
+      "community_name": "AppServiceProvider.php",
       "norm_label": ".definition()"
     },
     {
@@ -6971,8 +6971,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "database_factories_userfactory",
-      "community": 270,
-      "community_name": "LatestBlog.php",
+      "community": 236,
+      "community_name": "User",
       "norm_label": "userfactory.php"
     },
     {
@@ -6982,8 +6982,8 @@
       "source_location": "L13",
       "_origin": "ast",
       "id": "database_factories_userfactory_userfactory",
-      "community": 239,
-      "community_name": "UserFactory",
+      "community": 236,
+      "community_name": "User",
       "norm_label": "userfactory"
     },
     {
@@ -6993,8 +6993,8 @@
       "source_location": "L25",
       "_origin": "ast",
       "id": "database_factories_userfactory_userfactory_definition",
-      "community": 239,
-      "community_name": "UserFactory",
+      "community": 236,
+      "community_name": "User",
       "norm_label": ".definition()"
     },
     {
@@ -7004,8 +7004,8 @@
       "source_location": "L39",
       "_origin": "ast",
       "id": "database_factories_userfactory_userfactory_unverified",
-      "community": 239,
-      "community_name": "UserFactory",
+      "community": 236,
+      "community_name": "User",
       "norm_label": ".unverified()"
     },
     {
@@ -7015,8 +7015,8 @@
       "source_location": "",
       "_origin": "ast",
       "id": "database_factories_userfactory_php_static",
-      "community": 239,
-      "community_name": "UserFactory",
+      "community": 236,
+      "community_name": "User",
       "norm_label": "static"
     },
     {
@@ -8148,8 +8148,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "database_seeders_adminseeder",
-      "community": 223,
-      "community_name": "Seeder",
+      "community": 136,
+      "community_name": "RedirectResponse",
       "norm_label": "adminseeder.php"
     },
     {
@@ -8159,8 +8159,8 @@
       "source_location": "L8",
       "_origin": "ast",
       "id": "database_seeders_adminseeder_adminseeder",
-      "community": 223,
-      "community_name": "Seeder",
+      "community": 136,
+      "community_name": "RedirectResponse",
       "norm_label": "adminseeder"
     },
     {
@@ -8170,8 +8170,8 @@
       "source_location": "",
       "_origin": "ast",
       "id": "seeder",
-      "community": 223,
-      "community_name": "Seeder",
+      "community": 136,
+      "community_name": "RedirectResponse",
       "norm_label": "seeder"
     },
     {
@@ -8181,8 +8181,8 @@
       "source_location": "L13",
       "_origin": "ast",
       "id": "database_seeders_adminseeder_adminseeder_run",
-      "community": 223,
-      "community_name": "Seeder",
+      "community": 136,
+      "community_name": "RedirectResponse",
       "norm_label": ".run()"
     },
     {
@@ -8192,8 +8192,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "database_seeders_databaseseeder",
-      "community": 223,
-      "community_name": "Seeder",
+      "community": 136,
+      "community_name": "RedirectResponse",
       "norm_label": "databaseseeder.php"
     },
     {
@@ -8203,8 +8203,8 @@
       "source_location": "L7",
       "_origin": "ast",
       "id": "database_seeders_databaseseeder_databaseseeder",
-      "community": 223,
-      "community_name": "Seeder",
+      "community": 136,
+      "community_name": "RedirectResponse",
       "norm_label": "databaseseeder"
     },
     {
@@ -8214,8 +8214,8 @@
       "source_location": "L9",
       "_origin": "ast",
       "id": "database_seeders_databaseseeder_databaseseeder_run",
-      "community": 223,
-      "community_name": "Seeder",
+      "community": 136,
+      "community_name": "RedirectResponse",
       "norm_label": ".run()"
     },
     {
@@ -8225,8 +8225,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "database_seeders_homepageseeder",
-      "community": 3,
-      "community_name": "Page",
+      "community": 221,
+      "community_name": "Sections",
       "norm_label": "homepageseeder.php"
     },
     {
@@ -8236,8 +8236,8 @@
       "source_location": "L10",
       "_origin": "ast",
       "id": "database_seeders_homepageseeder_homepageseeder",
-      "community": 221,
-      "community_name": "Sections",
+      "community": 23,
+      "community_name": "LatestBlog.php",
       "norm_label": "homepageseeder"
     },
     {
@@ -8247,8 +8247,8 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "database_seeders_homepageseeder_homepageseeder_run",
-      "community": 221,
-      "community_name": "Sections",
+      "community": 23,
+      "community_name": "LatestBlog.php",
       "norm_label": ".run()"
     },
     {
@@ -8258,8 +8258,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "database_seeders_layoutseeder",
-      "community": 223,
-      "community_name": "Seeder",
+      "community": 136,
+      "community_name": "RedirectResponse",
       "norm_label": "layoutseeder.php"
     },
     {
@@ -8269,8 +8269,8 @@
       "source_location": "L8",
       "_origin": "ast",
       "id": "database_seeders_layoutseeder_layoutseeder",
-      "community": 223,
-      "community_name": "Seeder",
+      "community": 136,
+      "community_name": "RedirectResponse",
       "norm_label": "layoutseeder"
     },
     {
@@ -8280,8 +8280,8 @@
       "source_location": "L10",
       "_origin": "ast",
       "id": "database_seeders_layoutseeder_layoutseeder_run",
-      "community": 223,
-      "community_name": "Seeder",
+      "community": 136,
+      "community_name": "RedirectResponse",
       "norm_label": ".run()"
     },
     {
@@ -8291,8 +8291,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "database_seeders_userseeder",
-      "community": 223,
-      "community_name": "Seeder",
+      "community": 136,
+      "community_name": "RedirectResponse",
       "norm_label": "userseeder.php"
     },
     {
@@ -8302,8 +8302,8 @@
       "source_location": "L8",
       "_origin": "ast",
       "id": "database_seeders_userseeder_userseeder",
-      "community": 223,
-      "community_name": "Seeder",
+      "community": 136,
+      "community_name": "RedirectResponse",
       "norm_label": "userseeder"
     },
     {
@@ -8313,8 +8313,8 @@
       "source_location": "L10",
       "_origin": "ast",
       "id": "database_seeders_userseeder_userseeder_run",
-      "community": 223,
-      "community_name": "Seeder",
+      "community": 136,
+      "community_name": "RedirectResponse",
       "norm_label": ".run()"
     },
     {
@@ -8695,7 +8695,7 @@
       "source_location": "L11",
       "_origin": "ast",
       "id": "package_devdependencies_tailwindcss_forms",
-      "community": 286,
+      "community": 285,
       "community_name": "@tailwindcss/forms",
       "norm_label": "@tailwindcss/forms"
     },
@@ -8706,7 +8706,7 @@
       "source_location": "L11",
       "_origin": "ast",
       "id": "tailwindcss_forms",
-      "community": 286,
+      "community": 285,
       "community_name": "@tailwindcss/forms",
       "norm_label": "@tailwindcss/forms"
     },
@@ -8904,7 +8904,7 @@
       "source_location": "L22",
       "_origin": "ast",
       "id": "package_dependencies_codemirror_lang_html",
-      "community": 253,
+      "community": 269,
       "community_name": "@codemirror/lang-html",
       "norm_label": "@codemirror/lang-html"
     },
@@ -8915,7 +8915,7 @@
       "source_location": "L22",
       "_origin": "ast",
       "id": "codemirror_lang_html",
-      "community": 253,
+      "community": 269,
       "community_name": "@codemirror/lang-html",
       "norm_label": "@codemirror/lang-html"
     },
@@ -9014,7 +9014,7 @@
       "source_location": "L27",
       "_origin": "ast",
       "id": "package_dependencies_tiptap_extension_link",
-      "community": 256,
+      "community": 271,
       "community_name": "@tiptap/extension-link",
       "norm_label": "@tiptap/extension-link"
     },
@@ -9025,7 +9025,7 @@
       "source_location": "L27",
       "_origin": "ast",
       "id": "tiptap_extension_link",
-      "community": 256,
+      "community": 271,
       "community_name": "@tiptap/extension-link",
       "norm_label": "@tiptap/extension-link"
     },
@@ -9036,7 +9036,7 @@
       "source_location": "L28",
       "_origin": "ast",
       "id": "package_dependencies_tiptap_extension_placeholder",
-      "community": 257,
+      "community": 284,
       "community_name": "@tiptap/extension-placeholder",
       "norm_label": "@tiptap/extension-placeholder"
     },
@@ -9047,7 +9047,7 @@
       "source_location": "L28",
       "_origin": "ast",
       "id": "tiptap_extension_placeholder",
-      "community": 257,
+      "community": 284,
       "community_name": "@tiptap/extension-placeholder",
       "norm_label": "@tiptap/extension-placeholder"
     },
@@ -9124,8 +9124,8 @@
       "source_location": "L32",
       "_origin": "ast",
       "id": "package_dependencies_tiptap_starter_kit",
-      "community": 267,
-      "community_name": "ProfileController.php",
+      "community": 4,
+      "community_name": "Controller",
       "norm_label": "@tiptap/starter-kit"
     },
     {
@@ -9135,8 +9135,8 @@
       "source_location": "L32",
       "_origin": "ast",
       "id": "tiptap_starter_kit",
-      "community": 267,
-      "community_name": "ProfileController.php",
+      "community": 4,
+      "community_name": "Controller",
       "norm_label": "@tiptap/starter-kit"
     },
     {
@@ -9157,8 +9157,8 @@
       "source_location": "L34",
       "_origin": "ast",
       "id": "package_dependencies_chrome_devtools_mcp",
-      "community": 4,
-      "community_name": "Controller",
+      "community": 239,
+      "community_name": "BelongsTo",
       "norm_label": "chrome-devtools-mcp"
     },
     {
@@ -9168,8 +9168,8 @@
       "source_location": "L34",
       "_origin": "ast",
       "id": "chrome_devtools_mcp",
-      "community": 4,
-      "community_name": "Controller",
+      "community": 239,
+      "community_name": "BelongsTo",
       "norm_label": "chrome-devtools-mcp"
     },
     {
@@ -9179,8 +9179,8 @@
       "source_location": "L35",
       "_origin": "ast",
       "id": "package_dependencies_codemirror",
-      "community": 284,
-      "community_name": "codemirror",
+      "community": 281,
+      "community_name": "UpdatesListWidget",
       "norm_label": "codemirror"
     },
     {
@@ -9190,8 +9190,8 @@
       "source_location": "L35",
       "_origin": "ast",
       "id": "codemirror",
-      "community": 284,
-      "community_name": "codemirror",
+      "community": 281,
+      "community_name": "UpdatesListWidget",
       "norm_label": "codemirror"
     },
     {
@@ -9201,7 +9201,7 @@
       "source_location": "L36",
       "_origin": "ast",
       "id": "package_dependencies_sortablejs",
-      "community": 285,
+      "community": 270,
       "community_name": "sortablejs",
       "norm_label": "sortablejs"
     },
@@ -9212,7 +9212,7 @@
       "source_location": "L36",
       "_origin": "ast",
       "id": "sortablejs",
-      "community": 285,
+      "community": 270,
       "community_name": "sortablejs",
       "norm_label": "sortablejs"
     },
@@ -10587,8 +10587,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "routes_admin",
-      "community": 3,
-      "community_name": "Page",
+      "community": 7,
+      "community_name": "Model",
       "norm_label": "admin.php"
     },
     {
@@ -10609,8 +10609,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "routes_web",
-      "community": 136,
-      "community_name": "RedirectResponse",
+      "community": 8,
+      "community_name": "LoginController.php",
       "norm_label": "web.php"
     },
     {
@@ -10634,6 +10634,17 @@
       "community": 145,
       "community_name": ".view",
       "norm_label": "adminusercrudtest.php"
+    },
+    {
+      "label": "CollectionFieldTypeTest.php",
+      "file_type": "code",
+      "source_file": "tests/Feature/CollectionFieldTypeTest.php",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "tests_feature_collectionfieldtypetest",
+      "community": 121,
+      "community_name": "Collection",
+      "norm_label": "collectionfieldtypetest.php"
     },
     {
       "label": "CommandSearchTest.php",
@@ -10664,8 +10675,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "tests_feature_exampletest",
-      "community": 137,
-      "community_name": "View",
+      "community": 202,
+      "community_name": "BlogList.php",
       "norm_label": "exampletest.php"
     },
     {
@@ -10675,8 +10686,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "tests_feature_formeditortest",
-      "community": 271,
-      "community_name": "PackageHighlights.php",
+      "community": 16,
+      "community_name": "AppServiceProvider.php",
       "norm_label": "formeditortest.php"
     },
     {
@@ -10686,8 +10697,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "tests_feature_formentriestablewidgettest",
-      "community": 271,
-      "community_name": "PackageHighlights.php",
+      "community": 16,
+      "community_name": "AppServiceProvider.php",
       "norm_label": "formentriestablewidgettest.php"
     },
     {
@@ -10708,8 +10719,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "tests_feature_postcrudtest",
-      "community": 136,
-      "community_name": "RedirectResponse",
+      "community": 282,
+      "community_name": "WebsiteAnalyticsWidget",
       "norm_label": "postcrudtest.php"
     },
     {
@@ -10719,8 +10730,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "tests_feature_posteditortest",
-      "community": 145,
-      "community_name": ".view",
+      "community": 286,
+      "community_name": "PostEditorTest.php",
       "norm_label": "posteditortest.php"
     },
     {
@@ -10741,8 +10752,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "tests_feature_seosettingstest",
-      "community": 202,
-      "community_name": "BlogList.php",
+      "community": 7,
+      "community_name": "Model",
       "norm_label": "seosettingstest.php"
     },
     {
@@ -10807,8 +10818,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "tests_unit_commandsearchrankingtest",
-      "community": 7,
-      "community_name": "Model",
+      "community": 223,
+      "community_name": "Seeder",
       "norm_label": "commandsearchrankingtest.php"
     },
     {
@@ -13315,8 +13326,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "claude_skills_laravel_best_practices_rules_architecture",
-      "community": 154,
-      "community_name": "Architecture Best Practices",
+      "community": 176,
+      "community_name": "SKILL.md",
       "norm_label": "architecture.md"
     },
     {
@@ -14723,8 +14734,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "claude_skills_laravel_best_practices_rules_security",
-      "community": 149,
-      "community_name": "Security Best Practices",
+      "community": 176,
+      "community_name": "SKILL.md",
       "norm_label": "security.md"
     },
     {
@@ -18617,7 +18628,7 @@
       "confidence": "INFERRED",
       "confidence_score": 0.8,
       "source_file": "app/Http/Controllers/Admin/CollectionController.php",
-      "source_location": "L43",
+      "source_location": "L51",
       "weight": 1.0,
       "_origin": "ast",
       "source": "app_http_controllers_admin_collectioncontroller_collectioncontroller_edit",
@@ -18653,7 +18664,7 @@
       "confidence": "INFERRED",
       "confidence_score": 0.8,
       "source_file": "app/Http/Controllers/Admin/CollectionEntryController.php",
-      "source_location": "L86",
+      "source_location": "L104",
       "weight": 1.0,
       "_origin": "ast",
       "source": "app_http_controllers_admin_collectionentrycontroller_collectionentrycontroller_edit",
@@ -18665,7 +18676,7 @@
       "confidence": "INFERRED",
       "confidence_score": 0.8,
       "source_file": "app/Http/Controllers/Admin/CollectionEntryController.php",
-      "source_location": "L130",
+      "source_location": "L148",
       "weight": 1.0,
       "_origin": "ast",
       "source": "app_http_controllers_admin_collectionentrycontroller_collectionentrycontroller_editor",
@@ -19145,7 +19156,7 @@
       "confidence": "INFERRED",
       "confidence_score": 0.8,
       "source_file": "app/Http/Controllers/Public/PageController.php",
-      "source_location": "L25",
+      "source_location": "L29",
       "weight": 1.0,
       "_origin": "ast",
       "source": "app_http_controllers_public_pagecontroller_pagecontroller_show",
@@ -19157,7 +19168,7 @@
       "confidence": "INFERRED",
       "confidence_score": 0.8,
       "source_file": "app/Http/Controllers/Public/PageController.php",
-      "source_location": "L39",
+      "source_location": "L43",
       "weight": 1.0,
       "_origin": "ast",
       "source": "app_http_controllers_public_pagecontroller_pagecontroller_showcollectionentry",
@@ -22110,7 +22121,7 @@
       "relation": "method",
       "confidence": "EXTRACTED",
       "source_file": "app/Http/Controllers/Admin/CollectionController.php",
-      "source_location": "L71",
+      "source_location": "L82",
       "weight": 1.0,
       "_origin": "ast",
       "source": "app_http_controllers_admin_collectioncontroller_collectioncontroller",
@@ -22121,7 +22132,7 @@
       "relation": "method",
       "confidence": "EXTRACTED",
       "source_file": "app/Http/Controllers/Admin/CollectionController.php",
-      "source_location": "L41",
+      "source_location": "L49",
       "weight": 1.0,
       "_origin": "ast",
       "source": "app_http_controllers_admin_collectioncontroller_collectioncontroller",
@@ -22143,7 +22154,7 @@
       "relation": "method",
       "confidence": "EXTRACTED",
       "source_file": "app/Http/Controllers/Admin/CollectionController.php",
-      "source_location": "L78",
+      "source_location": "L89",
       "weight": 1.0,
       "_origin": "ast",
       "source": "app_http_controllers_admin_collectioncontroller_collectioncontroller",
@@ -22154,7 +22165,7 @@
       "relation": "method",
       "confidence": "EXTRACTED",
       "source_file": "app/Http/Controllers/Admin/CollectionController.php",
-      "source_location": "L22",
+      "source_location": "L24",
       "weight": 1.0,
       "_origin": "ast",
       "source": "app_http_controllers_admin_collectioncontroller_collectioncontroller",
@@ -22165,7 +22176,7 @@
       "relation": "method",
       "confidence": "EXTRACTED",
       "source_file": "app/Http/Controllers/Admin/CollectionController.php",
-      "source_location": "L46",
+      "source_location": "L57",
       "weight": 1.0,
       "_origin": "ast",
       "source": "app_http_controllers_admin_collectioncontroller_collectioncontroller",
@@ -22196,10 +22207,22 @@
       "confidence_score": 1.0
     },
     {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "app/Http/Controllers/Admin/CollectionController.php",
+      "source_location": "L20",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "app_http_controllers_admin_collectioncontroller_collectioncontroller_create",
+      "target": "app_models_collection_collection",
+      "confidence_score": 1.0
+    },
+    {
       "relation": "references",
       "confidence": "EXTRACTED",
       "source_file": "app/Http/Controllers/Admin/CollectionController.php",
-      "source_location": "L22",
+      "source_location": "L24",
       "weight": 1.0,
       "context": "parameter_type",
       "_origin": "ast",
@@ -22212,7 +22235,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "app/Http/Controllers/Admin/CollectionController.php",
-      "source_location": "L31",
+      "source_location": "L34",
       "weight": 1.0,
       "_origin": "ast",
       "source": "app_http_controllers_admin_collectioncontroller_collectioncontroller_store",
@@ -22223,7 +22246,7 @@
       "relation": "references",
       "confidence": "EXTRACTED",
       "source_file": "app/Http/Controllers/Admin/CollectionController.php",
-      "source_location": "L78",
+      "source_location": "L89",
       "weight": 1.0,
       "context": "parameter_type",
       "_origin": "ast",
@@ -22235,7 +22258,7 @@
       "relation": "references",
       "confidence": "EXTRACTED",
       "source_file": "app/Http/Controllers/Admin/CollectionController.php",
-      "source_location": "L46",
+      "source_location": "L57",
       "weight": 1.0,
       "context": "parameter_type",
       "_origin": "ast",
@@ -22245,11 +22268,11 @@
     },
     {
       "relation": "references",
+      "context": "parameter_type",
       "confidence": "EXTRACTED",
       "source_file": "app/Http/Controllers/Admin/CollectionController.php",
-      "source_location": "L41",
+      "source_location": "L49",
       "weight": 1.0,
-      "context": "parameter_type",
       "_origin": "ast",
       "source": "app_http_controllers_admin_collectioncontroller_collectioncontroller_edit",
       "target": "app_models_collection_collection",
@@ -22260,7 +22283,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "app/Http/Controllers/Admin/CollectionController.php",
-      "source_location": "L81",
+      "source_location": "L92",
       "weight": 1.0,
       "_origin": "ast",
       "source": "app_http_controllers_admin_collectioncontroller_collectioncontroller_reorder",
@@ -22272,7 +22295,7 @@
       "context": "parameter_type",
       "confidence": "EXTRACTED",
       "source_file": "app/Http/Controllers/Admin/CollectionController.php",
-      "source_location": "L46",
+      "source_location": "L57",
       "weight": 1.0,
       "_origin": "ast",
       "source": "app_http_controllers_admin_collectioncontroller_collectioncontroller_update",
@@ -22283,7 +22306,7 @@
       "relation": "references",
       "confidence": "EXTRACTED",
       "source_file": "app/Http/Controllers/Admin/CollectionController.php",
-      "source_location": "L71",
+      "source_location": "L82",
       "weight": 1.0,
       "context": "parameter_type",
       "_origin": "ast",
@@ -22296,7 +22319,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "app/Http/Controllers/Admin/CollectionController.php",
-      "source_location": "L81",
+      "source_location": "L92",
       "weight": 1.0,
       "_origin": "ast",
       "source": "app_http_controllers_admin_collectioncontroller_collectioncontroller_reorder",
@@ -22437,7 +22460,7 @@
       "relation": "method",
       "confidence": "EXTRACTED",
       "source_file": "app/Http/Controllers/Admin/CollectionEntryController.php",
-      "source_location": "L183",
+      "source_location": "L201",
       "weight": 1.0,
       "_origin": "ast",
       "source": "app_http_controllers_admin_collectionentrycontroller_collectionentrycontroller",
@@ -22448,7 +22471,7 @@
       "relation": "method",
       "confidence": "EXTRACTED",
       "source_file": "app/Http/Controllers/Admin/CollectionEntryController.php",
-      "source_location": "L82",
+      "source_location": "L100",
       "weight": 1.0,
       "_origin": "ast",
       "source": "app_http_controllers_admin_collectionentrycontroller_collectionentrycontroller",
@@ -22459,7 +22482,7 @@
       "relation": "method",
       "confidence": "EXTRACTED",
       "source_file": "app/Http/Controllers/Admin/CollectionEntryController.php",
-      "source_location": "L107",
+      "source_location": "L125",
       "weight": 1.0,
       "_origin": "ast",
       "source": "app_http_controllers_admin_collectionentrycontroller_collectionentrycontroller",
@@ -22481,7 +22504,7 @@
       "relation": "method",
       "confidence": "EXTRACTED",
       "source_file": "app/Http/Controllers/Admin/CollectionEntryController.php",
-      "source_location": "L197",
+      "source_location": "L215",
       "weight": 1.0,
       "_origin": "ast",
       "source": "app_http_controllers_admin_collectionentrycontroller_collectionentrycontroller",
@@ -22503,7 +22526,7 @@
       "relation": "method",
       "confidence": "EXTRACTED",
       "source_file": "app/Http/Controllers/Admin/CollectionEntryController.php",
-      "source_location": "L89",
+      "source_location": "L107",
       "weight": 1.0,
       "_origin": "ast",
       "source": "app_http_controllers_admin_collectionentrycontroller_collectionentrycontroller",
@@ -22514,7 +22537,7 @@
       "relation": "method",
       "confidence": "EXTRACTED",
       "source_file": "app/Http/Controllers/Admin/CollectionEntryController.php",
-      "source_location": "L144",
+      "source_location": "L162",
       "weight": 1.0,
       "_origin": "ast",
       "source": "app_http_controllers_admin_collectionentrycontroller_collectionentrycontroller",
@@ -22585,7 +22608,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "app/Http/Controllers/Admin/CollectionEntryController.php",
-      "source_location": "L72",
+      "source_location": "L90",
       "weight": 1.0,
       "_origin": "ast",
       "source": "app_http_controllers_admin_collectionentrycontroller_collectionentrycontroller_store",
@@ -22620,9 +22643,21 @@
       "relation": "calls",
       "context": "call",
       "confidence": "EXTRACTED",
+      "source_file": "app/Http/Controllers/Admin/CollectionEntryController.php",
+      "source_location": "L68",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "app_http_controllers_admin_collectionentrycontroller_collectionentrycontroller_store",
+      "target": "app_models_collectionentry_collectionentry",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "app/Http/Controllers/Admin/CollectionEntryController.php",
-      "source_location": "L62",
+      "source_location": "L80",
       "weight": 1.0,
       "_origin": "ast",
       "source": "app_http_controllers_admin_collectionentrycontroller_collectionentrycontroller_store",
@@ -22634,7 +22669,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "app/Http/Controllers/Admin/CollectionEntryController.php",
-      "source_location": "L68",
+      "source_location": "L86",
       "weight": 1.0,
       "_origin": "ast",
       "source": "app_http_controllers_admin_collectionentrycontroller_collectionentrycontroller_store",
@@ -22646,7 +22681,7 @@
       "confidence": "INFERRED",
       "confidence_score": 0.8,
       "source_file": "app/Http/Controllers/Admin/CollectionEntryController.php",
-      "source_location": "L63",
+      "source_location": "L81",
       "weight": 1.0,
       "_origin": "ast",
       "source": "app_http_controllers_admin_collectionentrycontroller_collectionentrycontroller_store",
@@ -22656,7 +22691,7 @@
       "relation": "references",
       "confidence": "EXTRACTED",
       "source_file": "app/Http/Controllers/Admin/CollectionEntryController.php",
-      "source_location": "L197",
+      "source_location": "L215",
       "weight": 1.0,
       "context": "parameter_type",
       "_origin": "ast",
@@ -22668,7 +22703,7 @@
       "relation": "references",
       "confidence": "EXTRACTED",
       "source_file": "app/Http/Controllers/Admin/CollectionEntryController.php",
-      "source_location": "L89",
+      "source_location": "L107",
       "weight": 1.0,
       "context": "parameter_type",
       "_origin": "ast",
@@ -22680,7 +22715,7 @@
       "relation": "references",
       "confidence": "EXTRACTED",
       "source_file": "app/Http/Controllers/Admin/CollectionEntryController.php",
-      "source_location": "L144",
+      "source_location": "L162",
       "weight": 1.0,
       "context": "parameter_type",
       "_origin": "ast",
@@ -22692,7 +22727,7 @@
       "relation": "references",
       "confidence": "EXTRACTED",
       "source_file": "app/Http/Controllers/Admin/CollectionEntryController.php",
-      "source_location": "L82",
+      "source_location": "L100",
       "weight": 1.0,
       "context": "parameter_type",
       "_origin": "ast",
@@ -22704,7 +22739,7 @@
       "relation": "references",
       "confidence": "EXTRACTED",
       "source_file": "app/Http/Controllers/Admin/CollectionEntryController.php",
-      "source_location": "L82",
+      "source_location": "L100",
       "weight": 1.0,
       "context": "parameter_type",
       "_origin": "ast",
@@ -22717,46 +22752,10 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "app/Http/Controllers/Admin/CollectionEntryController.php",
-      "source_location": "L200",
+      "source_location": "L218",
       "weight": 1.0,
       "_origin": "ast",
       "source": "app_http_controllers_admin_collectionentrycontroller_collectionentrycontroller_reorder",
-      "target": "app_http_controllers_admin_collectionentrycontroller_collectionentrycontroller_update",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "references",
-      "confidence": "EXTRACTED",
-      "source_file": "app/Http/Controllers/Admin/CollectionEntryController.php",
-      "source_location": "L89",
-      "weight": 1.0,
-      "context": "parameter_type",
-      "_origin": "ast",
-      "source": "app_http_controllers_admin_collectionentrycontroller_collectionentrycontroller_update",
-      "target": "app_models_collection_collection",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "references",
-      "confidence": "EXTRACTED",
-      "source_file": "app/Http/Controllers/Admin/CollectionEntryController.php",
-      "source_location": "L89",
-      "weight": 1.0,
-      "context": "parameter_type",
-      "_origin": "ast",
-      "source": "app_http_controllers_admin_collectionentrycontroller_collectionentrycontroller_update",
-      "target": "app_models_collectionentry_collectionentry",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "calls",
-      "context": "call",
-      "confidence": "EXTRACTED",
-      "source_file": "app/Http/Controllers/Admin/CollectionEntryController.php",
-      "source_location": "L155",
-      "weight": 1.0,
-      "_origin": "ast",
-      "source": "app_http_controllers_admin_collectionentrycontroller_collectionentrycontroller_updatesections",
       "target": "app_http_controllers_admin_collectionentrycontroller_collectionentrycontroller_update",
       "confidence_score": 1.0
     },
@@ -22765,6 +22764,42 @@
       "confidence": "EXTRACTED",
       "source_file": "app/Http/Controllers/Admin/CollectionEntryController.php",
       "source_location": "L107",
+      "weight": 1.0,
+      "context": "parameter_type",
+      "_origin": "ast",
+      "source": "app_http_controllers_admin_collectionentrycontroller_collectionentrycontroller_update",
+      "target": "app_models_collection_collection",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "source_file": "app/Http/Controllers/Admin/CollectionEntryController.php",
+      "source_location": "L107",
+      "weight": 1.0,
+      "context": "parameter_type",
+      "_origin": "ast",
+      "source": "app_http_controllers_admin_collectionentrycontroller_collectionentrycontroller_update",
+      "target": "app_models_collectionentry_collectionentry",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "app/Http/Controllers/Admin/CollectionEntryController.php",
+      "source_location": "L173",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "app_http_controllers_admin_collectionentrycontroller_collectionentrycontroller_updatesections",
+      "target": "app_http_controllers_admin_collectionentrycontroller_collectionentrycontroller_update",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "source_file": "app/Http/Controllers/Admin/CollectionEntryController.php",
+      "source_location": "L125",
       "weight": 1.0,
       "context": "parameter_type",
       "_origin": "ast",
@@ -22776,7 +22811,7 @@
       "relation": "references",
       "confidence": "EXTRACTED",
       "source_file": "app/Http/Controllers/Admin/CollectionEntryController.php",
-      "source_location": "L107",
+      "source_location": "L125",
       "weight": 1.0,
       "context": "parameter_type",
       "_origin": "ast",
@@ -22790,7 +22825,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "app/Http/Controllers/Admin/CollectionEntryController.php",
-      "source_location": "L136",
+      "source_location": "L154",
       "weight": 1.0,
       "_origin": "ast",
       "source": "app_http_controllers_admin_collectionentrycontroller_collectionentrycontroller_editor",
@@ -22802,7 +22837,7 @@
       "confidence": "INFERRED",
       "confidence_score": 0.8,
       "source_file": "app/Http/Controllers/Admin/CollectionEntryController.php",
-      "source_location": "L115",
+      "source_location": "L133",
       "weight": 1.0,
       "_origin": "ast",
       "source": "app_http_controllers_admin_collectionentrycontroller_collectionentrycontroller_editor",
@@ -22812,7 +22847,7 @@
       "relation": "references",
       "confidence": "EXTRACTED",
       "source_file": "app/Http/Controllers/Admin/CollectionEntryController.php",
-      "source_location": "L144",
+      "source_location": "L162",
       "weight": 1.0,
       "context": "parameter_type",
       "_origin": "ast",
@@ -22824,7 +22859,7 @@
       "relation": "references",
       "confidence": "EXTRACTED",
       "source_file": "app/Http/Controllers/Admin/CollectionEntryController.php",
-      "source_location": "L144",
+      "source_location": "L162",
       "weight": 1.0,
       "context": "parameter_type",
       "_origin": "ast",
@@ -22838,7 +22873,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "app/Http/Controllers/Admin/CollectionEntryController.php",
-      "source_location": "L167",
+      "source_location": "L185",
       "weight": 1.0,
       "_origin": "ast",
       "source": "app_http_controllers_admin_collectionentrycontroller_collectionentrycontroller_updatesections",
@@ -22850,7 +22885,7 @@
       "confidence": "INFERRED",
       "confidence_score": 0.8,
       "source_file": "app/Http/Controllers/Admin/CollectionEntryController.php",
-      "source_location": "L164",
+      "source_location": "L182",
       "weight": 1.0,
       "_origin": "ast",
       "source": "app_http_controllers_admin_collectionentrycontroller_collectionentrycontroller_updatesections",
@@ -22860,7 +22895,7 @@
       "relation": "references",
       "confidence": "EXTRACTED",
       "source_file": "app/Http/Controllers/Admin/CollectionEntryController.php",
-      "source_location": "L183",
+      "source_location": "L201",
       "weight": 1.0,
       "context": "parameter_type",
       "_origin": "ast",
@@ -22872,7 +22907,7 @@
       "relation": "references",
       "confidence": "EXTRACTED",
       "source_file": "app/Http/Controllers/Admin/CollectionEntryController.php",
-      "source_location": "L183",
+      "source_location": "L201",
       "weight": 1.0,
       "context": "parameter_type",
       "_origin": "ast",
@@ -22884,7 +22919,7 @@
       "relation": "references",
       "confidence": "EXTRACTED",
       "source_file": "app/Http/Controllers/Admin/CollectionEntryController.php",
-      "source_location": "L197",
+      "source_location": "L215",
       "weight": 1.0,
       "context": "parameter_type",
       "_origin": "ast",
@@ -22897,7 +22932,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "app/Http/Controllers/Admin/CollectionEntryController.php",
-      "source_location": "L200",
+      "source_location": "L218",
       "weight": 1.0,
       "_origin": "ast",
       "source": "app_http_controllers_admin_collectionentrycontroller_collectionentrycontroller_reorder",
@@ -23861,18 +23896,6 @@
       "confidence_score": 1.0
     },
     {
-      "relation": "imports",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "routes/admin.php",
-      "source_location": "L10",
-      "weight": 1.0,
-      "_origin": "ast",
-      "source": "routes_admin",
-      "target": "app_http_controllers_admin_layoutcontroller",
-      "confidence_score": 1.0
-    },
-    {
       "relation": "method",
       "confidence": "EXTRACTED",
       "source_file": "app/Http/Controllers/Admin/LayoutController.php",
@@ -23964,7 +23987,7 @@
       "relation": "method",
       "confidence": "EXTRACTED",
       "source_file": "app/Http/Controllers/Admin/LayoutController.php",
-      "source_location": "L111",
+      "source_location": "L112",
       "weight": 1.0,
       "_origin": "ast",
       "source": "app_http_controllers_admin_layoutcontroller_layoutcontroller",
@@ -24046,7 +24069,7 @@
       "relation": "references",
       "confidence": "EXTRACTED",
       "source_file": "app/Http/Controllers/Admin/LayoutController.php",
-      "source_location": "L111",
+      "source_location": "L112",
       "weight": 1.0,
       "context": "parameter_type",
       "_origin": "ast",
@@ -24095,7 +24118,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "app/Http/Controllers/Admin/LayoutController.php",
-      "source_location": "L120",
+      "source_location": "L121",
       "weight": 1.0,
       "_origin": "ast",
       "source": "app_http_controllers_admin_layoutcontroller_layoutcontroller_updatesections",
@@ -24144,7 +24167,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "app/Http/Controllers/Admin/LayoutController.php",
-      "source_location": "L102",
+      "source_location": "L103",
       "weight": 1.0,
       "_origin": "ast",
       "source": "app_http_controllers_admin_layoutcontroller_layoutcontroller_editor",
@@ -24166,7 +24189,7 @@
       "relation": "references",
       "confidence": "EXTRACTED",
       "source_file": "app/Http/Controllers/Admin/LayoutController.php",
-      "source_location": "L111",
+      "source_location": "L112",
       "weight": 1.0,
       "context": "parameter_type",
       "_origin": "ast",
@@ -24243,18 +24266,6 @@
       "_origin": "ast",
       "source": "app_http_controllers_admin_packagecontroller",
       "target": "app_support_sections",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "imports",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "routes/admin.php",
-      "source_location": "L11",
-      "weight": 1.0,
-      "_origin": "ast",
-      "source": "routes_admin",
-      "target": "app_http_controllers_admin_packagecontroller",
       "confidence_score": 1.0
     },
     {
@@ -25052,18 +25063,6 @@
       "confidence_score": 1.0
     },
     {
-      "relation": "imports",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "routes/admin.php",
-      "source_location": "L13",
-      "weight": 1.0,
-      "_origin": "ast",
-      "source": "routes_admin",
-      "target": "app_http_controllers_admin_postcontroller",
-      "confidence_score": 1.0
-    },
-    {
       "relation": "method",
       "confidence": "EXTRACTED",
       "source_file": "app/Http/Controllers/Admin/PostController.php",
@@ -25465,7 +25464,7 @@
       "context": "import",
       "confidence": "EXTRACTED",
       "source_file": "routes/admin.php",
-      "source_location": "L14",
+      "source_location": "L10",
       "weight": 1.0,
       "_origin": "ast",
       "source": "routes_admin",
@@ -25629,7 +25628,7 @@
       "context": "import",
       "confidence": "EXTRACTED",
       "source_file": "routes/admin.php",
-      "source_location": "L15",
+      "source_location": "L11",
       "weight": 1.0,
       "_origin": "ast",
       "source": "routes_admin",
@@ -25757,7 +25756,7 @@
       "context": "import",
       "confidence": "EXTRACTED",
       "source_file": "routes/admin.php",
-      "source_location": "L16",
+      "source_location": "L12",
       "weight": 1.0,
       "_origin": "ast",
       "source": "routes_admin",
@@ -25955,7 +25954,7 @@
       "context": "import",
       "confidence": "EXTRACTED",
       "source_file": "routes/admin.php",
-      "source_location": "L17",
+      "source_location": "L13",
       "weight": 1.0,
       "_origin": "ast",
       "source": "routes_admin",
@@ -26095,7 +26094,7 @@
       "context": "import",
       "confidence": "EXTRACTED",
       "source_file": "routes/admin.php",
-      "source_location": "L18",
+      "source_location": "L14",
       "weight": 1.0,
       "_origin": "ast",
       "source": "routes_admin",
@@ -26363,7 +26362,7 @@
       "context": "import",
       "confidence": "EXTRACTED",
       "source_file": "routes/admin.php",
-      "source_location": "L19",
+      "source_location": "L15",
       "weight": 1.0,
       "_origin": "ast",
       "source": "routes_admin",
@@ -26883,18 +26882,6 @@
       "confidence_score": 1.0
     },
     {
-      "relation": "imports",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "routes/web.php",
-      "source_location": "L4",
-      "weight": 1.0,
-      "_origin": "ast",
-      "source": "routes_web",
-      "target": "app_http_controllers_public_blogcontroller",
-      "confidence_score": 1.0
-    },
-    {
       "relation": "method",
       "confidence": "EXTRACTED",
       "source_file": "app/Http/Controllers/Public/BlogController.php",
@@ -26990,7 +26977,7 @@
       "relation": "method",
       "confidence": "EXTRACTED",
       "source_file": "app/Http/Controllers/Public/PageController.php",
-      "source_location": "L28",
+      "source_location": "L32",
       "weight": 1.0,
       "_origin": "ast",
       "source": "app_http_controllers_public_pagecontroller_pagecontroller",
@@ -27015,7 +27002,7 @@
       "confidence": "INFERRED",
       "confidence_score": 0.8,
       "source_file": "app/Http/Controllers/Public/PageController.php",
-      "source_location": "L23",
+      "source_location": "L27",
       "weight": 1.0,
       "_origin": "ast",
       "source": "app_http_controllers_public_pagecontroller_pagecontroller_show",
@@ -27039,7 +27026,7 @@
       "confidence": "INFERRED",
       "confidence_score": 0.8,
       "source_file": "app/Http/Controllers/Public/PageController.php",
-      "source_location": "L30",
+      "source_location": "L34",
       "weight": 1.0,
       "_origin": "ast",
       "source": "app_http_controllers_public_pagecontroller_pagecontroller_showcollectionentry",
@@ -27109,7 +27096,7 @@
       "context": "import",
       "confidence": "EXTRACTED",
       "source_file": "routes/admin.php",
-      "source_location": "L20",
+      "source_location": "L16",
       "weight": 1.0,
       "_origin": "ast",
       "source": "routes_admin",
@@ -27582,6 +27569,18 @@
       "relation": "imports",
       "context": "import",
       "confidence": "EXTRACTED",
+      "source_file": "tests/Feature/CollectionFieldTypeTest.php",
+      "source_location": "L3",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "tests_feature_collectionfieldtypetest",
+      "target": "app_models_admin_admin",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
       "source_file": "tests/Feature/CommandSearchTest.php",
       "source_location": "L3",
       "weight": 1.0,
@@ -27635,30 +27634,6 @@
       "weight": 1.0,
       "_origin": "ast",
       "source": "tests_feature_layouttest",
-      "target": "app_models_admin_admin",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "imports",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "tests/Feature/PostCrudTest.php",
-      "source_location": "L3",
-      "weight": 1.0,
-      "_origin": "ast",
-      "source": "tests_feature_postcrudtest",
-      "target": "app_models_admin_admin",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "imports",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "tests/Feature/PostEditorTest.php",
-      "source_location": "L3",
-      "weight": 1.0,
-      "_origin": "ast",
-      "source": "tests_feature_posteditortest",
       "target": "app_models_admin_admin",
       "confidence_score": 1.0
     },
@@ -28365,6 +28340,18 @@
       "confidence_score": 1.0
     },
     {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "tests/Feature/CollectionFieldTypeTest.php",
+      "source_location": "L4",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "tests_feature_collectionfieldtypetest",
+      "target": "app_models_collection",
+      "confidence_score": 1.0
+    },
+    {
       "relation": "method",
       "confidence": "EXTRACTED",
       "source_file": "app/Models/Collection.php",
@@ -28510,6 +28497,18 @@
       "_origin": "ast",
       "source": "app_models_collectionentry_collectionentry",
       "target": "app_models_collectionentry_collectionentry_page",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "tests/Feature/CollectionFieldTypeTest.php",
+      "source_location": "L5",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "tests_feature_collectionfieldtypetest",
+      "target": "app_models_collectionentry_collectionentry",
       "confidence_score": 1.0
     },
     {
@@ -28899,30 +28898,6 @@
       "relation": "imports",
       "context": "import",
       "confidence": "EXTRACTED",
-      "source_file": "app/Support/CommandSearch.php",
-      "source_location": "L5",
-      "weight": 1.0,
-      "_origin": "ast",
-      "source": "app_support_commandsearch",
-      "target": "app_models_layout_layout",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "calls",
-      "context": "call",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "source_file": "app/Support/CommandSearch.php",
-      "source_location": "L67",
-      "weight": 1.0,
-      "_origin": "ast",
-      "source": "app_support_commandsearch_commandsearch_dynamiccommands",
-      "target": "app_models_layout_layout"
-    },
-    {
-      "relation": "imports",
-      "context": "import",
-      "confidence": "EXTRACTED",
       "source_file": "database/factories/LayoutFactory.php",
       "source_location": "L5",
       "weight": 1.0,
@@ -28954,18 +28929,6 @@
       "_origin": "ast",
       "source": "database_seeders_layoutseeder_layoutseeder_run",
       "target": "app_models_layout_layout"
-    },
-    {
-      "relation": "imports",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "tests/Feature/CommandSearchTest.php",
-      "source_location": "L4",
-      "weight": 1.0,
-      "_origin": "ast",
-      "source": "tests_feature_commandsearchtest",
-      "target": "app_models_layout_layout",
-      "confidence_score": 1.0
     },
     {
       "relation": "imports",
@@ -29061,30 +29024,6 @@
       "relation": "imports",
       "context": "import",
       "confidence": "EXTRACTED",
-      "source_file": "app/Support/CommandSearch.php",
-      "source_location": "L6",
-      "weight": 1.0,
-      "_origin": "ast",
-      "source": "app_support_commandsearch",
-      "target": "app_models_page_page",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "calls",
-      "context": "call",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "source_file": "app/Support/CommandSearch.php",
-      "source_location": "L47",
-      "weight": 1.0,
-      "_origin": "ast",
-      "source": "app_support_commandsearch_commandsearch_dynamiccommands",
-      "target": "app_models_page_page"
-    },
-    {
-      "relation": "imports",
-      "context": "import",
-      "confidence": "EXTRACTED",
       "source_file": "app/Support/Sections.php",
       "source_location": "L6",
       "weight": 1.0,
@@ -29169,11 +29108,11 @@
       "relation": "imports",
       "context": "import",
       "confidence": "EXTRACTED",
-      "source_file": "tests/Feature/CommandSearchTest.php",
-      "source_location": "L5",
+      "source_file": "tests/Feature/CollectionFieldTypeTest.php",
+      "source_location": "L6",
       "weight": 1.0,
       "_origin": "ast",
-      "source": "tests_feature_commandsearchtest",
+      "source": "tests_feature_collectionfieldtypetest",
       "target": "app_models_page_page",
       "confidence_score": 1.0
     },
@@ -29274,30 +29213,6 @@
       "relation": "imports",
       "context": "import",
       "confidence": "EXTRACTED",
-      "source_file": "app/Support/CommandSearch.php",
-      "source_location": "L7",
-      "weight": 1.0,
-      "_origin": "ast",
-      "source": "app_support_commandsearch",
-      "target": "app_models_post_post",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "calls",
-      "context": "call",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "source_file": "app/Support/CommandSearch.php",
-      "source_location": "L57",
-      "weight": 1.0,
-      "_origin": "ast",
-      "source": "app_support_commandsearch_commandsearch_dynamiccommands",
-      "target": "app_models_post_post"
-    },
-    {
-      "relation": "imports",
-      "context": "import",
-      "confidence": "EXTRACTED",
       "source_file": "database/factories/PostFactory.php",
       "source_location": "L5",
       "weight": 1.0,
@@ -29322,11 +29237,11 @@
       "relation": "imports",
       "context": "import",
       "confidence": "EXTRACTED",
-      "source_file": "tests/Feature/CommandSearchTest.php",
-      "source_location": "L6",
+      "source_file": "tests/Feature/CollectionFieldTypeTest.php",
+      "source_location": "L10",
       "weight": 1.0,
       "_origin": "ast",
-      "source": "tests_feature_commandsearchtest",
+      "source": "tests_feature_collectionfieldtypetest",
       "target": "app_models_post_post",
       "confidence_score": 1.0
     },
@@ -29339,30 +29254,6 @@
       "weight": 1.0,
       "_origin": "ast",
       "source": "tests_feature_layouttest",
-      "target": "app_models_post_post",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "imports",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "tests/Feature/PostCrudTest.php",
-      "source_location": "L10",
-      "weight": 1.0,
-      "_origin": "ast",
-      "source": "tests_feature_postcrudtest",
-      "target": "app_models_post_post",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "imports",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "tests/Feature/PostEditorTest.php",
-      "source_location": "L4",
-      "weight": 1.0,
-      "_origin": "ast",
-      "source": "tests_feature_posteditortest",
       "target": "app_models_post_post",
       "confidence_score": 1.0
     },
@@ -29440,7 +29331,7 @@
       "context": "import",
       "confidence": "EXTRACTED",
       "source_file": "app/Support/CommandSearch.php",
-      "source_location": "L8",
+      "source_location": "L5",
       "weight": 1.0,
       "_origin": "ast",
       "source": "app_support_commandsearch",
@@ -29453,7 +29344,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "app/Support/CommandSearch.php",
-      "source_location": "L77",
+      "source_location": "L38",
       "weight": 1.0,
       "_origin": "ast",
       "source": "app_support_commandsearch_commandsearch_dynamiccommands",
@@ -29464,22 +29355,10 @@
       "context": "import",
       "confidence": "EXTRACTED",
       "source_file": "tests/Feature/CommandSearchTest.php",
-      "source_location": "L7",
+      "source_location": "L4",
       "weight": 1.0,
       "_origin": "ast",
       "source": "tests_feature_commandsearchtest",
-      "target": "app_models_taxonomy_taxonomy",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "imports",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "tests/Feature/PostCrudTest.php",
-      "source_location": "L5",
-      "weight": 1.0,
-      "_origin": "ast",
-      "source": "tests_feature_postcrudtest",
       "target": "app_models_taxonomy_taxonomy",
       "confidence_score": 1.0
     },
@@ -29528,18 +29407,6 @@
       "_origin": "ast",
       "source": "app_models_term",
       "target": "app_models_term_term",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "imports",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "tests/Feature/PostCrudTest.php",
-      "source_location": "L6",
-      "weight": 1.0,
-      "_origin": "ast",
-      "source": "tests_feature_postcrudtest",
-      "target": "app_models_term",
       "confidence_score": 1.0
     },
     {
@@ -29698,7 +29565,7 @@
       "context": "import",
       "confidence": "EXTRACTED",
       "source_file": "routes/admin.php",
-      "source_location": "L21",
+      "source_location": "L17",
       "weight": 1.0,
       "_origin": "ast",
       "source": "routes_admin",
@@ -29835,7 +29702,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "app/Support/CommandSearch.php",
-      "source_location": "L14",
+      "source_location": "L11",
       "weight": 1.0,
       "_origin": "ast",
       "source": "app_support_commandsearch",
@@ -29858,7 +29725,7 @@
       "relation": "method",
       "confidence": "EXTRACTED",
       "source_file": "app/Support/CommandSearch.php",
-      "source_location": "L43",
+      "source_location": "L34",
       "weight": 1.0,
       "_origin": "ast",
       "source": "app_support_commandsearch_commandsearch",
@@ -29869,7 +29736,7 @@
       "relation": "method",
       "confidence": "EXTRACTED",
       "source_file": "app/Support/CommandSearch.php",
-      "source_location": "L135",
+      "source_location": "L96",
       "weight": 1.0,
       "_origin": "ast",
       "source": "app_support_commandsearch_commandsearch",
@@ -29880,7 +29747,7 @@
       "relation": "method",
       "confidence": "EXTRACTED",
       "source_file": "app/Support/CommandSearch.php",
-      "source_location": "L162",
+      "source_location": "L123",
       "weight": 1.0,
       "_origin": "ast",
       "source": "app_support_commandsearch_commandsearch",
@@ -29891,7 +29758,7 @@
       "relation": "method",
       "confidence": "EXTRACTED",
       "source_file": "app/Support/CommandSearch.php",
-      "source_location": "L204",
+      "source_location": "L165",
       "weight": 1.0,
       "_origin": "ast",
       "source": "app_support_commandsearch_commandsearch",
@@ -29902,7 +29769,7 @@
       "relation": "method",
       "confidence": "EXTRACTED",
       "source_file": "app/Support/CommandSearch.php",
-      "source_location": "L97",
+      "source_location": "L58",
       "weight": 1.0,
       "_origin": "ast",
       "source": "app_support_commandsearch_commandsearch",
@@ -29913,7 +29780,7 @@
       "relation": "method",
       "confidence": "EXTRACTED",
       "source_file": "app/Support/CommandSearch.php",
-      "source_location": "L187",
+      "source_location": "L148",
       "weight": 1.0,
       "_origin": "ast",
       "source": "app_support_commandsearch_commandsearch",
@@ -29924,7 +29791,7 @@
       "relation": "method",
       "confidence": "EXTRACTED",
       "source_file": "app/Support/CommandSearch.php",
-      "source_location": "L21",
+      "source_location": "L18",
       "weight": 1.0,
       "_origin": "ast",
       "source": "app_support_commandsearch_commandsearch",
@@ -30769,7 +30636,7 @@
       "context": "import",
       "confidence": "EXTRACTED",
       "source_file": "routes/admin.php",
-      "source_location": "L22",
+      "source_location": "L18",
       "weight": 1.0,
       "_origin": "ast",
       "source": "routes_admin",
@@ -40913,5 +40780,5 @@
     }
   ],
   "hyperedges": [],
-  "built_at_commit": "81a3d0d496058ff3b4dfa1f9c577ac6e7f5c0f23"
+  "built_at_commit": "c2df04a10683b131bf70d04edd73d43464bbf2e9"
 }

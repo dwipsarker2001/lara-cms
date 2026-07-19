@@ -4,36 +4,30 @@
 @section('breadcrumb', 'Edit Block')
 
 @section('content-full')
-<div class="bg-content-bg min-h-[calc(100%-8px)] mx-2 overflow-hidden mt-2 rounded-t-2xl border border-content-border border-b-0 relative" style="container-type: inline-size;"  x-data="{ tab: 'fields' }">
+<div class="bg-content-bg min-h-[calc(100%-8px)] mx-2 overflow-hidden mt-2 rounded-t-2xl border border-content-border border-b-0 relative" style="container-type: inline-size;"
+     x-data="blockGenerator"
+>
     {{-- Header bar --}}
     <div class="shrink-0 flex items-center justify-between pl-0 border-b border-content-border bg-white">
         {{-- Tab strip --}}
         <div class="flex items-end">
-            <a href="{{ route('admin.dynamic-blocks.index') }}" class="flex items-center justify-center size-9  -mb-px text-text-muted hover:text-text-heading transition-colors border-r border-content-border">
+            <a href="{{ route('admin.dynamic-blocks.index') }}" class="flex items-center justify-center size-9 -mb-px text-text-muted hover:text-text-heading transition-colors border-r border-content-border">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" class="size-4"><polyline points="15 18 9 12 15 6"/></svg>
             </a>
             <button type="button" @click="tab = 'generate'"
-:class="tab === 'generate'
-    ? 'bg-gray-100 text-text-heading border-content-border border-t-0'
-    : 'bg-transparent text-text-muted border-transparent hover:bg-gray-50 hover:text-text-heading'"
-                class="flex items-center gap-2 px-6 h-10 text-xs font-medium border border-r-0 -mb-px -ml-px transition-colors editor-tab hover:border-b-gray-300"
+                :class="tab === 'generate' ? 'bg-gray-100 text-text-heading border-content-border border-t-0' : 'bg-transparent text-text-muted border-transparent hover:bg-gray-50 hover:text-text-heading'"
+                class="flex items-center gap-2 px-6 h-10 text-xs font-medium border border-r-0 -mb-px -ml-px transition-colors hover:border-b-gray-300"
             >
                 <span class="flex items-center justify-center size-5 rounded bg-emerald-50 shrink-0">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" class="size-3 text-emerald-500">
-                        <polyline points="16 3 21 3 21 8"/>
-                        <line x1="4" y1="20" x2="21" y2="3"/>
-                        <polyline points="21 16 21 21 16 21"/>
-                        <line x1="15" y1="15" x2="21" y2="21"/>
-                        <line x1="4" y1="4" x2="9" y2="9"/>
+                        <path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>
                     </svg>
                 </span>
                 Generate
             </button>
             <button type="button" @click="tab = 'fields'"
-:class="tab === 'fields'
-    ? 'bg-gray-100 text-text-heading border-content-border border-t-0'
-    : 'bg-transparent text-text-muted border-transparent hover:bg-gray-50 hover:text-text-heading'"
-                class="flex items-center gap-2 px-6 h-10 text-xs font-medium border -mb-px -ml-px transition-colors editor-tab hover:border-b-gray-300"
+                :class="tab === 'fields' ? 'bg-gray-100 text-text-heading border-content-border border-t-0' : 'bg-transparent text-text-muted border-transparent hover:bg-gray-50 hover:text-text-heading'"
+                class="flex items-center gap-2 px-6 h-10 text-xs font-medium border -mb-px -ml-px transition-colors hover:border-b-gray-300"
             >
                 <span class="flex items-center justify-center size-5 rounded bg-amber-50 shrink-0">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" class="size-3 text-amber-500">
@@ -44,10 +38,8 @@
                 fields.json
             </button>
             <button type="button" @click="tab = 'template'"
-:class="tab === 'template'
-    ? 'bg-gray-100 text-text-heading border-content-border border-t-0'
-    : 'bg-transparent text-text-muted border-transparent hover:bg-gray-50 hover:text-text-heading'"
-                class="flex items-center gap-2 px-6 h-10 text-xs font-medium border -mb-px -ml-px transition-colors editor-tab hover:border-b-gray-300"
+                :class="tab === 'template' ? 'bg-gray-100 text-text-heading border-content-border border-t-0' : 'bg-transparent text-text-muted border-transparent hover:bg-gray-50 hover:text-text-heading'"
+                class="flex items-center gap-2 px-6 h-10 text-xs font-medium border -mb-px -ml-px transition-colors hover:border-b-gray-300"
             >
                 <span class="flex items-center justify-center size-5 rounded bg-sky-50 shrink-0">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" class="size-3 text-sky-500">
@@ -57,10 +49,8 @@
                 template.html
             </button>
             <button type="button" @click="tab = 'preview'; $nextTick(() => window.renderPreview())"
-:class="tab === 'preview'
-    ? 'bg-gray-100 text-text-heading border-content-border border-t-0'
-    : 'bg-transparent text-text-muted border-transparent hover:bg-gray-50 hover:text-text-heading'"
-                class="flex items-center gap-2 px-6 h-10 text-xs font-medium border -mb-px -ml-px transition-colors editor-tab hover:border-b-gray-300"
+                :class="tab === 'preview' ? 'bg-gray-100 text-text-heading border-content-border border-t-0' : 'bg-transparent text-text-muted border-transparent hover:bg-gray-50 hover:text-text-heading'"
+                class="flex items-center gap-2 px-6 h-10 text-xs font-medium border -mb-px -ml-px transition-colors hover:border-b-gray-300"
             >
                 <span class="flex items-center justify-center size-5 rounded bg-purple-50 shrink-0">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" class="size-3 text-purple-500">
@@ -71,9 +61,7 @@
                 Preview
             </button>
             <button type="button" @click="tab = 'readme'"
-:class="tab === 'readme'
-    ? 'bg-gray-100 text-text-heading border-content-border border-t-0'
-    : 'bg-transparent text-text-muted border-transparent hover:bg-gray-50 hover:text-text-heading'"
+                :class="tab === 'readme' ? 'bg-gray-100 text-text-heading border-content-border border-t-0' : 'bg-transparent text-text-muted border-transparent hover:bg-gray-50 hover:text-text-heading'"
                 class="flex items-center gap-2 px-6 h-10 text-xs font-medium border -mb-px -ml-px transition-colors hover:border-b-gray-300"
             >
                 <span class="flex items-center justify-center size-5 rounded bg-gray-100 shrink-0">
@@ -82,7 +70,6 @@
                         <polyline points="14 2 14 8 20 8"/>
                         <line x1="16" y1="13" x2="8" y2="13"/>
                         <line x1="16" y1="17" x2="8" y2="17"/>
-                        <polyline points="10 9 9 9 8 9"/>
                     </svg>
                 </span>
                 readme.md
@@ -101,55 +88,143 @@
     </div>
 
     {{-- Editor area --}}
-    <div class="flex-1 min-h-0 bg-content-bg">
+    <div class="flex-1 min-h-0 bg-content-bg relative">
         <form id="editor-form" method="POST" action="{{ route('admin.dynamic-blocks.update-editor', $block) }}" class="h-full">
             @csrf @method('PUT')
 
-            <div x-show="tab === 'generate'" class="h-full overflow-y-auto p-6 text-sm text-text-primary leading-relaxed" x-data="{ image: null, previewUrl: null }">
-                <div class="flex flex-col items-center justify-center min-h-full text-center">
-                    <div class="size-16 rounded-2xl bg-emerald-50 flex items-center justify-center mb-4">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="size-8 text-emerald-500">
-                            <polyline points="16 3 21 3 21 8"/>
-                            <line x1="4" y1="20" x2="21" y2="3"/>
-                            <polyline points="21 16 21 21 16 21"/>
-                            <line x1="15" y1="15" x2="21" y2="21"/>
-                            <line x1="4" y1="4" x2="9" y2="9"/>
-                        </svg>
-                    </div>
-                    <h2 class="text-lg font-semibold text-text-heading mb-2">AI Block Generator</h2>
-                    <p class="text-text-muted max-w-md mb-6">Describe the block you want to create, or upload a wireframe/screenshot.</p>
+            {{-- Dynamic AI Generator UI Tab --}}
+            <div x-show="tab === 'generate'" x-cloak class="h-full relative overflow-y-auto bg-white flex flex-col justify-center items-center px-4">
+                
+                {{-- OpenCode watermark text in background --}}
+                <div class="absolute inset-0 flex items-center justify-center pointer-events-none select-none overflow-hidden pb-32">
+                    <span class="text-[90px] md:text-[130px] font-black text-gray-100/60 uppercase tracking-widest font-mono select-none">opencode</span>
+                </div>
 
-                    {{-- Image upload --}}
-                    <div class="w-full max-w-lg mb-4">
-                        <template x-if="!previewUrl">
-                            <button type="button" @click="document.getElementById('generate-image-input').click()" class="w-full border-2 border-dashed border-gray-300 hover:border-emerald-400 rounded-xl py-8 px-4 transition-colors cursor-pointer bg-white">
-                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="size-8 mx-auto mb-2 text-gray-400">
-                                    <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
-                                    <circle cx="8.5" cy="8.5" r="1.5"/>
-                                    <polyline points="21 15 16 10 5 21"/>
+                {{-- Central Container --}}
+                <div class="relative z-10 w-full max-w-2xl flex flex-col items-center">
+                    
+                    {{-- Input container panel --}}
+                    <div class="w-full bg-white rounded-3xl border border-gray-200 shadow-[0_8px_30px_rgb(0,0,0,0.04)] hover:shadow-[0_8px_30px_rgb(0,0,0,0.08)] transition-shadow p-4 flex flex-col gap-2">
+                        
+                        {{-- Text input field --}}
+                        <textarea
+                            x-model="prompt"
+                            rows="2"
+                            @keydown.enter.prevent="if (prompt.trim() && !generating) runAiGeneration()"
+                            class="w-full bg-transparent border-0 text-text-primary placeholder:text-text-muted text-sm resize-none focus:ring-0 focus:outline-none [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+                            placeholder="Ask anything, / for commands, @ for context..."
+                        ></textarea>
+
+                        {{-- Attachment file indicator --}}
+                        <template x-if="attachmentName">
+                            <div class="inline-flex items-center gap-2 self-start bg-gray-50 border border-gray-200 px-3 py-1 rounded-lg text-xs text-text-primary">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="size-3.5 text-text-muted">
+                                    <path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48"/>
                                 </svg>
-                                <p class="text-sm text-text-muted">Click to upload a wireframe or screenshot</p>
-                            </button>
-                        </template>
-                        <template x-if="previewUrl">
-                            <div class="relative rounded-xl overflow-hidden border border-gray-200 bg-white">
-                                <img :src="previewUrl" class="w-full max-h-64 object-contain">
-                                <button type="button" @click="image = null; previewUrl = null; document.getElementById('generate-image-input').value = ''" class="absolute top-2 right-2 size-7 rounded-full bg-black/50 text-white flex items-center justify-center hover:bg-black/70 transition-colors">
-                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="size-4"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+                                <span class="max-w-[200px] truncate font-medium" x-text="attachmentName"></span>
+                                <button type="button" @click="removeAttachment()" class="text-text-muted hover:text-danger ml-1">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="size-3.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
                                 </button>
                             </div>
                         </template>
-                        <input id="generate-image-input" type="file" accept="image/*" class="hidden" @change="const f = $event.target.files[0]; if (f) { image = f; previewUrl = URL.createObjectURL(f); }">
+
+                        {{-- Loading / generating status text --}}
+                        <template x-if="generating">
+                            <div class="flex items-center gap-2 text-xs text-emerald-600 font-medium">
+                                <svg class="animate-spin size-4 text-emerald-500" fill="none" viewBox="0 0 24 24">
+                                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                                    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                                </svg>
+                                <span x-text="logs"></span>
+                            </div>
+                        </template>
+
+                        {{-- Control Bar --}}
+                        <div class="flex items-center justify-between border-t border-gray-100 pt-3 mt-1">
+                            
+                            <div class="flex items-center gap-2">
+                                {{-- Plus/Attach Button --}}
+                                <button
+                                    type="button"
+                                    @click="document.getElementById('ai-file-input').click()"
+                                    class="size-8 rounded-xl bg-gray-50 border border-gray-200 hover:bg-gray-100 text-text-muted hover:text-text-heading flex items-center justify-center transition-colors cursor-pointer"
+                                    title="Upload wireframe / screenshot"
+                                >
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="size-4">
+                                        <line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/>
+                                    </svg>
+                                </button>
+                                <input id="ai-file-input" type="file" accept="image/*" class="hidden" @change="handleFileSelect($event)">
+
+                                {{-- Provider Selector Dropdown --}}
+                                <div class="relative" x-data="{ openProvider: false }">
+                                    <button
+                                        type="button"
+                                        @click="openProvider = !openProvider"
+                                        class="flex h-8 items-center gap-1.5 rounded-xl border border-gray-200 bg-gray-50 hover:bg-gray-100 px-3 text-xs text-text-primary font-medium transition-colors cursor-pointer"
+                                    >
+                                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="size-3.5 text-emerald-500 shrink-0">
+                                            <polygon points="12 2 2 7 12 12 22 7 12 2"/>
+                                            <polyline points="2 17 12 22 22 17"/>
+                                            <polyline points="2 12 12 17 22 12"/>
+                                        </svg>
+                                        <span x-text="providerLabel()"></span>
+                                        <svg class="size-3 text-text-muted" viewBox="0 0 20 20" fill="currentColor">
+                                            <path fill-rule="evenodd" d="M5.22 8.22a.75.75 0 0 1 1.06 0L10 11.94l3.72-3.72a.75.75 0 1 1 1.06 1.06l-4.25 4.25a.75.75 0 0 1-1.06 0L5.22 9.28a.75.75 0 0 1 0-1.06Z" clip-rule="evenodd"/>
+                                        </svg>
+                                    </button>
+                                    <div
+                                        x-show="openProvider"
+                                        @click.outside="openProvider = false"
+                                        style="display: none;"
+                                        class="absolute left-0 bottom-full mb-1.5 z-50 min-w-[240px] bg-content-bg border border-content-border rounded-xl shadow-xl p-1"
+                                    >
+                                        <button type="button" @click="setProvider('opencode'); openProvider = false;" class="w-full text-left px-3 py-2 text-xs rounded-lg text-text-primary hover:bg-body-bg flex items-center gap-2.5">
+                                            <span class="size-2 rounded-full bg-emerald-400"></span>
+                                            <span>OpenCode (Free AI Simulation)</span>
+                                        </button>
+                                        <button type="button" @click="setProvider('gemini'); openProvider = false;" class="w-full text-left px-3 py-2 text-xs rounded-lg text-text-primary hover:bg-body-bg flex items-center gap-2.5">
+                                            <span class="size-2 rounded-full bg-blue-400"></span>
+                                            <span>Google Gemini API</span>
+                                        </button>
+                                        <button type="button" @click="setProvider('custom'); openProvider = false;" class="w-full text-left px-3 py-2 text-xs rounded-lg text-text-primary hover:bg-body-bg flex items-center gap-2.5">
+                                            <span class="size-2 rounded-full bg-purple-400"></span>
+                                            <span>Custom API Endpoint</span>
+                                        </button>
+                                        <hr class="my-1 border-content-border">
+                                        <button type="button" @click="showSettings = true; openProvider = false;" class="w-full text-left px-3 py-2 text-xs rounded-lg text-primary hover:bg-body-bg flex items-center gap-2.5 font-medium">
+                                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="size-3.5"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+                                            <span>Configure API Keys</span>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+
+                            {{-- Send / Generate Arrow Button --}}
+                            <button
+                                type="button"
+                                @click="runAiGeneration()"
+                                :disabled="!prompt.trim() || generating"
+                                class="size-8 rounded-xl bg-gray-900 text-white flex items-center justify-center hover:bg-gray-800 disabled:opacity-30 disabled:pointer-events-none transition-colors cursor-pointer"
+                                title="Generate Component"
+                            >
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" class="size-4">
+                                    <line x1="12" y1="19" x2="12" y2="5"/>
+                                    <polyline points="5 12 12 5 19 12"/>
+                                </svg>
+                            </button>
+                        </div>
                     </div>
 
-                    <textarea id="generate-prompt" rows="4" class="w-full max-w-lg bg-white border border-content-border rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary mb-4" placeholder="e.g. A hero section with a heading, subheading, background image, and a CTA button..."></textarea>
-                    <button type="button" class="inline-flex items-center justify-center gap-2 whitespace-nowrap font-medium cursor-pointer no-underline rounded-lg transition-colors h-9 text-sm leading-tight px-5 bg-emerald-500 hover:bg-emerald-600 text-white shadow-sm">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" class="size-4">
-                            <polyline points="16 3 21 3 21 8"/>
-                            <line x1="4" y1="20" x2="21" y2="3"/>
+                    {{-- Green Project Indicator --}}
+                    <div class="flex items-center gap-1.5 text-xs text-text-muted mt-3 select-none bg-gray-50 border border-gray-200/60 rounded-full px-3.5 py-1 shadow-sm">
+                        <span class="w-3.5 h-3.5 rounded bg-emerald-500 text-white font-bold flex items-center justify-center text-[9px]">L</span>
+                        <span class="font-semibold text-text-heading">lara-cms</span>
+                        <svg class="size-3 text-text-muted" viewBox="0 0 20 20" fill="currentColor">
+                            <path fill-rule="evenodd" d="M5.22 8.22a.75.75 0 0 1 1.06 0L10 11.94l3.72-3.72a.75.75 0 1 1 1.06 1.06l-4.25 4.25a.75.75 0 0 1-1.06 0L5.22 9.28a.75.75 0 0 1 0-1.06Z" clip-rule="evenodd"/>
                         </svg>
-                        Generate Block
-                    </button>
+                    </div>
+
                 </div>
             </div>
 
@@ -246,6 +321,50 @@
             </div>
         </form>
     </div>
+
+    {{-- API Provider Configuration Modal --}}
+    <div x-show="showSettings" x-cloak class="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4" @keydown.escape.window="showSettings = false">
+        <div class="bg-white rounded-2xl shadow-xl w-full max-w-md overflow-hidden" @click.outside="showSettings = false">
+            <div class="flex items-center justify-between px-5 py-4 border-b border-content-border">
+                <h3 class="text-base font-semibold text-text-heading">AI Provider Settings</h3>
+                <button @click="showSettings = false" class="p-1 text-text-muted hover:text-text-primary transition-colors">
+                    <svg viewBox="0 0 20 20" fill="currentColor" class="size-5">
+                        <path d="M6.28 5.22a.75.75 0 00-1.06 1.06L8.94 10l-3.72 3.72a.75.75 0 101.06 1.06L10 11.06l3.72 3.72a.75.75 0 1 1-1.06-1.06L11.06 10l3.72-3.72a.75.75 0 00-1.06-1.06L10 8.94 6.28 5.22z" />
+                    </svg>
+                </button>
+            </div>
+            <div class="p-5 space-y-4 text-sm">
+                
+                {{-- Gemini Section --}}
+                <div class="space-y-2">
+                    <label class="block font-medium text-text-heading">Google Gemini API Key</label>
+                    <input type="password" x-model="geminiKey" placeholder="AIzaSy..." class="w-full block bg-white border border-content-border text-text-primary text-sm rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary">
+                    <p class="text-xs text-text-muted">Enter your Gemini key to use the live <code class="font-mono bg-gray-50 px-1 py-0.5 rounded">gemini-2.0-flash</code> model.</p>
+                </div>
+
+                <hr class="border-content-border">
+
+                {{-- Custom API Section --}}
+                <div class="space-y-3">
+                    <h4 class="font-semibold text-text-heading">Custom Provider Settings</h4>
+                    <div class="space-y-1.5">
+                        <label class="block text-xs font-medium text-text-muted">API Endpoint URL</label>
+                        <input type="text" x-model="customUrl" placeholder="https://api.openai.com/v1/chat/completions" class="w-full block bg-white border border-content-border text-text-primary text-sm rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary">
+                    </div>
+                    <div class="space-y-1.5">
+                        <label class="block text-xs font-medium text-text-muted">API Key / Authorization Token</label>
+                        <input type="password" x-model="customKey" placeholder="sk-..." class="w-full block bg-white border border-content-border text-text-primary text-sm rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary">
+                    </div>
+                </div>
+
+                <div class="flex items-center justify-end gap-2 pt-2">
+                    <button type="button" @click="showSettings = false" class="px-4 py-2 border border-content-border rounded-lg text-xs font-medium text-text-primary bg-white hover:bg-gray-50">Cancel</button>
+                    <button type="button" @click="saveSettings()" class="px-4 py-2 rounded-lg text-xs font-medium text-white bg-primary hover:opacity-90">Save Settings</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
 </div>
 @endsection
 
@@ -261,6 +380,14 @@
     .editor-tab { border-right-color: #d1d5db !important; }
     .editor-tab + .editor-tab { border-left-color: #d1d5db !important; }
     .editor-tab:last-of-type { border-right-color: transparent !important; }
+    
+    @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(-4px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+    .animate-fadeIn {
+        animation: fadeIn 0.2s ease-out forwards;
+    }
 </style>
 @endpush
 
@@ -272,6 +399,249 @@
                 e.preventDefault();
                 document.querySelector('#editor-form button[type="submit"]').click();
             }
+        });
+
+        document.addEventListener('alpine:init', () => {
+            Alpine.data('blockGenerator', () => ({
+                tab: 'fields',
+                prompt: '',
+                generating: false,
+                logs: '',
+                provider: localStorage.getItem('lara_cms_ai_provider') || 'opencode',
+                showSettings: false,
+                
+                // API keys & Configuration (loaded from localStorage)
+                geminiKey: localStorage.getItem('lara_cms_gemini_key') || '',
+                customUrl: localStorage.getItem('lara_cms_custom_url') || '',
+                customKey: localStorage.getItem('lara_cms_custom_key') || '',
+
+                // Attachment wireframe state
+                attachmentName: null,
+                attachmentBase64: null,
+                attachmentMime: null,
+
+                providerLabel() {
+                    if (this.provider === 'opencode') return 'opencode/gemini-2.0-flash';
+                    if (this.provider === 'gemini') return 'gemini/gemini-2.0-flash';
+                    return 'custom/api-provider';
+                },
+
+                setProvider(val) {
+                    this.provider = val;
+                    localStorage.setItem('lara_cms_ai_provider', val);
+                },
+
+                saveSettings() {
+                    localStorage.setItem('lara_cms_gemini_key', this.geminiKey);
+                    localStorage.setItem('lara_cms_custom_url', this.customUrl);
+                    localStorage.setItem('lara_cms_custom_key', this.customKey);
+                    this.showSettings = false;
+                    window.showToast?.('✓ API configurations saved.', 'success');
+                },
+
+                handleFileSelect(e) {
+                    const file = e.target.files[0];
+                    if (!file) return;
+                    this.attachmentName = file.name;
+                    this.attachmentMime = file.type;
+
+                    const reader = new FileReader();
+                    reader.onload = (event) => {
+                        this.attachmentBase64 = event.target.result.split(',')[1];
+                    };
+                    reader.readAsDataURL(file);
+                },
+
+                removeAttachment() {
+                    this.attachmentName = null;
+                    this.attachmentBase64 = null;
+                    this.attachmentMime = null;
+                    document.getElementById('ai-file-input').value = '';
+                },
+
+                async runAiGeneration() {
+                    if (this.generating) return;
+                    this.generating = true;
+                    this.logs = 'Connecting to AI provider...';
+
+                    try {
+                        let fields = [];
+                        let template = '';
+
+                        if (this.provider === 'opencode') {
+                            this.logs = 'OpenCode is generating templates...';
+                            await new Promise(resolve => setTimeout(resolve, 1500));
+
+                            const promptLower = this.prompt.toLowerCase();
+                            if (promptLower.includes('pricing') || promptLower.includes('card')) {
+                                fields = [
+                                    { name: 'title', label: 'Title', type: 'string', defaultValue: 'Starter Plan' },
+                                    { name: 'price', label: 'Price', type: 'string', defaultValue: '$29/mo' },
+                                    { name: 'features', label: 'Features (comma separated)', type: 'string', defaultValue: '10 Projects, 5GB Storage, 24/7 Support' }
+                                ];
+                                template = `<div class="p-6 max-w-sm mx-auto bg-white rounded-xl shadow-md border border-gray-100 text-center">
+  <h3 class="text-lg font-bold text-gray-900">@{{ title }}</h3>
+  <div class="mt-4 text-3xl font-extrabold text-emerald-600">@{{ price }}</div>
+  <ul class="mt-4 text-sm text-gray-500 space-y-2">
+    <li>@{{ features }}</li>
+  </ul>
+  <button class="mt-6 w-full bg-emerald-500 text-white rounded-lg py-2 font-semibold hover:bg-emerald-600">Get Started</button>
+</div>`;
+                            } else if (promptLower.includes('hero') || promptLower.includes('banner')) {
+                                fields = [
+                                    { name: 'heading', label: 'Heading', type: 'string', defaultValue: 'Discover the World' },
+                                    { name: 'subheading', label: 'Subheading', type: 'string', defaultValue: 'Explore tailored packages for your next journey.' },
+                                    { name: 'cta_text', label: 'CTA Text', type: 'string', defaultValue: 'Book Now' }
+                                ];
+                                template = `<div class="relative py-24 px-6 text-center bg-gray-900 text-white rounded-2xl overflow-hidden shadow-lg">
+  <div class="relative z-10 max-w-2xl mx-auto">
+    <h1 class="text-4xl font-extrabold tracking-tight">@{{ heading }}</h1>
+    <p class="mt-4 text-lg text-gray-300">@{{ subheading }}</p>
+    <a href="#" class="mt-8 inline-block bg-emerald-500 px-8 py-3 rounded-lg font-medium text-white hover:opacity-90 transition-opacity">@{{ cta_text }}</a>
+  </div>
+</div>`;
+                            } else if (promptLower.includes('faq') || promptLower.includes('accordion')) {
+                                fields = [
+                                    { name: 'question', label: 'Question', type: 'string', defaultValue: 'What is included in the tour?' },
+                                    { name: 'answer', label: 'Answer', type: 'string', defaultValue: 'All transfers, accommodation, and entry fees are fully covered.' }
+                                ];
+                                template = `<div class="max-w-xl mx-auto p-5 bg-white border border-content-border rounded-xl">
+  <details class="group">
+    <summary class="flex justify-between items-center font-medium cursor-pointer list-none">
+      <span class="text-text-heading">@{{ question }}</span>
+      <span class="transition group-open:rotate-180">
+        <svg fill="none" height="24" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" viewBox="0 0 24 24" width="24"><path d="M6 9l6 6 6-6"></path></svg>
+      </span>
+    </summary>
+    <p class="text-text-muted mt-3 group-open:animate-fadeIn">@{{ answer }}</p>
+  </details>
+</div>`;
+                            } else {
+                                fields = [
+                                    { name: 'title', label: 'Title', type: 'string', defaultValue: 'Feature Title' },
+                                    { name: 'desc', label: 'Description', type: 'string', defaultValue: 'Feature description goes here.' }
+                                ];
+                                template = `<div class="p-6 bg-content-bg rounded-xl border border-content-border shadow-sm max-w-md mx-auto">
+  <h2 class="text-lg font-semibold text-text-heading">@{{ title }}</h2>
+  <p class="text-text-muted mt-2">@{{ desc }}</p>
+</div>`;
+                            }
+                        } else {
+                            let apiKey = '';
+                            let url = '';
+                            let model = 'gemini-2.0-flash';
+
+                            if (this.provider === 'gemini') {
+                                apiKey = this.geminiKey;
+                                if (!apiKey) {
+                                    this.showSettings = true;
+                                    throw new Error('Please configure your Gemini API Key.');
+                                }
+                                url = 'https://generativelanguage.googleapis.com/v1beta/models/' + model + ':generateContent?key=' + apiKey;
+                            } else {
+                                url = this.customUrl;
+                                apiKey = this.customKey;
+                                if (!url) {
+                                    this.showSettings = true;
+                                    throw new Error('Please configure your Custom API Endpoint URL.');
+                                }
+                            }
+
+                            this.logs = 'Sending request to ' + (this.provider === 'gemini' ? 'Google Gemini' : 'Custom Provider') + '...';
+
+                            const systemPrompt = `You are a professional web developer component creator.
+Your task is to output a new custom block according to this prompt: "${this.prompt}".
+
+You MUST output ONLY a valid JSON object matching the following structure. No markdown headers, no text explanations.
+{
+  "fields": [
+    {
+      "name": "field_name",
+      "label": "Human Label",
+      "type": "string",
+      "defaultValue": "some value"
+    }
+  ],
+  "template": "<div class=\\"my-component\\">\\n  <h2>@{{ field_name }}</h2>\\n</div>"
+}
+
+Ensure the template uses standard Tailwind CSS classes. Always escape inner double quotes inside the template property string. Do not output anything else than the JSON object.`;
+
+                            let response;
+                            if (this.provider === 'gemini') {
+                                const parts = [{ text: systemPrompt }];
+                                if (this.attachmentBase64 && this.attachmentMime) {
+                                    parts.push({
+                                        inline_data: {
+                                            mime_type: this.attachmentMime,
+                                            data: this.attachmentBase64
+                                        }
+                                    });
+                                }
+
+                                response = await fetch(url, {
+                                    method: 'POST',
+                                    headers: { 'Content-Type': 'application/json' },
+                                    body: JSON.stringify({
+                                        contents: [{ parts: parts }]
+                                    })
+                                });
+                            } else {
+                                response = await fetch(url, {
+                                    method: 'POST',
+                                    headers: {
+                                        'Content-Type': 'application/json',
+                                        'Authorization': apiKey ? 'Bearer ' + apiKey : ''
+                                    },
+                                    body: JSON.stringify({
+                                        model: 'custom-model',
+                                        messages: [{ role: 'user', content: systemPrompt }]
+                                    })
+                                });
+                            }
+
+                            if (!response.ok) {
+                                throw new Error('API request failed with status ' + response.status);
+                            }
+
+                            const resJson = await response.json();
+                            let responseText = '';
+
+                            if (this.provider === 'gemini') {
+                                responseText = resJson.candidates?.[0]?.content?.parts?.[0]?.text || '';
+                            } else {
+                                responseText = resJson.choices?.[0]?.message?.content || '';
+                            }
+
+                            responseText = responseText.replace(/```json/gi, '').replace(/```/g, '').trim();
+
+                            const parsed = JSON.parse(responseText);
+                            if (!parsed.fields || !parsed.template) {
+                                throw new Error('AI returned an invalid JSON schema.');
+                            }
+                            fields = parsed.fields;
+                            template = parsed.template;
+                        }
+
+                        const fieldsStr = JSON.stringify(fields, null, 2);
+                        window.updateEditorContent('field-fields', fieldsStr);
+                        window.updateEditorContent('field-template', template);
+
+                        window.showToast?.('✓ Block generated successfully!', 'success');
+
+                        this.tab = 'preview';
+                        this.$nextTick(() => window.renderPreview());
+
+                        this.prompt = '';
+                        this.removeAttachment();
+                    } catch (err) {
+                        this.logs = '[ERROR] ' + err.message;
+                        window.showToast?.('✗ Generation failed: ' + err.message, 'danger');
+                    } finally {
+                        this.generating = false;
+                    }
+                }
+            }));
         });
     </script>
 @endpush

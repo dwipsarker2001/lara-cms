@@ -97,6 +97,7 @@ class LayoutController extends Controller
         return view('admin.pages.editor', [
             'page' => $layout,
             'editorSaveRoute' => route('admin.layouts.update-sections', $layout),
+            'editorBackRoute' => route('admin.layouts.index'),
             'blockSchemas' => $registry->schemas(),
             'blockList' => $blockList,
             'pages' => Page::orderBy('position')->orderBy('title')->get(['id', 'slug', 'title'])->map(fn ($p) => [

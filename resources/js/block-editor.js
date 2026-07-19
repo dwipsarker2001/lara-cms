@@ -23,6 +23,19 @@ document.querySelectorAll('[data-cm-editor]').forEach(function (el) {
     });
 });
 
+window.updateEditorContent = function (textareaId, content) {
+    var view = window.__cmViews[textareaId];
+    if (view) {
+        view.dispatch({
+            changes: { from: 0, to: view.state.doc.length, insert: content }
+        });
+    }
+    var textarea = document.getElementById(textareaId);
+    if (textarea) {
+        textarea.value = content;
+    }
+};
+
 window.renderPreview = function () {
     var cmViews = window.__cmViews || {};
     if (cmViews['field-fields']) document.getElementById('field-fields').value = cmViews['field-fields'].state.doc.toString();

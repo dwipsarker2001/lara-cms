@@ -9,8 +9,61 @@
         style="max-width: 64rem;"
         x-data="{
             language: 'en',
+
+            updateState: 'idle',
+            currentVersion: '{{ $currentVersion }}',
+            latestVersion: null,
+            updateLogs: [],
+            updateError: null,
+
+            checkForUpdates() {
+                this.updateState = 'checking';
+                this.updateLogs = [];
+                this.updateError = null;
+
+                fetch('{{ route('admin.updates.check') }}', {
+                    headers: { 'Accept': 'application/json', 'X-Requested-With': 'XMLHttpRequest' }
+                })
+                .then(r => r.json())
+                .then(data => {
+                    this.currentVersion = data.current_version;
+                    this.latestVersion = data.latest_version;
+                    this.updateState = data.update_available ? 'found' : 'up_to_date';
+                })
+                .catch(() => {
+                    this.updateState = 'error';
+                    this.updateError = 'Failed to reach the update server. Check your internet connection.';
+                });
+            },
+
+            runUpdate() {
+                this.updateState = 'updating';
+                this.updateLogs = ['Preparing update process...'];
+
+                fetch('{{ route('admin.updates.run') }}', {
+                    method: 'POST',
+                    headers: {
+                        'Accept': 'application/json',
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': document.querySelector('meta[name=csrf-token]').content
+                    }
+                })
+                .then(r => r.json().then(data => ({ ok: r.ok, data })))
+                .then(({ ok, data }) => {
+                    if (!ok || !data.success) throw new Error(data.error || data.message || 'Update failed.');
+                    let delay = 300;
+                    data.logs.forEach(log => { setTimeout(() => this.updateLogs.push(log), delay += 600); });
+                    setTimeout(() => { this.currentVersion = data.version; this.updateState = 'done'; }, delay + 700);
+                })
+                .catch(err => {
+                    this.updateLogs.push('[ERROR] ' + err.message);
+                    this.updateError = err.message;
+                    this.updateState = 'error';
+                });
+            }
         }"
     >
+        {{-- ==================== Preferences Form ==================== --}}
         <form method="POST" action="{{ route('admin.settings') }}">
             @csrf
             @method('PUT')
@@ -20,9 +73,6 @@
                     <svg viewBox="0 0 17 17" class="size-5 text-text-muted shrink-0" fill="none" stroke="currentColor" stroke-width="1">
                         <g transform="translate(1 1)" stroke-linecap="round" stroke-linejoin="round">
                             <path d="M5.2598416,5.94378286 C7.1618416,5.94378286 8.23172732,4.87389714 8.23172732,2.97188571 C8.23172732,1.06987429 7.1618416,0 5.2598416,0 C3.35783017,0 2.28794446,1.06987429 2.28794446,2.97188571 C2.28794446,4.87389714 3.35783017,5.94378286 5.2598416,5.94378286 Z" />
-                            <path d="M14.3020587,11.5562286 C14.3019445,11.5865143 14.3121159,11.6157714 14.3308587,12.1416 L14.729373,12.1416 C14.8014873,12.2318857 14.8446873,12.3417143 14.853373,12.4569143 C14.8620587,12.5721143 14.835773,12.6873143 14.7779445,13.1917714 C14.4866302,13.2918857 14.4001159,13.3722286 14.2961159,13.4224 C14.1920016,13.4725714 14.0752016,13.4901714 13.9610302,13.4729143 L13.3260587,13.3763429 C13.2960016,13.3721143 13.2654873,13.3779429 13.2390873,13.3929143 L12.4867445,13.8273143 C12.460573,13.8426286 12.4402302,13.8662857 12.4290302,13.8945143 L12.1948587,14.4921143 C12.1529159,14.5995429 12.0795445,14.6918857 11.9843445,14.7569143 C11.8891445,14.8220571 11.776573,14.8569143 11.6612587,14.8571429 L11.1938302,14.8571429 C11.0785159,14.8569143 10.9658302,14.8220571 10.8706302,14.7569143 C10.7754873,14.6918857 10.7021387,14.5995429 10.6601845,14.4921143 L10.4259445,13.8945143 C10.414733,13.8662857 10.3944473,13.8426286 10.3683102,13.8273143 L9.61593303,13.3929143 C9.58956732,13.3779429 9.55898446,13.3721143 9.5289616,13.3763429 L8.89397875,13.4729143 C8.77975017,13.4901714 8.66299589,13.4725714 8.55893875,13.4224 C8.45489303,13.3722286 8.36839017,13.2918857 8.31075589,13.1917714 L8.07703017,12.7873143 C8.01923589,12.6873143 7.9929616,12.5721143 8.00162446,12.4569143 C8.01028732,12.3417143 8.05348732,12.2318857 8.12559017,12.1416 L8.5263216,11.6395429 C8.54507589,11.6157714 8.55523589,11.5865143 8.55514446,11.5562286 L8.55514446,10.6875657 C8.55523589,10.65736 8.54507589,10.6280114 8.5263216,10.60432 L8.12559017,10.1022057 C8.05348732,10.0119657 8.01028732,9.90206857 8.00162446,9.78688 C7.9929616,9.67169143 8.01923589,9.55657143 8.07703017,9.45654857 L8.31075589,9.05208 C8.36839017,8.95197714 8.45489303,8.8716 8.55893875,8.82142857 C8.66299589,8.77125714 8.77975017,8.75364571 8.89397875,8.77088 L9.5273616,8.86746286 C9.55738446,8.87171429 9.58796732,8.86589714 9.61433303,8.85091429 L10.3683102,8.41443429 C10.3944473,8.39904 10.414733,8... (line truncated to 2000 chars)
-                            <path d="M11.428573,10.5506399 C11.2841159,10.5505486 11.1395445,10.5926629 11.0387445,10.67696 C10.8137616,10.8650286 10.7995787,11.2948571 10.9865159,11.5145143 C11.0880016,11.6338286 11.2582873,11.6934857 11.428573,11.6933716" />
-                            <path d="M11.428573,10.550777 C11.5730302,10.5506971 11.7176016,10.5928 11.8184016,10.6770971 C12.0434302,10.8651429 12.0576016,11.2949714 11.8706302,11.5146286 C11.7691445,11.6339429 11.5988587,11.6936 11.428573,11.6934859" />
                             <path d="M6.14417303,8.21984 C5.85300732,8.18864 5.55730446,8.17264 5.25785303,8.17264 C3.57371589,8.17264 2.00779589,8.67876571 0.703875888,9.5472 C-0.749792683,10.5153943 0.23180046,12.3827429 1.97837875,12.3827429 L5.69643589,12.3827429" />
                         </g>
                     </svg>
@@ -88,7 +138,183 @@
                 </div>
             </div>
 
-
         </form>
+
+        {{-- ==================== CMS Updates Panel ==================== --}}
+        <div class="bg-panel-bg rounded-2xl mb-8 p-[7px]">
+            <div class="px-[18px] pt-3 pb-1 text-sm font-medium text-text-heading">CMS Updates</div>
+            <p class="px-[18px] pb-3 text-sm text-text-muted">Check for new Lara CMS versions and apply updates with one click.</p>
+
+            <div class="px-1.5 pb-2">
+                <div class="bg-content-bg rounded-xl ring-1 ring-content-border shadow-sm">
+                    <div class="divide-y divide-content-border">
+
+                        {{-- Version info & check button row --}}
+                        <div class="grid md:grid-cols-2 items-center px-[18px] py-4 gap-y-3 md:gap-y-0 md:gap-x-5">
+                            <div class="flex flex-col gap-1.5">
+                                <label class="text-sm font-medium text-text-heading">Installed Version</label>
+                                <div class="text-sm text-text-muted">Your currently installed Lara CMS release.</div>
+                            </div>
+                            <div class="flex items-center gap-3 flex-wrap">
+                                <span class="font-mono text-sm font-semibold text-text-heading bg-content-border/40 px-2.5 py-1 rounded-lg" x-text="'v' + currentVersion"></span>
+
+                                {{-- Idle / up-to-date / found: show check button --}}
+                                <button
+                                    id="btn-check-update"
+                                    type="button"
+                                    @click="checkForUpdates()"
+                                    :disabled="updateState === 'checking' || updateState === 'updating'"
+                                    x-show="['idle', 'up_to_date', 'found'].indexOf(updateState) !== -1"
+                                    class="inline-flex items-center gap-1.5 text-sm font-medium px-3 py-1.5 rounded-lg border border-content-border bg-content-bg hover:bg-panel-bg text-text-primary transition-colors cursor-pointer disabled:opacity-50"
+                                >
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="size-3.5 shrink-0">
+                                        <path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"/>
+                                    </svg>
+                                    Check for Updates
+                                </button>
+
+                                {{-- Checking spinner --}}
+                                <span x-show="updateState === 'checking'" style="display:none;" class="inline-flex items-center gap-1.5 text-sm text-text-muted">
+                                    <svg class="animate-spin size-4 text-primary" fill="none" viewBox="0 0 24 24">
+                                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                                        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                                    </svg>
+                                    Checking...
+                                </span>
+
+                                {{-- Up to date badge --}}
+                                <span x-show="updateState === 'up_to_date'" style="display:none;" class="inline-flex items-center gap-1.5 text-xs font-medium text-emerald-700 bg-emerald-50 border border-emerald-200 px-2.5 py-1 rounded-full">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" class="size-3 shrink-0"><path d="M5 13l4 4L19 7"/></svg>
+                                    You're up to date
+                                </span>
+
+                                {{-- Done badge --}}
+                                <span x-show="updateState === 'done'" style="display:none;" class="inline-flex items-center gap-1.5 text-xs font-medium text-emerald-700 bg-emerald-50 border border-emerald-200 px-2.5 py-1 rounded-full">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" class="size-3 shrink-0"><path d="M5 13l4 4L19 7"/></svg>
+                                    Updated!
+                                </span>
+                            </div>
+                        </div>
+
+                        {{-- Update found / progress / done / error row --}}
+                        <div
+                            x-show="['found','updating','done','error'].indexOf(updateState) !== -1"
+                            style="display:none;"
+                            class="px-[18px] py-4 space-y-4"
+                        >
+                            {{-- Update Available Banner --}}
+                            <div x-show="updateState === 'found'" style="display:none;" class="flex items-center gap-4 p-4 bg-blue-50/70 border border-blue-200 rounded-xl">
+                                <span class="flex size-9 shrink-0 items-center justify-center rounded-lg bg-blue-100 text-blue-600">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="size-4">
+                                        <path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"/>
+                                    </svg>
+                                </span>
+                                <div class="flex-1 min-w-0">
+                                    <p class="text-sm font-semibold text-blue-900">
+                                        Lara CMS <span x-text="'v' + latestVersion" class="font-mono"></span> is available!
+                                    </p>
+                                    <p class="text-xs text-blue-700 mt-0.5">Click <strong>Update Now</strong> to download and apply it automatically.</p>
+                                </div>
+                                <button
+                                    id="btn-run-update"
+                                    type="button"
+                                    @click="runUpdate()"
+                                    class="shrink-0 inline-flex items-center gap-2 text-sm font-semibold px-4 py-2 rounded-lg bg-blue-600 hover:bg-blue-700 text-white transition-colors cursor-pointer shadow-sm"
+                                >
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" class="size-3.5 shrink-0">
+                                        <polyline points="8 17 12 21 16 17"/><line x1="12" x2="12" y1="3" y2="21"/>
+                                    </svg>
+                                    Update Now
+                                </button>
+                            </div>
+
+                            {{-- Updating progress warning --}}
+                            <div x-show="updateState === 'updating'" style="display:none;" class="flex items-center gap-3 p-3 bg-amber-50/80 border border-amber-200 rounded-xl">
+                                <svg class="animate-spin size-5 text-amber-600 shrink-0" fill="none" viewBox="0 0 24 24">
+                                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                                    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                                </svg>
+                                <div>
+                                    <p class="text-sm font-semibold text-amber-900">Update in progress — do not close this page.</p>
+                                    <p class="text-xs text-amber-700">Downloading and installing the update package...</p>
+                                </div>
+                            </div>
+
+                            {{-- Done banner --}}
+                            <div x-show="updateState === 'done'" style="display:none;" class="flex items-center gap-3 p-3 bg-emerald-50/80 border border-emerald-200 rounded-xl">
+                                <span class="flex size-8 shrink-0 items-center justify-center rounded-full bg-emerald-100 text-emerald-600">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" class="size-4"><path d="M5 13l4 4L19 7"/></svg>
+                                </span>
+                                <div class="flex-1">
+                                    <p class="text-sm font-semibold text-emerald-900">
+                                        Update complete! Now on <span x-text="'v' + currentVersion" class="font-mono"></span>.
+                                    </p>
+                                    <p class="text-xs text-emerald-700">Reload the panel to apply all changes.</p>
+                                </div>
+                                <button type="button" @click="window.location.reload()"
+                                    class="shrink-0 inline-flex items-center gap-1.5 text-xs font-semibold px-3 py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white transition-colors cursor-pointer">
+                                    Reload Panel
+                                </button>
+                            </div>
+
+                            {{-- Error banner --}}
+                            <div x-show="updateState === 'error' && updateError" style="display:none;" class="flex items-start gap-3 p-3 bg-red-50/80 border border-red-200 rounded-xl">
+                                <span class="flex size-8 shrink-0 items-center justify-center rounded-full bg-red-100 text-red-600">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" class="size-4"><path d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                                </span>
+                                <div class="flex-1 min-w-0">
+                                    <p class="text-sm font-semibold text-red-900">Update failed</p>
+                                    <p class="text-xs text-red-700 mt-0.5 break-words" x-text="updateError"></p>
+                                </div>
+                                <button type="button" @click="updateState = 'idle'; updateError = null;"
+                                    class="shrink-0 text-xs text-red-500 hover:text-red-700 cursor-pointer">Dismiss</button>
+                            </div>
+
+                            {{-- Live Console Log --}}
+                            <div
+                                x-show="updateLogs.length > 0"
+                                style="display:none;"
+                                class="rounded-xl border border-gray-800 bg-gray-950 overflow-hidden"
+                            >
+                                <div class="flex items-center justify-between px-4 py-2.5 bg-gray-900 border-b border-gray-800">
+                                    <div class="flex items-center gap-1.5">
+                                        <span class="size-2.5 rounded-full bg-red-500/80"></span>
+                                        <span class="size-2.5 rounded-full bg-yellow-500/80"></span>
+                                        <span class="size-2.5 rounded-full bg-green-500/80"></span>
+                                    </div>
+                                    <span class="text-gray-500 font-mono text-[11px]">Update Console</span>
+                                    <span
+                                        class="text-[11px] font-mono"
+                                        :class="{
+                                            'text-blue-400 animate-pulse': updateState === 'updating',
+                                            'text-emerald-400': updateState === 'done',
+                                            'text-red-400': updateState === 'error'
+                                        }"
+                                        x-text="updateState === 'updating' ? '● Running' : (updateState === 'done' ? '● Done' : (updateState === 'error' ? '● Failed' : ''))"
+                                    ></span>
+                                </div>
+                                <div class="p-4 max-h-56 overflow-y-auto space-y-1.5">
+                                    <template x-for="(log, i) in updateLogs" :key="i">
+                                        <div
+                                            class="font-mono text-xs leading-relaxed"
+                                            :class="{
+                                                'text-red-400': log.startsWith('[ERROR]'),
+                                                'text-emerald-400': log.includes('✓') || log.toLowerCase().includes('successfully'),
+                                                'text-amber-300': log.startsWith('[') && !log.startsWith('[ERROR]'),
+                                                'text-gray-300': !log.startsWith('[') && !log.includes('✓') && !log.toLowerCase().includes('successfully')
+                                            }"
+                                            x-text="'$ ' + log"
+                                        ></div>
+                                    </template>
+                                </div>
+                            </div>
+
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+
     </div>
 @endsection

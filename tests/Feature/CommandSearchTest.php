@@ -1,9 +1,6 @@
 <?php
 
 use App\Models\Admin;
-use App\Models\Layout;
-use App\Models\Page;
-use App\Models\Post;
 use App\Models\Taxonomy;
 
 use function Pest\Laravel\actingAs;
@@ -29,38 +26,22 @@ it('returns navigation commands when query is empty', function () {
 
     $ids = collect($groups)->flatMap(fn ($g) => collect($g['items'])->pluck('id'))->all();
     expect($ids)->toContain('nav-dashboard');
-    expect($ids)->toContain('nav-pages');
+    expect($ids)->toContain('nav-taxonomies');
     // Empty query is a launcher: only Navigation, capped per group.
     expect(collect($groups)->pluck('group')->all())->toBe(['Navigation']);
 });
 
 it('finds create actions when searching', function () {
-    $response = getJson(route('admin.search', ['q' => 'new page']))->assertSuccessful();
+    $response = getJson(route('admin.search', ['q' => 'new taxonomy']))->assertSuccessful();
 
     $ids = collect($response->json('groups'))
         ->flatMap(fn ($g) => collect($g['items'])->pluck('id'))
         ->all();
 
-    expect($ids)->toContain('act-new-page');
+    expect($ids)->toContain('act-new-taxonomy');
 });
 
-it('searches live pages posts layouts and taxonomies', function () {
-    $page = Page::create([
-        'title' => 'Unique Himalaya Trek Page',
-        'slug' => 'himalaya-trek-page',
-        'published' => true,
-        'position' => 0,
-    ]);
-
-    $post = Post::factory()->create([
-        'title' => 'Unique Himalaya Trek Post',
-        'slug' => 'himalaya-trek-post',
-    ]);
-
-    $layout = Layout::factory()->create([
-        'name' => 'Unique Himalaya Layout',
-    ]);
-
+it('searches live taxonomies', function () {
     $taxonomy = Taxonomy::create([
         'title' => 'Unique Himalaya Tags',
         'slug' => 'himalaya-tags',
@@ -71,28 +52,19 @@ it('searches live pages posts layouts and taxonomies', function () {
     $items = collect($response->json('groups'))->flatMap(fn ($g) => $g['items']);
     $ids = $items->pluck('id')->all();
 
-    expect($ids)->toContain('page-'.$page->id);
-    expect($ids)->toContain('post-'.$post->id);
-    expect($ids)->toContain('layout-'.$layout->id);
     expect($ids)->toContain('tax-'.$taxonomy->id);
-
-    $pageItem = $items->firstWhere('id', 'page-'.$page->id);
-    expect($pageItem['href'])->toBe(route('admin.pages.editor', $page));
-    expect($pageItem['subtitle'])->toBe('/himalaya-trek-page');
 });
 
 it('returns no dynamic content for empty query even when content exists', function () {
-    Page::create([
-        'title' => 'About Us',
-        'slug' => 'about',
-        'published' => true,
-        'position' => 0,
+    Taxonomy::create([
+        'title' => 'About Us Tags',
+        'slug' => 'about-us-tags',
     ]);
 
     $response = getJson(route('admin.search'))->assertSuccessful();
 
     $groups = collect($response->json('groups'))->pluck('group')->all();
-    expect($groups)->not->toContain('Pages');
+    expect($groups)->not->toContain('Taxonomies');
 });
 
 it('returns navigation matches when typing a nav keyword', function () {
@@ -107,17 +79,15 @@ it('returns navigation matches when typing a nav keyword', function () {
 
 it('caps each group to the per-group limit', function () {
     foreach (range(1, 12) as $i) {
-        Page::create([
+        Taxonomy::create([
             'title' => "Travel Guide Part {$i}",
-            'slug' => "travel-guide-{$i}",
-            'published' => true,
-            'position' => $i,
+            'slug' => "travel-guide-part-{$i}",
         ]);
     }
 
     $response = getJson(route('admin.search', ['q' => 'Travel Guide']))->assertSuccessful();
 
-    $pagesGroup = collect($response->json('groups'))->firstWhere('group', 'Pages');
-    expect($pagesGroup)->not->toBeNull();
-    expect(count($pagesGroup['items']))->toBeLessThanOrEqual(7);
+    $taxGroup = collect($response->json('groups'))->firstWhere('group', 'Taxonomies');
+    expect($taxGroup)->not->toBeNull();
+    expect(count($taxGroup['items']))->toBeLessThanOrEqual(7);
 });

@@ -21,7 +21,10 @@ class PageController extends Controller
         $page = Page::where('slug', $slug)->where('published', true)->firstOrFail();
 
         if ($page->collectionEntry()->exists()) {
-            abort(404);
+            $page->loadMissing('collectionEntry.collection');
+            if ($page->collectionEntry->collection->slug !== 'pages') {
+                abort(404);
+            }
         }
 
         $package = Package::where('slug', $slug)->first();
@@ -31,6 +34,10 @@ class PageController extends Controller
 
     public function showCollectionEntry(string $collectionSlug, string $slug)
     {
+        if ($collectionSlug === 'pages') {
+            abort(404);
+        }
+
         $collection = Collection::where('slug', $collectionSlug)->firstOrFail();
 
         $entry = $collection->entries()

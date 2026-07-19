@@ -117,60 +117,53 @@
                 Create form
             </a>
         </div>
-    @elseif ($entries->isEmpty())
-        <div class="rounded-xl border border-dashed border-content-border bg-gray-50/60 px-6 py-12 text-center">
-            <p class="text-sm font-medium text-text-heading">No entries yet</p>
-            <p class="mt-1 text-xs text-text-muted">Submissions for “{{ $form->title }}” will appear here.</p>
-        </div>
     @else
-        <div class="overflow-x-auto rounded-xl ring-1 ring-gray-200">
-            <table class="w-full border-separate border-spacing-y-0 text-left text-[13px]">
-                <thead>
-                    <tr class="bg-[#f9fafb]">
-                        <th class="whitespace-nowrap rounded-tl-xl px-4 py-3 font-medium text-text-muted text-[12px]">#</th>
-                        @foreach ($fields as $field)
-                            <th class="whitespace-nowrap px-4 py-3 font-medium text-text-muted text-[12px]">
-                                {{ $field['label'] ?? $field['name'] }}
-                            </th>
-                        @endforeach
-                        <th class="whitespace-nowrap px-4 py-3 font-medium text-text-muted text-[12px] {{ $fields->isEmpty() ? '' : '' }}">Submitted</th>
-                        <th class="whitespace-nowrap rounded-tr-xl px-4 py-3 font-medium text-text-muted text-[12px] text-right">Actions</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach ($entries as $entry)
-                        <tr class="group transition-colors hover:bg-gray-50/50">
-                            <td class="border-b border-gray-100 bg-white whitespace-nowrap px-4 py-3 font-medium text-gray-900">
-                                #{{ $entry->id }}
-                            </td>
-                            @foreach ($fields as $field)
-                                @php
-                                    $value = $entry->data[$field['name']] ?? null;
-                                    if (is_array($value)) {
-                                        $value = implode(', ', $value);
-                                    } elseif (is_bool($value)) {
-                                        $value = $value ? 'Yes' : 'No';
-                                    }
-                                @endphp
-                                <td class="border-b border-gray-100 bg-white whitespace-nowrap px-4 py-3 text-gray-900 max-w-[220px] truncate" title="{{ is_scalar($value) ? $value : '' }}">
-                                    {{ filled($value) || $value === 0 || $value === '0' ? $value : '—' }}
-                                </td>
-                            @endforeach
-                            <td class="border-b border-gray-100 bg-white whitespace-nowrap px-4 py-3 text-gray-400">
-                                {{ $entry->created_at?->format('M j, Y g:i A') }}
-                            </td>
-                            <td class="border-b border-gray-100 bg-white whitespace-nowrap px-4 py-3 text-right">
-                                <a
-                                    href="{{ route('admin.forms.entries', $form) }}"
-                                    class="text-[12px] font-medium text-primary hover:text-primary/80 no-underline"
-                                >
-                                    View
-                                </a>
-                            </td>
-                        </tr>
+        @php
+            $headers = ['#'];
+            foreach ($fields as $field) {
+                $headers[] = $field['label'] ?? $field['name'];
+            }
+            $headers[] = 'Submitted';
+            $headers[] = 'Actions';
+        @endphp
+
+        <x-admin::table
+            :headers="$headers"
+            :items="$entries"
+            emptyText="No entries yet."
+            emptySubtext="Submissions for “{{ $form->title }}” will appear here."
+        >
+            @foreach ($entries as $entry)
+                <tr class="group transition-colors hover:bg-gray-50/50">
+                    <td class="border-b border-gray-100 bg-white whitespace-nowrap px-4 py-3 font-medium text-gray-900">
+                        #{{ $entry->id }}
+                    </td>
+                    @foreach ($fields as $field)
+                        @php
+                            $value = $entry->data[$field['name']] ?? null;
+                            if (is_array($value)) {
+                                $value = implode(', ', $value);
+                            } elseif (is_bool($value)) {
+                                $value = $value ? 'Yes' : 'No';
+                            }
+                        @endphp
+                        <td class="border-b border-gray-100 bg-white whitespace-nowrap px-4 py-3 text-gray-900 max-w-[220px] truncate" title="{{ is_scalar($value) ? $value : '' }}">
+                            {{ filled($value) || $value === 0 || $value === '0' ? $value : '—' }}
+                        </td>
                     @endforeach
-                </tbody>
-            </table>
-        </div>
+                    <td class="border-b border-gray-100 bg-white whitespace-nowrap px-4 py-3 text-gray-400">
+                        {{ $entry->created_at?->format('M j, Y g:i A') }}
+                    </td>
+                    <td class="border-b border-gray-100 bg-white whitespace-nowrap px-4 py-3 text-right">
+                        <a
+                            href="{{ route('admin.forms.entries', $form) }}"
+                            class="text-[12px] font-medium text-primary hover:text-primary/80 no-underline"
+                        >
+                            View
+                        </a>
+                    </td>
+                </tr>
+            @endforeach
+        </x-admin::table>
     @endif
 </div>
