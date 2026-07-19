@@ -52,7 +52,7 @@
                     </p>
                 </div>
             @else
-                <div id="sortable-entries" class="bg-content-bg rounded-xl ring-1 ring-content-border shadow-sm divide-y divide-content-border">
+                <div id="sortable-entries" class="rounded-xl ring-1 ring-content-border shadow-sm divide-y divide-content-border">
                 @foreach($entries as $entry)
                     <div
                         class="flex rounded-xl shadow-sm bg-content-bg mb-px group px-3"

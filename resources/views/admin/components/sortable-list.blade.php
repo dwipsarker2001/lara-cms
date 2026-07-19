@@ -5,6 +5,7 @@
     'dataKey',
     'reorderRoute',
     'editRoute',
+    'clickRoute' => null,
     'deleteRoute',
     'updateRoute' => null,
     'emptyText',
@@ -53,7 +54,7 @@
                     </div>
                     <div class="flex flex-1 items-center px-1.5 text-xs leading-normal min-w-0">
                         <div class="flex gap-2 sm:gap-3 grow items-center py-3 min-w-0">
-                            <a href="{{ route($editRoute, $item) }}" class="flex items-center gap-2 no-underline min-w-0">
+                            <a href="{{ route($clickRoute ?? $editRoute, $item) }}" class="flex items-center gap-2 no-underline min-w-0">
                                 <span class="inline-block w-2 h-2 rounded-full shrink-0 {{ $item->published ? 'bg-success' : 'bg-text-muted' }}"></span>
                                 @if ($item->icon ?? null)
                                     <i class="{{ $item->icon }} text-sm w-4 text-center text-text-muted shrink-0"></i>

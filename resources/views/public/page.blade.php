@@ -7,13 +7,13 @@
     @endphp
     @foreach ($sections as $section)
         @php $block = $registry->get($section['name'] ?? ''); @endphp
-        @if (($section['enabled'] ?? true) && $block && view()->exists($block->view()))
-            @include($block->view(), [
-                'data' => $section['data'] ?? [],
-                '_key' => $section['_key'] ?? '',
-                'preview' => false,
-                'page' => $page ?? null,
-            ])
+        @if (($section['enabled'] ?? true) && $block)
+            {!! $block->render(
+                data: $section['data'] ?? [],
+                _key: $section['_key'] ?? '',
+                preview: false,
+                page: $page ?? null,
+            ) !!}
         @endif
     @endforeach
 @endsection

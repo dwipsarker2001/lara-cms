@@ -204,4 +204,13 @@ Route::middleware(['web', 'auth:admin', TrackPageViews::class])->prefix('admin')
     Route::resource('dynamic-blocks', DynamicBlockController::class)->except(['show']);
     Route::get('dynamic-blocks/{dynamic_block}/editor', [DynamicBlockController::class, 'editor'])->name('dynamic-blocks.editor');
     Route::put('dynamic-blocks/{dynamic_block}/editor', [DynamicBlockController::class, 'updateEditor'])->name('dynamic-blocks.update-editor');
+
+    Route::get('email-templates', [\App\Http\Controllers\Admin\EmailTemplateController::class, 'index'])->name('email-templates.index');
+    Route::get('email-templates/create', [\App\Http\Controllers\Admin\EmailTemplateController::class, 'create'])->name('email-templates.create');
+    Route::post('email-templates', [\App\Http\Controllers\Admin\EmailTemplateController::class, 'store'])->name('email-templates.store');
+    Route::get('email-templates/{email_template}/edit', [\App\Http\Controllers\Admin\EmailTemplateController::class, 'edit'])->name('email-templates.edit');
+    Route::get('email-templates/{email_template}/editor', [\App\Http\Controllers\Admin\EmailTemplateController::class, 'editor'])->name('email-templates.editor');
+    Route::post('email-templates/{email_template}/content', [\App\Http\Controllers\Admin\EmailTemplateController::class, 'saveContent'])->name('email-templates.save-content');
+    Route::put('email-templates/{email_template}', [\App\Http\Controllers\Admin\EmailTemplateController::class, 'update'])->name('email-templates.update');
+    Route::delete('email-templates/{email_template}', [\App\Http\Controllers\Admin\EmailTemplateController::class, 'destroy'])->name('email-templates.destroy');
 });

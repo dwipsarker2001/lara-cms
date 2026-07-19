@@ -22,10 +22,18 @@ class LoginController extends Controller
             'password' => ['required'],
         ]);
 
+        // Try admin login first
         if (Auth::guard('admin')->attempt($credentials, $request->boolean('remember'))) {
             $request->session()->regenerate();
 
             return redirect()->intended('/admin');
+        }
+
+        // Try user login
+        if (Auth::guard('web')->attempt($credentials, $request->boolean('remember'))) {
+            $request->session()->regenerate();
+
+            return redirect()->intended('/app/campaigns');
         }
 
         return back()->withErrors([
@@ -35,7 +43,8 @@ class LoginController extends Controller
 
     public function destroy(Request $request): RedirectResponse
     {
-        Auth::guard('admin')->logout();
+        $guard = Auth::check() ? 'web' : 'admin';
+        Auth::guard($guard)->logout();
 
         $request->session()->invalidate();
         $request->session()->regenerateToken();
