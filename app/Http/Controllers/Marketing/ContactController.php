@@ -157,8 +157,8 @@ class ContactController extends Controller
             'firstname' => $request->firstname,
             'sms' => $request->sms,
             'whatsapp' => $request->whatsapp,
-            'double_opt_in' => $request->double_opt_in,
-            'opt_in' => $request->opt_in,
+            'double_opt_in' => $request->boolean('double_opt_in'),
+            'opt_in' => $request->boolean('opt_in'),
             'group_id' => $request->groupId,
         ];
         Contact::create($new_contact);

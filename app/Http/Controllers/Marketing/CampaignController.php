@@ -16,7 +16,21 @@ use Illuminate\Support\Facades\Log;
 
 class CampaignController extends Controller
 {
-    protected $rem_campaigns;
+    private function remCampaigns(): int
+    {
+        $max = auth()->user()->max_campaigns ?? 0;
+        $count = Campaign::where('user_id', auth()->id())->count();
+
+        return max($max - $count, 0);
+    }
+
+    private function remEmails(): int
+    {
+        $max = auth()->user()->max_emails ?? 0;
+        $count = Campaign::where('user_id', auth()->id())->sum(\Illuminate\Support\Facades\DB::raw('COALESCE(total_sent, 0)'));
+
+        return max($max - $count, 0);
+    }
 
     // index view
     public function index()
@@ -106,14 +120,14 @@ class CampaignController extends Controller
             ]
         );
 
-        $rem_campaigns = $this->rem_campaigns;
+        $rem_campaigns = $this->remCampaigns();
 
         return view('marketing.campaign.index', compact('data', 'default_setting', 'rem_campaigns'));
     }
 
     public function create()
     {
-        $rem_campaigns = $this->rem_campaigns;
+        $rem_campaigns = $this->remCampaigns();
 
         return view('marketing.campaign.create', compact('rem_campaigns'));
     }
@@ -122,6 +136,11 @@ class CampaignController extends Controller
     {
         if (! auth()->id()) {
             return redirect()->route('login');
+        }
+
+        if ($this->remCampaigns() <= 0) {
+            return redirect()->route('app.campaign.index')
+                ->with('error', 'Campaign limit reached. Upgrade your plan to create more campaigns.');
         }
 
         $campaigin = Campaign::create([
@@ -233,6 +252,11 @@ class CampaignController extends Controller
     {
         if (! auth()->id()) {
             return redirect()->route('login');
+        }
+
+        if ($this->remCampaigns() <= 0) {
+            return redirect()->route('app.campaign.index')
+                ->with('error', 'Campaign limit reached. Upgrade your plan to duplicate campaigns.');
         }
 
         // If the campaign is not assigned to current user, throw exception
@@ -357,6 +381,12 @@ class CampaignController extends Controller
         // Check template exists
         if ($campaign->template_id == null) {
             return redirect()->route('app.campaign.index')->with('error', "Campaign template doesn't exist.");
+        }
+
+        // Check email limit
+        if ($this->remEmails() <= 0) {
+            return redirect()->route('app.campaign.index')
+                ->with('error', 'Email limit reached. Upgrade your plan to send more emails.');
         }
 
         // Dispatch coordinator job — it handles everything else

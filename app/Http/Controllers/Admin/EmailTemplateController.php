@@ -25,6 +25,7 @@ class EmailTemplateController extends Controller
         $data = $request->validate([
             'name' => 'required|string|max:255',
             'published' => 'boolean',
+            'content' => 'nullable|json',
         ]);
 
         $data['user_id'] = auth()->id();

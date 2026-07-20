@@ -9,6 +9,22 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.js"
     integrity="sha512-sn/GHTj+FCxK5wam7k9w4gPPm6zss4Zwl/X9wgrvGMFbnedR8lTUSLdsolDRBRzsX6N+YgG6OWyvn9qaFVXH9w=="
     crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<style>
+    main {
+        padding: 0 !important;
+        overflow: hidden !important;
+    }
+    main > div {
+        max-width: 100% !important;
+        height: 100% !important;
+        position: relative;
+    }
+    .content-box {
+        margin: 0 !important;
+        border: none !important;
+        border-radius: 0 !important;
+    }
+</style>
 @endsection
 @section('content')
 <div class="content-box">

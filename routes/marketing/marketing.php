@@ -53,6 +53,7 @@ Route::middleware(['web', 'auth:web'])->prefix('app')->name('app.')->group(funct
     // Templates
     Route::get('templates', [TemplateController::class, 'index'])->name('template.index');
     Route::get('templates/create-page', [TemplateController::class, 'createPage'])->name('template.create-page');
+    Route::get('templates/create', [TemplateController::class, 'create'])->name('template.create');
     Route::post('templates/select', [TemplateController::class, 'select'])->name('template.select');
     Route::post('templates/remove', [TemplateController::class, 'remove'])->name('template.remove');
     Route::get('templates/design', [TemplateController::class, 'design'])->name('template.design');
@@ -61,6 +62,8 @@ Route::middleware(['web', 'auth:web'])->prefix('app')->name('app.')->group(funct
     Route::post('templates/save', [TemplateController::class, 'save'])->name('template.save-content');
     Route::post('templates/upload-asset', [TemplateController::class, 'uploadAsset'])->name('template.upload-asset');
     Route::post('templates/save-thumbnail', [TemplateController::class, 'savethumbnail'])->name('template.save-thumbnail');
+    Route::post('templates/rename', [TemplateController::class, 'rename'])->name('template.rename');
+    Route::post('templates/duplicate', [TemplateController::class, 'duplicate'])->name('template.duplicate');
     Route::post('templates/test-email', [TemplateController::class, 'testEmailSending'])->name('template.test-email');
     Route::get('templates/content/{id}', [TemplateController::class, 'serveTemplate'])->name('template.content');
 

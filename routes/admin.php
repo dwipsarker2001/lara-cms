@@ -194,6 +194,10 @@ Route::middleware(['web', 'auth:admin', TrackPageViews::class])->prefix('admin')
 
     Route::resource('users', UserController::class)->except(['show']);
 
+    Route::resource('subscription-plans', \App\Http\Controllers\Admin\SubscriptionPlanController::class)
+        ->except(['show'])
+        ->parameters(['subscription-plans' => 'subscription_plan']);
+
     Route::resource('administrators', AdminUserController::class)
         ->except(['show'])
         ->parameters(['administrators' => 'admin']);

@@ -26,6 +26,7 @@ class SettingsController extends Controller
         $data = $request->validate([
             'site_title' => 'string|max:255',
             'theme_color' => 'string|max:7',
+            'currency' => 'string|max:10',
             'logo_light' => 'nullable|string|max:255',
             'logo_dark' => 'nullable|string|max:255',
             'contact_number' => 'nullable|string|max:50',

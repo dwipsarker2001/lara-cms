@@ -14,8 +14,13 @@ class TemplateController extends Controller
     public function index()
     {
         $mylist = Template::where('user_id', auth()->id())->get();
+        $adminIds = \App\Models\Admin::pluck('id');
+        $defaultList = Template::whereIn('user_id', $adminIds)
+            ->where('published', true)
+            ->orderBy('created_at', 'desc')
+            ->get();
 
-        return view('marketing.templates.index', compact('mylist'));
+        return view('marketing.templates.index', compact('mylist', 'defaultList'));
     }
 
     public function select(Request $request)
@@ -24,6 +29,21 @@ class TemplateController extends Controller
         $type = $request->type;
         $name = $request->name;
         $newTemplateID = $this->generateRandomString();
+
+        if ($type === 'admin') {
+            $adminTemplate = Template::where('template_id', $templateID)->firstOrFail();
+
+            // Copy Template in database
+            Template::create([
+                'user_id' => auth()->id(),
+                'template_id' => $newTemplateID,
+                'name' => 'Copy of ' . $adminTemplate->name,
+                'published' => false,
+                'content' => $adminTemplate->content,
+            ]);
+
+            return redirect()->route('app.template.design', ['id' => $newTemplateID, 'type' => 'user']);
+        }
 
         // Copy Template directory to "user" with new name
         $org_path = public_path('templates/').$type.'/'.$templateID;
@@ -37,9 +57,20 @@ class TemplateController extends Controller
     public function remove(Request $request)
     {
         $template_id = $request->template_id;
-        $path = public_path('templates/').'user'.'/'.$template_id;
-        File::deleteDirectory($path);
-        Template::where('template_id', $template_id)->delete();
+        $template = Template::where('template_id', $template_id)
+            ->where('user_id', auth()->id())
+            ->first();
+
+        if ($template) {
+            $path = public_path('templates/').'user'.'/'.$template_id;
+            if (File::exists($path)) {
+                File::deleteDirectory($path);
+            }
+            $template->delete();
+            return response()->json(['success' => true]);
+        }
+
+        return response()->json(['success' => false, 'message' => 'Unauthorized'], 403);
     }
 
     public function create()
@@ -62,6 +93,15 @@ class TemplateController extends Controller
     {
         $type = $request->type;
         $id = $request->id;
+
+        $template = Template::where('template_id', $id)->first();
+        if ($template && $template->content !== null) {
+            return response()
+                ->view('marketing.design.templatical', compact('template'))
+                ->header('Cache-Control', 'no-store, no-cache, must-revalidate')
+                ->header('Pragma', 'no-cache')
+                ->header('Expires', '0');
+        }
 
         return response()
             ->view('marketing.design.index', compact('id', 'type'))
@@ -126,6 +166,17 @@ class TemplateController extends Controller
 
     public function save(Request $request)
     {
+        if ($request->has('content')) {
+            $contentStr = $request->input('content');
+            $decoded = json_decode($contentStr, true);
+            if (is_array($decoded) && (isset($decoded['blocks']) || isset($decoded['settings']))) {
+                $template = Template::where('template_id', $request->template_id)->first();
+                if ($template) {
+                    $template->update(['content' => $contentStr]);
+                    return response()->json(['saved' => true]);
+                }
+            }
+        }
 
         header('Content-Type: application/json');
         $templateID = $request->template_id;
@@ -286,9 +337,64 @@ class TemplateController extends Controller
         }
 
         return response(file_get_contents($path), 200)
-            ->header('Content-Type', 'text/html')
+            ->header('Content-Type: text/html')
             ->header('Cache-Control', 'no-store, no-cache, must-revalidate')
             ->header('Pragma', 'no-cache')
             ->header('Expires', '0');
+    }
+
+    public function rename(Request $request)
+    {
+        $request->validate([
+            'template_id' => 'required',
+            'name' => 'required|string|max:255',
+        ]);
+
+        Template::where('template_id', $request->template_id)
+            ->where('user_id', auth()->id())
+            ->update(['name' => $request->name]);
+
+        return response()->json(['success' => true]);
+    }
+
+    public function duplicate(Request $request)
+    {
+        $request->validate([
+            'template_id' => 'required',
+        ]);
+
+        $template = Template::where('template_id', $request->template_id)
+            ->where('user_id', auth()->id())
+            ->firstOrFail();
+
+        $newTemplateID = $this->generateRandomString();
+
+        if ($template->content !== null) {
+            Template::create([
+                'user_id' => auth()->id(),
+                'template_id' => $newTemplateID,
+                'name' => $template->name . ' (Copy)',
+                'published' => false,
+                'content' => $template->content,
+            ]);
+        } else {
+            $org_path = public_path('templates/user/').$template->template_id;
+            if (is_dir($org_path)) {
+                $dist_path = public_path('templates/user/').$newTemplateID;
+                File::copyDirectory($org_path, $dist_path);
+            }
+
+            Template::create([
+                'user_id' => auth()->id(),
+                'template_id' => $newTemplateID,
+                'name' => $template->name . ' (Copy)',
+                'published' => false,
+            ]);
+        }
+
+        return response()->json([
+            'success' => true,
+            'new_template_id' => $newTemplateID,
+        ]);
     }
 }

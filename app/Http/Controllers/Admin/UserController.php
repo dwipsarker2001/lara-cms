@@ -31,7 +31,8 @@ class UserController extends Controller
             'avatar' => 'nullable|string|max:255',
         ]);
 
-        User::create($data);
+        $user = User::create($data);
+        $user->assignDefaultSubscription();
 
         return redirect()->route('admin.users.index')->with('success', 'User created.');
     }

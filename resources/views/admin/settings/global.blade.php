@@ -133,6 +133,23 @@
                                 </div>
                             </div>
 
+                            {{-- Currency --}}
+                            <div class="grid md:grid-cols-2 items-start px-[18px] py-4 gap-y-3 md:gap-y-0 md:gap-x-5">
+                                <div class="flex flex-col gap-1.5">
+                                    <label class="text-sm font-medium text-text-heading" for="field-currency">Currency</label>
+                                    <div class="text-sm text-text-muted">The default currency for your site.</div>
+                                </div>
+                                <div>
+                                    <select id="field-currency" name="currency"
+                                        class="w-full block bg-content-bg border border-content-border text-text-primary shadow-sm text-sm rounded-lg px-3 py-2 h-9 transition-all duration-150 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary">
+                                        @foreach (['USD' => 'USD ($)', 'EUR' => 'EUR (€)', 'GBP' => 'GBP (£)', 'BDT' => 'BDT (৳)', 'INR' => 'INR (₹)', 'CAD' => 'CAD (C$)', 'AUD' => 'AUD (A$)', 'JPY' => 'JPY (¥)', 'CNY' => 'CNY (¥)', 'SAR' => 'SAR (﷼)', 'AED' => 'AED (د.إ)'] as $code => $label)
+                                            <option value="{{ $code }}" {{ (old('currency', $settings->currency ?? 'USD')) == $code ? 'selected' : '' }}>{{ $label }}</option>
+                                        @endforeach
+                                    </select>
+                                    @error('currency') <p class="text-xs text-danger mt-1">{{ $message }}</p> @enderror
+                                </div>
+                            </div>
+
                         </div>
                     </div>
                 </div>
