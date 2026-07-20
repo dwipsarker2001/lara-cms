@@ -807,16 +807,22 @@
                 return current.fields || [];
             },
 
-            currentData() {
-                if (this.active === null) return {};
-                let d = this.sections[this.active].data || {};
+            getDataContainer() {
+                if (this.active === null) return null;
+                let d = this.sections?.[this.active]?.data;
                 for (const crumb of this.crumbs) {
-                    d = d[crumb.key] || {};
+                    if (!d || typeof d !== 'object') return null;
+                    d = d[crumb.key];
                     if (crumb.index !== undefined) {
-                        d = d[crumb.index] || {};
+                        if (!d || typeof d !== 'object') return null;
+                        d = d[crumb.index];
                     }
                 }
-                return d;
+                return d || null;
+            },
+
+            currentData() {
+                return this.getDataContainer() || {};
             },
 
             getField(name) {
@@ -846,17 +852,14 @@
             },
 
             setNested(name, value) {
-                if (this.active === null) return;
-                let d = this.sections[this.active].data;
-                for (const crumb of this.crumbs) {
-                    d = d[crumb.key];
-                    if (crumb.index !== undefined) d = d[crumb.index];
-                }
+                const d = this.getDataContainer();
+                if (!d) return;
                 d[name] = value;
             },
 
             getList(name) {
-                const val = this.currentData()[name];
+                const container = this.getDataContainer();
+                const val = container?.[name];
                 return Array.isArray(val) ? val : [];
             },
 
@@ -1038,27 +1041,20 @@
             addListItem(name) {
                 const field = this.findField(name);
                 if (!field) return;
-                if (this.active === null) return;
-                let d = this.sections[this.active].data;
-                for (const crumb of this.crumbs) {
-                    d = d[crumb.key];
-                    if (crumb.index !== undefined) d = d[crumb.index];
-                }
-                if (!Array.isArray(d[name])) d[name] = [];
-                d[name].push(this.buildListItem(field));
+                const d = this.getDataContainer();
+                if (!d) return;
+                const existing = Array.isArray(d[name]) ? d[name] : [];
+                d[name] = [...existing, this.buildListItem(field)];
                 this.dirty = true;
                 this.schedulePreview();
             },
 
             removeListItem(name, index) {
-                if (this.active === null) return;
-                let d = this.sections[this.active].data;
-                for (const crumb of this.crumbs) {
-                    d = d[crumb.key];
-                    if (crumb.index !== undefined) d = d[crumb.index];
-                }
+                const d = this.getDataContainer();
+                if (!d) return;
                 if (Array.isArray(d[name])) {
-                    d[name].splice(index, 1);
+                    const next = d[name].filter((_, i) => i !== index);
+                    d[name] = next;
                     this.dirty = true;
                     this.schedulePreview();
                 }
