@@ -163,7 +163,7 @@ class ScheduleCampaign extends Command
             CURLOPT_POST => true,
             CURLOPT_POSTFIELDS => json_encode($data),
             CURLOPT_HTTPHEADER => [
-                'Authorization: Bearer '.env('SENDGRID_APIKEY'),
+                'Authorization: Bearer '.\App\Models\Setting::getSendGridApiKey(),
                 'Content-Type: application/json',
             ],
             CURLOPT_RETURNTRANSFER => true,

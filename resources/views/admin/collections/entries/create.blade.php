@@ -91,10 +91,10 @@
                 </div>
                 {{-- Switch pill buttons group --}}
                 @if($collection->enable_seo)
-                    <div class="bg-gray-100/80 dark:bg-gray-800 p-1 rounded-xl inline-flex items-center gap-1 border border-gray-200/60 shadow-sm">
-                        <button type="button" @click="activeTab = 'basic'" :class="activeTab === 'basic' ? 'bg-white dark:bg-gray-700 shadow-sm text-text-heading font-semibold ring-1 ring-black/5' : 'text-text-muted hover:text-text-primary'" class="px-3.5 py-1.5 rounded-lg text-xs transition-all duration-150 cursor-pointer">Basic</button>
-                        <button type="button" @click="activeTab = 'seo'" :class="activeTab === 'seo' ? 'bg-white dark:bg-gray-700 shadow-sm text-text-heading font-semibold ring-1 ring-black/5' : 'text-text-muted hover:text-text-primary'" class="px-3.5 py-1.5 rounded-lg text-xs transition-all duration-150 cursor-pointer">Seo</button>
-                        <button type="button" @click="activeTab = 'seo_pro'" :class="activeTab === 'seo_pro' ? 'bg-white dark:bg-gray-700 shadow-sm text-text-heading font-semibold ring-1 ring-black/5' : 'text-text-muted hover:text-text-primary'" class="px-3.5 py-1.5 rounded-lg text-xs transition-all duration-150 cursor-pointer">SEO pro</button>
+                    <div class="bg-gray-100 p-1 rounded-xl inline-flex items-center gap-1 border border-gray-200 shadow-inner">
+                        <button type="button" @click="activeTab = 'basic'" :class="activeTab === 'basic' ? 'bg-white shadow-sm text-text-heading font-semibold ring-1 ring-black/5' : 'text-text-muted hover:text-text-primary'" class="px-3.5 py-1.5 rounded-lg text-xs transition-all duration-150 cursor-pointer">Basic</button>
+                        <button type="button" @click="activeTab = 'seo'" :class="activeTab === 'seo' ? 'bg-white shadow-sm text-text-heading font-semibold ring-1 ring-black/5' : 'text-text-muted hover:text-text-primary'" class="px-3.5 py-1.5 rounded-lg text-xs transition-all duration-150 cursor-pointer">Seo</button>
+                        <button type="button" @click="activeTab = 'seo_pro'" :class="activeTab === 'seo_pro' ? 'bg-white shadow-sm text-text-heading font-semibold ring-1 ring-black/5' : 'text-text-muted hover:text-text-primary'" class="px-3.5 py-1.5 rounded-lg text-xs transition-all duration-150 cursor-pointer">SEO pro</button>
                     </div>
                 @endif
             </div>

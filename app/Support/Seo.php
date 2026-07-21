@@ -15,7 +15,7 @@ class Seo
     /**
      * Render the full HTML block of SEO tags for a given page.
      */
-    public static function render(?Page $page = null): string
+    public static function render(mixed $page = null): string
     {
         $settings = Setting::firstOrCreate(['id' => 1]);
 

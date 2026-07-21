@@ -245,7 +245,7 @@
                     Organize your contacts into targeted segments for more effective campaigns.
                 </p>
             </div>
-            <form method="post" action="{{ route('app.group.store') }}" class="px-8 pb-8">
+            <form method="post" action="{{ route('app.group.store') }}" class="px-8 pb-8" onsubmit="return handleCreateGroupSubmit(event)">
                 @csrf
                 <div class="mb-6">
                     <label class="block text-sm font-semibold text-slate-700 mb-2">Group Name</label>

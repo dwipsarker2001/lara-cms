@@ -20,14 +20,14 @@
 
         {{-- Limit Alert --}}
         @if($rem_groups <= 0)
-            <div class="mb-8 p-5 bg-red-50 border border-red-100 rounded-2xl flex items-start gap-4 shadow-sm">
-                <div class="w-10 h-10 bg-red-500 rounded-xl flex items-center justify-center flex-shrink-0 shadow-lg shadow-red-200">
-                    <i class="hgi hgi-stroke hgi-alert-circle text-white text-lg"></i>
+            <div class="mb-8 p-5 bg-amber-50 border border-amber-100 rounded-2xl flex items-start gap-4 shadow-sm cursor-pointer hover:bg-amber-100/50 transition" onclick="openUpgradeModal()">
+                <div class="w-10 h-10 bg-amber-500 rounded-xl flex items-center justify-center flex-shrink-0 shadow-lg shadow-amber-200">
+                    <i class="hgi hgi-stroke hgi-crown text-white text-lg"></i>
                 </div>
                 <div>
-                    <h4 class="text-[15px] font-black text-red-800 leading-tight tracking-tight">Limit Reached</h4>
-                    <p class="text-[13px] text-red-600 font-medium mt-1 leading-relaxed">
-                        Your contact group limit has been reached. Please upgrade your membership to create more segments.
+                    <h4 class="text-[15px] font-black text-amber-800 leading-tight tracking-tight">Upgrade to Create More Groups</h4>
+                    <p class="text-[13px] text-amber-600 font-medium mt-1 leading-relaxed">
+                        You've reached your group limit. Click here to view available plans and upgrade.
                     </p>
                 </div>
             </div>
@@ -60,7 +60,7 @@
                 </p>
             </div>
             
-            <form method="post" action="{{ route('app.group.store') }}" class="px-8 pb-8">
+            <form method="post" action="{{ route('app.group.store') }}" class="px-8 pb-8" onsubmit="return handleCreateGroupSubmit(event)">
                 @csrf
                 <div class="mb-6">
                     <label class="block text-sm font-semibold text-slate-700 mb-2">Group Name <span class="text-red-500">*</span></label>
@@ -80,9 +80,8 @@
                         class="flex-1 py-3 rounded-xl bg-slate-100 text-slate-700 text-sm font-bold hover:bg-slate-200 transition">
                         Cancel
                     </button>
-                    <button type="submit" 
-                        {{ $rem_groups <= 0 ? 'disabled' : '' }}
-                        class="bg-gradient-to-br from-[#007682] to-[#408b86] hover:brightness-110 flex-1 py-3 rounded-xl text-white text-sm font-bold transition-all duration-300 flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed">
+                    <button type="submit"
+                        class="bg-gradient-to-br from-[#007682] to-[#408b86] hover:brightness-110 flex-1 py-3 rounded-xl text-white text-sm font-bold transition-all duration-300 flex items-center justify-center gap-2">
                         <i class="hgi hgi-stroke hgi-user-add-01"></i>
                         <span>Create Group</span>
                     </button>

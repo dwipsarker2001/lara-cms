@@ -154,7 +154,7 @@ class ProcessEmailFileJob implements ShouldQueue
         curl_setopt($ch, CURLOPT_POST, 1);
         curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($data));
         curl_setopt($ch, CURLOPT_HTTPHEADER, [
-            'Authorization: Bearer '.env('SENDGRID_APIKEY'),
+            'Authorization: Bearer '.\App\Models\Setting::getSendGridApiKey(),
             'Content-Type: application/json',
         ]);
 

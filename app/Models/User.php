@@ -82,6 +82,14 @@ class User extends Authenticatable
             'ends_at' => null,
         ]);
 
+        // Sync plan limits to user model
+        $this->update([
+            'max_emails' => $plan->max_emails,
+            'max_contacts' => $plan->max_contacts,
+            'max_campaigns' => $plan->max_campaigns,
+            'max_groups' => $plan->max_groups,
+        ]);
+
         // Ensure usage counter exists
         $this->usageCounter()->firstOrCreate([], [
             'emails_sent_this_cycle' => 0,

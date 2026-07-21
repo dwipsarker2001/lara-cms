@@ -14,7 +14,7 @@
 </head>
 <body class="admin-root antialiased bg-header-bg text-text-primary min-h-full" x-data="{ navCollapsed: {{ (request()->routeIs('admin.pages.editor') || request()->routeIs('admin.layouts.editor') || request()->routeIs('admin.forms.editor') || request()->routeIs('admin.collections.entries.editor') || request()->routeIs('admin.email-templates.editor')) ? 'true' : 'false' }}, userMenuOpen: false }">
     {{-- Fixed header --}}
-    <header class="fixed top-0 left-0 right-0 h-14 px-4 flex items-center gap-3 z-[1] bg-header-bg text-header-text">
+    <header class="fixed top-0 left-0 right-0 h-14 px-4 flex items-center gap-3 z-50 bg-header-bg text-header-text">
         <div class="flex items-center gap-3">
             <button
                 type="button"
@@ -273,19 +273,6 @@
                             </a>
                         </li>
                         <li>
-                            <a href="{{ route('admin.dynamic-blocks.index') }}"
-                                class="flex items-center gap-2.5 px-2.5 py-1.5 rounded-md text-sm no-underline transition-colors @if(request()->routeIs('admin.dynamic-blocks.*')) text-text-heading bg-gray-200 font-semibold @else text-text-primary hover:bg-gray-100 hover:text-text-heading font-medium @endif"
-                            >
-                                <span class="flex w-4 shrink-0 items-center justify-center">
-                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" class="size-4">
-                                        <rect x="3" y="3" width="18" height="18" rx="2" />
-                                        <path d="M21 12H3" />
-                                    </svg>
-                                </span>
-                                Blocks
-                            </a>
-                        </li>
-                        <li>
                             <a href="{{ route('admin.assets.index') }}"
                                 class="flex items-center gap-2.5 px-2.5 py-1.5 rounded-md text-sm no-underline transition-colors @if(request()->routeIs('admin.assets.*')) text-text-heading bg-gray-200 font-semibold @else text-text-primary hover:bg-gray-100 hover:text-text-heading font-medium @endif"
                             >
@@ -297,6 +284,19 @@
                                     </svg>
                                 </span>
                                 Assets
+                            </a>
+                        </li>
+                        <li>
+                            <a href="{{ route('admin.users.index') }}"
+                                class="flex items-center gap-2.5 px-2.5 py-1.5 rounded-md text-sm no-underline transition-colors @if(request()->routeIs('admin.users.*')) text-text-heading bg-gray-200 font-semibold @else text-text-primary hover:bg-gray-100 hover:text-text-heading font-medium @endif"
+                            >
+                                <span class="flex w-4 shrink-0 items-center justify-center">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" class="size-4">
+                                        <path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2" />
+                                        <circle cx="9" cy="7" r="4" />
+                                    </svg>
+                                </span>
+                                Users
                             </a>
                         </li>
                     </ul>

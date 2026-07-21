@@ -50,20 +50,15 @@ it('can create collection with fields data including collection type', function 
 });
 
 it('copies sections from selected collection relation during entry creation', function () {
-    // 1. Create a target collection, page, and entry
+    // 1. Create a target collection and entry
     $targetCollection = Collection::create(['name' => 'Target', 'slug' => 'target', 'position' => 1]);
-    $targetPage = Page::create([
-        'title' => 'Target Page',
-        'slug' => 'target-page',
+    $targetEntry = $targetCollection->entries()->create([
+        'slug' => 'target-entry',
+        'data' => ['title' => 'Target Title'],
         'published' => true,
         'sections' => [
             ['_key' => 's1', 'name' => 'HeroBanner', 'data' => ['headline' => 'Target Headline'], 'enabled' => true],
         ],
-    ]);
-    $targetEntry = $targetCollection->entries()->create([
-        'data' => ['title' => 'Target Title'],
-        'page_id' => $targetPage->id,
-        'sections' => $targetPage->sections,
         'position' => 1,
     ]);
 
@@ -93,11 +88,9 @@ it('copies sections from selected collection relation during entry creation', fu
         'published' => '1',
     ])->assertRedirect();
 
-    // 4. Verify created entry page has copied sections
+    // 4. Verify created entry has copied sections
     $newEntry = CollectionEntry::where('collection_id', $sourceCollection->id)->firstOrFail();
-    $newPage = $newEntry->page;
-    expect($newPage->sections)->toBe($targetPage->sections);
-    expect($newEntry->sections)->toBe($targetPage->sections);
+    expect($newEntry->sections)->toBe($targetEntry->sections);
 });
 
 it('hides SEO tabs if enable_seo is false', function () {
@@ -121,21 +114,15 @@ it('routes pages collection entries to the root slug', function () {
         'position' => 4,
     ]);
 
-    $page = Page::create([
-        'title' => 'Hello Page',
-        'slug' => 'hello-page',
-        'published' => true,
-        'sections' => [],
-    ]);
-
     $entry = $collection->entries()->create([
+        'slug' => 'hello-page',
         'data' => ['title' => 'Hello Page'],
-        'page_id' => $page->id,
+        'published' => true,
         'sections' => [],
         'position' => 1,
     ]);
 
-    expect($page->route())->toBe('/hello-page');
+    expect($entry->route())->toBe('/hello-page');
 
     get('/hello-page')->assertSuccessful();
     get('/pages/hello-page')->assertNotFound();
@@ -149,12 +136,13 @@ it('renders SEO tags dynamically on the public layout', function () {
         'enable_seo' => true,
     ]);
 
-    // Create a page with custom SEO metadata
-    $page = Page::create([
-        'title' => 'Sample Article Title',
+    // Create an entry with custom SEO metadata
+    $entry = $collection->entries()->create([
         'slug' => 'sample-article',
+        'data' => ['title' => 'Sample Article Title'],
         'published' => true,
         'sections' => [],
+        'position' => 1,
         'meta' => [
             'metaTitle' => 'SEO Optimized Title Override',
             'metaDescription' => 'This is a custom SEO optimized description.',
@@ -162,13 +150,6 @@ it('renders SEO tags dynamically on the public layout', function () {
             'indexing' => 'No',
             'linkFollowing' => 'No',
         ],
-    ]);
-
-    $collection->entries()->create([
-        'data' => ['title' => 'Sample Article Title'],
-        'page_id' => $page->id,
-        'sections' => [],
-        'position' => 1,
     ]);
 
     // Set site name default in settings table

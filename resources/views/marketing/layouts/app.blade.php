@@ -58,7 +58,7 @@
         #sidebar.collapsed .sidebar-header .collapse-btn { margin: 0 auto; }
         #sidebar .sidebar-upgrade-card, #sidebar .sidebar-bottom-links {
             transition: opacity 0.2s ease, max-height 0.35s ease, transform 0.2s ease;
-            opacity: 1; max-height: 300px; overflow: hidden;
+            opacity: 1; max-height: 600px; overflow: hidden;
         }
         #sidebar.collapsed .sidebar-upgrade-card {
             opacity: 0; max-height: 0; transform: scale(0.95); pointer-events: none;
@@ -552,48 +552,128 @@
             </nav>
 
             <!-- Bottom -->
-            <div class="p-4 mt-auto border-t border-slate-100 space-y-4">
-                @if(false)
-                <div class="sidebar-upgrade-card bg-gradient-to-br from-[#007682] to-[#408b86] rounded-xl p-4 text-white shadow-lg relative overflow-hidden group">
-                    <div class="relative z-10 flex justify-between items-center mb-3">
-                        <h4 class="font-bold tracking-tight leading-none capitalize">Free Account</h4>
-                    </div>
-                    <div class="relative z-10 flex flex-col gap-1.5 mb-4">
-                        <div class="flex items-center justify-between text-[11px]">
-                            <span class="text-teal-50/70">Remaining Emails</span>
-                            <span class="font-bold">0</span>
+            <div class="p-2 mt-auto border-slate-100 space-y-4">
+                @auth
+                @php
+                    $user = auth()->user();
+                    $activeSub = $user?->activeSubscription;
+                    $plan = $user?->currentPlan();
+                    $usage = $user?->usageCounter;
+
+                    $planName = $plan?->name ?? 'Free Plan';
+
+                    $maxEmails = $plan?->max_emails ?? $user?->max_emails ?? 0;
+                    $maxContacts = $plan?->max_contacts ?? $user?->max_contacts ?? 0;
+                    $maxCampaigns = $plan?->max_campaigns ?? $user?->max_campaigns ?? 0;
+                    $maxGroups = $plan?->max_groups ?? $user?->max_groups ?? 0;
+
+                    $usedEmails = $usage?->emails_sent_this_cycle ?? \App\Models\Marketing\Campaign::where('user_id', $user?->id)->sum('total_sent');
+                    $usedContacts = \App\Models\Marketing\Contact::where('user_id', $user?->id)->count();
+                    $usedCampaigns = \App\Models\Marketing\Campaign::where('user_id', $user?->id)->count();
+                    $usedGroups = \App\Models\Marketing\Group::where('user_id', $user?->id)->count();
+
+                    $emailPct = $maxEmails > 0 ? min(100, round(($usedEmails / $maxEmails) * 100)) : 0;
+                    $contactPct = $maxContacts > 0 ? min(100, round(($usedContacts / $maxContacts) * 100)) : 0;
+                    $campaignPct = $maxCampaigns > 0 ? min(100, round(($usedCampaigns / $maxCampaigns) * 100)) : 0;
+                    $groupPct = $maxGroups > 0 ? min(100, round(($usedGroups / $maxGroups) * 100)) : 0;
+                    $remCampaigns = $maxCampaigns > 0 ? max($maxCampaigns - $usedCampaigns, 0) : PHP_INT_MAX;
+                    $remGroups = $maxGroups > 0 ? max($maxGroups - $usedGroups, 0) : PHP_INT_MAX;
+                    $remContacts = $maxContacts > 0 ? max($maxContacts - $usedContacts, 0) : PHP_INT_MAX;
+                @endphp
+                <div class="sidebar-upgrade-card group/card relative w-full bg-gradient-to-t from-[#f0f9f9] via-[#e6f2f2] to-[#d1e6e6] via-teal-50/50 to-white border border-slate-200 rounded-2xl p-4 shadow-sm transition-all duration-300">
+                    <!-- Header row (icon + plan name) -->
+                    <div class="flex items-center gap-3">
+                        <div class="w-9 h-9 rounded-full bg-white border flex items-center justify-center flex-shrink-0 shadow-xs">
+                            <svg class="w-4 h-4 text-indigo-500" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M12 2L14.5 9.5L22 12L14.5 14.5L12 22L9.5 14.5L2 12L9.5 9.5L12 2Z" />
+                            </svg>
                         </div>
-                        <div class="flex items-center justify-between text-[11px]">
-                            <span class="text-teal-50/70">Remaining Group</span>
-                            <span class="font-bold">0</span>
-                        </div>
-                        <div class="flex items-center justify-between text-[11px]">
-                            <span class="text-teal-50/70">Remaining Campaigns</span>
-                            <span class="font-bold">0</span>
+                        <div class="leading-tight flex-1">
+                            <p class="text-[11px] font-medium text-slate-400">Current plan:</p>
+                            <h4 class="text-sm font-bold text-slate-900 capitalize">{{ $planName }}</h4>
                         </div>
                     </div>
-                    @if(false)
-                    <div class="relative z-10">
-                        <button onclick="openUpgradeModal()"
-                            class="flex items-center justify-center w-full bg-white text-[#007682] py-2 rounded-lg text-xs font-black hover:bg-teal-50 transition-all active:scale-95 shadow-sm">
-                            SELECT PLAN <i class="hgi hgi-stroke hgi-arrow-right-01 ml-2 text-[10px]"></i>
-                        </button>
-                    </div>
-                    @endif
-                </div>
-                @endif
-                <div class="sidebar-bottom-links space-y-1">
-                    <a href="{{ url('../contact-us') }}" data-tooltip="Feedback"
-                       class="flex items-center px-3 py-2 text-xs font-medium text-slate-500 hover:bg-slate-50 rounded-lg">
-                        <i class="hgi hgi-stroke hgi-chat mr-3 text-lg flex-shrink-0"></i>
-                        <span class="nav-label">Feedback</span>
+
+                    <!-- Description line -->
+                    <p class="mt-2 text-xs text-slate-500">Upgrade to Pro to get the latest and exclusive features</p>
+
+                    <!-- CTA button -->
+                    <a href="{{ url('../pricing') }}"
+                       class="mt-3 flex items-center justify-center gap-2 w-full py-2 px-4 rounded-full bg-white border border-slate-200 hover:bg-slate-50 text-slate-800 text-xs font-semibold shadow-sm transition-colors group">
+                        <svg class="w-3.5 h-3.5 text-indigo-500" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M13 2L3 14h7v8l10-12h-7V2z"/>
+                        </svg>
+                        <span>Upgrade to Pro</span>
                     </a>
-                    <a href="{{ route('app.support.index') }}" data-tooltip="Help Center"
-                       class="flex items-center px-3 py-2 text-xs font-medium text-slate-500 hover:bg-slate-50 rounded-lg">
-                        <i class="hgi hgi-stroke hgi-help-circle mr-3 text-lg flex-shrink-0"></i>
-                        <span class="nav-label">Help Center</span>
-                    </a>
+
+                    <!-- Usage panel (expands on card hover) -->
+                    <div class="max-h-0 opacity-0 overflow-hidden group-hover/card:max-h-[300px] group-hover/card:opacity-100 group-hover/card:pt-3.5 group-hover/card:mt-3.5 group-hover/card:border-t group-hover/card:border-slate-200/80 transition-all duration-300 ease-in-out space-y-2.5">
+                        <!-- Emails -->
+                        <div>
+                            <div class="flex items-center justify-between text-[11px] mb-1">
+                                <span class="text-slate-500 font-medium flex items-center gap-1.5">
+                                    <svg class="w-3 h-3 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
+                                    </svg>
+                                    Emails
+                                </span>
+                                <span class="font-semibold text-slate-700">{{ number_format($usedEmails) }} / {{ number_format($maxEmails) }}</span>
+                            </div>
+                            <div class="w-full bg-slate-100 rounded-full h-1.5 overflow-hidden">
+                                <div class="bg-indigo-500 h-full rounded-full transition-all duration-300" style="width: {{ $emailPct }}%"></div>
+                            </div>
+                        </div>
+
+                        <!-- Contacts -->
+                        <div>
+                            <div class="flex items-center justify-between text-[11px] mb-1">
+                                <span class="text-slate-500 font-medium flex items-center gap-1.5">
+                                    <svg class="w-3 h-3 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/>
+                                    </svg>
+                                    Contacts
+                                </span>
+                                <span class="font-semibold text-slate-700">{{ number_format($usedContacts) }} / {{ number_format($maxContacts) }}</span>
+                            </div>
+                            <div class="w-full bg-slate-100 rounded-full h-1.5 overflow-hidden">
+                                <div class="bg-indigo-500 h-full rounded-full transition-all duration-300" style="width: {{ $contactPct }}%"></div>
+                            </div>
+                        </div>
+
+                        <!-- Campaigns -->
+                        <div>
+                            <div class="flex items-center justify-between text-[11px] mb-1">
+                                <span class="text-slate-500 font-medium flex items-center gap-1.5">
+                                    <svg class="w-3 h-3 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M11 5.882V19.24a1.76 1.76 0 01-3.417.592l-2.147-6.15M18 13a3 3 0 100-6M5.436 13.684A1.76 1.76 0 013 12V8c0-.726.44-1.35 1.077-1.603l11.455-4.582A.75.75 0 0116.5 2.5v15a.75.75 0 01-1.032.695L5.436 13.684z"/>
+                                    </svg>
+                                    Campaigns
+                                </span>
+                                <span class="font-semibold text-slate-700">{{ number_format($usedCampaigns) }} / {{ number_format($maxCampaigns) }}</span>
+                            </div>
+                            <div class="w-full bg-slate-100 rounded-full h-1.5 overflow-hidden">
+                                <div class="bg-indigo-500 h-full rounded-full transition-all duration-300" style="width: {{ $campaignPct }}%"></div>
+                            </div>
+                        </div>
+
+                        <!-- Groups -->
+                        <div>
+                            <div class="flex items-center justify-between text-[11px] mb-1">
+                                <span class="text-slate-500 font-medium flex items-center gap-1.5">
+                                    <svg class="w-3 h-3 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z"/>
+                                    </svg>
+                                    Groups
+                                </span>
+                                <span class="font-semibold text-slate-700">{{ number_format($usedGroups) }} / {{ number_format($maxGroups) }}</span>
+                            </div>
+                            <div class="w-full bg-slate-100 rounded-full h-1.5 overflow-hidden">
+                                <div class="bg-indigo-500 h-full rounded-full transition-all duration-300" style="width: {{ $groupPct }}%"></div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
+                @endauth
             </div>
         </aside>
         <!-- ══ END SIDEBAR ══ -->
@@ -652,6 +732,15 @@
                                        class="flex items-center gap-2.5 px-2.5 py-2 text-[13px] font-medium text-slate-600 hover:text-teal-600 hover:bg-teal-50 rounded-lg transition-all group/item">
                                         <i class="hgi hgi-stroke hgi-settings-02 text-base text-slate-400 group-hover/item:text-teal-600"></i> Settings
                                     </a>
+                                    <a href="{{ route('app.support.index') }}"
+                                       class="flex items-center gap-2.5 px-2.5 py-2 text-[13px] font-medium text-slate-600 hover:text-teal-600 hover:bg-teal-50 rounded-lg transition-all group/item">
+                                        <i class="hgi hgi-stroke hgi-help-circle text-base text-slate-400 group-hover/item:text-teal-600"></i> Help Center
+                                    </a>
+                                    <a href="{{ url('../contact-us') }}"
+                                       class="flex items-center gap-2.5 px-2.5 py-2 text-[13px] font-medium text-slate-600 hover:text-teal-600 hover:bg-teal-50 rounded-lg transition-all group/item">
+                                        <i class="hgi hgi-stroke hgi-chat text-base text-slate-400 group-hover/item:text-teal-600"></i> Feedback
+                                    </a>
+                                    <div class="my-1 border-t border-slate-100"></div>
                                     <a onclick="logout()" href="#"
                                        class="flex items-center gap-2.5 px-2.5 py-2 text-[13px] font-medium text-slate-600 hover:text-red-600 hover:bg-red-50 rounded-lg transition-all group/logout">
                                         <i class="hgi hgi-stroke hgi-logout-circle-01 text-base text-slate-400 group-hover/logout:text-red-600"></i> Logout
@@ -674,17 +763,21 @@
     <!-- Upgrade Modal -->
     <div id="upgradeModal"
          class="fixed inset-0 z-50 items-center justify-center p-4 bg-slate-900/40 backdrop-blur-sm hidden">
-        <div class="bg-white rounded-2xl w-full max-w-md p-8 shadow-2xl">
-            <h3 class="text-xl font-bold text-slate-900 mb-2">Would you like to upgrade now?</h3>
-            <p class="text-slate-600 text-sm leading-relaxed mb-8">
-                Get more from HybridMail. Upgrade to the
-                <span class="font-bold uppercase">{{ auth()->user()->role == 1 ? 'standard' : 'enterprise' }} account</span>
-                now and increase your monthly emails, contacts, and campaigns.
+        <div class="bg-white rounded-2xl w-full max-w-md p-8 shadow-2xl text-center">
+            <div class="w-16 h-16 bg-amber-100 rounded-full flex items-center justify-center mx-auto mb-5">
+                <i class="hgi hgi-stroke hgi-crown text-3xl text-amber-600"></i>
+            </div>
+            <h3 class="text-xl font-bold text-slate-900 mb-2">Upgrade Your Plan</h3>
+            <p class="text-slate-500 text-sm leading-relaxed mb-2">
+                You've reached your campaign limit for this month.
+            </p>
+            <p class="text-slate-500 text-sm leading-relaxed mb-8">
+                Upgrade to a higher tier to unlock more campaigns, emails, and features.
             </p>
             <div class="flex flex-col gap-3">
-                <a href="#"
-                   class="w-full bg-[#007682] text-white py-2.5 rounded-xl font-bold text-center hover:bg-[#005f69] transition-colors">
-                    Upgrade Your Account
+                <a href="{{ route('admin.subscription-plans.index') }}"
+                   class="w-full bg-[#007682] text-white py-3 rounded-xl font-bold text-center hover:bg-[#005f69] transition-colors">
+                    View Plans
                 </a>
                 <button onclick="closeModal()" class="w-full text-slate-400 text-sm font-semibold hover:text-slate-600">Maybe Later</button>
             </div>
@@ -705,27 +798,12 @@
                     </p>
                 </div>
 
-                <form method="post" action="{{ route('app.campaign.store') }}" class="px-8 pb-8">
+                <form method="post" action="{{ route('app.campaign.store') }}" class="px-8 pb-8" onsubmit="return handleCreateCampaignSubmit(event)">
                     @csrf
                     <div class="mb-6">
                         <label class="block text-sm font-semibold text-slate-700 mb-2">Campaign Name</label>
-                        <input
-                            type="text"
-                            name="name"
-                            maxlength="100"
-                            required
-                            placeholder="e.g. Summer Flash Sale 2026"
-                            class="w-full px-4 py-3.5 rounded-xl border border-slate-200 bg-white focus:border-teal-400 focus:ring-4 focus:ring-teal-500/10 outline-none transition text-slate-700 placeholder:text-slate-400"
-                        />
-                        <p class="mt-2 text-xs text-slate-500">
-                            0 slots remaining this month.
-                            @if(0 <= 3)
-                                <a href="#" class="inline-flex items-center gap-1.5 text-xs font-bold text-blue-600 hover:text-blue-700 transition">
-                                    Upgrade plan
-                                    <i class="hgi hgi-stroke hgi-arrow-right-01"></i>
-                                </a>
-                            @endif
-                        </p>
+                        <input type="text" name="name" maxlength="100" required placeholder="e.g. Summer Flash Sale 2026"
+                            class="w-full px-4 py-3.5 rounded-xl border border-slate-200 bg-white focus:border-teal-400 focus:ring-4 focus:ring-teal-500/10 outline-none transition text-slate-700 placeholder:text-slate-400" />
                     </div>
                     <div class="flex gap-3">
                         <button type="button" onclick="closeCreateModal()"
@@ -733,8 +811,7 @@
                             Cancel
                         </button>
                         <button type="submit"
-                            {{0 <= 0 ? 'disabled': ''}}
-                            class="bg-gradient-to-br from-[#007682] to-[#408b86] hover:brightness-110 flex-1 py-3 rounded-xl text-white text-sm font-bold hover:shadow-[#007682]/30 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-300 flex items-center justify-center gap-2">
+                            class="bg-gradient-to-br from-[#007682] to-[#408b86] hover:brightness-110 flex-1 py-3 rounded-xl text-white text-sm font-bold hover:shadow-[#007682]/30 transition-all duration-300 flex items-center justify-center gap-2">
                             <i class="hgi hgi-stroke hgi-mail-send-01"></i>
                             <span>Create Campaign</span>
                         </button>
@@ -804,9 +881,55 @@
             .on('mouseleave', function () { hideTimer = setTimeout(hideTooltip, 100); });
     });
 
+    /* ── Limit checks ── */
+    var remCampaigns = {{ $remCampaigns }};
+    var remGroups = {{ $remGroups }};
+    var remContacts = {{ $remContacts }};
+    function handleCreateCampaignSubmit(e) {
+        if (remCampaigns <= 0) {
+            e.preventDefault();
+            closeCreateModal();
+            openUpgradeModal();
+            return false;
+        }
+        return true;
+    }
+    function handleCreateContactSubmit(e) {
+        if (remContacts <= 0) {
+            e.preventDefault();
+            var modal = document.getElementById('contactModal');
+            if (modal) { modal.classList.add('hidden'); }
+            openUpgradeModal();
+            return false;
+        }
+        return true;
+    }
+    function handleCreateGroupSubmit(e) {
+        if (remGroups <= 0) {
+            e.preventDefault();
+            var modal = document.getElementById('createGroupModal');
+            if (modal) { modal.classList.add('hidden'); }
+            openUpgradeModal();
+            return false;
+        }
+        return true;
+    }
+
     /* ── Upgrade modal ── */
-    function openUpgradeModal() { $('#upgradeModal').removeClass('hidden').addClass('flex'); }
-    function closeModal()       { $('#upgradeModal').addClass('hidden').removeClass('flex'); }
+    function openUpgradeModal() {
+        $('#upgradeModal').removeClass('hidden').addClass('flex');
+        $('body').css('overflow', 'hidden');
+    }
+    function closeModal() {
+        $('#upgradeModal').addClass('hidden').removeClass('flex');
+        $('body').css('overflow', 'auto');
+    }
+    $('#upgradeModal').on('click', function (e) {
+        if (e.target === this) closeModal();
+    });
+    $(document).on('keydown', function (e) {
+        if (e.key === 'Escape' && !$('#upgradeModal').hasClass('hidden')) closeModal();
+    });
 
     /* ── Logout ── */
     function logout() {
@@ -1138,6 +1261,7 @@
           <div class="sm-jump"><i class="hgi hgi-stroke hgi-arrow-right-01 text-xs"></i>&nbsp;Open</div>
         </a>`;
     }
+
     </script>
     @yield('script')
 </body>

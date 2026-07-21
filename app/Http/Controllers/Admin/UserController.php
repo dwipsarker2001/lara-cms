@@ -12,7 +12,7 @@ class UserController extends Controller
 {
     public function index(): View
     {
-        $users = User::orderBy('name')->get();
+        $users = User::with('subscriptions.plan')->orderBy('name')->get();
 
         return view('admin.users.index', ['users' => $users]);
     }
@@ -27,7 +27,7 @@ class UserController extends Controller
         $data = $request->validate([
             'name' => 'required|string|max:255',
             'email' => 'required|email|max:255|unique:users,email',
-            'password' => 'required|min:8|confirmed',
+            'password' => 'required|min:8',
             'avatar' => 'nullable|string|max:255',
         ]);
 
@@ -52,7 +52,7 @@ class UserController extends Controller
 
         if ($request->filled('password')) {
             $request->validate([
-                'password' => 'min:8|confirmed',
+                'password' => 'min:8',
             ]);
             $data['password'] = $request->string('password')->toString();
         }
@@ -62,12 +62,8 @@ class UserController extends Controller
         return redirect()->route('admin.users.index')->with('success', 'User updated.');
     }
 
-    public function destroy(Request $request, User $user): RedirectResponse
+    public function destroy(User $user): RedirectResponse
     {
-        if ($user->id === $request->user()?->id) {
-            return redirect()->route('admin.users.index')->with('error', 'You cannot delete yourself.');
-        }
-
         $user->delete();
 
         return redirect()->route('admin.users.index')->with('success', 'User deleted.');

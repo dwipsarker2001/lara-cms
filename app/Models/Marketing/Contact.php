@@ -14,7 +14,7 @@ class Contact extends Model
 
     protected $fillable = [
         'group_id', 'user_id', 'email', 'firstname', 'lastname', 'sms',
-        'whatsapp', 'double_opt_in', 'opt_in', 'is_unsubscribed', 'unsubscribed_at',
+        'whatsapp', 'double_opt_in', 'opt_in', 'exist', 'is_unsubscribed', 'unsubscribed_at',
     ];
 
     public function group(): BelongsTo

@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Blocks\global;
+namespace App\Blocks\Global;
 
 use App\Blocks\Block;
 use App\Blocks\Field;
@@ -18,21 +18,17 @@ class SiteNavbar extends Block
     public function fields(): array
     {
         return [
-            Field::image('logo', 'Logo'),
-            Field::number('logoHeight', 'Logo Height', default: 40),
-            Field::string('brandName', 'Brand Name', default: 'E CMS'),
+            Field::image('logo', 'Logo', default: '/placeholder-image.png'),
+            Field::number('logoHeight', 'Logo Height', default: 32),
+            Field::string('brandName', 'Brand Name', default: 'Lara CMS'),
             Field::list('nav', 'Navigation', [
                 Field::string('label', 'Label', default: 'Home'),
-                Field::link('href', 'Href', default: '/'),
-                Field::list('dropdown', 'Dropdown', [
-                    Field::string('label', 'Label', default: 'Item'),
-                    Field::link('href', 'Href'),
-                ]),
-            ], count: 4),
-            Field::string('contactLabel', 'Contact Label', default: 'Chat with us'),
-            Field::string('contactNumber', 'Contact Number', default: '+8801771868382'),
-            Field::link('contactLink', 'Contact Link', default: 'https://wa.me/8801771868382'),
-            Field::image('contactIcon', 'Contact Icon'),
+                Field::link('href', 'Link', default: '/'),
+            ], count: 5),
+            Field::string('cta1Label', 'CTA 1 Label', default: 'Join Waitlist'),
+            Field::link('cta1Link', 'CTA 1 Link', default: '/waitlist'),
+            Field::string('cta2Label', 'CTA 2 Label', default: 'Contact Us'),
+            Field::link('cta2Link', 'CTA 2 Link', default: '/#contact'),
         ];
     }
 }

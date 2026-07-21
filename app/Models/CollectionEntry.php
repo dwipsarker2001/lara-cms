@@ -7,23 +7,36 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class CollectionEntry extends Model
 {
-    protected $fillable = ['collection_id', 'data', 'sections', 'position', 'page_id'];
+    protected $fillable = ['collection_id', 'data', 'sections', 'position', 'slug', 'published', 'meta'];
 
     public function collection(): BelongsTo
     {
         return $this->belongsTo(Collection::class);
     }
 
-    public function page(): BelongsTo
-    {
-        return $this->belongsTo(Page::class);
-    }
-
     public function getTitleAttribute(): string
     {
-        return trim($this->data['title'] ?? '') !== ''
-            ? $this->data['title']
-            : 'Entry #'.$this->id;
+        if (trim($this->data['title'] ?? '') !== '') {
+            return $this->data['title'];
+        }
+        if (trim($this->data['name'] ?? '') !== '') {
+            return $this->data['name'];
+        }
+        return 'Entry #'.$this->id;
+    }
+
+    public function route(): string
+    {
+        if ($this->slug === 'home') {
+            return '/';
+        }
+
+        $this->loadMissing('collection');
+        if ($this->collection && $this->collection->slug && $this->collection->slug !== 'pages') {
+            return '/'.$this->collection->slug.'/'.$this->slug;
+        }
+
+        return '/'.$this->slug ?? '#';
     }
 
     protected function casts(): array
@@ -31,6 +44,8 @@ class CollectionEntry extends Model
         return [
             'data' => 'array',
             'sections' => 'array',
+            'meta' => 'array',
+            'published' => 'boolean',
         ];
     }
 }

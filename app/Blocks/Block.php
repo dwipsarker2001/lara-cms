@@ -2,6 +2,8 @@
 
 namespace App\Blocks;
 
+use App\Support\Sections;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 
 /**
@@ -47,6 +49,29 @@ abstract class Block
     }
 
     /**
+     * Render the block's Blade view with the given section data.
+     * Logs a warning and returns an empty string when the view is missing so
+     * a broken block never takes down the whole page.
+     */
+    public function render(array $data = [], string $_key = '', bool $preview = false, mixed $page = null): string
+    {
+        $view = $this->view();
+
+        if (! view()->exists($view)) {
+            Log::warning("Block view missing: {$view}");
+
+            return '';
+        }
+
+        return view($view, [
+            'data' => $data,
+            '_key' => $_key,
+            'preview' => $preview,
+            'page' => $page,
+        ])->render();
+    }
+
+    /**
      * Fields as the editor and renderer see them: a `background` field prepended
      * unless the block opts out or is global.
      *
@@ -61,13 +86,10 @@ abstract class Block
         return $this->fields();
     }
 
-    public function render(array $data, string $_key = '', bool $preview = false, $page = null): string
+    /** Build default data array from resolved field definitions. */
+    public function defaultData(): array
     {
-        if (! view()->exists($this->view())) {
-            return '';
-        }
-
-        return view($this->view(), compact('data', '_key', 'preview', 'page'))->render();
+        return Sections::defaultData($this->resolvedFields());
     }
 
     /** Serializable shape handed to the admin editor (JSON). */

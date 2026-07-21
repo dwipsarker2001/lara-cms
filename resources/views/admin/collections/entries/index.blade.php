@@ -76,9 +76,9 @@
                                 </a>
                             </div>
                             <div class="flex items-center gap-2 sm:gap-3 shrink-0">
-                                @if($entry->page?->slug)
+                                @if($entry->slug)
                                     <span class="text-xs text-text-muted select-all bg-panel-bg px-2 py-0.5 rounded border border-content-border">
-                                        {{ $entry->page->route() }}
+                                        {{ $entry->route() }}
                                     </span>
                                 @endif
                                 <div class="relative" x-data="{ open: false }" @click.outside="open = false" @keydown.escape.window="open = false">
@@ -108,8 +108,8 @@
                                 style="z-index: 9999;"
                                 class="absolute right-0 top-full mt-1 min-w-[12rem] rounded-xl border border-content-border bg-content-bg shadow-xl p-1.5"
                             >
-                                @if($entry->page)
-                                <a href="{{ $entry->page->route() }}" role="menuitem" target="_blank"
+                                @if($entry->slug)
+                                <a href="{{ $entry->route() }}" role="menuitem" target="_blank"
                                     class="flex w-full items-center justify-start gap-2.5 px-3 py-2 rounded-lg text-sm no-underline transition-colors text-text-primary hover:bg-body-bg"
                                 >
                                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" class="size-4 shrink-0 text-text-muted">

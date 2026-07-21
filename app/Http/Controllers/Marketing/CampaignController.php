@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Marketing;
 
 use App\Http\Controllers\Controller;
 use App\Jobs\SendEmailJob;
+use App\Models\Admin;
 use App\Models\Marketing\Campaign;
 use App\Models\Marketing\Contact;
 use App\Models\Marketing\DefaultSetting;
@@ -18,7 +19,12 @@ class CampaignController extends Controller
 {
     private function remCampaigns(): int
     {
-        $max = auth()->user()->max_campaigns ?? 0;
+        $max = auth()->user()->max_campaigns;
+
+        if ($max === null) {
+            return PHP_INT_MAX;
+        }
+
         $count = Campaign::where('user_id', auth()->id())->count();
 
         return max($max - $count, 0);
@@ -26,8 +32,22 @@ class CampaignController extends Controller
 
     private function remEmails(): int
     {
-        $max = auth()->user()->max_emails ?? 0;
-        $count = Campaign::where('user_id', auth()->id())->sum(\Illuminate\Support\Facades\DB::raw('COALESCE(total_sent, 0)'));
+        $user = auth()->user();
+
+        if (! $user) {
+            return 0;
+        }
+
+        $max = $user->max_emails;
+
+        if ($max === null) {
+            return PHP_INT_MAX;
+        }
+
+        $count = $user->usageCounter?->emails_sent_this_cycle
+            ?? Stats::where('user_id', $user->id)->get()->sum(function ($stat) {
+                return $stat->total_sent ? count(explode(',', $stat->total_sent)) : 0;
+            });
 
         return max($max - $count, 0);
     }
@@ -169,10 +189,15 @@ class CampaignController extends Controller
         }
         // Else go to edit page
         $campaign = Campaign::where('id', $id)->first();
-        $initialGroupList = json_decode($campaign->receiver_emails);
+        $initialGroupList = json_decode($campaign->receiver_emails) ?? [];
         $mylist = Template::where('user_id', auth()->id())->get();
+        $adminIds = Admin::pluck('id');
+        $defaultList = Template::whereIn('user_id', $adminIds)
+            ->where('published', true)
+            ->orderBy('created_at', 'desc')
+            ->get();
 
-        return view('marketing.campaign.edit', compact('campaign', 'groups', 'initialGroupList', 'mylist'));
+        return view('marketing.campaign.edit', compact('campaign', 'groups', 'initialGroupList', 'mylist', 'defaultList'));
     }
 
     public function update(Request $request)
@@ -334,7 +359,7 @@ class CampaignController extends Controller
         $jsonData = json_encode($data);
 
         try {
-            $apiKey = env('SENDGRID_APIKEY');
+            $apiKey = \App\Models\Setting::getSendGridApiKey();
             $url = env('SENDGRID_APIENDPOINT');
 
             $ch = curl_init();

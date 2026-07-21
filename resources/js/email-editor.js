@@ -125,7 +125,8 @@ document.addEventListener('DOMContentLoaded', async () => {
     integrateToolbar();
 
     if (saveBtn) {
-        saveBtn.addEventListener('click', async () => {
+        saveBtn.addEventListener('click', async (e) => {
+            e.stopPropagation();
             if (!editor) return;
 
             saveBtn.disabled = true;

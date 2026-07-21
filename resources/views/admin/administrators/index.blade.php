@@ -28,40 +28,157 @@
 
         {{-- DataTable --}}
         <div class="bg-panel-bg rounded-2xl mb-8 p-2">
-            <div class="flex items-center justify-between px-2 pb-2.5">
-                <span class="flex items-center gap-2 text-[14px] font-medium text-text-heading">
+            <div class="flex flex-wrap sm:flex-nowrap items-center justify-between gap-3 px-2 pb-2.5">
+                <span class="flex items-center gap-2 text-[14px] font-medium text-text-heading whitespace-nowrap shrink-0">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" class="size-4 shrink-0 text-text-muted">
                         <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
                     </svg>
                     All Administrators
                 </span>
-                <div class="flex items-center gap-2">
-                    <div class="relative">
+                <div class="flex items-center gap-2 flex-nowrap shrink-0">
+                    <div class="relative shrink-0">
                         <svg viewBox="0 0 20 20" fill="currentColor" class="size-3.5 absolute left-2.5 top-1/2 -translate-y-1/2 text-text-muted">
                             <path fill-rule="evenodd" d="M9 3.5a5.5 5.5 0 100 11 5.5 5.5 0 000-11zM2 9a7 7 0 1112.452 4.391l3.328 3.329a.75.75 0 11-1.06 1.06l-3.329-3.328A7 7 0 012 9z" clip-rule="evenodd" />
                         </svg>
                         <input
+                            id="administrator-search"
+                            name="search"
                             type="text"
                             x-model="search"
-                            placeholder="Search administrators..."
-                            class="h-8 w-40 rounded-lg border border-content-border bg-content-bg pl-8 pr-3 text-[12px] text-text-heading placeholder:text-text-muted focus:outline-none focus:ring-2 focus:ring-primary/10 shadow-sm"
+                            :placeholder="`Search by ${filterColumnLabel.replace('Filter: ', '').toLowerCase()}...`"
+                            aria-label="Search administrators"
+                            class="h-8 w-44 sm:w-56 rounded-lg border border-content-border bg-content-bg pl-8 pr-3 text-[12px] text-text-heading placeholder:text-text-muted focus:outline-none focus:ring-2 focus:ring-primary/10 shadow-sm"
                         >
                     </div>
-                    <button type="button"
-                        class="flex h-8 items-center gap-1.5 rounded-lg border border-content-border bg-content-bg px-3 text-[12px] font-medium text-text-heading hover:bg-body-bg shadow-sm transition-colors cursor-pointer">
-                        <svg viewBox="0 0 20 20" fill="currentColor" class="size-3.5 text-text-muted">
-                            <path fill-rule="evenodd" d="M2.628 1.601C5.028 1.206 7.49 1 10 1s4.973.206 7.372.601a.75.75 0 01.628.74v2.288a2.25 2.25 0 01-.659 1.59l-4.682 4.683a2.25 2.25 0 00-.659 1.59v3.037c0 .684-.31 1.33-.844 1.757l-1.937 1.55A.75.75 0 018 18.25v-5.757a2.25 2.25 0 00-.659-1.591L2.659 6.22A2.25 2.25 0 012 4.629V2.34a.75.75 0 01.628-.74z" clip-rule="evenodd" />
-                        </svg>
-                        Filter
-                    </button>
-                    <button type="button"
-                        class="flex size-8 items-center justify-center rounded-lg border border-content-border bg-content-bg text-text-muted hover:bg-body-bg shadow-sm transition-colors cursor-pointer">
-                        <svg viewBox="0 0 16 3" class="size-4" fill="currentColor">
-                            <circle cx="2" cy="1.5" r="1.5" />
-                            <circle cx="8" cy="1.5" r="1.5" />
-                            <circle cx="14" cy="1.5" r="1.5" />
-                        </svg>
-                    </button>
+
+                    {{-- Filter Dropdown --}}
+                    <div class="relative shrink-0" x-data="{ open: false }" @click.outside="open = false" @keydown.escape.window="open = false">
+                        <button type="button"
+                            @click="open = !open"
+                            class="flex h-8 items-center gap-1.5 whitespace-nowrap rounded-lg border border-content-border bg-white px-3 text-[12px] font-medium text-text-heading hover:bg-body-bg shadow-sm transition-colors cursor-pointer">
+                            <svg viewBox="0 0 20 20" fill="currentColor" class="size-3.5 text-text-muted shrink-0">
+                                <path fill-rule="evenodd" d="M2.628 1.601C5.028 1.206 7.49 1 10 1s4.973.206 7.372.601a.75.75 0 01.628.74v2.288a2.25 2.25 0 01-.659 1.59l-4.682 4.683a2.25 2.25 0 00-.659 1.59v3.037c0 .684-.31 1.33-.844 1.757l-1.937 1.55A.75.75 0 018 18.25v-5.757a2.25 2.25 0 00-.659-1.591L2.659 6.22A2.25 2.25 0 012 4.629V2.34a.75.75 0 01.628-.74z" clip-rule="evenodd" />
+                            </svg>
+                            <span x-text="filterColumnLabel" class="whitespace-nowrap">Filter: All</span>
+                            <svg class="size-3 text-text-muted shrink-0 transition-transform ml-0.5" :class="open ? 'rotate-180' : ''" viewBox="0 0 20 20" fill="currentColor">
+                                <path fill-rule="evenodd" d="M5.22 8.22a.75.75 0 0 1 1.06 0L10 11.94l3.72-3.72a.75.75 0 1 1 1.06 1.06l-4.25 4.25a.75.75 0 0 1-1.06 0L5.22 9.28a.75.75 0 0 1 0-1.06Z" clip-rule="evenodd" />
+                            </svg>
+                        </button>
+                        <div x-show="open" x-cloak
+                            class="absolute right-0 top-full mt-2 min-w-[15rem] rounded-xl border border-content-border bg-content-bg shadow-xl p-1.5 space-y-0.5 z-[100]">
+                            <button type="button" @click="filterColumn = 'all'; open = false" class="flex w-full items-center justify-between gap-2 whitespace-nowrap px-3 py-1.5 rounded-lg text-xs transition-colors cursor-pointer" :class="filterColumn === 'all' ? 'bg-primary/10 text-primary font-medium' : 'text-text-primary hover:bg-body-bg'">
+                                <div class="flex items-center gap-2">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" class="size-3.5 shrink-0 opacity-70">
+                                        <rect x="3" y="3" width="7" height="7" rx="1" />
+                                        <rect x="14" y="3" width="7" height="7" rx="1" />
+                                        <rect x="3" y="14" width="7" height="7" rx="1" />
+                                        <rect x="14" y="14" width="7" height="7" rx="1" />
+                                    </svg>
+                                    <span>All Columns</span>
+                                </div>
+                                <span x-show="filterColumn === 'all'" class="font-bold">✓</span>
+                            </button>
+                            <button type="button" @click="filterColumn = 'name'; open = false" class="flex w-full items-center justify-between gap-2 whitespace-nowrap px-3 py-1.5 rounded-lg text-xs transition-colors cursor-pointer" :class="filterColumn === 'name' ? 'bg-primary/10 text-primary font-medium' : 'text-text-primary hover:bg-body-bg'">
+                                <div class="flex items-center gap-2">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" class="size-3.5 shrink-0 opacity-70">
+                                        <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2" />
+                                        <circle cx="12" cy="7" r="4" />
+                                    </svg>
+                                    <span>Name</span>
+                                </div>
+                                <span x-show="filterColumn === 'name'" class="font-bold">✓</span>
+                            </button>
+                            <button type="button" @click="filterColumn = 'email'; open = false" class="flex w-full items-center justify-between gap-2 whitespace-nowrap px-3 py-1.5 rounded-lg text-xs transition-colors cursor-pointer" :class="filterColumn === 'email' ? 'bg-primary/10 text-primary font-medium' : 'text-text-primary hover:bg-body-bg'">
+                                <div class="flex items-center gap-2">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" class="size-3.5 shrink-0 opacity-70">
+                                        <rect x="3" y="4" width="18" height="16" rx="2" />
+                                        <path d="m3 6 9 6 9-6" />
+                                    </svg>
+                                    <span>Email</span>
+                                </div>
+                                <span x-show="filterColumn === 'email'" class="font-bold">✓</span>
+                            </button>
+                            <button type="button" @click="filterColumn = 'status'; open = false" class="flex w-full items-center justify-between gap-2 whitespace-nowrap px-3 py-1.5 rounded-lg text-xs transition-colors cursor-pointer" :class="filterColumn === 'status' ? 'bg-primary/10 text-primary font-medium' : 'text-text-primary hover:bg-body-bg'">
+                                <div class="flex items-center gap-2">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" class="size-3.5 shrink-0 opacity-70">
+                                        <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" />
+                                        <polyline points="22 4 12 14.01 9 11.01" />
+                                    </svg>
+                                    <span>Status</span>
+                                </div>
+                                <span x-show="filterColumn === 'status'" class="font-bold">✓</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    {{-- Squared Sort Button & Popup --}}
+                    <div class="relative shrink-0" x-data="{ open: false }" @click.outside="open = false" @keydown.escape.window="open = false">
+                        <button type="button"
+                            @click="open = !open"
+                            title="Sort Table"
+                            class="flex size-8 items-center justify-center rounded-lg border border-content-border bg-white text-text-muted hover:text-text-heading hover:bg-body-bg shadow-sm transition-colors cursor-pointer">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" class="size-4 shrink-0">
+                                <path d="m3 16 4 4 4-4" />
+                                <path d="M7 20V4" />
+                                <path d="m21 8-4-4-4 4" />
+                                <path d="M17 4v16" />
+                            </svg>
+                        </button>
+                        <div x-show="open" x-cloak
+                            class="absolute right-0 top-full mt-2 min-w-[15rem] rounded-xl border border-content-border bg-content-bg shadow-xl p-1.5 space-y-0.5 z-[100]">
+                            {{-- Column Options --}}
+                            <button type="button" @click="sortColumn = 'name'; sortRows(); open = false" class="flex w-full items-center justify-between gap-2 whitespace-nowrap px-3 py-1.5 rounded-lg text-xs transition-colors cursor-pointer" :class="sortColumn === 'name' ? 'bg-primary/10 text-primary font-medium' : 'text-text-primary hover:bg-body-bg'">
+                                <div class="flex items-center gap-2">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" class="size-3.5 shrink-0 opacity-70"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2" /><circle cx="12" cy="7" r="4" /></svg>
+                                    <span>Name</span>
+                                </div>
+                                <span x-show="sortColumn === 'name'" class="font-bold">✓</span>
+                            </button>
+                            <button type="button" @click="sortColumn = 'email'; sortRows(); open = false" class="flex w-full items-center justify-between gap-2 whitespace-nowrap px-3 py-1.5 rounded-lg text-xs transition-colors cursor-pointer" :class="sortColumn === 'email' ? 'bg-primary/10 text-primary font-medium' : 'text-text-primary hover:bg-body-bg'">
+                                <div class="flex items-center gap-2">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" class="size-3.5 shrink-0 opacity-70"><rect x="3" y="4" width="18" height="16" rx="2" /><path d="m3 6 9 6 9-6" /></svg>
+                                    <span>Email</span>
+                                </div>
+                                <span x-show="sortColumn === 'email'" class="font-bold">✓</span>
+                            </button>
+                            <button type="button" @click="sortColumn = 'status'; sortRows(); open = false" class="flex w-full items-center justify-between gap-2 whitespace-nowrap px-3 py-1.5 rounded-lg text-xs transition-colors cursor-pointer" :class="sortColumn === 'status' ? 'bg-primary/10 text-primary font-medium' : 'text-text-primary hover:bg-body-bg'">
+                                <div class="flex items-center gap-2">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" class="size-3.5 shrink-0 opacity-70"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" /><polyline points="22 4 12 14.01 9 11.01" /></svg>
+                                    <span>Status</span>
+                                </div>
+                                <span x-show="sortColumn === 'status'" class="font-bold">✓</span>
+                            </button>
+                            <button type="button" @click="sortColumn = 'created'; sortRows(); open = false" class="flex w-full items-center justify-between gap-2 whitespace-nowrap px-3 py-1.5 rounded-lg text-xs transition-colors cursor-pointer" :class="sortColumn === 'created' ? 'bg-primary/10 text-primary font-medium' : 'text-text-primary hover:bg-body-bg'">
+                                <div class="flex items-center gap-2">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" class="size-3.5 shrink-0 opacity-70"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                                    <span>Joined Date</span>
+                                </div>
+                                <span x-show="sortColumn === 'created'" class="font-bold">✓</span>
+                            </button>
+
+                            <div class="my-1 border-t border-content-border"></div>
+
+                            {{-- Direction Options --}}
+                            <button type="button" @click="sortDirection = 'asc'; sortRows(); open = false" class="flex w-full items-center justify-between gap-2 whitespace-nowrap px-3 py-1.5 rounded-lg text-xs transition-colors cursor-pointer" :class="sortDirection === 'asc' ? 'bg-primary/10 text-primary font-medium' : 'text-text-primary hover:bg-body-bg'">
+                                <div class="flex items-center gap-2">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" class="size-3.5 shrink-0 opacity-70">
+                                        <path d="m3 8 4-4 4 4" /><path d="M7 4v16" />
+                                    </svg>
+                                    <span>Ascending (A-Z)</span>
+                                </div>
+                                <span x-show="sortDirection === 'asc'" class="font-bold">✓</span>
+                            </button>
+                            <button type="button" @click="sortDirection = 'desc'; sortRows(); open = false" class="flex w-full items-center justify-between gap-2 whitespace-nowrap px-3 py-1.5 rounded-lg text-xs transition-colors cursor-pointer" :class="sortDirection === 'desc' ? 'bg-primary/10 text-primary font-medium' : 'text-text-primary hover:bg-body-bg'">
+                                <div class="flex items-center gap-2">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" class="size-3.5 shrink-0 opacity-70">
+                                        <path d="m3 16 4 4 4-4" /><path d="M7 20V4" />
+                                    </svg>
+                                    <span>Descending (Z-A)</span>
+                                </div>
+                                <span x-show="sortDirection === 'desc'" class="font-bold">✓</span>
+                            </button>
+                        </div>
+                    </div>
                 </div>
             </div>
 
@@ -100,9 +217,15 @@
                                     <td colspan="6"></td>
                                 </tr>
                             </thead>
-                            <tbody>
+                            <tbody x-ref="tbody">
                                 @foreach ($admins as $index => $admin)
-                                    <tr x-show="matchesSearch({{ json_encode($admin->name) }}, {{ json_encode($admin->email) }})"
+                                    @php $statusStr = $admin->is_active ? 'active' : 'inactive'; @endphp
+                                    <tr data-sortable
+                                        data-name="{{ strtolower($admin->name) }}"
+                                        data-email="{{ strtolower($admin->email) }}"
+                                        data-status="{{ strtolower($statusStr) }}"
+                                        data-created="{{ $admin->created_at->timestamp }}"
+                                        x-show="matchesSearch({{ json_encode($admin->name) }}, {{ json_encode($admin->email) }}, {{ json_encode($statusStr) }})"
                                         class="group transition-colors hover:bg-gray-50/50">
                                         <td class="border-b border-gray-100 bg-content-bg px-5 py-3"
                                             @class([
@@ -146,11 +269,11 @@
                                                 'rounded-br-xl' => $index === $admins->count() - 1,
                                             ])>
                                             <div class="relative"
-                                                 x-data="{ open: false }"
+                                                 x-data="{ open: false, top: 0, left: 0 }"
                                                  @click.outside="open = false"
                                                  @keydown.escape.window="open = false">
                                                 <button type="button"
-                                                    @click="open = !open"
+                                                    @click="open = !open; if (open) { const r = $event.currentTarget.getBoundingClientRect(); top = r.bottom + 4; left = Math.max(8, Math.min(r.right - 192, window.innerWidth - 220)); }"
                                                     class="inline-flex size-7 items-center justify-center rounded-md text-text-muted hover:text-text-heading hover:bg-body-bg transition-colors cursor-pointer">
                                                     <svg viewBox="0 0 16 3" class="size-4" fill="currentColor">
                                                         <circle cx="2" cy="1.5" r="1.5" />
@@ -159,13 +282,15 @@
                                                     </svg>
                                                 </button>
                                                 <div x-show="open"
+                                                    x-cloak
                                                     x-transition:enter="transition ease-out duration-100"
                                                     x-transition:enter-start="opacity-0 scale-95"
                                                     x-transition:enter-end="opacity-100 scale-100"
                                                     x-transition:leave="transition ease-in duration-75"
                                                     x-transition:leave-start="opacity-100 scale-100"
                                                     x-transition:leave-end="opacity-0 scale-95"
-                                                    class="absolute right-0 top-full mt-1 min-w-[12rem] rounded-xl border border-content-border bg-content-bg shadow-xl p-1.5 z-50">
+                                                    :style="`position: fixed; top: ${top}px; left: ${left}px;`"
+                                                    class="min-w-[12rem] rounded-xl border border-content-border bg-content-bg shadow-xl p-1.5 z-[100]">
                                                     <a href="{{ route('admin.administrators.edit', $admin) }}"
                                                         class="flex w-full items-center justify-start gap-2.5 px-3 py-2 rounded-lg text-sm no-underline transition-colors text-text-primary hover:bg-body-bg cursor-pointer">
                                                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" class="size-4 shrink-0 text-text-muted">
@@ -210,21 +335,64 @@
 </div>
 
 @push('scripts')
+<style>
+    [x-cloak] { display: none !important; }
+</style>
 <script>
     function adminPage() {
         return {
             search: '',
-            matchesSearch(name, email) {
+            filterColumn: 'all',
+            sortColumn: 'name',
+            sortDirection: 'asc',
+            get filterColumnLabel() {
+                if (this.filterColumn === 'name') return 'Filter: Name';
+                if (this.filterColumn === 'email') return 'Filter: Email';
+                if (this.filterColumn === 'status') return 'Filter: Status';
+                return 'Filter: All';
+            },
+            matchesSearch(name, email, status = '') {
                 if (!this.search.trim()) return true;
                 const q = this.search.toLowerCase();
-                return name.toLowerCase().includes(q) || email.toLowerCase().includes(q);
+                if (this.filterColumn === 'name') {
+                    return name.toLowerCase().includes(q);
+                }
+                if (this.filterColumn === 'email') {
+                    return email.toLowerCase().includes(q);
+                }
+                if (this.filterColumn === 'status') {
+                    return status.toLowerCase().includes(q);
+                }
+                return name.toLowerCase().includes(q) || email.toLowerCase().includes(q) || status.toLowerCase().includes(q);
+            },
+            sortRows() {
+                this.$nextTick(() => {
+                    const tbody = this.$refs.tbody;
+                    if (!tbody) return;
+                    const rows = Array.from(tbody.querySelectorAll('tr[data-sortable]'));
+                    rows.sort((a, b) => {
+                        let valA = a.dataset[this.sortColumn] || '';
+                        let valB = b.dataset[this.sortColumn] || '';
+                        if (this.sortColumn === 'created') {
+                            valA = parseInt(valA, 10) || 0;
+                            valB = parseInt(valB, 10) || 0;
+                        }
+                        if (valA < valB) return this.sortDirection === 'asc' ? -1 : 1;
+                        if (valA > valB) return this.sortDirection === 'asc' ? 1 : -1;
+                        return 0;
+                    });
+                    rows.forEach(r => tbody.appendChild(r));
+                });
             },
             get filteredCount() {
                 if (!this.search.trim()) return {{ $admins->count() }};
-                const q = this.search.toLowerCase();
                 let count = 0;
                 @foreach ($admins as $admin)
-                    if ({{ Js::from($admin->name) }}.toLowerCase().includes(q) || {{ Js::from($admin->email) }}.toLowerCase().includes(q)) count++;
+                    if (this.matchesSearch(
+                        {{ Js::from($admin->name) }},
+                        {{ Js::from($admin->email) }},
+                        {{ Js::from($admin->is_active ? 'active' : 'inactive') }}
+                    )) count++;
                 @endforeach
                 return count;
             },

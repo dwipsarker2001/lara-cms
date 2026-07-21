@@ -4,8 +4,7 @@
 
 @section('content')
     <div
-        class="w-full min-w-0 mx-auto px-2 sm:px-0"
-        style="max-width: 60rem;"
+        class="max-w-5xl mx-auto px-2 sm:px-0"
         x-data="{
             avatar: @js(old('avatar', $admin->avatar)),
             altOpen: false,

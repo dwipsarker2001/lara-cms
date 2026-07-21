@@ -8,34 +8,34 @@
     x-data="{
         activeTab: 'basic',
         title: '{{ old('data.title', $entry->data['title'] ?? '') }}',
-        effectiveSlug: '{{ $entry->page?->slug ?? '' }}',
-        published: {{ old('published', $entry->page?->published ?? true) ? 'true' : 'false' }},
+        effectiveSlug: '{{ $entry->slug ?? '' }}',
+        published: {{ old('published', $entry->published ?? true) ? 'true' : 'false' }},
         meta: {
-            author: '{{ old('meta.author', $entry->page?->meta['author'] ?? $admins->first()?->name ?? 'Admin') }}',
-            metaTitle: '{{ old('meta.metaTitle', $entry->page?->meta['metaTitle'] ?? '') }}',
-            metaDescription: '{{ old('meta.metaDescription', $entry->page?->meta['metaDescription'] ?? '') }}',
-            canonicalUrl: '{{ old('meta.canonicalUrl', $entry->page?->meta['canonicalUrl'] ?? '') }}',
-            schema: '{{ old('meta.schema', $entry->page?->meta['schema'] ?? '') }}',
-            robots: '{{ old('meta.robots', $entry->page?->meta['robots'] ?? 'Inherit') }}',
-            indexing: '{{ old('meta.indexing', $entry->page?->meta['indexing'] ?? 'Inherit') }}',
-            linkFollowing: '{{ old('meta.linkFollowing', $entry->page?->meta['linkFollowing'] ?? 'Inherit') }}',
-            noArchive: '{{ old('meta.noArchive', $entry->page?->meta['noArchive'] ?? 'Inherit') }}',
-            noImageIndex: '{{ old('meta.noImageIndex', $entry->page?->meta['noImageIndex'] ?? 'Inherit') }}',
-            noSnippet: '{{ old('meta.noSnippet', $entry->page?->meta['noSnippet'] ?? 'Inherit') }}',
-            noTranslate: '{{ old('meta.noTranslate', $entry->page?->meta['noTranslate'] ?? 'Inherit') }}',
-            noSiteLinksSearchBox: '{{ old('meta.noSiteLinksSearchBox', $entry->page?->meta['noSiteLinksSearchBox'] ?? 'Inherit') }}',
-            maxSnippet: '{{ old('meta.maxSnippet', $entry->page?->meta['maxSnippet'] ?? '') }}',
-            maxVideoPreview: '{{ old('meta.maxVideoPreview', $entry->page?->meta['maxVideoPreview'] ?? '') }}',
-            maxImagePreview: '{{ old('meta.maxImagePreview', $entry->page?->meta['maxImagePreview'] ?? 'Inherit') }}',
-            ogType: '{{ old('meta.ogType', $entry->page?->meta['ogType'] ?? 'Inherit') }}',
-            ogTitle: '{{ old('meta.ogTitle', $entry->page?->meta['ogTitle'] ?? '') }}',
-            socialImage: '{{ old('meta.socialImage', $entry->page?->meta['socialImage'] ?? '') }}',
-            xHandle: '{{ old('meta.xHandle', $entry->page?->meta['xHandle'] ?? '') }}',
-            xCardTitle: '{{ old('meta.xCardTitle', $entry->page?->meta['xCardTitle'] ?? '') }}',
-            xCardDescription: '{{ old('meta.xCardDescription', $entry->page?->meta['xCardDescription'] ?? '') }}',
-            sitemap: '{{ old('meta.sitemap', $entry->page?->meta['sitemap'] ?? 'Inherit') }}',
-            sitemapPriority: '{{ old('meta.sitemapPriority', $entry->page?->meta['sitemapPriority'] ?? '') }}',
-            sitemapFrequency: '{{ old('meta.sitemapFrequency', $entry->page?->meta['sitemapFrequency'] ?? 'Inherit') }}'
+            author: '{{ old('meta.author', $entry->meta['author'] ?? $admins->first()?->name ?? 'Admin') }}',
+            metaTitle: '{{ old('meta.metaTitle', $entry->meta['metaTitle'] ?? '') }}',
+            metaDescription: '{{ old('meta.metaDescription', $entry->meta['metaDescription'] ?? '') }}',
+            canonicalUrl: '{{ old('meta.canonicalUrl', $entry->meta['canonicalUrl'] ?? '') }}',
+            schema: '{{ old('meta.schema', $entry->meta['schema'] ?? '') }}',
+            robots: '{{ old('meta.robots', $entry->meta['robots'] ?? 'Inherit') }}',
+            indexing: '{{ old('meta.indexing', $entry->meta['indexing'] ?? 'Inherit') }}',
+            linkFollowing: '{{ old('meta.linkFollowing', $entry->meta['linkFollowing'] ?? 'Inherit') }}',
+            noArchive: '{{ old('meta.noArchive', $entry->meta['noArchive'] ?? 'Inherit') }}',
+            noImageIndex: '{{ old('meta.noImageIndex', $entry->meta['noImageIndex'] ?? 'Inherit') }}',
+            noSnippet: '{{ old('meta.noSnippet', $entry->meta['noSnippet'] ?? 'Inherit') }}',
+            noTranslate: '{{ old('meta.noTranslate', $entry->meta['noTranslate'] ?? 'Inherit') }}',
+            noSiteLinksSearchBox: '{{ old('meta.noSiteLinksSearchBox', $entry->meta['noSiteLinksSearchBox'] ?? 'Inherit') }}',
+            maxSnippet: '{{ old('meta.maxSnippet', $entry->meta['maxSnippet'] ?? '') }}',
+            maxVideoPreview: '{{ old('meta.maxVideoPreview', $entry->meta['maxVideoPreview'] ?? '') }}',
+            maxImagePreview: '{{ old('meta.maxImagePreview', $entry->meta['maxImagePreview'] ?? 'Inherit') }}',
+            ogType: '{{ old('meta.ogType', $entry->meta['ogType'] ?? 'Inherit') }}',
+            ogTitle: '{{ old('meta.ogTitle', $entry->meta['ogTitle'] ?? '') }}',
+            socialImage: '{{ old('meta.socialImage', $entry->meta['socialImage'] ?? '') }}',
+            xHandle: '{{ old('meta.xHandle', $entry->meta['xHandle'] ?? '') }}',
+            xCardTitle: '{{ old('meta.xCardTitle', $entry->meta['xCardTitle'] ?? '') }}',
+            xCardDescription: '{{ old('meta.xCardDescription', $entry->meta['xCardDescription'] ?? '') }}',
+            sitemap: '{{ old('meta.sitemap', $entry->meta['sitemap'] ?? 'Inherit') }}',
+            sitemapPriority: '{{ old('meta.sitemapPriority', $entry->meta['sitemapPriority'] ?? '') }}',
+            sitemapFrequency: '{{ old('meta.sitemapFrequency', $entry->meta['sitemapFrequency'] ?? 'Inherit') }}'
         },
         updateMeta(key, val) {
             this.meta[key] = val;
@@ -84,10 +84,10 @@
                 </div>
                 {{-- Switch pill buttons group --}}
                 @if($collection->enable_seo)
-                    <div class="bg-gray-100/80 dark:bg-gray-800 p-1 rounded-xl inline-flex items-center gap-1 border border-gray-200/60 shadow-sm">
-                        <button type="button" @click="activeTab = 'basic'" :class="activeTab === 'basic' ? 'bg-white dark:bg-gray-700 shadow-sm text-text-heading font-semibold ring-1 ring-black/5' : 'text-text-muted hover:text-text-primary'" class="px-3.5 py-1.5 rounded-lg text-xs transition-all duration-150 cursor-pointer">Basic</button>
-                        <button type="button" @click="activeTab = 'seo'" :class="activeTab === 'seo' ? 'bg-white dark:bg-gray-700 shadow-sm text-text-heading font-semibold ring-1 ring-black/5' : 'text-text-muted hover:text-text-primary'" class="px-3.5 py-1.5 rounded-lg text-xs transition-all duration-150 cursor-pointer">Seo</button>
-                        <button type="button" @click="activeTab = 'seo_pro'" :class="activeTab === 'seo_pro' ? 'bg-white dark:bg-gray-700 shadow-sm text-text-heading font-semibold ring-1 ring-black/5' : 'text-text-muted hover:text-text-primary'" class="px-3.5 py-1.5 rounded-lg text-xs transition-all duration-150 cursor-pointer">SEO pro</button>
+                    <div class="bg-gray-100 p-1 rounded-xl inline-flex items-center gap-1 border border-gray-200 shadow-inner">
+                        <button type="button" @click="activeTab = 'basic'" :class="activeTab === 'basic' ? 'bg-white shadow-sm text-text-heading font-semibold ring-1 ring-black/5' : 'text-text-muted hover:text-text-primary'" class="px-3.5 py-1.5 rounded-lg text-xs transition-all duration-150 cursor-pointer">Basic</button>
+                        <button type="button" @click="activeTab = 'seo'" :class="activeTab === 'seo' ? 'bg-white shadow-sm text-text-heading font-semibold ring-1 ring-black/5' : 'text-text-muted hover:text-text-primary'" class="px-3.5 py-1.5 rounded-lg text-xs transition-all duration-150 cursor-pointer">Seo</button>
+                        <button type="button" @click="activeTab = 'seo_pro'" :class="activeTab === 'seo_pro' ? 'bg-white shadow-sm text-text-heading font-semibold ring-1 ring-black/5' : 'text-text-muted hover:text-text-primary'" class="px-3.5 py-1.5 rounded-lg text-xs transition-all duration-150 cursor-pointer">SEO pro</button>
                     </div>
                 @endif
             </div>

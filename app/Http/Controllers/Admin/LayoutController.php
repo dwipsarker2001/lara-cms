@@ -2,11 +2,9 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Blocks\BlockRegistry;
 use App\Http\Controllers\Controller;
+use App\Models\CollectionEntry;
 use App\Models\Layout;
-use App\Models\Page;
-use App\Support\Sections;
 use Illuminate\Http\Request;
 
 class LayoutController extends Controller
@@ -77,30 +75,13 @@ class LayoutController extends Controller
 
     public function editor(Layout $layout)
     {
-        $registry = app(BlockRegistry::class);
-
-        $blockList = collect($registry->pickerList())->map(function ($item) use ($registry) {
-            $block = $registry->get($item['name']);
-            $section = Sections::createDefaultSection($item['name']);
-            $html = '';
-            if ($block && $section) {
-                $html = $block->render(
-                    data: $section['data'],
-                    _key: '',
-                    preview: true,
-                );
-            }
-
-            return [...$item, 'previewHtml' => $html];
-        })->all();
-
         return view('admin.pages.editor', [
             'page' => $layout,
             'editorSaveRoute' => route('admin.layouts.update-sections', $layout),
             'editorBackRoute' => route('admin.layouts.index'),
-            'blockSchemas' => $registry->schemas(),
-            'blockList' => $blockList,
-            'pages' => Page::orderBy('position')->orderBy('title')->get(['id', 'slug', 'title'])->map(fn ($p) => [
+            'blockSchemas' => [],
+            'blockList' => [],
+            'pages' => CollectionEntry::whereNotNull('slug')->orderBy('position')->get(['id', 'slug', 'data'])->map(fn ($p) => [
                 'id' => $p->id,
                 'title' => $p->title,
                 'route' => $p->slug === 'home' ? '/' : '/'.$p->slug,

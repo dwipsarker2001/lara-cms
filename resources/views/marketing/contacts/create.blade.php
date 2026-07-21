@@ -25,7 +25,7 @@
         </div>
     @endif
 
-    <form method="POST" action="{{ route('app.contact.store') }}">
+    <form method="POST" action="{{ route('app.contact.store') }}" onsubmit="return handleCreateContactSubmit(event)">
         @csrf
         <input name="groupId" value="{{ $groupId }}" hidden>
         <div class="row m-0" style="padding-top:20px;">

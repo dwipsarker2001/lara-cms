@@ -90,7 +90,13 @@
                         {{-- Hover → checkbox cell --}}
                         <td class="px-6 py-3 contact-check-cell" data-id="{{ $value->id }}">
                             <div class="relative w-6 h-6 flex items-center justify-center mx-auto">
-                                <i class="contact-icon hgi hgi-stroke hgi-call-02 text-[#1f8084] text-lg transition-all"></i>
+                                @if($value->exist == 0)
+                                    <div class="contact-icon w-6 h-6 bg-red-100 rounded-full flex items-center justify-center">
+                                        <span class="text-xs font-black text-red-500">!</span>
+                                    </div>
+                                @else
+                                    <i class="contact-icon hgi hgi-stroke hgi-call-02 text-[#1f8084] text-lg transition-all"></i>
+                                @endif
                                 <input type="checkbox"
                                     class="contact-checkbox hidden absolute inset-0 w-4 h-4 m-auto accent-teal-600 cursor-pointer rounded"
                                     value="{{ $value->id }}">
@@ -104,9 +110,7 @@
                                 </span>
                                 <span class="text-[12px] text-slate-500 font-medium block">{{ $value->email }}</span>
                                 @if($value->exist == 0)
-                                    <span class="text-[12px] text-slate-500 font-medium block">
-                                        <i class="hgi hgi-stroke hgi-alert-circle text-xs"></i> Not Working
-                                    </span>
+                                    <span class="text-[11px] text-red-500 font-medium">Not Working</span>
                                 @endif
                             </div>
                         </td>
@@ -525,7 +529,7 @@
                 <h2 class="text-xl font-black text-slate-900 mb-1">Add New Contact</h2>
                 <p class="text-sm text-slate-500 leading-relaxed px-4">Fill in the details to add a subscriber to this group.</p>
             </div>
-            <form method="POST" action="{{ route('app.contact.store') }}" class="px-6 pb-8 mb-0">
+            <form method="POST" action="{{ route('app.contact.store') }}" class="px-6 pb-8 mb-0" onsubmit="return handleCreateContactSubmit(event)">
                 @csrf
                 <input name="groupId" value="{{ $groupId }}" hidden>
                 <div class="space-y-4">

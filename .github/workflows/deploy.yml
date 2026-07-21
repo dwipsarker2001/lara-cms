@@ -1,0 +1,78 @@
+name: Deploy to VPS
+
+# Triggers deployment whenever code is pushed to the 'deploy' branch
+on:
+  push:
+    branches: [deploy]
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    name: Build and Deploy
+    steps:
+      # Step 1: Checkout the latest code from the repository
+      - uses: actions/checkout@v4
+
+      # Step 2: Setup Node.js for building frontend assets
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      # Step 3: Install Node dependencies (no scripts to avoid build cycles)
+      - name: Install Node dependencies
+        run: npm ci --ignore-scripts
+
+      # Step 4: Build frontend (Vite compiles CSS/JS into public/build/)
+      - name: Build frontend
+        run: npm run build
+
+      # Step 5: Sync all project files to the VPS via rsync
+      # Excludes: .env (env-specific), .git (repo), node_modules/vendor (installed on VPS), storage (persistent data)
+      - name: Deploy code to VPS via rsync
+        uses: burnett01/rsync-deployments@7.0.1
+        with:
+          switches: -avz --delete --exclude='.env' --exclude='.git' --exclude='node_modules' --exclude='vendor' --exclude='storage'
+          path: .
+          remote_path: ${{ secrets.DEPLOY_PATH }}
+          remote_host: ${{ secrets.SSH_HOST }}
+          remote_port: ${{ secrets.SSH_PORT || '22' }}
+          remote_user: ${{ secrets.SSH_USERNAME }}
+          remote_key: ${{ secrets.SSH_PRIVATE_KEY }}
+
+      # Step 6: Run post-deployment commands directly on the VPS
+      - name: Post-deploy commands
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USERNAME }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          port: ${{ secrets.SSH_PORT || '22' }}
+          script: |
+            # Use Plesk PHP 8.5 (SSH non-interactive shell uses system PHP 8.3 otherwise)
+            export PATH="/opt/plesk/php/8.5/bin:$PATH"
+
+            cd ${{ secrets.DEPLOY_PATH }}
+
+            php artisan down --retry=60
+
+            [ ! -f .env ] && cp .env.example .env
+
+            mkdir -p storage/framework/views storage/framework/cache storage/framework/testing storage/logs
+
+            composer install --no-dev --no-interaction --prefer-dist --optimize-autoloader
+
+            php artisan migrate --force
+            php artisan storage:link --force
+
+            if ! grep -q "^APP_KEY=base64:" .env; then
+                php artisan key:generate --force
+            fi
+
+            php artisan optimize
+
+            chmod -R 775 storage bootstrap/cache public/build
+            chmod +x artisan
+
+            php artisan up

@@ -14,7 +14,8 @@ class PreviewController extends Controller
     public function render(Request $request)
     {
         $request->validate([
-            'sections' => 'present|array',
+            'sections' => 'required|array',
+            'post_id' => 'sometimes|integer',
         ]);
 
         $page = null;

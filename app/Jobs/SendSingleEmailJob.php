@@ -136,11 +136,11 @@ class SendSingleEmailJob implements ShouldQueue
 
         $ch = curl_init();
         curl_setopt_array($ch, [
-            CURLOPT_URL => env('SENDGRID_APIENDPOINT'),
+            CURLOPT_URL => env('SENDGRID_APIENDPOINT') ?: 'https://api.sendgrid.com/v3/mail/send',
             CURLOPT_POST => true,
             CURLOPT_POSTFIELDS => json_encode($data),
             CURLOPT_HTTPHEADER => [
-                'Authorization: Bearer '.env('SENDGRID_APIKEY'),
+                'Authorization: Bearer '.\App\Models\Setting::getSendGridApiKey(),
                 'Content-Type: application/json',
             ],
             CURLOPT_RETURNTRANSFER => true,
@@ -148,12 +148,19 @@ class SendSingleEmailJob implements ShouldQueue
         ]);
 
         $response = curl_exec($ch);
+        $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
 
         if ($response === false) {
             Log::error('SendGrid cURL Error', ['error' => curl_error($ch)]);
+        } elseif ($httpCode !== 202) {
+            Log::error('SendGrid API Failed Response', [
+                'status' => $httpCode,
+                'response' => $response,
+                'from_email' => $from_email,
+                'to_email' => $to_email,
+            ]);
         }
 
-        $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
         curl_close($ch);
 
         return $httpCode;

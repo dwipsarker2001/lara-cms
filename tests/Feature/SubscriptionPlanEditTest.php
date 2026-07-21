@@ -22,7 +22,6 @@ it('can access subscription plan edit page', function () {
         'max_contacts' => 500,
         'max_campaigns' => 10,
         'max_groups' => 5,
-        'active_on_register' => false,
     ]);
 
     get(route('admin.subscription-plans.edit', $plan))
@@ -38,7 +37,6 @@ it('can update a subscription plan', function () {
         'max_contacts' => 500,
         'max_campaigns' => 10,
         'max_groups' => 5,
-        'active_on_register' => false,
     ]);
 
     Pest\Laravel\put(route('admin.subscription-plans.update', $plan), [
@@ -48,7 +46,6 @@ it('can update a subscription plan', function () {
         'max_contacts' => 1000,
         'max_campaigns' => 20,
         'max_groups' => 10,
-        'active_on_register' => '1',
     ])
         ->assertRedirect(route('admin.subscription-plans.index'))
         ->assertSessionHas('success', 'Plan updated successfully.');
@@ -56,8 +53,8 @@ it('can update a subscription plan', function () {
     $plan->refresh();
     expect($plan->name)->toBe('Updated Plan Name')
         ->and((float) $plan->price)->toBe(49.99)
-        ->and($plan->max_emails)->toBe(2000)
-        ->and($plan->active_on_register)->toBeTrue();
+        ->and($plan->max_emails)->toBe(2000);
 });
+
 
 

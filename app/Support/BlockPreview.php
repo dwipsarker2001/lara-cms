@@ -13,9 +13,12 @@ class BlockPreview
         $html = '';
 
         foreach ($resolved as $i => $section) {
-            $block = $registry->get($section['name'] ?? '');
+            if (($section['enabled'] ?? true) === false) {
+                continue;
+            }
 
-            if (($section['enabled'] ?? true) === false || ! $block) {
+            $block = $registry->get($section['name'] ?? '');
+            if (! $block) {
                 continue;
             }
 
@@ -25,6 +28,10 @@ class BlockPreview
                 preview: true,
                 page: $page,
             );
+
+            if ($inner === '') {
+                continue;
+            }
 
             $html .= '<div data-section-index="'.$i.'" class="p-0.5">'.$inner.'</div>';
         }

@@ -4,174 +4,62 @@ namespace App\Http\Controllers\Admin;
 
 use App\Blocks\BlockRegistry;
 use App\Http\Controllers\Controller;
-use App\Models\Layout;
 use App\Models\Page;
 use App\Support\Sections;
 use Illuminate\Http\Request;
 
+use App\Models\Collection;
+use App\Models\CollectionEntry;
+
 class PageController extends Controller
 {
+    protected function getPagesCollection(): Collection
+    {
+        return Collection::firstOrCreate(
+            ['slug' => 'pages'],
+            [
+                'name' => 'Pages',
+                'icon' => 'fa-solid fa-file-lines',
+                'show_in_menu' => true,
+                'enable_seo' => true,
+                'description' => 'System Pages',
+            ]
+        );
+    }
+
     public function index()
     {
-        $pages = Page::orderBy('position')->orderBy('title')->get();
+        $collection = $this->getPagesCollection();
 
-        return view('admin.pages.index', ['pages' => $pages]);
+        return redirect()->route('admin.collections.entries.index', $collection);
     }
 
     public function create()
     {
-        return view('admin.pages.create');
+        $collection = $this->getPagesCollection();
+
+        return redirect()->route('admin.collections.entries.create', $collection);
     }
 
-    public function store(Request $request)
+    public function edit(mixed $id)
     {
-        $data = $request->validate([
-            'title' => 'required|string|max:255',
-            'slug' => 'required|string|max:255|unique:pages,slug',
-            'layout_id' => 'nullable|exists:layouts,id,collection,page',
-            'published' => 'boolean',
-            'meta' => 'nullable|array',
-        ]);
-
-        $data['published'] = $request->boolean('published', true);
-        $data['meta'] = array_merge($request->meta ?? [], [
-            'metaTitleSource' => 'From Field',
-            'metaDescriptionSource' => 'Inherit',
-            'canonicalUrlSource' => 'Inherit',
-            'schemaSource' => 'Inherit',
-            'maxSnippetSource' => 'Inherit',
-            'maxVideoPreviewSource' => 'Inherit',
-            'socialImageSource' => 'Inherit',
-            'xHandleSource' => 'Inherit',
-            'xCardTitleSource' => 'Inherit',
-            'xCardDescriptionSource' => 'Inherit',
-        ]);
-        if ($request->layout_id) {
-            $layout = Layout::findOrFail($request->layout_id);
-            $data['sections'] = [...($layout->sections ?? []), ...Sections::injectGlobals()];
-        } else {
-            $data['sections'] = Sections::injectGlobals();
-        }
-        $data['position'] = Page::max('position') + 1;
-
-        unset($data['layout_id']);
-
-        Page::create($data);
-
-        return redirect()->route('admin.pages.index')->with('success', 'Page created.');
-    }
-
-    public function edit(Page $page)
-    {
-        return view('admin.pages.edit', ['page' => $page]);
-    }
-
-    public function update(Request $request, Page $page)
-    {
-        $data = $request->validate([
-            'title' => 'required|string|max:255',
-            'slug' => 'required|string|max:255|unique:pages,slug,'.$page->id,
-            'published' => 'boolean',
-        ]);
-
-        $data['published'] = $request->boolean('published', true);
-
-        $page->update($data);
-
-        return redirect()->route('admin.pages.index')->with('success', 'Page updated.');
-    }
-
-    public function destroy(Page $page)
-    {
-        if ($page->slug === 'home') {
-            return back()->with('error', 'Cannot delete the home page.');
+        $collection = $this->getPagesCollection();
+        $entry = CollectionEntry::find($id);
+        if (! $entry) {
+            return redirect()->route('admin.collections.entries.index', $collection);
         }
 
-        $page->delete();
-
-        return redirect()->route('admin.pages.index')->with('success', 'Page deleted.');
+        return redirect()->route('admin.collections.entries.edit', [$collection, $entry]);
     }
 
-    public function reorder(Request $request)
+    public function editor(mixed $id)
     {
-        $request->validate([
-            'page_ids' => 'required|array',
-            'page_ids.*' => 'exists:pages,id',
-        ]);
-
-        foreach ($request->page_ids as $index => $id) {
-            Page::where('id', $id)->update(['position' => $index]);
+        $collection = $this->getPagesCollection();
+        $entry = CollectionEntry::find($id);
+        if (! $entry) {
+            return redirect()->route('admin.collections.entries.index', $collection);
         }
 
-        return response()->json(['message' => 'Reordered.']);
-    }
-
-    public function editor(Page $page)
-    {
-        $registry = app(BlockRegistry::class);
-
-        $blockList = collect($registry->pickerList())->map(function ($item) use ($registry) {
-            $block = $registry->get($item['name']);
-            $section = Sections::createDefaultSection($item['name']);
-            $html = '';
-            if ($block && $section) {
-                $html = $block->render(
-                    data: $section['data'],
-                    _key: '',
-                    preview: true,
-                );
-            }
-
-            return [...$item, 'previewHtml' => $html];
-        })->all();
-
-        $homeGlobals = Sections::injectGlobals();
-
-        return view('admin.pages.editor', [
-            'page' => $page,
-            'blockSchemas' => $registry->schemas(),
-            'homeGlobals' => $homeGlobals,
-            'blockList' => $blockList,
-            'pages' => Page::orderBy('position')->orderBy('title')->get(['id', 'slug', 'title'])->map(fn ($p) => [
-                'id' => $p->id,
-                'title' => $p->title,
-                'route' => $p->slug === 'home' ? '/' : '/'.$p->slug,
-            ]),
-        ]);
-    }
-
-    public function updateSections(Request $request, Page $page)
-    {
-        $request->validate([
-            'sections' => 'present|array',
-            'sections.*._key' => 'required|string',
-            'sections.*.name' => 'required|string',
-            'sections.*.data' => 'required',
-        ]);
-
-        $page->update(['sections' => $request->sections]);
-
-        $registry = app(BlockRegistry::class);
-        $globalNames = $registry->globals()->pluck('name')->toArray();
-
-        if ($page->slug !== 'home') {
-            $propagated = Sections::sectionsToPropagate($request->sections, $globalNames);
-
-            if (! empty($propagated)) {
-                $home = Page::where('slug', 'home')->first();
-
-                if ($home) {
-                    $homeSections = collect($home->sections)->map(function ($s) use ($propagated) {
-                        $match = collect($propagated)->firstWhere('name', $s['name']);
-
-                        return $match ? [...$s, 'data' => $match['data']] : $s;
-                    })->all();
-
-                    $home->update(['sections' => $homeSections]);
-                }
-            }
-        }
-
-        return response()->json(['message' => 'Sections saved.']);
+        return redirect()->route('admin.collections.entries.editor', [$collection, $entry]);
     }
 }

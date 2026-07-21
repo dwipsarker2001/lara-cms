@@ -13,6 +13,19 @@ class ContactController extends Controller
 {
     // ======== Group Controller ========== //
 
+    private function remGroups(): int
+    {
+        $max = auth()->user()->max_groups;
+
+        if ($max === null) {
+            return PHP_INT_MAX;
+        }
+
+        $count = Group::where('user_id', auth()->id())->count();
+
+        return max($max - $count, 0);
+    }
+
     public function groupindex()
     {
 
@@ -40,7 +53,7 @@ class ContactController extends Controller
                 : 0;
         }
 
-        $rem_groups = 0;
+        $rem_groups = $this->remGroups();
 
         return view('marketing.groups.index', compact('data', 'rem_groups', 'totalContacts', 'totalUnsubscribe'));
     }
@@ -51,7 +64,7 @@ class ContactController extends Controller
             return redirect()->to(route('login'));
         }
 
-        $rem_groups = 0;
+        $rem_groups = $this->remGroups();
 
         return view('marketing.groups.create', compact('rem_groups'));
     }
@@ -62,7 +75,10 @@ class ContactController extends Controller
             return redirect()->to(route('login'));
         }
 
-        $groupCnt = Group::get()->count();
+        if ($this->remGroups() <= 0) {
+            return redirect()->route('app.group.index')
+                ->with('error', 'Group limit reached. Upgrade your plan to create more groups.');
+        }
 
         $new_group = [
             'name' => $request->name,
@@ -136,10 +152,27 @@ class ContactController extends Controller
         return view('marketing.contacts.create', compact('groupId'));
     }
 
+    private function remContacts(): int
+    {
+        $max = auth()->user()->max_contacts;
+
+        if ($max === null) {
+            return PHP_INT_MAX;
+        }
+
+        $count = Contact::where('user_id', auth()->id())->count();
+
+        return max($max - $count, 0);
+    }
+
     public function store(Request $request)
     {
         if (! auth()->id()) {
             return redirect()->to(route('login'));
+        }
+
+        if ($this->remContacts() <= 0) {
+            return redirect()->back()->with('error', 'Contact limit reached. Upgrade your plan to add more contacts.');
         }
 
         // Check for duplicate email across all groups for the same user
@@ -165,8 +198,7 @@ class ContactController extends Controller
         $groups = Contact::where('group_id', $request->groupId)->get();
         $data = Campaign::where('user_id', auth()->id())->get();
         foreach ($data as $row) {
-            // Decode the receiver_emails field
-            $temp = json_decode($row->receiver_emails, true);
+            $temp = json_decode($row->receiver_emails, true) ?? [];
 
             foreach ($temp as $key => $item) {
                 if ($item['id'] == $request->groupId) {
@@ -208,7 +240,8 @@ class ContactController extends Controller
 
         // Check for duplicate email across all groups for the same user (excluding current contact)
         $existingContact = Contact::where('email', $request->email)
-            ->where('id', auth()->id())
+            ->where('user_id', auth()->id())
+            ->where('id', '!=', $request->id)
             ->first();
         if ($existingContact) {
             return redirect()->back()->with('error', 'Email is already taken in another group');
@@ -220,8 +253,8 @@ class ContactController extends Controller
             'firstname' => $request->firstname,
             'sms' => $request->sms,
             'whatsapp' => $request->whatsapp,
-            'double_opt_in' => $request->double_opt_in,
-            'opt_in' => $request->opt_in,
+            'double_opt_in' => $request->boolean('double_opt_in') || in_array(strtolower((string) $request->double_opt_in), ['1', 'true', 'yes', 'on']),
+            'opt_in' => $request->boolean('opt_in') || in_array(strtolower((string) $request->opt_in), ['1', 'true', 'yes', 'on']),
         ];
         Contact::where('id', $request->id)->update($edit_contact);
 
@@ -337,6 +370,10 @@ class ContactController extends Controller
 
     public function upload(Request $request, $groupId)
     {
+        if ($this->remContacts() <= 0) {
+            return redirect()->route('app.contact.index', $groupId)->with('error', 'Contact limit reached. Upgrade your plan to import more contacts.');
+        }
+
         $filename = $request->filename;
         $type = $request->type;
 
@@ -387,7 +424,10 @@ class ContactController extends Controller
                     ->first();
 
                 if (! $existingContact) {
-                    // Add user_id to the contact data
+                    if ($this->remContacts() <= 0) {
+                        fclose($file);
+                        return redirect()->route('app.contact.index', $groupId)->with('error', 'Contact limit reached during import. Only some contacts were imported.');
+                    }
                     $new_contact['user_id'] = auth()->id();
                     Contact::create($new_contact);
                 }

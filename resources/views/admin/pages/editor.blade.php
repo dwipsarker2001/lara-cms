@@ -820,7 +820,12 @@
             },
 
             getField(name) {
-                return this.currentData()[name] ?? '';
+                const data = this.currentData();
+                if (data && (name in data) && data[name] !== null && data[name] !== undefined) {
+                    return data[name];
+                }
+                const field = (this.currentFields() || []).find(f => f.name === name);
+                return field?.defaultValue ?? '';
             },
 
             getLinkMode(name) {

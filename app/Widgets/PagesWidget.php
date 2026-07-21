@@ -2,7 +2,7 @@
 
 namespace App\Widgets;
 
-use App\Models\Page;
+use App\Models\CollectionEntry;
 
 class PagesWidget extends Widget
 {
@@ -25,8 +25,8 @@ class PagesWidget extends Widget
 
     public function render()
     {
-        $count = Page::count();
-        $published = Page::where('published', true)->count();
+        $count = CollectionEntry::whereNotNull('slug')->count();
+        $published = CollectionEntry::whereNotNull('slug')->where('published', true)->count();
 
         return view('admin.widgets.pages', [
             'widget' => (object) [

@@ -10,18 +10,7 @@
             title: '{{ old('title', $taxonomy->title) }}',
             slug: '{{ old('slug', $taxonomy->slug) }}',
             description: '{{ old('description', $taxonomy->description) }}',
-            terms: @js($taxonomy->terms->map(fn ($t) => ['id' => $t->id, 'title' => $t->title])->values()->toArray()),
-            termInput: '',
-            addTerm() {
-                const t = this.termInput.trim();
-                if (t && !this.terms.some(term => term.title === t)) {
-                    this.terms.push({ id: null, title: t });
-                }
-                this.termInput = '';
-            },
-            removeTerm(index) {
-                this.terms.splice(index, 1);
-            },
+
         }"
     >
         <form method="POST" action="{{ route('admin.taxonomies.update', $taxonomy) }}">
@@ -56,7 +45,7 @@
 
             <div class="bg-panel-bg rounded-2xl mb-8 p-[7px]">
                 <div class="px-[18px] pt-3 pb-1 text-sm font-medium text-text-heading">Taxonomy Details</div>
-                <p class="px-[18px] pb-3 text-sm text-text-muted">Update this taxonomy group and manage its terms.</p>
+                <p class="px-[18px] pb-3 text-sm text-text-muted">Update this taxonomy group.</p>
                 <div class="px-1.5 pb-2">
                     <div class="bg-content-bg rounded-xl ring-1 ring-content-border shadow-sm px-3 py-3">
                         <div class="divide-y divide-content-border">
@@ -108,45 +97,7 @@
                 </div>
             </div>
 
-            <div class="bg-panel-bg rounded-2xl mb-8 p-[7px]">
-                <div class="px-[18px] pt-3 pb-1 text-sm font-medium text-text-heading">Terms</div>
-                <p class="px-[18px] pb-3 text-sm text-text-muted">Add, edit, or remove the terms within this taxonomy. These become selectable tags on posts.</p>
-                <div class="px-1.5 pb-2">
-                    <div class="bg-content-bg rounded-xl ring-1 ring-content-border shadow-sm px-3 py-3">
-                        <div class="px-[18px] py-3">
-                            <div class="w-full rounded-lg border border-content-border bg-content-bg px-3 py-1.5 text-sm text-text-primary transition-all duration-150 focus-within:ring-2 focus-within:ring-primary/20 focus-within:border-primary focus:outline-none">
-                                <div class="flex flex-wrap gap-1 mb-1">
-                                    <template x-for="(term, ti) in terms" :key="ti">
-                                        <span class="inline-flex items-center gap-1 px-2 py-0.5 bg-panel-bg rounded text-xs font-medium text-text-primary">
-                                            <span x-text="term.title"></span>
-                                            <button @click.prevent="removeTerm(ti)" type="button" class="text-danger hover:text-danger/70 leading-none">&times;</button>
-                                        </span>
-                                    </template>
-                                </div>
-                                <input
-                                    id="field-term"
-                                    type="text"
-                                    x-model="termInput"
-                                    @keydown.enter.prevent="addTerm"
-                                    placeholder="Type a term and press Enter..."
-                                    class="w-full border-0 p-0 bg-transparent text-sm text-text-primary placeholder:text-text-muted outline-none ring-0 focus:outline-none focus:ring-0"
-                                >
-                            </div>
 
-                            <template x-for="(term, ti) in terms" :key="ti">
-                                <div>
-                                    <input type="hidden" :name="`terms[${ti}][id]`" :value="term.id">
-                                    <input type="hidden" :name="`terms[${ti}][title]`" :value="term.title">
-                                </div>
-                            </template>
-
-                            @if ($taxonomy->terms->isEmpty())
-                                <p class="text-sm text-text-muted mt-3">No terms yet. Add your first term above.</p>
-                            @endif
-                        </div>
-                    </div>
-                </div>
-            </div>
         </form>
     </div>
 @endsection

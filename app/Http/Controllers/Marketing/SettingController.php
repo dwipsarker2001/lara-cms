@@ -110,7 +110,7 @@ class SettingController extends Controller
             return redirect()->to(route('login'));
         }
 
-        $apiKey = getenv('SENDGRID_APIKEY');
+        $apiKey = \App\Models\Setting::getSendGridApiKey();
         $sg = new \SendGrid($apiKey);
 
         $senders = Sender::where('user_id', auth()->id())->orderBy('created_at', 'desc')->get();
@@ -153,7 +153,7 @@ class SettingController extends Controller
         }
 
         $domain_name = $request->domain;
-        $apiKey = getenv('SENDGRID_APIKEY');
+        $apiKey = \App\Models\Setting::getSendGridApiKey();
         $sg = new \SendGrid($apiKey);
 
         $request_body = (object) [
@@ -209,7 +209,7 @@ class SettingController extends Controller
                 ->with('error', 'Domain not found or access denied.');
         }
 
-        $apiKey = getenv('SENDGRID_APIKEY');
+        $apiKey = \App\Models\Setting::getSendGridApiKey();
         $sg = new \SendGrid($apiKey);
 
         $request_body = (object) [
@@ -267,7 +267,7 @@ class SettingController extends Controller
         Log::info('Sender', [
             'sender' => $sender,
         ]);
-        $apiKey = getenv('SENDGRID_APIKEY');
+        $apiKey = \App\Models\Setting::getSendGridApiKey();
         $sg = new \SendGrid($apiKey);
 
         try {

@@ -47,7 +47,7 @@ class Sections
 
     public static function withGlobals(?array $sections): array
     {
-        $home = Page::where('slug', 'home')->first();
+        $home = \App\Models\CollectionEntry::where('slug', 'home')->first();
 
         if (! $home || ! $home->sections) {
             return $sections ?? [];
@@ -68,7 +68,7 @@ class Sections
 
     public static function injectGlobals(): array
     {
-        $home = Page::where('slug', 'home')->first();
+        $home = \App\Models\CollectionEntry::where('slug', 'home')->first();
         if (! $home || ! $home->sections) {
             return [];
         }

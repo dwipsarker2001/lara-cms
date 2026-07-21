@@ -20,7 +20,7 @@
         <div class="max-w-6xl mx-auto px-6">
             <div class="relative">
                 @if($d['headline'] ?? false)
-                    <h2 data-edit="headline" class="text-center text-2xl md:text-3xl font-bold text-gray-900">{{ $d['headline'] }}</h2>
+                    <h2 data-edit="headline" class="text-center text-2xl md:text-3xl font-semibold text-gray-900">{{ $d['headline'] }}</h2>
                 @endif
                 @if($d['description'] ?? false)
                     <p data-edit="description" class="mx-auto mt-3 max-w-xl text-center text-gray-500">{{ $d['description'] }}</p>
@@ -39,7 +39,7 @@
                                 </div>
                                 <div class="flex flex-1 flex-col px-2 pt-4 pb-2">
                                     @if($card['title'] ?? false)
-                                        <h3 data-edit="title" class="text-lg font-bold text-gray-900 transition-colors group-hover:text-primary">{{ $card['title'] }}</h3>
+                                        <h3 data-edit="title" class="text-lg font-semibold text-gray-900 transition-colors group-hover:text-primary">{{ $card['title'] }}</h3>
                                     @endif
                                     @if($card['description'] ?? false)
                                         <p data-edit="description" class="mt-1.5 text-sm text-gray-500">{{ $card['description'] }}</p>
@@ -60,7 +60,7 @@
                                                     <span data-edit="originalPrice" class="text-sm text-gray-400 line-through">${{ number_format($card['originalPrice']) }}</span>
                                                 @endif
                                                 @if($card['price'] ?? false)
-                                                    <span data-edit="price" class="text-2xl font-bold text-gray-900">${{ number_format($card['price']) }}</span>
+                                                    <span data-edit="price" class="text-2xl font-semibold text-gray-900">${{ number_format($card['price']) }}</span>
                                                 @endif
                                             </div>
                                         </div>

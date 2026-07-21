@@ -96,7 +96,7 @@
                                             <form method="POST" action="{{ route('admin.taxonomies.destroy', $taxonomy) }}" class="w-full">
                                                 @csrf @method('DELETE')
                                                 <button type="submit" role="menuitem"
-                                                    onclick="return confirm('Delete this taxonomy and all its terms?')"
+                                                    onclick="return confirm('Delete this taxonomy?')"
                                                     class="flex w-full items-center justify-start gap-2.5 px-3 py-2 rounded-lg text-sm transition-colors text-red-600 hover:bg-red-50 cursor-pointer"
                                                 >
                                                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" class="size-4 shrink-0 text-red-500">

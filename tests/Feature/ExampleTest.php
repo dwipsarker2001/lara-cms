@@ -1,11 +1,11 @@
-<?php
-
-use App\Models\Page;
+use App\Models\Collection;
+use App\Models\CollectionEntry;
 
 it('returns a successful response', function () {
-    Page::create([
-        'title' => 'Home',
+    $collection = Collection::create(['name' => 'Pages', 'slug' => 'pages']);
+    $collection->entries()->create([
         'slug' => 'home',
+        'data' => ['title' => 'Home'],
         'published' => true,
         'sections' => [],
     ]);

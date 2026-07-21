@@ -16,7 +16,7 @@ class CollectionEntryController extends Controller
 {
     public function index(Collection $collection)
     {
-        $entries = $collection->entries()->with('page')->orderBy('position')->get();
+        $entries = $collection->entries()->orderBy('position')->get();
 
         return view('admin.collections.entries.index', compact('collection', 'entries'));
     }
@@ -34,29 +34,24 @@ class CollectionEntryController extends Controller
         $data = $request->validate([
             'data' => 'required|array',
             'data.title' => 'required|string|max:255',
-            'slug' => 'required|string|max:255|unique:pages,slug',
+            'slug' => 'required|string|max:255|unique:collection_entries,slug',
             'meta' => 'nullable|array',
-            'layout_id' => 'nullable|exists:layouts,id,collection,page',
+            'layout_id' => 'nullable|exists:layouts,id',
             'published' => 'boolean',
         ]);
 
-        $pageData = [
-            'title' => $data['data']['title'],
-            'slug' => $data['slug'],
-            'published' => $request->boolean('published', true),
-            'meta' => array_merge($request->meta ?? [], [
-                'metaTitleSource' => 'From Field',
-                'metaDescriptionSource' => 'Inherit',
-                'canonicalUrlSource' => 'Inherit',
-                'schemaSource' => 'Inherit',
-                'maxSnippetSource' => 'Inherit',
-                'maxVideoPreviewSource' => 'Inherit',
-                'socialImageSource' => 'Inherit',
-                'xHandleSource' => 'Inherit',
-                'xCardTitleSource' => 'Inherit',
-                'xCardDescriptionSource' => 'Inherit',
-            ]),
-        ];
+        $entryMeta = array_merge($request->meta ?? [], [
+            'metaTitleSource' => 'From Field',
+            'metaDescriptionSource' => 'Inherit',
+            'canonicalUrlSource' => 'Inherit',
+            'schemaSource' => 'Inherit',
+            'maxSnippetSource' => 'Inherit',
+            'maxVideoPreviewSource' => 'Inherit',
+            'socialImageSource' => 'Inherit',
+            'xHandleSource' => 'Inherit',
+            'xCardTitleSource' => 'Inherit',
+            'xCardDescriptionSource' => 'Inherit',
+        ]);
 
         // Copy sections from selected collection reference if exists
         $copiedSections = null;
@@ -66,8 +61,8 @@ class CollectionEntryController extends Controller
                 $val = $request->input("data.{$key}");
                 if ($key && ! empty($val)) {
                     $selectedEntry = CollectionEntry::find($val);
-                    if ($selectedEntry && $selectedEntry->page) {
-                        $copiedSections = $selectedEntry->page->sections ?? [];
+                    if ($selectedEntry) {
+                        $copiedSections = $selectedEntry->sections ?? [];
                         break;
                     }
                 }
@@ -75,22 +70,20 @@ class CollectionEntryController extends Controller
         }
 
         if ($copiedSections !== null) {
-            $pageData['sections'] = $copiedSections;
+            $sections = $copiedSections;
         } elseif ($request->layout_id) {
-            $layout = Layout::findOrFail($request->layout_id);
-            $pageData['sections'] = [...($layout->sections ?? []), ...Sections::injectGlobals()];
+            $layout = Layout::find($request->layout_id);
+            $sections = [...($layout->sections ?? []), ...Sections::injectGlobals()];
         } else {
-            $pageData['sections'] = Sections::injectGlobals();
+            $sections = Sections::injectGlobals();
         }
-
-        $pageData['position'] = Page::max('position') + 1;
-
-        $page = Page::create($pageData);
 
         $entry = $collection->entries()->create([
             'data' => $data['data'] ?? [],
-            'page_id' => $page->id,
-            'sections' => $page->sections,
+            'slug' => $data['slug'],
+            'published' => $request->boolean('published', true),
+            'meta' => $entryMeta,
+            'sections' => $sections,
             'position' => $collection->entries()->max('position') + 1,
         ]);
 
@@ -111,26 +104,22 @@ class CollectionEntryController extends Controller
 
         $data = $request->validate([
             'data' => 'nullable|array',
+            'slug' => 'required|string|max:255|unique:collection_entries,slug,'.$entry->id,
             'meta' => 'nullable|array',
             'published' => 'boolean',
         ]);
 
-        $entry->update([
-            'data' => $data['data'] ?? [],
-        ]);
+        $entryData = [
+            'data' => $data['data'] ?? $entry->data,
+            'slug' => $data['slug'],
+            'published' => $request->boolean('published', true),
+        ];
 
-        if ($entry->page_id) {
-            $pageData = [
-                'published' => $request->boolean('published', $entry->page->published),
-            ];
-            if (isset($data['data']['title'])) {
-                $pageData['title'] = $data['data']['title'];
-            }
-            if ($request->has('meta')) {
-                $pageData['meta'] = $request->meta;
-            }
-            $entry->page->update($pageData);
+        if ($request->has('meta')) {
+            $entryData['meta'] = $request->meta;
         }
+
+        $entry->update($entryData);
 
         return redirect()->route('admin.collections.entries.index', $collection)
             ->with('success', 'Entry updated successfully.');
@@ -146,12 +135,12 @@ class CollectionEntryController extends Controller
             $block = $registry->get($item['name']);
             $section = Sections::createDefaultSection($item['name']);
             $html = '';
-            if ($block && $section) {
-                $html = $block->render(
-                    data: $section['data'],
-                    _key: '',
-                    preview: true,
-                );
+            if ($block && $section && view()->exists($block->view())) {
+                $html = view($block->view(), [
+                    'data' => $section['data'],
+                    '_key' => '',
+                    'preview' => true,
+                ])->render();
             }
 
             return [...$item, 'previewHtml' => $html];
@@ -165,7 +154,7 @@ class CollectionEntryController extends Controller
             'blockSchemas' => $registry->schemas(),
             'homeGlobals' => $homeGlobals,
             'blockList' => $blockList,
-            'pages' => Page::orderBy('position')->orderBy('title')->get(['id', 'slug', 'title'])->map(fn ($p) => [
+            'pages' => CollectionEntry::whereNotNull('slug')->orderBy('position')->get(['id', 'slug', 'data'])->map(fn ($p) => [
                 'id' => $p->id,
                 'title' => $p->title,
                 'route' => $p->slug === 'home' ? '/' : '/'.$p->slug,
@@ -186,17 +175,12 @@ class CollectionEntryController extends Controller
 
         $entry->update(['sections' => $request->sections]);
 
-        if ($entry->page_id) {
-            $entry->page->update(['sections' => $request->sections]);
-        }
-
-        $registry = app(BlockRegistry::class);
-        $globalNames = $registry->globals()->pluck('name')->toArray();
+        $globalNames = [];
 
         $propagated = Sections::sectionsToPropagate($request->sections, $globalNames);
 
         if (! empty($propagated)) {
-            $home = Page::where('slug', 'home')->first();
+            $home = CollectionEntry::where('slug', 'home')->first();
 
             if ($home) {
                 $homeSections = collect($home->sections)->map(function ($s) use ($propagated) {
@@ -216,11 +200,7 @@ class CollectionEntryController extends Controller
     {
         abort_if($entry->collection_id !== $collection->id, 404);
 
-        $page = $entry->page;
         $entry->delete();
-        if ($page) {
-            $page->delete();
-        }
 
         return redirect()->route('admin.collections.entries.index', $collection)
             ->with('success', 'Entry deleted successfully.');

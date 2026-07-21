@@ -18,7 +18,7 @@
             </a>
             <span id="template-name" class="text-sm font-semibold text-text-heading">{{ $template->name }}</span>
         </div>
-        <button id="btn-save-template"
+        <button type="button" id="btn-save-template"
             class="inline-flex items-center justify-center gap-2 whitespace-nowrap shrink-0 font-medium cursor-pointer no-underline rounded-lg transition-colors h-9 text-sm leading-tight px-4 bg-primary hover:opacity-90 text-white shadow-sm disabled:opacity-60 disabled:cursor-not-allowed"
         >Save Template</button>
     </div>
