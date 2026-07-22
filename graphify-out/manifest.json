@@ -45,8 +45,8 @@
     "semantic_hash": ""
   },
   "app/Http/Controllers/Admin/PreviewController.php": {
-    "mtime": 1784686395.15911,
-    "ast_hash": "b8b4486891f25afbf78324eca0f61679",
+    "mtime": 1784689339.4680707,
+    "ast_hash": "523dfe2772defdfb5df2752154e37cc1",
     "semantic_hash": ""
   },
   "app/Http/Controllers/Admin/ProfileController.php": {
@@ -415,8 +415,8 @@
     "semantic_hash": "80dbdeb5b229eb6d3fa430b80e75c869"
   },
   "resources/views/admin/pages/editor.blade.php": {
-    "mtime": 1784687285.6718078,
-    "ast_hash": "b7cae31c62e40633349fc019893b55aa",
+    "mtime": 1784689376.4776678,
+    "ast_hash": "8d2815adc0879677c7018606883b8678",
     "semantic_hash": ""
   },
   "resources/views/admin/pages/index.blade.php": {
@@ -995,8 +995,8 @@
     "semantic_hash": ""
   },
   "resources/views/admin/collections/entries/editor.blade.php": {
-    "mtime": 1784687242.7768242,
-    "ast_hash": "550dd2331f5b17c1068d7106456c65d0",
+    "mtime": 1784689353.5494394,
+    "ast_hash": "13cd905f7af96a1ea529c434ad3595c2",
     "semantic_hash": ""
   },
   "resources/views/admin/collections/entries/index.blade.php": {
@@ -1765,8 +1765,8 @@
     "semantic_hash": ""
   },
   ".github/workflows/deploy.yml": {
-    "mtime": 1784656083.3891468,
-    "ast_hash": "9d2297faa91517b977ea2a00c7af1379",
+    "mtime": 1784689581.8145819,
+    "ast_hash": "f6d1a718f89f0daa61979131d269670a",
     "semantic_hash": ""
   },
   "docs/BLOCK_CREATION_GUIDE.md": {
@@ -2137,6 +2137,11 @@
   "resources/views/blocks/why-choose-us.blade.php": {
     "mtime": 1784683878.69495,
     "ast_hash": "8c8ba5f4b1ad041d30da13a990c5fe79",
+    "semantic_hash": ""
+  },
+  "tests/Feature/PreviewControllerTest.php": {
+    "mtime": 1784689441.9318056,
+    "ast_hash": "bff621a8b8297617cf83f3dee64b7cdf",
     "semantic_hash": ""
   }
 }

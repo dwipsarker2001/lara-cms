@@ -54,7 +54,8 @@ jobs:
           username: ${{ secrets.FTP_USERNAME }}
           password: ${{ secrets.FTP_PASSWORD }}
           local-dir: ./
-          server-dir: /backend/
+          local-dir: ./
+          server-dir: /etravel.eapply.site/
           exclude: |
             *
 
@@ -64,7 +65,7 @@ jobs:
           FTP_USERNAME: ${{ secrets.FTP_USERNAME }}
           FTP_PASSWORD: ${{ secrets.FTP_PASSWORD }}
         run: |
-          curl -T deploy.zip "ftp://$FTP_SERVER/backend/" --user "$FTP_USERNAME:$FTP_PASSWORD" --ftp-create-dirs
+          curl -T deploy.zip "ftp://$FTP_SERVER/etravel.eapply.site/" --user "$FTP_USERNAME:$FTP_PASSWORD" --ftp-create-dirs
 
       - name: SSH extract and post-deploy
         uses: appleboy/ssh-action@v1.2.0
@@ -74,7 +75,7 @@ jobs:
           password: ${{ secrets.SSH_PASSWORD }}
           key: ${{ secrets.SSH_KEY }}
           script: |
-            cd /backend
+            cd etravel.eapply.site
             unzip -o deploy.zip
             rm deploy.zip
             php artisan migrate --force

@@ -129,8 +129,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "app_blocks_blockregistry",
-      "community": 13,
-      "community_name": "BlockRegistry",
+      "community": 221,
+      "community_name": "Sections",
       "norm_label": "blockregistry.php"
     },
     {
@@ -140,8 +140,8 @@
       "source_location": "L16",
       "_origin": "ast",
       "id": "app_blocks_blockregistry_blockregistry",
-      "community": 13,
-      "community_name": "BlockRegistry",
+      "community": 40,
+      "community_name": "2026_07_10_185347_create_posts_table.php",
       "norm_label": "blockregistry"
     },
     {
@@ -151,8 +151,8 @@
       "source_location": "L22",
       "_origin": "ast",
       "id": "app_blocks_blockregistry_blockregistry_all",
-      "community": 13,
-      "community_name": "BlockRegistry",
+      "community": 40,
+      "community_name": "2026_07_10_185347_create_posts_table.php",
       "norm_label": ".all()"
     },
     {
@@ -162,8 +162,8 @@
       "source_location": "L27",
       "_origin": "ast",
       "id": "app_blocks_blockregistry_blockregistry_get",
-      "community": 13,
-      "community_name": "BlockRegistry",
+      "community": 40,
+      "community_name": "2026_07_10_185347_create_posts_table.php",
       "norm_label": ".get()"
     },
     {
@@ -173,8 +173,8 @@
       "source_location": "L33",
       "_origin": "ast",
       "id": "app_blocks_blockregistry_blockregistry_pickable",
-      "community": 13,
-      "community_name": "BlockRegistry",
+      "community": 40,
+      "community_name": "2026_07_10_185347_create_posts_table.php",
       "norm_label": ".pickable()"
     },
     {
@@ -184,8 +184,8 @@
       "source_location": "L38",
       "_origin": "ast",
       "id": "app_blocks_blockregistry_blockregistry_globals",
-      "community": 13,
-      "community_name": "BlockRegistry",
+      "community": 40,
+      "community_name": "2026_07_10_185347_create_posts_table.php",
       "norm_label": ".globals()"
     },
     {
@@ -195,8 +195,8 @@
       "source_location": "L44",
       "_origin": "ast",
       "id": "app_blocks_blockregistry_blockregistry_pickerlist",
-      "community": 13,
-      "community_name": "BlockRegistry",
+      "community": 40,
+      "community_name": "2026_07_10_185347_create_posts_table.php",
       "norm_label": ".pickerlist()"
     },
     {
@@ -206,8 +206,8 @@
       "source_location": "L50",
       "_origin": "ast",
       "id": "app_blocks_blockregistry_blockregistry_schemas",
-      "community": 13,
-      "community_name": "BlockRegistry",
+      "community": 40,
+      "community_name": "2026_07_10_185347_create_posts_table.php",
       "norm_label": ".schemas()"
     },
     {
@@ -217,8 +217,8 @@
       "source_location": "L56",
       "_origin": "ast",
       "id": "app_blocks_blockregistry_blockregistry_discover",
-      "community": 13,
-      "community_name": "BlockRegistry",
+      "community": 40,
+      "community_name": "2026_07_10_185347_create_posts_table.php",
       "norm_label": ".discover()"
     },
     {
@@ -228,8 +228,8 @@
       "source_location": "L85",
       "_origin": "ast",
       "id": "app_blocks_blockregistry_blockregistry_classfrompath",
-      "community": 13,
-      "community_name": "BlockRegistry",
+      "community": 40,
+      "community_name": "2026_07_10_185347_create_posts_table.php",
       "norm_label": ".classfrompath()"
     },
     {
@@ -525,8 +525,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "app_blocks_common_bloglist",
-      "community": 113,
-      "community_name": "why-choose-us.blade.php",
+      "community": 107,
+      "community_name": "BlogList.php",
       "norm_label": "bloglist.php"
     },
     {
@@ -536,8 +536,8 @@
       "source_location": "L8",
       "_origin": "ast",
       "id": "app_blocks_common_bloglist_bloglist",
-      "community": 113,
-      "community_name": "why-choose-us.blade.php",
+      "community": 107,
+      "community_name": "BlogList.php",
       "norm_label": "bloglist"
     },
     {
@@ -547,8 +547,8 @@
       "source_location": "L16",
       "_origin": "ast",
       "id": "app_blocks_common_bloglist_bloglist_fields",
-      "community": 113,
-      "community_name": "why-choose-us.blade.php",
+      "community": 107,
+      "community_name": "BlogList.php",
       "norm_label": ".fields()"
     },
     {
@@ -789,8 +789,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "app_blocks_common_latestblog",
-      "community": 189,
-      "community_name": "HTTP Client Best Practices",
+      "community": 108,
+      "community_name": "site-footer.blade.php",
       "norm_label": "latestblog.php"
     },
     {
@@ -800,8 +800,8 @@
       "source_location": "L8",
       "_origin": "ast",
       "id": "app_blocks_common_latestblog_latestblog",
-      "community": 189,
-      "community_name": "HTTP Client Best Practices",
+      "community": 108,
+      "community_name": "site-footer.blade.php",
       "norm_label": "latestblog"
     },
     {
@@ -811,8 +811,8 @@
       "source_location": "L14",
       "_origin": "ast",
       "id": "app_blocks_common_latestblog_latestblog_fields",
-      "community": 189,
-      "community_name": "HTTP Client Best Practices",
+      "community": 108,
+      "community_name": "site-footer.blade.php",
       "norm_label": ".fields()"
     },
     {
@@ -987,8 +987,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "app_blocks_common_packagegalleryhero",
-      "community": 195,
-      "community_name": "Configuration Best Practices",
+      "community": 110,
+      "community_name": "PackageGalleryHero.php",
       "norm_label": "packagegalleryhero.php"
     },
     {
@@ -998,8 +998,8 @@
       "source_location": "L8",
       "_origin": "ast",
       "id": "app_blocks_common_packagegalleryhero_packagegalleryhero",
-      "community": 195,
-      "community_name": "Configuration Best Practices",
+      "community": 110,
+      "community_name": "PackageGalleryHero.php",
       "norm_label": "packagegalleryhero"
     },
     {
@@ -1009,8 +1009,8 @@
       "source_location": "L16",
       "_origin": "ast",
       "id": "app_blocks_common_packagegalleryhero_packagegalleryhero_fields",
-      "community": 195,
-      "community_name": "Configuration Best Practices",
+      "community": 110,
+      "community_name": "PackageGalleryHero.php",
       "norm_label": ".fields()"
     },
     {
@@ -1284,8 +1284,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "app_blocks_common_pagebanner",
-      "community": 208,
-      "community_name": "PackageInfo.php",
+      "community": 113,
+      "community_name": "PageBanner.php",
       "norm_label": "pagebanner.php"
     },
     {
@@ -1295,8 +1295,8 @@
       "source_location": "L8",
       "_origin": "ast",
       "id": "app_blocks_common_pagebanner_pagebanner",
-      "community": 208,
-      "community_name": "PackageInfo.php",
+      "community": 113,
+      "community_name": "PageBanner.php",
       "norm_label": "pagebanner"
     },
     {
@@ -1306,8 +1306,8 @@
       "source_location": "L16",
       "_origin": "ast",
       "id": "app_blocks_common_pagebanner_pagebanner_fields",
-      "community": 208,
-      "community_name": "PackageInfo.php",
+      "community": 113,
+      "community_name": "PageBanner.php",
       "norm_label": ".fields()"
     },
     {
@@ -1449,8 +1449,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "app_blocks_common_whychooseus",
-      "community": 212,
-      "community_name": "TravelDeals.php",
+      "community": 145,
+      "community_name": "WhyChooseUs.php",
       "norm_label": "whychooseus.php"
     },
     {
@@ -1460,8 +1460,8 @@
       "source_location": "L8",
       "_origin": "ast",
       "id": "app_blocks_common_whychooseus_whychooseus",
-      "community": 212,
-      "community_name": "TravelDeals.php",
+      "community": 145,
+      "community_name": "WhyChooseUs.php",
       "norm_label": "whychooseus"
     },
     {
@@ -1471,8 +1471,8 @@
       "source_location": "L14",
       "_origin": "ast",
       "id": "app_blocks_common_whychooseus_whychooseus_fields",
-      "community": 212,
-      "community_name": "TravelDeals.php",
+      "community": 145,
+      "community_name": "WhyChooseUs.php",
       "norm_label": ".fields()"
     },
     {
@@ -1581,8 +1581,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "app_console_commands_schedulecampaign",
-      "community": 24,
-      "community_name": "PackageList.php",
+      "community": 43,
+      "community_name": "2026_07_10_185348_create_destinations_table.php",
       "norm_label": "schedulecampaign.php"
     },
     {
@@ -1592,8 +1592,8 @@
       "source_location": "L14",
       "_origin": "ast",
       "id": "app_console_commands_schedulecampaign_schedulecampaign",
-      "community": 3,
-      "community_name": "Page",
+      "community": 43,
+      "community_name": "2026_07_10_185348_create_destinations_table.php",
       "norm_label": "schedulecampaign"
     },
     {
@@ -1603,8 +1603,8 @@
       "source_location": "",
       "_origin": "ast",
       "id": "command",
-      "community": 254,
-      "community_name": "@codemirror/lang-json",
+      "community": 43,
+      "community_name": "2026_07_10_185348_create_destinations_table.php",
       "norm_label": "command"
     },
     {
@@ -1614,8 +1614,8 @@
       "source_location": "L20",
       "_origin": "ast",
       "id": "app_console_commands_schedulecampaign_schedulecampaign_handle",
-      "community": 3,
-      "community_name": "Page",
+      "community": 43,
+      "community_name": "2026_07_10_185348_create_destinations_table.php",
       "norm_label": ".handle()"
     },
     {
@@ -1625,8 +1625,8 @@
       "source_location": "L41",
       "_origin": "ast",
       "id": "app_console_commands_schedulecampaign_schedulecampaign_sendcampaign",
-      "community": 3,
-      "community_name": "Page",
+      "community": 43,
+      "community_name": "2026_07_10_185348_create_destinations_table.php",
       "norm_label": ".sendcampaign()"
     },
     {
@@ -1636,8 +1636,8 @@
       "source_location": "L141",
       "_origin": "ast",
       "id": "app_console_commands_schedulecampaign_schedulecampaign_sendemail",
-      "community": 3,
-      "community_name": "Page",
+      "community": 43,
+      "community_name": "2026_07_10_185348_create_destinations_table.php",
       "norm_label": ".sendemail()"
     },
     {
@@ -1647,8 +1647,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "app_console_commands_sendreports",
-      "community": 254,
-      "community_name": "@codemirror/lang-json",
+      "community": 43,
+      "community_name": "2026_07_10_185348_create_destinations_table.php",
       "norm_label": "sendreports.php"
     },
     {
@@ -1713,8 +1713,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "app_http_controllers_admin_adminusercontroller",
-      "community": 145,
-      "community_name": ".view",
+      "community": 33,
+      "community_name": "SiteTopBar.php",
       "norm_label": "adminusercontroller.php"
     },
     {
@@ -1724,8 +1724,8 @@
       "source_location": "L11",
       "_origin": "ast",
       "id": "app_http_controllers_admin_adminusercontroller_adminusercontroller",
-      "community": 145,
-      "community_name": ".view",
+      "community": 33,
+      "community_name": "SiteTopBar.php",
       "norm_label": "adminusercontroller"
     },
     {
@@ -1735,8 +1735,8 @@
       "source_location": "L13",
       "_origin": "ast",
       "id": "app_http_controllers_admin_adminusercontroller_adminusercontroller_index",
-      "community": 145,
-      "community_name": ".view",
+      "community": 33,
+      "community_name": "SiteTopBar.php",
       "norm_label": ".index()"
     },
     {
@@ -1746,8 +1746,8 @@
       "source_location": "",
       "_origin": "ast",
       "id": "app_http_controllers_admin_adminusercontroller_php_view",
-      "community": 145,
-      "community_name": ".view",
+      "community": 33,
+      "community_name": "SiteTopBar.php",
       "norm_label": "view"
     },
     {
@@ -1757,8 +1757,8 @@
       "source_location": "L20",
       "_origin": "ast",
       "id": "app_http_controllers_admin_adminusercontroller_adminusercontroller_create",
-      "community": 145,
-      "community_name": ".view",
+      "community": 33,
+      "community_name": "SiteTopBar.php",
       "norm_label": ".create()"
     },
     {
@@ -1768,8 +1768,8 @@
       "source_location": "L25",
       "_origin": "ast",
       "id": "app_http_controllers_admin_adminusercontroller_adminusercontroller_store",
-      "community": 145,
-      "community_name": ".view",
+      "community": 33,
+      "community_name": "SiteTopBar.php",
       "norm_label": ".store()"
     },
     {
@@ -1779,8 +1779,8 @@
       "source_location": "",
       "_origin": "ast",
       "id": "app_http_controllers_admin_adminusercontroller_php_request",
-      "community": 145,
-      "community_name": ".view",
+      "community": 33,
+      "community_name": "SiteTopBar.php",
       "norm_label": "request"
     },
     {
@@ -1790,8 +1790,8 @@
       "source_location": "",
       "_origin": "ast",
       "id": "app_http_controllers_admin_adminusercontroller_php_redirectresponse",
-      "community": 145,
-      "community_name": ".view",
+      "community": 33,
+      "community_name": "SiteTopBar.php",
       "norm_label": "redirectresponse"
     },
     {
@@ -1801,8 +1801,8 @@
       "source_location": "L42",
       "_origin": "ast",
       "id": "app_http_controllers_admin_adminusercontroller_adminusercontroller_edit",
-      "community": 145,
-      "community_name": ".view",
+      "community": 33,
+      "community_name": "SiteTopBar.php",
       "norm_label": ".edit()"
     },
     {
@@ -1812,8 +1812,8 @@
       "source_location": "L47",
       "_origin": "ast",
       "id": "app_http_controllers_admin_adminusercontroller_adminusercontroller_update",
-      "community": 145,
-      "community_name": ".view",
+      "community": 33,
+      "community_name": "SiteTopBar.php",
       "norm_label": ".update()"
     },
     {
@@ -1823,8 +1823,8 @@
       "source_location": "L68",
       "_origin": "ast",
       "id": "app_http_controllers_admin_adminusercontroller_adminusercontroller_destroy",
-      "community": 145,
-      "community_name": ".view",
+      "community": 33,
+      "community_name": "SiteTopBar.php",
       "norm_label": ".destroy()"
     },
     {
@@ -1834,8 +1834,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "app_http_controllers_admin_assetscontroller",
-      "community": 222,
-      "community_name": "Factory",
+      "community": 25,
+      "community_name": "PackagePostSlot.php",
       "norm_label": "assetscontroller.php"
     },
     {
@@ -1845,8 +1845,8 @@
       "source_location": "L10",
       "_origin": "ast",
       "id": "app_http_controllers_admin_assetscontroller_assetscontroller",
-      "community": 222,
-      "community_name": "Factory",
+      "community": 25,
+      "community_name": "PackagePostSlot.php",
       "norm_label": "assetscontroller"
     },
     {
@@ -1856,8 +1856,8 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "app_http_controllers_admin_assetscontroller_assetscontroller_index",
-      "community": 222,
-      "community_name": "Factory",
+      "community": 25,
+      "community_name": "PackagePostSlot.php",
       "norm_label": ".index()"
     },
     {
@@ -1867,8 +1867,8 @@
       "source_location": "",
       "_origin": "ast",
       "id": "app_http_controllers_admin_assetscontroller_php_request",
-      "community": 222,
-      "community_name": "Factory",
+      "community": 25,
+      "community_name": "PackagePostSlot.php",
       "norm_label": "request"
     },
     {
@@ -1878,8 +1878,8 @@
       "source_location": "L38",
       "_origin": "ast",
       "id": "app_http_controllers_admin_assetscontroller_assetscontroller_page",
-      "community": 222,
-      "community_name": "Factory",
+      "community": 25,
+      "community_name": "PackagePostSlot.php",
       "norm_label": ".page()"
     },
     {
@@ -1889,8 +1889,8 @@
       "source_location": "L43",
       "_origin": "ast",
       "id": "app_http_controllers_admin_assetscontroller_assetscontroller_store",
-      "community": 222,
-      "community_name": "Factory",
+      "community": 25,
+      "community_name": "PackagePostSlot.php",
       "norm_label": ".store()"
     },
     {
@@ -1900,8 +1900,8 @@
       "source_location": "L70",
       "_origin": "ast",
       "id": "app_http_controllers_admin_assetscontroller_assetscontroller_update",
-      "community": 222,
-      "community_name": "Factory",
+      "community": 25,
+      "community_name": "PackagePostSlot.php",
       "norm_label": ".update()"
     },
     {
@@ -1911,8 +1911,8 @@
       "source_location": "L100",
       "_origin": "ast",
       "id": "app_http_controllers_admin_assetscontroller_assetscontroller_destroy",
-      "community": 222,
-      "community_name": "Factory",
+      "community": 25,
+      "community_name": "PackagePostSlot.php",
       "norm_label": ".destroy()"
     },
     {
@@ -1922,8 +1922,8 @@
       "source_location": "L126",
       "_origin": "ast",
       "id": "app_http_controllers_admin_assetscontroller_assetscontroller_destroydirectory",
-      "community": 222,
-      "community_name": "Factory",
+      "community": 25,
+      "community_name": "PackagePostSlot.php",
       "norm_label": ".destroydirectory()"
     },
     {
@@ -1933,8 +1933,8 @@
       "source_location": "L144",
       "_origin": "ast",
       "id": "app_http_controllers_admin_assetscontroller_assetscontroller_file",
-      "community": 222,
-      "community_name": "Factory",
+      "community": 25,
+      "community_name": "PackagePostSlot.php",
       "norm_label": ".file()"
     },
     {
@@ -1944,8 +1944,8 @@
       "source_location": "L153",
       "_origin": "ast",
       "id": "app_http_controllers_admin_assetscontroller_assetscontroller_directory",
-      "community": 222,
-      "community_name": "Factory",
+      "community": 25,
+      "community_name": "PackagePostSlot.php",
       "norm_label": ".directory()"
     },
     {
@@ -1955,8 +1955,8 @@
       "source_location": "L187",
       "_origin": "ast",
       "id": "app_http_controllers_admin_assetscontroller_assetscontroller_formatsize",
-      "community": 222,
-      "community_name": "Factory",
+      "community": 25,
+      "community_name": "PackagePostSlot.php",
       "norm_label": ".formatsize()"
     },
     {
@@ -1966,8 +1966,8 @@
       "source_location": "L199",
       "_origin": "ast",
       "id": "app_http_controllers_admin_assetscontroller_assetscontroller_getimagedimensions",
-      "community": 222,
-      "community_name": "Factory",
+      "community": 25,
+      "community_name": "PackagePostSlot.php",
       "norm_label": ".getimagedimensions()"
     },
     {
@@ -2087,8 +2087,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "app_http_controllers_admin_collectionentrycontroller",
-      "community": 13,
-      "community_name": "BlockRegistry",
+      "community": 221,
+      "community_name": "Sections",
       "norm_label": "collectionentrycontroller.php"
     },
     {
@@ -2769,8 +2769,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "app_http_controllers_admin_previewcontroller",
-      "community": 221,
-      "community_name": "Sections",
+      "community": 24,
+      "community_name": "PackageList.php",
       "norm_label": "previewcontroller.php"
     },
     {
@@ -2780,8 +2780,8 @@
       "source_location": "L9",
       "_origin": "ast",
       "id": "app_http_controllers_admin_previewcontroller_previewcontroller",
-      "community": 221,
-      "community_name": "Sections",
+      "community": 24,
+      "community_name": "PackageList.php",
       "norm_label": "previewcontroller"
     },
     {
@@ -2791,8 +2791,8 @@
       "source_location": "L11",
       "_origin": "ast",
       "id": "app_http_controllers_admin_previewcontroller_previewcontroller_invoke",
-      "community": 221,
-      "community_name": "Sections",
+      "community": 24,
+      "community_name": "PackageList.php",
       "norm_label": ".__invoke()"
     },
     {
@@ -2802,8 +2802,8 @@
       "source_location": "",
       "_origin": "ast",
       "id": "app_http_controllers_admin_previewcontroller_php_request",
-      "community": 221,
-      "community_name": "Sections",
+      "community": 24,
+      "community_name": "PackageList.php",
       "norm_label": "request"
     },
     {
@@ -2956,8 +2956,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "app_http_controllers_admin_settingscontroller",
-      "community": 28,
-      "community_name": "TeamCards.php",
+      "community": 86,
+      "community_name": "SettingsController.php",
       "norm_label": "settingscontroller.php"
     },
     {
@@ -2967,8 +2967,8 @@
       "source_location": "L9",
       "_origin": "ast",
       "id": "app_http_controllers_admin_settingscontroller_settingscontroller",
-      "community": 28,
-      "community_name": "TeamCards.php",
+      "community": 86,
+      "community_name": "SettingsController.php",
       "norm_label": "settingscontroller"
     },
     {
@@ -2978,8 +2978,8 @@
       "source_location": "L11",
       "_origin": "ast",
       "id": "app_http_controllers_admin_settingscontroller_settingscontroller_index",
-      "community": 28,
-      "community_name": "TeamCards.php",
+      "community": 86,
+      "community_name": "SettingsController.php",
       "norm_label": ".index()"
     },
     {
@@ -2989,8 +2989,8 @@
       "source_location": "L24",
       "_origin": "ast",
       "id": "app_http_controllers_admin_settingscontroller_settingscontroller_update",
-      "community": 28,
-      "community_name": "TeamCards.php",
+      "community": 86,
+      "community_name": "SettingsController.php",
       "norm_label": ".update()"
     },
     {
@@ -3000,8 +3000,8 @@
       "source_location": "",
       "_origin": "ast",
       "id": "app_http_controllers_admin_settingscontroller_php_request",
-      "community": 28,
-      "community_name": "TeamCards.php",
+      "community": 86,
+      "community_name": "SettingsController.php",
       "norm_label": "request"
     },
     {
@@ -3011,8 +3011,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "app_http_controllers_admin_subscriptionplancontroller",
-      "community": 28,
-      "community_name": "TeamCards.php",
+      "community": 13,
+      "community_name": "BlockRegistry",
       "norm_label": "subscriptionplancontroller.php"
     },
     {
@@ -3022,8 +3022,8 @@
       "source_location": "L10",
       "_origin": "ast",
       "id": "app_http_controllers_admin_subscriptionplancontroller_subscriptionplancontroller",
-      "community": 28,
-      "community_name": "TeamCards.php",
+      "community": 13,
+      "community_name": "BlockRegistry",
       "norm_label": "subscriptionplancontroller"
     },
     {
@@ -3033,8 +3033,8 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "app_http_controllers_admin_subscriptionplancontroller_subscriptionplancontroller_index",
-      "community": 28,
-      "community_name": "TeamCards.php",
+      "community": 13,
+      "community_name": "BlockRegistry",
       "norm_label": ".index()"
     },
     {
@@ -3044,8 +3044,8 @@
       "source_location": "L20",
       "_origin": "ast",
       "id": "app_http_controllers_admin_subscriptionplancontroller_subscriptionplancontroller_create",
-      "community": 28,
-      "community_name": "TeamCards.php",
+      "community": 13,
+      "community_name": "BlockRegistry",
       "norm_label": ".create()"
     },
     {
@@ -3055,8 +3055,8 @@
       "source_location": "L25",
       "_origin": "ast",
       "id": "app_http_controllers_admin_subscriptionplancontroller_subscriptionplancontroller_store",
-      "community": 28,
-      "community_name": "TeamCards.php",
+      "community": 13,
+      "community_name": "BlockRegistry",
       "norm_label": ".store()"
     },
     {
@@ -3066,8 +3066,8 @@
       "source_location": "",
       "_origin": "ast",
       "id": "app_http_controllers_admin_subscriptionplancontroller_php_request",
-      "community": 28,
-      "community_name": "TeamCards.php",
+      "community": 13,
+      "community_name": "BlockRegistry",
       "norm_label": "request"
     },
     {
@@ -3077,8 +3077,8 @@
       "source_location": "L46",
       "_origin": "ast",
       "id": "app_http_controllers_admin_subscriptionplancontroller_subscriptionplancontroller_edit",
-      "community": 28,
-      "community_name": "TeamCards.php",
+      "community": 13,
+      "community_name": "BlockRegistry",
       "norm_label": ".edit()"
     },
     {
@@ -3088,8 +3088,8 @@
       "source_location": "L54",
       "_origin": "ast",
       "id": "app_http_controllers_admin_subscriptionplancontroller_subscriptionplancontroller_update",
-      "community": 28,
-      "community_name": "TeamCards.php",
+      "community": 13,
+      "community_name": "BlockRegistry",
       "norm_label": ".update()"
     },
     {
@@ -3099,8 +3099,8 @@
       "source_location": "L77",
       "_origin": "ast",
       "id": "app_http_controllers_admin_subscriptionplancontroller_subscriptionplancontroller_destroy",
-      "community": 28,
-      "community_name": "TeamCards.php",
+      "community": 13,
+      "community_name": "BlockRegistry",
       "norm_label": ".destroy()"
     },
     {
@@ -3209,8 +3209,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "app_http_controllers_admin_updatecontroller",
-      "community": 28,
-      "community_name": "TeamCards.php",
+      "community": 99,
+      "community_name": "UpdateController.php",
       "norm_label": "updatecontroller.php"
     },
     {
@@ -3220,8 +3220,8 @@
       "source_location": "L14",
       "_origin": "ast",
       "id": "app_http_controllers_admin_updatecontroller_updatecontroller",
-      "community": 28,
-      "community_name": "TeamCards.php",
+      "community": 99,
+      "community_name": "UpdateController.php",
       "norm_label": "updatecontroller"
     },
     {
@@ -3231,8 +3231,8 @@
       "source_location": "L21",
       "_origin": "ast",
       "id": "app_http_controllers_admin_updatecontroller_updatecontroller_check",
-      "community": 28,
-      "community_name": "TeamCards.php",
+      "community": 99,
+      "community_name": "UpdateController.php",
       "norm_label": ".check()"
     },
     {
@@ -3242,8 +3242,8 @@
       "source_location": "L45",
       "_origin": "ast",
       "id": "app_http_controllers_admin_updatecontroller_updatecontroller_run",
-      "community": 28,
-      "community_name": "TeamCards.php",
+      "community": 99,
+      "community_name": "UpdateController.php",
       "norm_label": ".run()"
     },
     {
@@ -3374,8 +3374,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "app_http_controllers_auth_logincontroller",
-      "community": 33,
-      "community_name": "SiteTopBar.php",
+      "community": 24,
+      "community_name": "PackageList.php",
       "norm_label": "logincontroller.php"
     },
     {
@@ -3385,8 +3385,8 @@
       "source_location": "L11",
       "_origin": "ast",
       "id": "app_http_controllers_auth_logincontroller_logincontroller",
-      "community": 33,
-      "community_name": "SiteTopBar.php",
+      "community": 24,
+      "community_name": "PackageList.php",
       "norm_label": "logincontroller"
     },
     {
@@ -3396,8 +3396,8 @@
       "source_location": "L13",
       "_origin": "ast",
       "id": "app_http_controllers_auth_logincontroller_logincontroller_create",
-      "community": 33,
-      "community_name": "SiteTopBar.php",
+      "community": 24,
+      "community_name": "PackageList.php",
       "norm_label": ".create()"
     },
     {
@@ -3407,8 +3407,8 @@
       "source_location": "",
       "_origin": "ast",
       "id": "app_http_controllers_auth_logincontroller_php_view",
-      "community": 33,
-      "community_name": "SiteTopBar.php",
+      "community": 24,
+      "community_name": "PackageList.php",
       "norm_label": "view"
     },
     {
@@ -3418,8 +3418,8 @@
       "source_location": "L18",
       "_origin": "ast",
       "id": "app_http_controllers_auth_logincontroller_logincontroller_store",
-      "community": 33,
-      "community_name": "SiteTopBar.php",
+      "community": 24,
+      "community_name": "PackageList.php",
       "norm_label": ".store()"
     },
     {
@@ -3429,8 +3429,8 @@
       "source_location": "",
       "_origin": "ast",
       "id": "app_http_controllers_auth_logincontroller_php_request",
-      "community": 33,
-      "community_name": "SiteTopBar.php",
+      "community": 24,
+      "community_name": "PackageList.php",
       "norm_label": "request"
     },
     {
@@ -3440,8 +3440,8 @@
       "source_location": "",
       "_origin": "ast",
       "id": "app_http_controllers_auth_logincontroller_php_redirectresponse",
-      "community": 33,
-      "community_name": "SiteTopBar.php",
+      "community": 24,
+      "community_name": "PackageList.php",
       "norm_label": "redirectresponse"
     },
     {
@@ -3451,8 +3451,8 @@
       "source_location": "L44",
       "_origin": "ast",
       "id": "app_http_controllers_auth_logincontroller_logincontroller_destroy",
-      "community": 33,
-      "community_name": "SiteTopBar.php",
+      "community": 24,
+      "community_name": "PackageList.php",
       "norm_label": ".destroy()"
     },
     {
@@ -3462,8 +3462,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "app_http_controllers_auth_registercontroller",
-      "community": 25,
-      "community_name": "PackagePostSlot.php",
+      "community": 24,
+      "community_name": "PackageList.php",
       "norm_label": "registercontroller.php"
     },
     {
@@ -3473,8 +3473,8 @@
       "source_location": "L13",
       "_origin": "ast",
       "id": "app_http_controllers_auth_registercontroller_registercontroller",
-      "community": 25,
-      "community_name": "PackagePostSlot.php",
+      "community": 24,
+      "community_name": "PackageList.php",
       "norm_label": "registercontroller"
     },
     {
@@ -3484,8 +3484,8 @@
       "source_location": "L15",
       "_origin": "ast",
       "id": "app_http_controllers_auth_registercontroller_registercontroller_store",
-      "community": 25,
-      "community_name": "PackagePostSlot.php",
+      "community": 24,
+      "community_name": "PackageList.php",
       "norm_label": ".store()"
     },
     {
@@ -3495,8 +3495,8 @@
       "source_location": "",
       "_origin": "ast",
       "id": "app_http_controllers_auth_registercontroller_php_request",
-      "community": 25,
-      "community_name": "PackagePostSlot.php",
+      "community": 24,
+      "community_name": "PackageList.php",
       "norm_label": "request"
     },
     {
@@ -3506,8 +3506,8 @@
       "source_location": "",
       "_origin": "ast",
       "id": "app_http_controllers_auth_registercontroller_php_redirectresponse",
-      "community": 25,
-      "community_name": "PackagePostSlot.php",
+      "community": 24,
+      "community_name": "PackageList.php",
       "norm_label": "redirectresponse"
     },
     {
@@ -3517,8 +3517,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "app_http_controllers_controller",
-      "community": 25,
-      "community_name": "PackagePostSlot.php",
+      "community": 24,
+      "community_name": "PackageList.php",
       "norm_label": "controller.php"
     },
     {
@@ -3528,8 +3528,8 @@
       "source_location": "L5",
       "_origin": "ast",
       "id": "app_http_controllers_controller_controller",
-      "community": 25,
-      "community_name": "PackagePostSlot.php",
+      "community": 24,
+      "community_name": "PackageList.php",
       "norm_label": "controller"
     },
     {
@@ -3539,8 +3539,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "app_http_controllers_marketing_accountcontroller",
-      "community": 40,
-      "community_name": "2026_07_10_185347_create_posts_table.php",
+      "community": 24,
+      "community_name": "PackageList.php",
       "norm_label": "accountcontroller.php"
     },
     {
@@ -3550,8 +3550,8 @@
       "source_location": "L11",
       "_origin": "ast",
       "id": "app_http_controllers_marketing_accountcontroller_accountcontroller",
-      "community": 40,
-      "community_name": "2026_07_10_185347_create_posts_table.php",
+      "community": 24,
+      "community_name": "PackageList.php",
       "norm_label": "accountcontroller"
     },
     {
@@ -3561,8 +3561,8 @@
       "source_location": "L14",
       "_origin": "ast",
       "id": "app_http_controllers_marketing_accountcontroller_accountcontroller_index",
-      "community": 40,
-      "community_name": "2026_07_10_185347_create_posts_table.php",
+      "community": 24,
+      "community_name": "PackageList.php",
       "norm_label": ".index()"
     },
     {
@@ -3572,8 +3572,8 @@
       "source_location": "L22",
       "_origin": "ast",
       "id": "app_http_controllers_marketing_accountcontroller_accountcontroller_save",
-      "community": 40,
-      "community_name": "2026_07_10_185347_create_posts_table.php",
+      "community": 24,
+      "community_name": "PackageList.php",
       "norm_label": ".save()"
     },
     {
@@ -3583,8 +3583,8 @@
       "source_location": "",
       "_origin": "ast",
       "id": "app_http_controllers_marketing_accountcontroller_php_request",
-      "community": 40,
-      "community_name": "2026_07_10_185347_create_posts_table.php",
+      "community": 24,
+      "community_name": "PackageList.php",
       "norm_label": "request"
     },
     {
@@ -3594,8 +3594,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "app_http_controllers_marketing_campaigncontroller",
-      "community": 24,
-      "community_name": "PackageList.php",
+      "community": 7,
+      "community_name": "Model",
       "norm_label": "campaigncontroller.php"
     },
     {
@@ -3605,8 +3605,8 @@
       "source_location": "L19",
       "_origin": "ast",
       "id": "app_http_controllers_marketing_campaigncontroller_campaigncontroller",
-      "community": 3,
-      "community_name": "Page",
+      "community": 30,
+      "community_name": "WhyChooseUs.php",
       "norm_label": "campaigncontroller"
     },
     {
@@ -3616,8 +3616,8 @@
       "source_location": "L21",
       "_origin": "ast",
       "id": "app_http_controllers_marketing_campaigncontroller_campaigncontroller_remcampaigns",
-      "community": 3,
-      "community_name": "Page",
+      "community": 30,
+      "community_name": "WhyChooseUs.php",
       "norm_label": ".remcampaigns()"
     },
     {
@@ -3627,8 +3627,8 @@
       "source_location": "L34",
       "_origin": "ast",
       "id": "app_http_controllers_marketing_campaigncontroller_campaigncontroller_rememails",
-      "community": 3,
-      "community_name": "Page",
+      "community": 30,
+      "community_name": "WhyChooseUs.php",
       "norm_label": ".rememails()"
     },
     {
@@ -3638,8 +3638,8 @@
       "source_location": "L57",
       "_origin": "ast",
       "id": "app_http_controllers_marketing_campaigncontroller_campaigncontroller_index",
-      "community": 3,
-      "community_name": "Page",
+      "community": 30,
+      "community_name": "WhyChooseUs.php",
       "norm_label": ".index()"
     },
     {
@@ -3649,8 +3649,8 @@
       "source_location": "L149",
       "_origin": "ast",
       "id": "app_http_controllers_marketing_campaigncontroller_campaigncontroller_create",
-      "community": 3,
-      "community_name": "Page",
+      "community": 30,
+      "community_name": "WhyChooseUs.php",
       "norm_label": ".create()"
     },
     {
@@ -3660,8 +3660,8 @@
       "source_location": "L156",
       "_origin": "ast",
       "id": "app_http_controllers_marketing_campaigncontroller_campaigncontroller_store",
-      "community": 3,
-      "community_name": "Page",
+      "community": 30,
+      "community_name": "WhyChooseUs.php",
       "norm_label": ".store()"
     },
     {
@@ -3671,8 +3671,8 @@
       "source_location": "",
       "_origin": "ast",
       "id": "app_http_controllers_marketing_campaigncontroller_php_request",
-      "community": 3,
-      "community_name": "Page",
+      "community": 30,
+      "community_name": "WhyChooseUs.php",
       "norm_label": "request"
     },
     {
@@ -3693,8 +3693,8 @@
       "source_location": "L204",
       "_origin": "ast",
       "id": "app_http_controllers_marketing_campaigncontroller_campaigncontroller_update",
-      "community": 3,
-      "community_name": "Page",
+      "community": 30,
+      "community_name": "WhyChooseUs.php",
       "norm_label": ".update()"
     },
     {
@@ -3704,8 +3704,8 @@
       "source_location": "L242",
       "_origin": "ast",
       "id": "app_http_controllers_marketing_campaigncontroller_campaigncontroller_usetemplate",
-      "community": 3,
-      "community_name": "Page",
+      "community": 30,
+      "community_name": "WhyChooseUs.php",
       "norm_label": ".usetemplate()"
     },
     {
@@ -3715,8 +3715,8 @@
       "source_location": "L260",
       "_origin": "ast",
       "id": "app_http_controllers_marketing_campaigncontroller_campaigncontroller_delete",
-      "community": 3,
-      "community_name": "Page",
+      "community": 30,
+      "community_name": "WhyChooseUs.php",
       "norm_label": ".delete()"
     },
     {
@@ -3726,8 +3726,8 @@
       "source_location": "L277",
       "_origin": "ast",
       "id": "app_http_controllers_marketing_campaigncontroller_campaigncontroller_duplicate",
-      "community": 3,
-      "community_name": "Page",
+      "community": 30,
+      "community_name": "WhyChooseUs.php",
       "norm_label": ".duplicate()"
     },
     {
@@ -3737,8 +3737,8 @@
       "source_location": "L303",
       "_origin": "ast",
       "id": "app_http_controllers_marketing_campaigncontroller_campaigncontroller_sendtest",
-      "community": 3,
-      "community_name": "Page",
+      "community": 30,
+      "community_name": "WhyChooseUs.php",
       "norm_label": ".sendtest()"
     },
     {
@@ -3748,8 +3748,8 @@
       "source_location": "L392",
       "_origin": "ast",
       "id": "app_http_controllers_marketing_campaigncontroller_campaigncontroller_sendcampaign",
-      "community": 3,
-      "community_name": "Page",
+      "community": 30,
+      "community_name": "WhyChooseUs.php",
       "norm_label": ".sendcampaign()"
     },
     {
@@ -3759,8 +3759,8 @@
       "source_location": "L427",
       "_origin": "ast",
       "id": "app_http_controllers_marketing_campaigncontroller_campaigncontroller_gettotalrecipientsattribute",
-      "community": 3,
-      "community_name": "Page",
+      "community": 30,
+      "community_name": "WhyChooseUs.php",
       "norm_label": ".gettotalrecipientsattribute()"
     },
     {
@@ -3770,8 +3770,8 @@
       "source_location": "L444",
       "_origin": "ast",
       "id": "app_http_controllers_marketing_campaigncontroller_campaigncontroller_schedule",
-      "community": 3,
-      "community_name": "Page",
+      "community": 30,
+      "community_name": "WhyChooseUs.php",
       "norm_label": ".schedule()"
     },
     {
@@ -3781,8 +3781,8 @@
       "source_location": "L473",
       "_origin": "ast",
       "id": "app_http_controllers_marketing_campaigncontroller_campaigncontroller_handle",
-      "community": 3,
-      "community_name": "Page",
+      "community": 30,
+      "community_name": "WhyChooseUs.php",
       "norm_label": ".handle()"
     },
     {
@@ -3792,8 +3792,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "app_http_controllers_marketing_contactcontroller",
-      "community": 24,
-      "community_name": "PackageList.php",
+      "community": 3,
+      "community_name": "Page",
       "norm_label": "contactcontroller.php"
     },
     {
@@ -4034,8 +4034,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "app_http_controllers_marketing_dashboardcontroller",
-      "community": 40,
-      "community_name": "2026_07_10_185347_create_posts_table.php",
+      "community": 24,
+      "community_name": "PackageList.php",
       "norm_label": "dashboardcontroller.php"
     },
     {
@@ -4045,8 +4045,8 @@
       "source_location": "L13",
       "_origin": "ast",
       "id": "app_http_controllers_marketing_dashboardcontroller_dashboardcontroller",
-      "community": 40,
-      "community_name": "2026_07_10_185347_create_posts_table.php",
+      "community": 24,
+      "community_name": "PackageList.php",
       "norm_label": "dashboardcontroller"
     },
     {
@@ -4056,8 +4056,8 @@
       "source_location": "L15",
       "_origin": "ast",
       "id": "app_http_controllers_marketing_dashboardcontroller_dashboardcontroller_index",
-      "community": 40,
-      "community_name": "2026_07_10_185347_create_posts_table.php",
+      "community": 24,
+      "community_name": "PackageList.php",
       "norm_label": ".index()"
     },
     {
@@ -4067,8 +4067,8 @@
       "source_location": "",
       "_origin": "ast",
       "id": "app_http_controllers_marketing_dashboardcontroller_php_request",
-      "community": 40,
-      "community_name": "2026_07_10_185347_create_posts_table.php",
+      "community": 24,
+      "community_name": "PackageList.php",
       "norm_label": "request"
     },
     {
@@ -4078,8 +4078,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "app_http_controllers_marketing_formcontroller",
-      "community": 32,
-      "community_name": "SiteNavbar.php",
+      "community": 24,
+      "community_name": "PackageList.php",
       "norm_label": "formcontroller.php"
     },
     {
@@ -4089,8 +4089,8 @@
       "source_location": "L10",
       "_origin": "ast",
       "id": "app_http_controllers_marketing_formcontroller_formcontroller",
-      "community": 32,
-      "community_name": "SiteNavbar.php",
+      "community": 24,
+      "community_name": "PackageList.php",
       "norm_label": "formcontroller"
     },
     {
@@ -4100,8 +4100,8 @@
       "source_location": "L13",
       "_origin": "ast",
       "id": "app_http_controllers_marketing_formcontroller_formcontroller_index",
-      "community": 32,
-      "community_name": "SiteNavbar.php",
+      "community": 24,
+      "community_name": "PackageList.php",
       "norm_label": ".index()"
     },
     {
@@ -4111,8 +4111,8 @@
       "source_location": "L20",
       "_origin": "ast",
       "id": "app_http_controllers_marketing_formcontroller_formcontroller_create",
-      "community": 32,
-      "community_name": "SiteNavbar.php",
+      "community": 24,
+      "community_name": "PackageList.php",
       "norm_label": ".create()"
     },
     {
@@ -4122,8 +4122,8 @@
       "source_location": "L25",
       "_origin": "ast",
       "id": "app_http_controllers_marketing_formcontroller_formcontroller_edit",
-      "community": 32,
-      "community_name": "SiteNavbar.php",
+      "community": 24,
+      "community_name": "PackageList.php",
       "norm_label": ".edit()"
     },
     {
@@ -4133,8 +4133,8 @@
       "source_location": "",
       "_origin": "ast",
       "id": "app_http_controllers_marketing_formcontroller_php_request",
-      "community": 32,
-      "community_name": "SiteNavbar.php",
+      "community": 24,
+      "community_name": "PackageList.php",
       "norm_label": "request"
     },
     {
@@ -4144,8 +4144,8 @@
       "source_location": "L41",
       "_origin": "ast",
       "id": "app_http_controllers_marketing_formcontroller_formcontroller_save",
-      "community": 32,
-      "community_name": "SiteNavbar.php",
+      "community": 24,
+      "community_name": "PackageList.php",
       "norm_label": ".save()"
     },
     {
@@ -4155,8 +4155,8 @@
       "source_location": "L50",
       "_origin": "ast",
       "id": "app_http_controllers_marketing_formcontroller_formcontroller_update",
-      "community": 32,
-      "community_name": "SiteNavbar.php",
+      "community": 24,
+      "community_name": "PackageList.php",
       "norm_label": ".update()"
     },
     {
@@ -4166,8 +4166,8 @@
       "source_location": "L58",
       "_origin": "ast",
       "id": "app_http_controllers_marketing_formcontroller_formcontroller_delete",
-      "community": 32,
-      "community_name": "SiteNavbar.php",
+      "community": 24,
+      "community_name": "PackageList.php",
       "norm_label": ".delete()"
     },
     {
@@ -4177,8 +4177,8 @@
       "source_location": "L70",
       "_origin": "ast",
       "id": "app_http_controllers_marketing_formcontroller_formcontroller_submit",
-      "community": 32,
-      "community_name": "SiteNavbar.php",
+      "community": 24,
+      "community_name": "PackageList.php",
       "norm_label": ".submit()"
     },
     {
@@ -4188,8 +4188,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "app_http_controllers_marketing_reportcontroller",
-      "community": 30,
-      "community_name": "WhyChooseUs.php",
+      "community": 7,
+      "community_name": "Model",
       "norm_label": "reportcontroller.php"
     },
     {
@@ -4199,8 +4199,8 @@
       "source_location": "L13",
       "_origin": "ast",
       "id": "app_http_controllers_marketing_reportcontroller_reportcontroller",
-      "community": 30,
-      "community_name": "WhyChooseUs.php",
+      "community": 7,
+      "community_name": "Model",
       "norm_label": "reportcontroller"
     },
     {
@@ -4210,8 +4210,8 @@
       "source_location": "L16",
       "_origin": "ast",
       "id": "app_http_controllers_marketing_reportcontroller_reportcontroller_index",
-      "community": 30,
-      "community_name": "WhyChooseUs.php",
+      "community": 7,
+      "community_name": "Model",
       "norm_label": ".index()"
     },
     {
@@ -4221,8 +4221,8 @@
       "source_location": "L50",
       "_origin": "ast",
       "id": "app_http_controllers_marketing_reportcontroller_reportcontroller_filterreportbydate",
-      "community": 30,
-      "community_name": "WhyChooseUs.php",
+      "community": 7,
+      "community_name": "Model",
       "norm_label": ".filterreportbydate()"
     },
     {
@@ -4232,8 +4232,8 @@
       "source_location": "",
       "_origin": "ast",
       "id": "app_http_controllers_marketing_reportcontroller_php_request",
-      "community": 30,
-      "community_name": "WhyChooseUs.php",
+      "community": 7,
+      "community_name": "Model",
       "norm_label": "request"
     },
     {
@@ -4243,8 +4243,8 @@
       "source_location": "L84",
       "_origin": "ast",
       "id": "app_http_controllers_marketing_reportcontroller_reportcontroller_delete",
-      "community": 30,
-      "community_name": "WhyChooseUs.php",
+      "community": 7,
+      "community_name": "Model",
       "norm_label": ".delete()"
     },
     {
@@ -4254,8 +4254,8 @@
       "source_location": "L92",
       "_origin": "ast",
       "id": "app_http_controllers_marketing_reportcontroller_reportcontroller_activeautomatedweeklyreport",
-      "community": 30,
-      "community_name": "WhyChooseUs.php",
+      "community": 7,
+      "community_name": "Model",
       "norm_label": ".activeautomatedweeklyreport()"
     },
     {
@@ -4265,8 +4265,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "app_http_controllers_marketing_searchcontroller",
-      "community": 25,
-      "community_name": "PackagePostSlot.php",
+      "community": 24,
+      "community_name": "PackageList.php",
       "norm_label": "searchcontroller.php"
     },
     {
@@ -4276,8 +4276,8 @@
       "source_location": "L9",
       "_origin": "ast",
       "id": "app_http_controllers_marketing_searchcontroller_searchcontroller",
-      "community": 25,
-      "community_name": "PackagePostSlot.php",
+      "community": 24,
+      "community_name": "PackageList.php",
       "norm_label": "searchcontroller"
     },
     {
@@ -4287,8 +4287,8 @@
       "source_location": "L11",
       "_origin": "ast",
       "id": "app_http_controllers_marketing_searchcontroller_searchcontroller_search",
-      "community": 25,
-      "community_name": "PackagePostSlot.php",
+      "community": 24,
+      "community_name": "PackageList.php",
       "norm_label": ".search()"
     },
     {
@@ -4298,8 +4298,8 @@
       "source_location": "",
       "_origin": "ast",
       "id": "app_http_controllers_marketing_searchcontroller_php_request",
-      "community": 25,
-      "community_name": "PackagePostSlot.php",
+      "community": 24,
+      "community_name": "PackageList.php",
       "norm_label": "request"
     },
     {
@@ -4309,8 +4309,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "app_http_controllers_marketing_settingcontroller",
-      "community": 28,
-      "community_name": "TeamCards.php",
+      "community": 31,
+      "community_name": "SiteFooter.php",
       "norm_label": "settingcontroller.php"
     },
     {
@@ -4320,8 +4320,8 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "app_http_controllers_marketing_settingcontroller_settingcontroller",
-      "community": 28,
-      "community_name": "TeamCards.php",
+      "community": 31,
+      "community_name": "SiteFooter.php",
       "norm_label": "settingcontroller"
     },
     {
@@ -4331,8 +4331,8 @@
       "source_location": "L16",
       "_origin": "ast",
       "id": "app_http_controllers_marketing_settingcontroller_settingcontroller_construct",
-      "community": 28,
-      "community_name": "TeamCards.php",
+      "community": 31,
+      "community_name": "SiteFooter.php",
       "norm_label": ".__construct()"
     },
     {
@@ -4342,8 +4342,8 @@
       "source_location": "L63",
       "_origin": "ast",
       "id": "app_http_controllers_marketing_settingcontroller_settingcontroller_index",
-      "community": 28,
-      "community_name": "TeamCards.php",
+      "community": 31,
+      "community_name": "SiteFooter.php",
       "norm_label": ".index()"
     },
     {
@@ -4353,8 +4353,8 @@
       "source_location": "",
       "_origin": "ast",
       "id": "app_http_controllers_marketing_settingcontroller_php_request",
-      "community": 28,
-      "community_name": "TeamCards.php",
+      "community": 31,
+      "community_name": "SiteFooter.php",
       "norm_label": "request"
     },
     {
@@ -4364,8 +4364,8 @@
       "source_location": "L72",
       "_origin": "ast",
       "id": "app_http_controllers_marketing_settingcontroller_settingcontroller_default",
-      "community": 28,
-      "community_name": "TeamCards.php",
+      "community": 31,
+      "community_name": "SiteFooter.php",
       "norm_label": ".default()"
     },
     {
@@ -4375,8 +4375,8 @@
       "source_location": "L83",
       "_origin": "ast",
       "id": "app_http_controllers_marketing_settingcontroller_settingcontroller_default_save",
-      "community": 28,
-      "community_name": "TeamCards.php",
+      "community": 31,
+      "community_name": "SiteFooter.php",
       "norm_label": ".default_save()"
     },
     {
@@ -4386,8 +4386,8 @@
       "source_location": "L108",
       "_origin": "ast",
       "id": "app_http_controllers_marketing_settingcontroller_settingcontroller_sender",
-      "community": 28,
-      "community_name": "TeamCards.php",
+      "community": 31,
+      "community_name": "SiteFooter.php",
       "norm_label": ".sender()"
     },
     {
@@ -4397,8 +4397,8 @@
       "source_location": "L136",
       "_origin": "ast",
       "id": "app_http_controllers_marketing_settingcontroller_settingcontroller_sender_save",
-      "community": 28,
-      "community_name": "TeamCards.php",
+      "community": 31,
+      "community_name": "SiteFooter.php",
       "norm_label": ".sender_save()"
     },
     {
@@ -4408,8 +4408,8 @@
       "source_location": "L190",
       "_origin": "ast",
       "id": "app_http_controllers_marketing_settingcontroller_settingcontroller_sender_edit",
-      "community": 28,
-      "community_name": "TeamCards.php",
+      "community": 31,
+      "community_name": "SiteFooter.php",
       "norm_label": ".sender_edit()"
     },
     {
@@ -4419,8 +4419,8 @@
       "source_location": "L247",
       "_origin": "ast",
       "id": "app_http_controllers_marketing_settingcontroller_settingcontroller_sender_delete",
-      "community": 28,
-      "community_name": "TeamCards.php",
+      "community": 31,
+      "community_name": "SiteFooter.php",
       "norm_label": ".sender_delete()"
     },
     {
@@ -4430,8 +4430,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "app_http_controllers_marketing_supportcontroller",
-      "community": 25,
-      "community_name": "PackagePostSlot.php",
+      "community": 24,
+      "community_name": "PackageList.php",
       "norm_label": "supportcontroller.php"
     },
     {
@@ -4441,8 +4441,8 @@
       "source_location": "L7",
       "_origin": "ast",
       "id": "app_http_controllers_marketing_supportcontroller_supportcontroller",
-      "community": 25,
-      "community_name": "PackagePostSlot.php",
+      "community": 24,
+      "community_name": "PackageList.php",
       "norm_label": "supportcontroller"
     },
     {
@@ -4452,8 +4452,8 @@
       "source_location": "L10",
       "_origin": "ast",
       "id": "app_http_controllers_marketing_supportcontroller_supportcontroller_index",
-      "community": 25,
-      "community_name": "PackagePostSlot.php",
+      "community": 24,
+      "community_name": "PackageList.php",
       "norm_label": ".index()"
     },
     {
@@ -4672,8 +4672,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "app_http_controllers_marketing_trackercontroller",
-      "community": 24,
-      "community_name": "PackageList.php",
+      "community": 7,
+      "community_name": "Model",
       "norm_label": "trackercontroller.php"
     },
     {
@@ -4683,8 +4683,8 @@
       "source_location": "L11",
       "_origin": "ast",
       "id": "app_http_controllers_marketing_trackercontroller_trackercontroller",
-      "community": 24,
-      "community_name": "PackageList.php",
+      "community": 7,
+      "community_name": "Model",
       "norm_label": "trackercontroller"
     },
     {
@@ -4694,8 +4694,8 @@
       "source_location": "L13",
       "_origin": "ast",
       "id": "app_http_controllers_marketing_trackercontroller_trackercontroller_clicktracker",
-      "community": 24,
-      "community_name": "PackageList.php",
+      "community": 7,
+      "community_name": "Model",
       "norm_label": ".clicktracker()"
     },
     {
@@ -4705,8 +4705,8 @@
       "source_location": "",
       "_origin": "ast",
       "id": "app_http_controllers_marketing_trackercontroller_php_request",
-      "community": 24,
-      "community_name": "PackageList.php",
+      "community": 7,
+      "community_name": "Model",
       "norm_label": "request"
     },
     {
@@ -4716,8 +4716,8 @@
       "source_location": "L36",
       "_origin": "ast",
       "id": "app_http_controllers_marketing_trackercontroller_trackercontroller_opentracker",
-      "community": 24,
-      "community_name": "PackageList.php",
+      "community": 7,
+      "community_name": "Model",
       "norm_label": ".opentracker()"
     },
     {
@@ -4727,8 +4727,8 @@
       "source_location": "L69",
       "_origin": "ast",
       "id": "app_http_controllers_marketing_trackercontroller_trackercontroller_unsubscribetracker",
-      "community": 24,
-      "community_name": "PackageList.php",
+      "community": 7,
+      "community_name": "Model",
       "norm_label": ".unsubscribetracker()"
     },
     {
@@ -4738,8 +4738,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "app_http_controllers_marketing_verifycontroller",
-      "community": 16,
-      "community_name": "AppServiceProvider.php",
+      "community": 24,
+      "community_name": "PackageList.php",
       "norm_label": "verifycontroller.php"
     },
     {
@@ -4749,8 +4749,8 @@
       "source_location": "L9",
       "_origin": "ast",
       "id": "app_http_controllers_marketing_verifycontroller_verifycontroller",
-      "community": 16,
-      "community_name": "AppServiceProvider.php",
+      "community": 24,
+      "community_name": "PackageList.php",
       "norm_label": "verifycontroller"
     },
     {
@@ -4760,8 +4760,8 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "app_http_controllers_marketing_verifycontroller_verifycontroller_index",
-      "community": 16,
-      "community_name": "AppServiceProvider.php",
+      "community": 24,
+      "community_name": "PackageList.php",
       "norm_label": ".index()"
     },
     {
@@ -4771,8 +4771,8 @@
       "source_location": "L18",
       "_origin": "ast",
       "id": "app_http_controllers_marketing_verifycontroller_verifycontroller_upload",
-      "community": 16,
-      "community_name": "AppServiceProvider.php",
+      "community": 24,
+      "community_name": "PackageList.php",
       "norm_label": ".upload()"
     },
     {
@@ -4782,8 +4782,8 @@
       "source_location": "",
       "_origin": "ast",
       "id": "app_http_controllers_marketing_verifycontroller_php_request",
-      "community": 16,
-      "community_name": "AppServiceProvider.php",
+      "community": 24,
+      "community_name": "PackageList.php",
       "norm_label": "request"
     },
     {
@@ -4793,8 +4793,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "app_http_controllers_public_blogcontroller",
-      "community": 25,
-      "community_name": "PackagePostSlot.php",
+      "community": 24,
+      "community_name": "PackageList.php",
       "norm_label": "blogcontroller.php"
     },
     {
@@ -4804,8 +4804,8 @@
       "source_location": "L8",
       "_origin": "ast",
       "id": "app_http_controllers_public_blogcontroller_blogcontroller",
-      "community": 25,
-      "community_name": "PackagePostSlot.php",
+      "community": 24,
+      "community_name": "PackageList.php",
       "norm_label": "blogcontroller"
     },
     {
@@ -4815,8 +4815,8 @@
       "source_location": "L10",
       "_origin": "ast",
       "id": "app_http_controllers_public_blogcontroller_blogcontroller_show",
-      "community": 107,
-      "community_name": "simple-text.blade.php",
+      "community": 105,
+      "community_name": "Post",
       "norm_label": ".show()"
     },
     {
@@ -4826,8 +4826,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "app_http_controllers_public_pagecontroller",
-      "community": 7,
-      "community_name": "Model",
+      "community": 45,
+      "community_name": "Collection.php",
       "norm_label": "pagecontroller.php"
     },
     {
@@ -4837,8 +4837,8 @@
       "source_location": "L9",
       "_origin": "ast",
       "id": "app_http_controllers_public_pagecontroller_pagecontroller",
-      "community": 7,
-      "community_name": "Model",
+      "community": 45,
+      "community_name": "Collection.php",
       "norm_label": "pagecontroller"
     },
     {
@@ -4848,8 +4848,8 @@
       "source_location": "L11",
       "_origin": "ast",
       "id": "app_http_controllers_public_pagecontroller_pagecontroller_home",
-      "community": 7,
-      "community_name": "Model",
+      "community": 45,
+      "community_name": "Collection.php",
       "norm_label": ".home()"
     },
     {
@@ -4859,8 +4859,8 @@
       "source_location": "L22",
       "_origin": "ast",
       "id": "app_http_controllers_public_pagecontroller_pagecontroller_show",
-      "community": 7,
-      "community_name": "Model",
+      "community": 45,
+      "community_name": "Collection.php",
       "norm_label": ".show()"
     },
     {
@@ -4870,8 +4870,8 @@
       "source_location": "L29",
       "_origin": "ast",
       "id": "app_http_controllers_public_pagecontroller_pagecontroller_showcollectionentry",
-      "community": 7,
-      "community_name": "Model",
+      "community": 45,
+      "community_name": "Collection.php",
       "norm_label": ".showcollectionentry()"
     },
     {
@@ -4881,8 +4881,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "app_http_middleware_trackpageviews",
-      "community": 43,
-      "community_name": "2026_07_10_185348_create_destinations_table.php",
+      "community": 32,
+      "community_name": "SiteNavbar.php",
       "norm_label": "trackpageviews.php"
     },
     {
@@ -4892,8 +4892,8 @@
       "source_location": "L10",
       "_origin": "ast",
       "id": "app_http_middleware_trackpageviews_trackpageviews",
-      "community": 43,
-      "community_name": "2026_07_10_185348_create_destinations_table.php",
+      "community": 32,
+      "community_name": "SiteNavbar.php",
       "norm_label": "trackpageviews"
     },
     {
@@ -4903,8 +4903,8 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "app_http_middleware_trackpageviews_trackpageviews_handle",
-      "community": 43,
-      "community_name": "2026_07_10_185348_create_destinations_table.php",
+      "community": 32,
+      "community_name": "SiteNavbar.php",
       "norm_label": ".handle()"
     },
     {
@@ -4914,8 +4914,8 @@
       "source_location": "",
       "_origin": "ast",
       "id": "app_http_middleware_trackpageviews_php_request",
-      "community": 43,
-      "community_name": "2026_07_10_185348_create_destinations_table.php",
+      "community": 32,
+      "community_name": "SiteNavbar.php",
       "norm_label": "request"
     },
     {
@@ -4925,8 +4925,8 @@
       "source_location": "",
       "_origin": "ast",
       "id": "closure",
-      "community": 43,
-      "community_name": "2026_07_10_185348_create_destinations_table.php",
+      "community": 32,
+      "community_name": "SiteNavbar.php",
       "norm_label": "closure"
     },
     {
@@ -4936,8 +4936,8 @@
       "source_location": "",
       "_origin": "ast",
       "id": "response",
-      "community": 43,
-      "community_name": "2026_07_10_185348_create_destinations_table.php",
+      "community": 32,
+      "community_name": "SiteNavbar.php",
       "norm_label": "response"
     },
     {
@@ -4947,8 +4947,8 @@
       "source_location": "L17",
       "_origin": "ast",
       "id": "app_http_middleware_trackpageviews_trackpageviews_terminate",
-      "community": 43,
-      "community_name": "2026_07_10_185348_create_destinations_table.php",
+      "community": 32,
+      "community_name": "SiteNavbar.php",
       "norm_label": ".terminate()"
     },
     {
@@ -4969,8 +4969,8 @@
       "source_location": "L13",
       "_origin": "ast",
       "id": "app_http_requests_auth_loginrequest_loginrequest",
-      "community": 99,
-      "community_name": "destinations-grid.blade.php",
+      "community": 8,
+      "community_name": "LoginController.php",
       "norm_label": "loginrequest"
     },
     {
@@ -4991,8 +4991,8 @@
       "source_location": "L18",
       "_origin": "ast",
       "id": "app_http_requests_auth_loginrequest_loginrequest_authorize",
-      "community": 99,
-      "community_name": "destinations-grid.blade.php",
+      "community": 8,
+      "community_name": "LoginController.php",
       "norm_label": ".authorize()"
     },
     {
@@ -5002,8 +5002,8 @@
       "source_location": "L28",
       "_origin": "ast",
       "id": "app_http_requests_auth_loginrequest_loginrequest_rules",
-      "community": 99,
-      "community_name": "destinations-grid.blade.php",
+      "community": 8,
+      "community_name": "LoginController.php",
       "norm_label": ".rules()"
     },
     {
@@ -5013,8 +5013,8 @@
       "source_location": "L41",
       "_origin": "ast",
       "id": "app_http_requests_auth_loginrequest_loginrequest_authenticate",
-      "community": 99,
-      "community_name": "destinations-grid.blade.php",
+      "community": 8,
+      "community_name": "LoginController.php",
       "norm_label": ".authenticate()"
     },
     {
@@ -5024,8 +5024,8 @@
       "source_location": "L61",
       "_origin": "ast",
       "id": "app_http_requests_auth_loginrequest_loginrequest_ensureisnotratelimited",
-      "community": 99,
-      "community_name": "destinations-grid.blade.php",
+      "community": 8,
+      "community_name": "LoginController.php",
       "norm_label": ".ensureisnotratelimited()"
     },
     {
@@ -5035,8 +5035,8 @@
       "source_location": "L82",
       "_origin": "ast",
       "id": "app_http_requests_auth_loginrequest_loginrequest_throttlekey",
-      "community": 99,
-      "community_name": "destinations-grid.blade.php",
+      "community": 8,
+      "community_name": "LoginController.php",
       "norm_label": ".throttlekey()"
     },
     {
@@ -5288,8 +5288,8 @@
       "source_location": "L40",
       "_origin": "ast",
       "id": "app_jobs_sendsingleemailjob_sendsingleemailjob_handle",
-      "community": 16,
-      "community_name": "AppServiceProvider.php",
+      "community": 7,
+      "community_name": "Model",
       "norm_label": ".handle()"
     },
     {
@@ -5299,8 +5299,8 @@
       "source_location": "L114",
       "_origin": "ast",
       "id": "app_jobs_sendsingleemailjob_sendsingleemailjob_sendemail",
-      "community": 16,
-      "community_name": "AppServiceProvider.php",
+      "community": 7,
+      "community_name": "Model",
       "norm_label": ".sendemail()"
     },
     {
@@ -5310,8 +5310,8 @@
       "source_location": "L170",
       "_origin": "ast",
       "id": "app_jobs_sendsingleemailjob_sendsingleemailjob_updatestats",
-      "community": 16,
-      "community_name": "AppServiceProvider.php",
+      "community": 7,
+      "community_name": "Model",
       "norm_label": ".updatestats()"
     },
     {
@@ -5398,8 +5398,8 @@
       "source_location": "",
       "_origin": "ast",
       "id": "authenticatable",
-      "community": 256,
-      "community_name": "@tiptap/extension-link",
+      "community": 254,
+      "community_name": "@codemirror/lang-json",
       "norm_label": "authenticatable"
     },
     {
@@ -5409,8 +5409,8 @@
       "source_location": "",
       "_origin": "ast",
       "id": "hasfactory",
-      "community": 238,
-      "community_name": "Post.php",
+      "community": 102,
+      "community_name": "latest-blog.blade.php",
       "norm_label": "hasfactory"
     },
     {
@@ -5442,8 +5442,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "app_models_asset",
-      "community": 222,
-      "community_name": "Factory",
+      "community": 25,
+      "community_name": "PackagePostSlot.php",
       "norm_label": "asset.php"
     },
     {
@@ -5453,8 +5453,8 @@
       "source_location": "L7",
       "_origin": "ast",
       "id": "app_models_asset_asset",
-      "community": 222,
-      "community_name": "Factory",
+      "community": 25,
+      "community_name": "PackagePostSlot.php",
       "norm_label": "asset"
     },
     {
@@ -5475,8 +5475,8 @@
       "source_location": "L11",
       "_origin": "ast",
       "id": "app_models_asset_asset_casts",
-      "community": 222,
-      "community_name": "Factory",
+      "community": 25,
+      "community_name": "PackagePostSlot.php",
       "norm_label": ".casts()"
     },
     {
@@ -5508,8 +5508,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "app_models_collection",
-      "community": 7,
-      "community_name": "Model",
+      "community": 45,
+      "community_name": "Collection.php",
       "norm_label": "collection.php"
     },
     {
@@ -5530,8 +5530,8 @@
       "source_location": "L17",
       "_origin": "ast",
       "id": "app_models_collection_collection_entries",
-      "community": 7,
-      "community_name": "Model",
+      "community": 45,
+      "community_name": "Collection.php",
       "norm_label": ".entries()"
     },
     {
@@ -5541,8 +5541,8 @@
       "source_location": "",
       "_origin": "ast",
       "id": "app_models_collection_php_hasmany",
-      "community": 7,
-      "community_name": "Model",
+      "community": 45,
+      "community_name": "Collection.php",
       "norm_label": "hasmany"
     },
     {
@@ -5772,8 +5772,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "app_models_formentry",
-      "community": 45,
-      "community_name": "2026_07_10_185348_create_terms_table.php",
+      "community": 49,
+      "community_name": "FormEntry",
       "norm_label": "formentry.php"
     },
     {
@@ -5783,8 +5783,8 @@
       "source_location": "L10",
       "_origin": "ast",
       "id": "app_models_formentry_formentry",
-      "community": 45,
-      "community_name": "2026_07_10_185348_create_terms_table.php",
+      "community": 49,
+      "community_name": "FormEntry",
       "norm_label": "formentry"
     },
     {
@@ -5794,8 +5794,8 @@
       "source_location": "L17",
       "_origin": "ast",
       "id": "app_models_formentry_formentry_casts",
-      "community": 45,
-      "community_name": "2026_07_10_185348_create_terms_table.php",
+      "community": 49,
+      "community_name": "FormEntry",
       "norm_label": ".casts()"
     },
     {
@@ -5805,8 +5805,8 @@
       "source_location": "L22",
       "_origin": "ast",
       "id": "app_models_formentry_formentry_form",
-      "community": 45,
-      "community_name": "2026_07_10_185348_create_terms_table.php",
+      "community": 49,
+      "community_name": "FormEntry",
       "norm_label": ".form()"
     },
     {
@@ -5816,8 +5816,8 @@
       "source_location": "",
       "_origin": "ast",
       "id": "app_models_formentry_php_belongsto",
-      "community": 45,
-      "community_name": "2026_07_10_185348_create_terms_table.php",
+      "community": 49,
+      "community_name": "FormEntry",
       "norm_label": "belongsto"
     },
     {
@@ -5827,8 +5827,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "app_models_layout",
-      "community": 238,
-      "community_name": "Post.php",
+      "community": 29,
+      "community_name": "TravelDeals.php",
       "norm_label": "layout.php"
     },
     {
@@ -5871,8 +5871,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "app_models_marketing_campaign",
-      "community": 24,
-      "community_name": "PackageList.php",
+      "community": 51,
+      "community_name": "Campaign.php",
       "norm_label": "campaign.php"
     },
     {
@@ -5882,8 +5882,8 @@
       "source_location": "L11",
       "_origin": "ast",
       "id": "app_models_marketing_campaign_campaign",
-      "community": 3,
-      "community_name": "Page",
+      "community": 30,
+      "community_name": "WhyChooseUs.php",
       "norm_label": "campaign"
     },
     {
@@ -5893,8 +5893,8 @@
       "source_location": "L24",
       "_origin": "ast",
       "id": "app_models_marketing_campaign_campaign_template",
-      "community": 3,
-      "community_name": "Page",
+      "community": 51,
+      "community_name": "Campaign.php",
       "norm_label": ".template()"
     },
     {
@@ -5904,8 +5904,8 @@
       "source_location": "",
       "_origin": "ast",
       "id": "app_models_marketing_campaign_php_belongsto",
-      "community": 3,
-      "community_name": "Page",
+      "community": 51,
+      "community_name": "Campaign.php",
       "norm_label": "belongsto"
     },
     {
@@ -5915,8 +5915,8 @@
       "source_location": "L29",
       "_origin": "ast",
       "id": "app_models_marketing_campaign_campaign_stats",
-      "community": 3,
-      "community_name": "Page",
+      "community": 51,
+      "community_name": "Campaign.php",
       "norm_label": ".stats()"
     },
     {
@@ -5926,8 +5926,8 @@
       "source_location": "",
       "_origin": "ast",
       "id": "app_models_marketing_campaign_php_hasmany",
-      "community": 3,
-      "community_name": "Page",
+      "community": 51,
+      "community_name": "Campaign.php",
       "norm_label": "hasmany"
     },
     {
@@ -5937,8 +5937,8 @@
       "source_location": "L34",
       "_origin": "ast",
       "id": "app_models_marketing_campaign_campaign_schedule",
-      "community": 3,
-      "community_name": "Page",
+      "community": 51,
+      "community_name": "Campaign.php",
       "norm_label": ".schedule()"
     },
     {
@@ -5948,8 +5948,8 @@
       "source_location": "",
       "_origin": "ast",
       "id": "app_models_marketing_campaign_php_hasone",
-      "community": 3,
-      "community_name": "Page",
+      "community": 51,
+      "community_name": "Campaign.php",
       "norm_label": "hasone"
     },
     {
@@ -5959,8 +5959,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "app_models_marketing_contact",
-      "community": 108,
-      "community_name": "site-footer.blade.php",
+      "community": 102,
+      "community_name": "latest-blog.blade.php",
       "norm_label": "contact.php"
     },
     {
@@ -5970,8 +5970,8 @@
       "source_location": "L9",
       "_origin": "ast",
       "id": "app_models_marketing_contact_contact",
-      "community": 108,
-      "community_name": "site-footer.blade.php",
+      "community": 102,
+      "community_name": "latest-blog.blade.php",
       "norm_label": "contact"
     },
     {
@@ -5981,8 +5981,8 @@
       "source_location": "L20",
       "_origin": "ast",
       "id": "app_models_marketing_contact_contact_group",
-      "community": 108,
-      "community_name": "site-footer.blade.php",
+      "community": 102,
+      "community_name": "latest-blog.blade.php",
       "norm_label": ".group()"
     },
     {
@@ -5992,8 +5992,8 @@
       "source_location": "",
       "_origin": "ast",
       "id": "app_models_marketing_contact_php_belongsto",
-      "community": 108,
-      "community_name": "site-footer.blade.php",
+      "community": 102,
+      "community_name": "latest-blog.blade.php",
       "norm_label": "belongsto"
     },
     {
@@ -6003,8 +6003,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "app_models_marketing_defaultsetting",
-      "community": 238,
-      "community_name": "Post.php",
+      "community": 31,
+      "community_name": "SiteFooter.php",
       "norm_label": "defaultsetting.php"
     },
     {
@@ -6014,8 +6014,8 @@
       "source_location": "L8",
       "_origin": "ast",
       "id": "app_models_marketing_defaultsetting_defaultsetting",
-      "community": 238,
-      "community_name": "Post.php",
+      "community": 31,
+      "community_name": "SiteFooter.php",
       "norm_label": "defaultsetting"
     },
     {
@@ -6047,8 +6047,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "app_models_marketing_group",
-      "community": 24,
-      "community_name": "PackageList.php",
+      "community": 3,
+      "community_name": "Page",
       "norm_label": "group.php"
     },
     {
@@ -6091,8 +6091,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "app_models_marketing_profiles",
-      "community": 40,
-      "community_name": "2026_07_10_185347_create_posts_table.php",
+      "community": 24,
+      "community_name": "PackageList.php",
       "norm_label": "profiles.php"
     },
     {
@@ -6102,8 +6102,8 @@
       "source_location": "L8",
       "_origin": "ast",
       "id": "app_models_marketing_profiles_profiles",
-      "community": 40,
-      "community_name": "2026_07_10_185347_create_posts_table.php",
+      "community": 24,
+      "community_name": "PackageList.php",
       "norm_label": "profiles"
     },
     {
@@ -6113,8 +6113,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "app_models_marketing_reportpreference",
-      "community": 238,
-      "community_name": "Post.php",
+      "community": 7,
+      "community_name": "Model",
       "norm_label": "reportpreference.php"
     },
     {
@@ -6124,8 +6124,8 @@
       "source_location": "L8",
       "_origin": "ast",
       "id": "app_models_marketing_reportpreference_reportpreference",
-      "community": 238,
-      "community_name": "Post.php",
+      "community": 7,
+      "community_name": "Model",
       "norm_label": "reportpreference"
     },
     {
@@ -6157,8 +6157,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "app_models_marketing_sender",
-      "community": 28,
-      "community_name": "TeamCards.php",
+      "community": 31,
+      "community_name": "SiteFooter.php",
       "norm_label": "sender.php"
     },
     {
@@ -6168,8 +6168,8 @@
       "source_location": "L8",
       "_origin": "ast",
       "id": "app_models_marketing_sender_sender",
-      "community": 28,
-      "community_name": "TeamCards.php",
+      "community": 31,
+      "community_name": "SiteFooter.php",
       "norm_label": "sender"
     },
     {
@@ -6179,8 +6179,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "app_models_marketing_stats",
-      "community": 24,
-      "community_name": "PackageList.php",
+      "community": 7,
+      "community_name": "Model",
       "norm_label": "stats.php"
     },
     {
@@ -6190,8 +6190,8 @@
       "source_location": "L9",
       "_origin": "ast",
       "id": "app_models_marketing_stats_stats",
-      "community": 24,
-      "community_name": "PackageList.php",
+      "community": 7,
+      "community_name": "Model",
       "norm_label": "stats"
     },
     {
@@ -6201,8 +6201,8 @@
       "source_location": "L20",
       "_origin": "ast",
       "id": "app_models_marketing_stats_stats_campaign",
-      "community": 24,
-      "community_name": "PackageList.php",
+      "community": 7,
+      "community_name": "Model",
       "norm_label": ".campaign()"
     },
     {
@@ -6212,8 +6212,8 @@
       "source_location": "",
       "_origin": "ast",
       "id": "app_models_marketing_stats_php_belongsto",
-      "community": 24,
-      "community_name": "PackageList.php",
+      "community": 7,
+      "community_name": "Model",
       "norm_label": "belongsto"
     },
     {
@@ -6256,8 +6256,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "app_models_page",
-      "community": 110,
-      "community_name": "site-top-bar.blade.php",
+      "community": 238,
+      "community_name": "Post.php",
       "norm_label": "page.php"
     },
     {
@@ -6267,8 +6267,8 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "app_models_page_page",
-      "community": 110,
-      "community_name": "site-top-bar.blade.php",
+      "community": 238,
+      "community_name": "Post.php",
       "norm_label": "page"
     },
     {
@@ -6278,8 +6278,8 @@
       "source_location": "L22",
       "_origin": "ast",
       "id": "app_models_page_page_collectionentry",
-      "community": 110,
-      "community_name": "site-top-bar.blade.php",
+      "community": 238,
+      "community_name": "Post.php",
       "norm_label": ".collectionentry()"
     },
     {
@@ -6289,8 +6289,8 @@
       "source_location": "L28",
       "_origin": "ast",
       "id": "app_models_page_page_route",
-      "community": 110,
-      "community_name": "site-top-bar.blade.php",
+      "community": 238,
+      "community_name": "Post.php",
       "norm_label": ".route()"
     },
     {
@@ -6300,8 +6300,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "app_models_pageview",
-      "community": 255,
-      "community_name": "@tiptap/core",
+      "community": 32,
+      "community_name": "SiteNavbar.php",
       "norm_label": "pageview.php"
     },
     {
@@ -6311,8 +6311,8 @@
       "source_location": "L8",
       "_origin": "ast",
       "id": "app_models_pageview_pageview",
-      "community": 255,
-      "community_name": "@tiptap/core",
+      "community": 32,
+      "community_name": "SiteNavbar.php",
       "norm_label": "pageview"
     },
     {
@@ -6333,8 +6333,8 @@
       "source_location": "L10",
       "_origin": "ast",
       "id": "app_models_post_post",
-      "community": 107,
-      "community_name": "simple-text.blade.php",
+      "community": 105,
+      "community_name": "Post",
       "norm_label": "post"
     },
     {
@@ -6344,8 +6344,8 @@
       "source_location": "L24",
       "_origin": "ast",
       "id": "app_models_post_post_terms",
-      "community": 107,
-      "community_name": "simple-text.blade.php",
+      "community": 105,
+      "community_name": "Post",
       "norm_label": ".terms()"
     },
     {
@@ -6355,8 +6355,8 @@
       "source_location": "",
       "_origin": "ast",
       "id": "app_models_post_php_belongstomany",
-      "community": 107,
-      "community_name": "simple-text.blade.php",
+      "community": 105,
+      "community_name": "Post",
       "norm_label": "belongstomany"
     },
     {
@@ -6377,8 +6377,8 @@
       "source_location": "L7",
       "_origin": "ast",
       "id": "app_models_setting_setting",
-      "community": 28,
-      "community_name": "TeamCards.php",
+      "community": 13,
+      "community_name": "BlockRegistry",
       "norm_label": "setting"
     },
     {
@@ -6388,8 +6388,8 @@
       "source_location": "L32",
       "_origin": "ast",
       "id": "app_models_setting_setting_getsendgridapikey",
-      "community": 28,
-      "community_name": "TeamCards.php",
+      "community": 13,
+      "community_name": "BlockRegistry",
       "norm_label": ".getsendgridapikey()"
     },
     {
@@ -6399,8 +6399,8 @@
       "source_location": "L39",
       "_origin": "ast",
       "id": "app_models_setting_setting_getsendgridfromemail",
-      "community": 28,
-      "community_name": "TeamCards.php",
+      "community": 13,
+      "community_name": "BlockRegistry",
       "norm_label": ".getsendgridfromemail()"
     },
     {
@@ -6487,8 +6487,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "app_models_subscriptionplan",
-      "community": 256,
-      "community_name": "@tiptap/extension-link",
+      "community": 13,
+      "community_name": "BlockRegistry",
       "norm_label": "subscriptionplan.php"
     },
     {
@@ -6498,8 +6498,8 @@
       "source_location": "L9",
       "_origin": "ast",
       "id": "app_models_subscriptionplan_subscriptionplan",
-      "community": 28,
-      "community_name": "TeamCards.php",
+      "community": 13,
+      "community_name": "BlockRegistry",
       "norm_label": "subscriptionplan"
     },
     {
@@ -6509,8 +6509,8 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "app_models_subscriptionplan_subscriptionplan_title",
-      "community": 28,
-      "community_name": "TeamCards.php",
+      "community": 13,
+      "community_name": "BlockRegistry",
       "norm_label": ".title()"
     },
     {
@@ -6520,8 +6520,8 @@
       "source_location": "",
       "_origin": "ast",
       "id": "attribute",
-      "community": 28,
-      "community_name": "TeamCards.php",
+      "community": 13,
+      "community_name": "BlockRegistry",
       "norm_label": "attribute"
     },
     {
@@ -6531,8 +6531,8 @@
       "source_location": "L22",
       "_origin": "ast",
       "id": "app_models_subscriptionplan_subscriptionplan_casts",
-      "community": 28,
-      "community_name": "TeamCards.php",
+      "community": 13,
+      "community_name": "BlockRegistry",
       "norm_label": ".casts()"
     },
     {
@@ -6795,8 +6795,8 @@
       "source_location": "L105",
       "_origin": "ast",
       "id": "app_models_user_user_currentplan",
-      "community": 28,
-      "community_name": "TeamCards.php",
+      "community": 13,
+      "community_name": "BlockRegistry",
       "norm_label": ".currentplan()"
     },
     {
@@ -6806,8 +6806,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "app_models_widgetlayout",
-      "community": 28,
-      "community_name": "TeamCards.php",
+      "community": 238,
+      "community_name": "Post.php",
       "norm_label": "widgetlayout.php"
     },
     {
@@ -6817,8 +6817,8 @@
       "source_location": "L7",
       "_origin": "ast",
       "id": "app_models_widgetlayout_widgetlayout",
-      "community": 28,
-      "community_name": "TeamCards.php",
+      "community": 238,
+      "community_name": "Post.php",
       "norm_label": "widgetlayout"
     },
     {
@@ -6927,8 +6927,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "app_support_blockpreview",
-      "community": 221,
-      "community_name": "Sections",
+      "community": 24,
+      "community_name": "PackageList.php",
       "norm_label": "blockpreview.php"
     },
     {
@@ -6938,8 +6938,8 @@
       "source_location": "L7",
       "_origin": "ast",
       "id": "app_support_blockpreview_blockpreview",
-      "community": 221,
-      "community_name": "Sections",
+      "community": 24,
+      "community_name": "PackageList.php",
       "norm_label": "blockpreview"
     },
     {
@@ -6949,8 +6949,8 @@
       "source_location": "L9",
       "_origin": "ast",
       "id": "app_support_blockpreview_blockpreview_render",
-      "community": 221,
-      "community_name": "Sections",
+      "community": 24,
+      "community_name": "PackageList.php",
       "norm_label": ".render()"
     },
     {
@@ -7191,8 +7191,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "app_support_sections",
-      "community": 13,
-      "community_name": "BlockRegistry",
+      "community": 221,
+      "community_name": "Sections",
       "norm_label": "sections.php"
     },
     {
@@ -7356,8 +7356,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "app_widgets_formentriestablewidget",
-      "community": 31,
-      "community_name": "SiteFooter.php",
+      "community": 39,
+      "community_name": "2026_07_10_185347_create_packages_table.php",
       "norm_label": "formentriestablewidget.php"
     },
     {
@@ -7367,8 +7367,8 @@
       "source_location": "L8",
       "_origin": "ast",
       "id": "app_widgets_formentriestablewidget_formentriestablewidget",
-      "community": 31,
-      "community_name": "SiteFooter.php",
+      "community": 39,
+      "community_name": "2026_07_10_185347_create_packages_table.php",
       "norm_label": "formentriestablewidget"
     },
     {
@@ -7378,8 +7378,8 @@
       "source_location": "L10",
       "_origin": "ast",
       "id": "app_widgets_formentriestablewidget_formentriestablewidget_construct",
-      "community": 31,
-      "community_name": "SiteFooter.php",
+      "community": 39,
+      "community_name": "2026_07_10_185347_create_packages_table.php",
       "norm_label": ".__construct()"
     },
     {
@@ -7389,8 +7389,8 @@
       "source_location": "L14",
       "_origin": "ast",
       "id": "app_widgets_formentriestablewidget_formentriestablewidget_type",
-      "community": 31,
-      "community_name": "SiteFooter.php",
+      "community": 39,
+      "community_name": "2026_07_10_185347_create_packages_table.php",
       "norm_label": ".type()"
     },
     {
@@ -7400,8 +7400,8 @@
       "source_location": "L19",
       "_origin": "ast",
       "id": "app_widgets_formentriestablewidget_formentriestablewidget_zone",
-      "community": 31,
-      "community_name": "SiteFooter.php",
+      "community": 39,
+      "community_name": "2026_07_10_185347_create_packages_table.php",
       "norm_label": ".zone()"
     },
     {
@@ -7411,8 +7411,8 @@
       "source_location": "L24",
       "_origin": "ast",
       "id": "app_widgets_formentriestablewidget_formentriestablewidget_make",
-      "community": 31,
-      "community_name": "SiteFooter.php",
+      "community": 39,
+      "community_name": "2026_07_10_185347_create_packages_table.php",
       "norm_label": ".make()"
     },
     {
@@ -7422,8 +7422,8 @@
       "source_location": "",
       "_origin": "ast",
       "id": "app_widgets_formentriestablewidget_php_static",
-      "community": 31,
-      "community_name": "SiteFooter.php",
+      "community": 39,
+      "community_name": "2026_07_10_185347_create_packages_table.php",
       "norm_label": "static"
     },
     {
@@ -7433,8 +7433,8 @@
       "source_location": "L31",
       "_origin": "ast",
       "id": "app_widgets_formentriestablewidget_formentriestablewidget_label",
-      "community": 31,
-      "community_name": "SiteFooter.php",
+      "community": 39,
+      "community_name": "2026_07_10_185347_create_packages_table.php",
       "norm_label": ".label()"
     },
     {
@@ -7444,8 +7444,8 @@
       "source_location": "L36",
       "_origin": "ast",
       "id": "app_widgets_formentriestablewidget_formentriestablewidget_render",
-      "community": 31,
-      "community_name": "SiteFooter.php",
+      "community": 39,
+      "community_name": "2026_07_10_185347_create_packages_table.php",
       "norm_label": ".render()"
     },
     {
@@ -7455,8 +7455,8 @@
       "source_location": "L67",
       "_origin": "ast",
       "id": "app_widgets_formentriestablewidget_formentriestablewidget_resolveform",
-      "community": 31,
-      "community_name": "SiteFooter.php",
+      "community": 39,
+      "community_name": "2026_07_10_185347_create_packages_table.php",
       "norm_label": ".resolveform()"
     },
     {
@@ -7466,8 +7466,8 @@
       "source_location": "",
       "_origin": "ast",
       "id": "app_widgets_formentriestablewidget_php_form",
-      "community": 31,
-      "community_name": "SiteFooter.php",
+      "community": 39,
+      "community_name": "2026_07_10_185347_create_packages_table.php",
       "norm_label": "form"
     },
     {
@@ -7543,8 +7543,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "app_widgets_slatablewidget",
-      "community": 49,
-      "community_name": "2026_07_13_172740_add_sections_to_posts_table.php",
+      "community": 39,
+      "community_name": "2026_07_10_185347_create_packages_table.php",
       "norm_label": "slatablewidget.php"
     },
     {
@@ -7554,8 +7554,8 @@
       "source_location": "L5",
       "_origin": "ast",
       "id": "app_widgets_slatablewidget_slatablewidget",
-      "community": 49,
-      "community_name": "2026_07_13_172740_add_sections_to_posts_table.php",
+      "community": 39,
+      "community_name": "2026_07_10_185347_create_packages_table.php",
       "norm_label": "slatablewidget"
     },
     {
@@ -7565,8 +7565,8 @@
       "source_location": "L7",
       "_origin": "ast",
       "id": "app_widgets_slatablewidget_slatablewidget_type",
-      "community": 49,
-      "community_name": "2026_07_13_172740_add_sections_to_posts_table.php",
+      "community": 39,
+      "community_name": "2026_07_10_185347_create_packages_table.php",
       "norm_label": ".type()"
     },
     {
@@ -7576,8 +7576,8 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "app_widgets_slatablewidget_slatablewidget_zone",
-      "community": 49,
-      "community_name": "2026_07_13_172740_add_sections_to_posts_table.php",
+      "community": 39,
+      "community_name": "2026_07_10_185347_create_packages_table.php",
       "norm_label": ".zone()"
     },
     {
@@ -7587,8 +7587,8 @@
       "source_location": "L17",
       "_origin": "ast",
       "id": "app_widgets_slatablewidget_slatablewidget_label",
-      "community": 49,
-      "community_name": "2026_07_13_172740_add_sections_to_posts_table.php",
+      "community": 39,
+      "community_name": "2026_07_10_185347_create_packages_table.php",
       "norm_label": ".label()"
     },
     {
@@ -7598,8 +7598,8 @@
       "source_location": "L22",
       "_origin": "ast",
       "id": "app_widgets_slatablewidget_slatablewidget_render",
-      "community": 49,
-      "community_name": "2026_07_13_172740_add_sections_to_posts_table.php",
+      "community": 39,
+      "community_name": "2026_07_10_185347_create_packages_table.php",
       "norm_label": ".render()"
     },
     {
@@ -7609,8 +7609,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "app_widgets_statwidget",
-      "community": 51,
-      "community_name": "2026_07_15_211911_create_post_term_table.php",
+      "community": 39,
+      "community_name": "2026_07_10_185347_create_packages_table.php",
       "norm_label": "statwidget.php"
     },
     {
@@ -7620,8 +7620,8 @@
       "source_location": "L5",
       "_origin": "ast",
       "id": "app_widgets_statwidget_statwidget",
-      "community": 51,
-      "community_name": "2026_07_15_211911_create_post_term_table.php",
+      "community": 39,
+      "community_name": "2026_07_10_185347_create_packages_table.php",
       "norm_label": "statwidget"
     },
     {
@@ -7631,8 +7631,8 @@
       "source_location": "L7",
       "_origin": "ast",
       "id": "app_widgets_statwidget_statwidget_type",
-      "community": 51,
-      "community_name": "2026_07_15_211911_create_post_term_table.php",
+      "community": 39,
+      "community_name": "2026_07_10_185347_create_packages_table.php",
       "norm_label": ".type()"
     },
     {
@@ -7642,8 +7642,8 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "app_widgets_statwidget_statwidget_zone",
-      "community": 51,
-      "community_name": "2026_07_15_211911_create_post_term_table.php",
+      "community": 39,
+      "community_name": "2026_07_10_185347_create_packages_table.php",
       "norm_label": ".zone()"
     },
     {
@@ -7653,8 +7653,8 @@
       "source_location": "L17",
       "_origin": "ast",
       "id": "app_widgets_statwidget_statwidget_label",
-      "community": 51,
-      "community_name": "2026_07_15_211911_create_post_term_table.php",
+      "community": 39,
+      "community_name": "2026_07_10_185347_create_packages_table.php",
       "norm_label": ".label()"
     },
     {
@@ -7664,8 +7664,8 @@
       "source_location": "L22",
       "_origin": "ast",
       "id": "app_widgets_statwidget_statwidget_render",
-      "community": 51,
-      "community_name": "2026_07_15_211911_create_post_term_table.php",
+      "community": 39,
+      "community_name": "2026_07_10_185347_create_packages_table.php",
       "norm_label": ".render()"
     },
     {
@@ -7675,8 +7675,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "app_widgets_updateslistwidget",
-      "community": 54,
-      "community_name": "graphify.js",
+      "community": 39,
+      "community_name": "2026_07_10_185347_create_packages_table.php",
       "norm_label": "updateslistwidget.php"
     },
     {
@@ -7686,8 +7686,8 @@
       "source_location": "L5",
       "_origin": "ast",
       "id": "app_widgets_updateslistwidget_updateslistwidget",
-      "community": 54,
-      "community_name": "graphify.js",
+      "community": 39,
+      "community_name": "2026_07_10_185347_create_packages_table.php",
       "norm_label": "updateslistwidget"
     },
     {
@@ -7697,8 +7697,8 @@
       "source_location": "L7",
       "_origin": "ast",
       "id": "app_widgets_updateslistwidget_updateslistwidget_type",
-      "community": 54,
-      "community_name": "graphify.js",
+      "community": 39,
+      "community_name": "2026_07_10_185347_create_packages_table.php",
       "norm_label": ".type()"
     },
     {
@@ -7708,8 +7708,8 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "app_widgets_updateslistwidget_updateslistwidget_zone",
-      "community": 54,
-      "community_name": "graphify.js",
+      "community": 39,
+      "community_name": "2026_07_10_185347_create_packages_table.php",
       "norm_label": ".zone()"
     },
     {
@@ -7719,8 +7719,8 @@
       "source_location": "L17",
       "_origin": "ast",
       "id": "app_widgets_updateslistwidget_updateslistwidget_label",
-      "community": 54,
-      "community_name": "graphify.js",
+      "community": 39,
+      "community_name": "2026_07_10_185347_create_packages_table.php",
       "norm_label": ".label()"
     },
     {
@@ -7730,8 +7730,8 @@
       "source_location": "L22",
       "_origin": "ast",
       "id": "app_widgets_updateslistwidget_updateslistwidget_render",
-      "community": 54,
-      "community_name": "graphify.js",
+      "community": 39,
+      "community_name": "2026_07_10_185347_create_packages_table.php",
       "norm_label": ".render()"
     },
     {
@@ -7741,8 +7741,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "app_widgets_visitorwidget",
-      "community": 255,
-      "community_name": "@tiptap/core",
+      "community": 32,
+      "community_name": "SiteNavbar.php",
       "norm_label": "visitorwidget.php"
     },
     {
@@ -7752,8 +7752,8 @@
       "source_location": "L8",
       "_origin": "ast",
       "id": "app_widgets_visitorwidget_visitorwidget",
-      "community": 255,
-      "community_name": "@tiptap/core",
+      "community": 32,
+      "community_name": "SiteNavbar.php",
       "norm_label": "visitorwidget"
     },
     {
@@ -7763,8 +7763,8 @@
       "source_location": "L10",
       "_origin": "ast",
       "id": "app_widgets_visitorwidget_visitorwidget_type",
-      "community": 255,
-      "community_name": "@tiptap/core",
+      "community": 32,
+      "community_name": "SiteNavbar.php",
       "norm_label": ".type()"
     },
     {
@@ -7774,8 +7774,8 @@
       "source_location": "L15",
       "_origin": "ast",
       "id": "app_widgets_visitorwidget_visitorwidget_zone",
-      "community": 255,
-      "community_name": "@tiptap/core",
+      "community": 32,
+      "community_name": "SiteNavbar.php",
       "norm_label": ".zone()"
     },
     {
@@ -7785,8 +7785,8 @@
       "source_location": "L20",
       "_origin": "ast",
       "id": "app_widgets_visitorwidget_visitorwidget_label",
-      "community": 255,
-      "community_name": "@tiptap/core",
+      "community": 32,
+      "community_name": "SiteNavbar.php",
       "norm_label": ".label()"
     },
     {
@@ -7796,8 +7796,8 @@
       "source_location": "L25",
       "_origin": "ast",
       "id": "app_widgets_visitorwidget_visitorwidget_render",
-      "community": 255,
-      "community_name": "@tiptap/core",
+      "community": 32,
+      "community_name": "SiteNavbar.php",
       "norm_label": ".render()"
     },
     {
@@ -7807,8 +7807,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "app_widgets_websiteanalyticswidget",
-      "community": 86,
-      "community_name": "create.blade.php",
+      "community": 39,
+      "community_name": "2026_07_10_185347_create_packages_table.php",
       "norm_label": "websiteanalyticswidget.php"
     },
     {
@@ -7818,8 +7818,8 @@
       "source_location": "L5",
       "_origin": "ast",
       "id": "app_widgets_websiteanalyticswidget_websiteanalyticswidget",
-      "community": 86,
-      "community_name": "create.blade.php",
+      "community": 39,
+      "community_name": "2026_07_10_185347_create_packages_table.php",
       "norm_label": "websiteanalyticswidget"
     },
     {
@@ -7829,8 +7829,8 @@
       "source_location": "L7",
       "_origin": "ast",
       "id": "app_widgets_websiteanalyticswidget_websiteanalyticswidget_type",
-      "community": 86,
-      "community_name": "create.blade.php",
+      "community": 39,
+      "community_name": "2026_07_10_185347_create_packages_table.php",
       "norm_label": ".type()"
     },
     {
@@ -7840,8 +7840,8 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "app_widgets_websiteanalyticswidget_websiteanalyticswidget_zone",
-      "community": 86,
-      "community_name": "create.blade.php",
+      "community": 39,
+      "community_name": "2026_07_10_185347_create_packages_table.php",
       "norm_label": ".zone()"
     },
     {
@@ -7851,8 +7851,8 @@
       "source_location": "L17",
       "_origin": "ast",
       "id": "app_widgets_websiteanalyticswidget_websiteanalyticswidget_label",
-      "community": 86,
-      "community_name": "create.blade.php",
+      "community": 39,
+      "community_name": "2026_07_10_185347_create_packages_table.php",
       "norm_label": ".label()"
     },
     {
@@ -7862,8 +7862,8 @@
       "source_location": "L22",
       "_origin": "ast",
       "id": "app_widgets_websiteanalyticswidget_websiteanalyticswidget_render",
-      "community": 86,
-      "community_name": "create.blade.php",
+      "community": 39,
+      "community_name": "2026_07_10_185347_create_packages_table.php",
       "norm_label": ".render()"
     },
     {
@@ -8038,8 +8038,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "artisan",
-      "community": 28,
-      "community_name": "TeamCards.php",
+      "community": 99,
+      "community_name": "UpdateController.php",
       "norm_label": "artisan"
     },
     {
@@ -8863,8 +8863,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "config_auth",
-      "community": 8,
-      "community_name": "LoginController.php",
+      "community": 256,
+      "community_name": "@tiptap/extension-link",
       "norm_label": "auth.php"
     },
     {
@@ -8973,8 +8973,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "database_factories_adminfactory",
-      "community": 105,
-      "community_name": "page-banner.blade.php",
+      "community": 256,
+      "community_name": "@tiptap/extension-link",
       "norm_label": "adminfactory.php"
     },
     {
@@ -8984,8 +8984,8 @@
       "source_location": "L13",
       "_origin": "ast",
       "id": "database_factories_adminfactory_adminfactory",
-      "community": 105,
-      "community_name": "page-banner.blade.php",
+      "community": 106,
+      "community_name": "AdminFactory",
       "norm_label": "adminfactory"
     },
     {
@@ -9006,8 +9006,8 @@
       "source_location": "L25",
       "_origin": "ast",
       "id": "database_factories_adminfactory_adminfactory_definition",
-      "community": 105,
-      "community_name": "page-banner.blade.php",
+      "community": 106,
+      "community_name": "AdminFactory",
       "norm_label": ".definition()"
     },
     {
@@ -9017,8 +9017,8 @@
       "source_location": "L40",
       "_origin": "ast",
       "id": "database_factories_adminfactory_adminfactory_unverified",
-      "community": 105,
-      "community_name": "page-banner.blade.php",
+      "community": 106,
+      "community_name": "AdminFactory",
       "norm_label": ".unverified()"
     },
     {
@@ -9028,8 +9028,8 @@
       "source_location": "",
       "_origin": "ast",
       "id": "database_factories_adminfactory_php_static",
-      "community": 105,
-      "community_name": "page-banner.blade.php",
+      "community": 106,
+      "community_name": "AdminFactory",
       "norm_label": "static"
     },
     {
@@ -9072,8 +9072,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "database_factories_formentryfactory",
-      "community": 45,
-      "community_name": "2026_07_10_185348_create_terms_table.php",
+      "community": 49,
+      "community_name": "FormEntry",
       "norm_label": "formentryfactory.php"
     },
     {
@@ -9083,8 +9083,8 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "database_factories_formentryfactory_formentryfactory",
-      "community": 29,
-      "community_name": "TravelDeals.php",
+      "community": 49,
+      "community_name": "FormEntry",
       "norm_label": "formentryfactory"
     },
     {
@@ -9094,8 +9094,8 @@
       "source_location": "L16",
       "_origin": "ast",
       "id": "database_factories_formentryfactory_formentryfactory_definition",
-      "community": 29,
-      "community_name": "TravelDeals.php",
+      "community": 49,
+      "community_name": "FormEntry",
       "norm_label": ".definition()"
     },
     {
@@ -9105,8 +9105,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "database_factories_formfactory",
-      "community": 29,
-      "community_name": "TravelDeals.php",
+      "community": 102,
+      "community_name": "latest-blog.blade.php",
       "norm_label": "formfactory.php"
     },
     {
@@ -9116,8 +9116,8 @@
       "source_location": "L11",
       "_origin": "ast",
       "id": "database_factories_formfactory_formfactory",
-      "community": 29,
-      "community_name": "TravelDeals.php",
+      "community": 102,
+      "community_name": "latest-blog.blade.php",
       "norm_label": "formfactory"
     },
     {
@@ -9127,8 +9127,8 @@
       "source_location": "L15",
       "_origin": "ast",
       "id": "database_factories_formfactory_formfactory_definition",
-      "community": 29,
-      "community_name": "TravelDeals.php",
+      "community": 102,
+      "community_name": "latest-blog.blade.php",
       "norm_label": ".definition()"
     },
     {
@@ -9204,8 +9204,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "database_factories_userfactory",
-      "community": 106,
-      "community_name": "profile-bento.blade.php",
+      "community": 29,
+      "community_name": "TravelDeals.php",
       "norm_label": "userfactory.php"
     },
     {
@@ -9215,8 +9215,8 @@
       "source_location": "L13",
       "_origin": "ast",
       "id": "database_factories_userfactory_userfactory",
-      "community": 106,
-      "community_name": "profile-bento.blade.php",
+      "community": 29,
+      "community_name": "TravelDeals.php",
       "norm_label": "userfactory"
     },
     {
@@ -9226,8 +9226,8 @@
       "source_location": "L25",
       "_origin": "ast",
       "id": "database_factories_userfactory_userfactory_definition",
-      "community": 106,
-      "community_name": "profile-bento.blade.php",
+      "community": 29,
+      "community_name": "TravelDeals.php",
       "norm_label": ".definition()"
     },
     {
@@ -9237,8 +9237,8 @@
       "source_location": "L39",
       "_origin": "ast",
       "id": "database_factories_userfactory_userfactory_unverified",
-      "community": 106,
-      "community_name": "profile-bento.blade.php",
+      "community": 29,
+      "community_name": "TravelDeals.php",
       "norm_label": ".unverified()"
     },
     {
@@ -9248,8 +9248,8 @@
       "source_location": "",
       "_origin": "ast",
       "id": "database_factories_userfactory_php_static",
-      "community": 106,
-      "community_name": "profile-bento.blade.php",
+      "community": 29,
+      "community_name": "TravelDeals.php",
       "norm_label": "static"
     },
     {
@@ -10678,8 +10678,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "database_seeders_adminseeder",
-      "community": 239,
-      "community_name": "BelongsTo",
+      "community": 54,
+      "community_name": "Seeder",
       "norm_label": "adminseeder.php"
     },
     {
@@ -10689,8 +10689,8 @@
       "source_location": "L8",
       "_origin": "ast",
       "id": "database_seeders_adminseeder_adminseeder",
-      "community": 239,
-      "community_name": "BelongsTo",
+      "community": 54,
+      "community_name": "Seeder",
       "norm_label": "adminseeder"
     },
     {
@@ -10700,8 +10700,8 @@
       "source_location": "",
       "_origin": "ast",
       "id": "seeder",
-      "community": 239,
-      "community_name": "BelongsTo",
+      "community": 54,
+      "community_name": "Seeder",
       "norm_label": "seeder"
     },
     {
@@ -10711,8 +10711,8 @@
       "source_location": "L13",
       "_origin": "ast",
       "id": "database_seeders_adminseeder_adminseeder_run",
-      "community": 239,
-      "community_name": "BelongsTo",
+      "community": 54,
+      "community_name": "Seeder",
       "norm_label": ".run()"
     },
     {
@@ -10722,8 +10722,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "database_seeders_databaseseeder",
-      "community": 239,
-      "community_name": "BelongsTo",
+      "community": 54,
+      "community_name": "Seeder",
       "norm_label": "databaseseeder.php"
     },
     {
@@ -10733,8 +10733,8 @@
       "source_location": "L7",
       "_origin": "ast",
       "id": "database_seeders_databaseseeder_databaseseeder",
-      "community": 239,
-      "community_name": "BelongsTo",
+      "community": 54,
+      "community_name": "Seeder",
       "norm_label": "databaseseeder"
     },
     {
@@ -10744,8 +10744,8 @@
       "source_location": "L9",
       "_origin": "ast",
       "id": "database_seeders_databaseseeder_databaseseeder_run",
-      "community": 239,
-      "community_name": "BelongsTo",
+      "community": 54,
+      "community_name": "Seeder",
       "norm_label": ".run()"
     },
     {
@@ -13711,8 +13711,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "routes_admin",
-      "community": 28,
-      "community_name": "TeamCards.php",
+      "community": 25,
+      "community_name": "PackagePostSlot.php",
       "norm_label": "admin.php"
     },
     {
@@ -13722,8 +13722,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "routes_console",
-      "community": 28,
-      "community_name": "TeamCards.php",
+      "community": 43,
+      "community_name": "2026_07_10_185348_create_destinations_table.php",
       "norm_label": "console.php"
     },
     {
@@ -13733,8 +13733,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "routes_marketing_marketing",
-      "community": 30,
-      "community_name": "WhyChooseUs.php",
+      "community": 24,
+      "community_name": "PackageList.php",
       "norm_label": "marketing.php"
     },
     {
@@ -13744,8 +13744,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "routes_marketing_tracking",
-      "community": 24,
-      "community_name": "PackageList.php",
+      "community": 7,
+      "community_name": "Model",
       "norm_label": "tracking.php"
     },
     {
@@ -13755,8 +13755,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "routes_web",
-      "community": 33,
-      "community_name": "SiteTopBar.php",
+      "community": 24,
+      "community_name": "PackageList.php",
       "norm_label": "web.php"
     },
     {
@@ -13821,8 +13821,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "tests_feature_collectionfieldtypetest",
-      "community": 7,
-      "community_name": "Model",
+      "community": 256,
+      "community_name": "@tiptap/extension-link",
       "norm_label": "collectionfieldtypetest.php"
     },
     {
@@ -13887,8 +13887,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "tests_feature_formentriestablewidgettest",
-      "community": 31,
-      "community_name": "SiteFooter.php",
+      "community": 39,
+      "community_name": "2026_07_10_185347_create_packages_table.php",
       "norm_label": "formentriestablewidgettest.php"
     },
     {
@@ -13898,8 +13898,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "tests_feature_layouttest",
-      "community": 236,
-      "community_name": "User",
+      "community": 256,
+      "community_name": "@tiptap/extension-link",
       "norm_label": "layouttest.php"
     },
     {
@@ -13923,6 +13923,17 @@
       "community": 286,
       "community_name": "PostEditorTest.php",
       "norm_label": "posteditortest.php"
+    },
+    {
+      "label": "PreviewControllerTest.php",
+      "file_type": "code",
+      "source_file": "tests/Feature/PreviewControllerTest.php",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "tests_feature_previewcontrollertest",
+      "community": 256,
+      "community_name": "@tiptap/extension-link",
+      "norm_label": "previewcontrollertest.php"
     },
     {
       "label": "ProfileTest.php",
@@ -13964,8 +13975,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "tests_feature_subscriptionplanedittest",
-      "community": 256,
-      "community_name": "@tiptap/extension-link",
+      "community": 13,
+      "community_name": "BlockRegistry",
       "norm_label": "subscriptionplanedittest.php"
     },
     {
@@ -33578,6 +33589,18 @@
       "relation": "imports",
       "context": "import",
       "confidence": "EXTRACTED",
+      "source_file": "tests/Feature/PreviewControllerTest.php",
+      "source_location": "L3",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "tests_feature_previewcontrollertest",
+      "target": "app_models_admin_admin",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
       "source_file": "tests/Feature/ProfileTest.php",
       "source_location": "L3",
       "weight": 1.0,
@@ -46879,5 +46902,5 @@
     }
   ],
   "hyperedges": [],
-  "built_at_commit": "0f4f5098f59f874d4d706a7eaf33235f9df3d81f"
+  "built_at_commit": "5230841375fb478378d564e20b0b225b436d7260"
 }
