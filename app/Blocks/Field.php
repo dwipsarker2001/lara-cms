@@ -77,7 +77,6 @@ class Field
                     ['value' => '#ffffff', 'label' => 'White'],
                     ['value' => '#000000', 'label' => 'Black'],
                     ['value' => '#f3f4f6', 'label' => 'Light Gray'],
-                    ['value' => '#F4F2F1', 'label' => 'Off White'],
                     ['value' => '#e5e7eb', 'label' => 'Gray'],
                     ['value' => '#eff6ff', 'label' => 'Light Blue'],
                     ['value' => '#dbeafe', 'label' => 'Blue'],

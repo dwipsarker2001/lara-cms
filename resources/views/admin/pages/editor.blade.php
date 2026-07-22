@@ -597,9 +597,32 @@
                                                                      if (evt.oldIndex === evt.newIndex) return;
                                                                      const name = el.dataset.fieldName;
                                                                      if (!name) return;
+
+                                                                     // Revert Sortable DOM manipulation physically so Alpine stays in control
+                                                                     const parent = evt.from;
+                                                                     if (evt.newIndex > evt.oldIndex) {
+                                                                         parent.insertBefore(evt.item, parent.children[evt.oldIndex]);
+                                                                     } else {
+                                                                         parent.insertBefore(evt.item, parent.children[evt.oldIndex + 1]);
+                                                                     }
+
+                                                                     // Adjust index for TEMPLATE element at index 0
+                                                                     const offset = (parent.children[0] && parent.children[0].tagName === 'TEMPLATE') ? 1 : 0;
+                                                                     const oldIdx = evt.oldIndex - offset;
+                                                                     const newIdx = evt.newIndex - offset;
+
                                                                      const list = getList(name);
-                                                                     const item = list.splice(evt.oldIndex, 1)[0];
-                                                                     list.splice(evt.newIndex, 0, item);
+                                                                     const item = list.splice(oldIdx, 1)[0];
+                                                                     list.splice(newIdx, 0, item);
+
+                                                                     // Re-assign list array reference to force Alpine reactivity update
+                                                                     let d = this.sections[this.active].data;
+                                                                     for (const crumb of this.crumbs) {
+                                                                         d = d[crumb.key];
+                                                                         if (crumb.index !== undefined) d = d[crumb.index];
+                                                                     }
+                                                                     d[name] = [...list];
+
                                                                      dirty = true;
                                                                      schedulePreview();
                                                                  },
@@ -733,7 +756,8 @@
                 if (!pages) pages = [];
                 if (!homeGlobals) homeGlobals = {};
                 this.sections = JSON.parse(JSON.stringify(sections));
-                this.originalSections = JSON.parse(JSON.stringify(sections));
+                this.ensureSectionKeys();
+                this.originalSections = JSON.parse(JSON.stringify(this.sections));
                 this.schemas = schemas;
                 this.blockList = blockList;
                 this.slug = slug;
@@ -741,6 +765,14 @@
                 this.homeGlobals = homeGlobals;
                 this.$nextTick(() => this.initSectionSortable());
                 this.refreshPreview();
+            },
+
+            ensureSectionKeys() {
+                for (const section of this.sections) {
+                    if (!section._key) {
+                        section._key = crypto.randomUUID ? crypto.randomUUID() : Date.now().toString(36) + Math.random().toString(36).slice(2);
+                    }
+                }
             },
 
             initSectionSortable() {
@@ -756,12 +788,26 @@
                     easing: 'cubic-bezier(0.25, 0.1, 0.25, 1)',
                     ghostClass: 'sortable-ghost',
                     onEnd: (evt) => {
-                        if (evt.oldIndex === evt.newIndex) return;
-                        const item = this.sections.splice(evt.oldIndex, 1)[0];
-                        this.sections.splice(evt.newIndex, 0, item);
-                        this.dirty = true;
-                        this.schedulePreview();
-                    },
+                                                                      if (evt.oldIndex === evt.newIndex) return;
+
+                                                                      // Revert Sortable DOM manipulation physically so Alpine stays in control
+                                                                      const parent = evt.from;
+                                                                      if (evt.newIndex > evt.oldIndex) {
+                                                                          parent.insertBefore(evt.item, parent.children[evt.oldIndex]);
+                                                                      } else {
+                                                                          parent.insertBefore(evt.item, parent.children[evt.oldIndex + 1]);
+                                                                      }
+
+                                                                      // Adjust index for TEMPLATE element at index 0
+                                                                      const offset = (parent.children[0] && parent.children[0].tagName === 'TEMPLATE') ? 1 : 0;
+                                                                      const oldIdx = evt.oldIndex - offset;
+                                                                      const newIdx = evt.newIndex - offset;
+
+                                                                      const item = this.sections.splice(oldIdx, 1)[0];
+                                                                      this.sections.splice(newIdx, 0, item);
+                                                                      this.dirty = true;
+                                                                      this.schedulePreview();
+                                                                  },
                 });
             },
 
@@ -1022,6 +1068,7 @@
 
             reset() {
                 this.sections = JSON.parse(JSON.stringify(this.originalSections));
+                this.ensureSectionKeys();
                 this.active = null;
                 this.crumbs = [];
                 this.dirty = false;
@@ -1033,8 +1080,15 @@
             },
 
             removeSection(i) {
+                // Destroy Sortable BEFORE mutating the array so it doesn't
+                // interfere with Alpine's DOM diffing (otherwise the wrong
+                // element gets removed from the DOM).
+                if (this._sectionSortable) {
+                    try { this._sectionSortable.destroy(); } catch (e) {}
+                    this._sectionSortable = null;
+                }
                 this.sections.splice(i, 1);
-                if (this.active === i) { this.active = null; this.crumbs = []; }
+                if (this.active === i || this.active >= this.sections.length) { this.active = null; this.crumbs = []; }
                 this.dirty = true;
                 this.schedulePreview();
                 this.$nextTick(() => this.initSectionSortable());
@@ -1051,6 +1105,7 @@
                 }
                 if (!Array.isArray(d[name])) d[name] = [];
                 d[name].push(this.buildListItem(field));
+                d[name] = [...d[name]];
                 this.dirty = true;
                 this.schedulePreview();
             },
@@ -1063,7 +1118,7 @@
                     if (crumb.index !== undefined) d = d[crumb.index];
                 }
                 if (Array.isArray(d[name])) {
-                    d[name].splice(index, 1);
+                    d[name] = d[name].filter((_, idx) => idx !== index);
                     this.dirty = true;
                     this.schedulePreview();
                 }
@@ -1130,6 +1185,10 @@
             refreshPreview() {
                 const el = document.getElementById('preview-content');
                 if (!el) return;
+                if (this.sections.length === 0) {
+                    el.innerHTML = '';
+                    return;
+                }
                 const payload = { sections: this.sections };
                 if (window.editorPostId) payload.post_id = window.editorPostId;
                 fetch('{{ route('admin.preview') }}', {
@@ -1137,7 +1196,7 @@
                     headers: { 'Content-Type': 'application/json', 'X-CSRF-TOKEN': '{{ csrf_token() }}' },
                     body: JSON.stringify(payload),
                 })
-                .then(r => r.json())
+                .then(r => { if (!r.ok) throw new Error('Preview response ' + r.status); return r.json(); })
                 .then(data => { el.innerHTML = data.html; this.attachPreviewListeners(el); })
                 .catch(e => console.error('Preview fetch failed:', e));
             },

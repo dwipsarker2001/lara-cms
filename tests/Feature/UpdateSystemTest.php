@@ -56,7 +56,7 @@ it('run endpoint returns already up to date when no update is needed', function 
 });
 
 it('run endpoint downloads zip, extracts it, and bumps version', function () {
-    if (!class_exists('ZipArchive')) {
+    if (! class_exists('ZipArchive')) {
         $this->markTestSkipped('ZipArchive extension not installed.');
     }
 

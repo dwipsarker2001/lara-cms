@@ -13,6 +13,7 @@ class SubscriptionPlanController extends Controller
     {
         $plans = SubscriptionPlan::orderBy('created_at', 'desc')->get();
         $defaultPlanId = Setting::value('default_subscription_plan_id');
+
         return view('admin.subscription-plans.index', compact('plans', 'defaultPlanId'));
     }
 

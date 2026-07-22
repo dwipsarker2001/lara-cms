@@ -22,6 +22,7 @@ class CollectionEntry extends Model
         if (trim($this->data['name'] ?? '') !== '') {
             return $this->data['name'];
         }
+
         return 'Entry #'.$this->id;
     }
 

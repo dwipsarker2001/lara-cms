@@ -2,13 +2,14 @@
 
 use App\Models\Admin;
 use App\Models\Marketing\Template;
+use App\Models\User;
 
 use function Pest\Laravel\actingAs;
 use function Pest\Laravel\get;
 use function Pest\Laravel\post;
 
 beforeEach(function () {
-    $this->user = \App\Models\User::factory()->create();
+    $this->user = User::factory()->create();
     $this->admin = Admin::factory()->create([
         'id' => $this->user->id,
     ]);

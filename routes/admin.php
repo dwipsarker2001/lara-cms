@@ -5,11 +5,13 @@ use App\Http\Controllers\Admin\AssetsController;
 use App\Http\Controllers\Admin\CollectionController;
 use App\Http\Controllers\Admin\CollectionEntryController;
 use App\Http\Controllers\Admin\CommandSearchController;
+use App\Http\Controllers\Admin\EmailTemplateController;
 use App\Http\Controllers\Admin\FormController;
 use App\Http\Controllers\Admin\PreviewController;
 use App\Http\Controllers\Admin\ProfileController;
 use App\Http\Controllers\Admin\SeoController;
 use App\Http\Controllers\Admin\SettingsController;
+use App\Http\Controllers\Admin\SubscriptionPlanController;
 use App\Http\Controllers\Admin\TaxonomyController;
 use App\Http\Controllers\Admin\UpdateController;
 use App\Http\Controllers\Admin\UserController;
@@ -151,6 +153,8 @@ Route::middleware(['web', 'auth:admin', TrackPageViews::class])->prefix('admin')
         ]);
     })->name('widgets.render');
 
+    Route::post('preview', PreviewController::class)->name('preview');
+
     Route::get('search', CommandSearchController::class)->name('search');
 
     Route::get('profile', [ProfileController::class, 'edit'])->name('profile.edit');
@@ -175,7 +179,7 @@ Route::middleware(['web', 'auth:admin', TrackPageViews::class])->prefix('admin')
 
     Route::patch('collections/{collection}/entries/reorder', [CollectionEntryController::class, 'reorder'])->name('collections.entries.reorder');
     Route::get('collections/{collection}/entries/{entry}/editor', [CollectionEntryController::class, 'editor'])->name('collections.entries.editor');
-    Route::patch('collections/{collection}/entries/{entry}/sections', [CollectionEntryController::class, 'updateSections'])->name('collections.entries.update-sections');
+    Route::patch('collections/{collection}/entries/{entry}/update-sections', [CollectionEntryController::class, 'updateSections'])->name('collections.entries.update-sections');
     Route::resource('collections.entries', CollectionEntryController::class);
 
     Route::get('seo', [SeoController::class, 'index'])->name('seo');
@@ -193,7 +197,7 @@ Route::middleware(['web', 'auth:admin', TrackPageViews::class])->prefix('admin')
 
     Route::resource('users', UserController::class)->except(['show']);
 
-    Route::resource('subscription-plans', \App\Http\Controllers\Admin\SubscriptionPlanController::class)
+    Route::resource('subscription-plans', SubscriptionPlanController::class)
         ->except(['show'])
         ->parameters(['subscription-plans' => 'subscription_plan']);
 
@@ -201,15 +205,12 @@ Route::middleware(['web', 'auth:admin', TrackPageViews::class])->prefix('admin')
         ->except(['show'])
         ->parameters(['administrators' => 'admin']);
 
-    Route::post('preview', [PreviewController::class, 'render'])->name('preview');
-    Route::get('block-preview/{block}', [PreviewController::class, 'blockPreview'])->name('block-preview');
-
-    Route::get('email-templates', [\App\Http\Controllers\Admin\EmailTemplateController::class, 'index'])->name('email-templates.index');
-    Route::get('email-templates/create', [\App\Http\Controllers\Admin\EmailTemplateController::class, 'create'])->name('email-templates.create');
-    Route::post('email-templates', [\App\Http\Controllers\Admin\EmailTemplateController::class, 'store'])->name('email-templates.store');
-    Route::get('email-templates/{email_template}/edit', [\App\Http\Controllers\Admin\EmailTemplateController::class, 'edit'])->name('email-templates.edit');
-    Route::get('email-templates/{email_template}/editor', [\App\Http\Controllers\Admin\EmailTemplateController::class, 'editor'])->name('email-templates.editor');
-    Route::post('email-templates/{email_template}/content', [\App\Http\Controllers\Admin\EmailTemplateController::class, 'saveContent'])->name('email-templates.save-content');
-    Route::put('email-templates/{email_template}', [\App\Http\Controllers\Admin\EmailTemplateController::class, 'update'])->name('email-templates.update');
-    Route::delete('email-templates/{email_template}', [\App\Http\Controllers\Admin\EmailTemplateController::class, 'destroy'])->name('email-templates.destroy');
+    Route::get('email-templates', [EmailTemplateController::class, 'index'])->name('email-templates.index');
+    Route::get('email-templates/create', [EmailTemplateController::class, 'create'])->name('email-templates.create');
+    Route::post('email-templates', [EmailTemplateController::class, 'store'])->name('email-templates.store');
+    Route::get('email-templates/{email_template}/edit', [EmailTemplateController::class, 'edit'])->name('email-templates.edit');
+    Route::get('email-templates/{email_template}/editor', [EmailTemplateController::class, 'editor'])->name('email-templates.editor');
+    Route::post('email-templates/{email_template}/content', [EmailTemplateController::class, 'saveContent'])->name('email-templates.save-content');
+    Route::put('email-templates/{email_template}', [EmailTemplateController::class, 'update'])->name('email-templates.update');
+    Route::delete('email-templates/{email_template}', [EmailTemplateController::class, 'destroy'])->name('email-templates.destroy');
 });

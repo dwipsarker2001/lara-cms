@@ -3,7 +3,6 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Models\CollectionEntry;
 use App\Models\Layout;
 use Illuminate\Http\Request;
 
@@ -71,36 +70,5 @@ class LayoutController extends Controller
         }
 
         return response()->json(['message' => 'Reordered.']);
-    }
-
-    public function editor(Layout $layout)
-    {
-        return view('admin.pages.editor', [
-            'page' => $layout,
-            'editorSaveRoute' => route('admin.layouts.update-sections', $layout),
-            'editorBackRoute' => route('admin.layouts.index'),
-            'blockSchemas' => [],
-            'blockList' => [],
-            'pages' => CollectionEntry::whereNotNull('slug')->orderBy('position')->get(['id', 'slug', 'data'])->map(fn ($p) => [
-                'id' => $p->id,
-                'title' => $p->title,
-                'route' => $p->slug === 'home' ? '/' : '/'.$p->slug,
-            ]),
-            'homeGlobals' => [],
-        ]);
-    }
-
-    public function updateSections(Request $request, Layout $layout)
-    {
-        $request->validate([
-            'sections' => 'present|array',
-            'sections.*._key' => 'required|string',
-            'sections.*.name' => 'required|string',
-            'sections.*.data' => 'required',
-        ]);
-
-        $layout->update(['sections' => $request->sections]);
-
-        return response()->json(['message' => 'Sections saved.']);
     }
 }

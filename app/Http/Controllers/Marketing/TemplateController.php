@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Marketing;
 
 use App\Http\Controllers\Controller;
+use App\Models\Admin;
 use App\Models\Marketing\Template;
 use File;
 use Illuminate\Http\Request;
@@ -14,7 +15,7 @@ class TemplateController extends Controller
     public function index()
     {
         $mylist = Template::where('user_id', auth()->id())->get();
-        $adminIds = \App\Models\Admin::pluck('id');
+        $adminIds = Admin::pluck('id');
         $defaultList = Template::whereIn('user_id', $adminIds)
             ->where('published', true)
             ->orderBy('created_at', 'desc')
@@ -37,7 +38,7 @@ class TemplateController extends Controller
             Template::create([
                 'user_id' => auth()->id(),
                 'template_id' => $newTemplateID,
-                'name' => 'Copy of ' . $adminTemplate->name,
+                'name' => 'Copy of '.$adminTemplate->name,
                 'published' => false,
                 'content' => $adminTemplate->content,
             ]);
@@ -67,6 +68,7 @@ class TemplateController extends Controller
                 File::deleteDirectory($path);
             }
             $template->delete();
+
             return response()->json(['success' => true]);
         }
 
@@ -173,6 +175,7 @@ class TemplateController extends Controller
                 $template = Template::where('template_id', $request->template_id)->first();
                 if ($template) {
                     $template->update(['content' => $contentStr]);
+
                     return response()->json(['saved' => true]);
                 }
             }
@@ -373,7 +376,7 @@ class TemplateController extends Controller
             Template::create([
                 'user_id' => auth()->id(),
                 'template_id' => $newTemplateID,
-                'name' => $template->name . ' (Copy)',
+                'name' => $template->name.' (Copy)',
                 'published' => false,
                 'content' => $template->content,
             ]);
@@ -387,7 +390,7 @@ class TemplateController extends Controller
             Template::create([
                 'user_id' => auth()->id(),
                 'template_id' => $newTemplateID,
-                'name' => $template->name . ' (Copy)',
+                'name' => $template->name.' (Copy)',
                 'published' => false,
             ]);
         }

@@ -426,6 +426,7 @@ class ContactController extends Controller
                 if (! $existingContact) {
                     if ($this->remContacts() <= 0) {
                         fclose($file);
+
                         return redirect()->route('app.contact.index', $groupId)->with('error', 'Contact limit reached during import. Only some contacts were imported.');
                     }
                     $new_contact['user_id'] = auth()->id();

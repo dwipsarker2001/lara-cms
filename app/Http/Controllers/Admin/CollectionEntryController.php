@@ -8,9 +8,9 @@ use App\Models\Admin;
 use App\Models\Collection;
 use App\Models\CollectionEntry;
 use App\Models\Layout;
-use App\Models\Page;
 use App\Support\Sections;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Schema;
 
 class CollectionEntryController extends Controller
 {
@@ -69,14 +69,7 @@ class CollectionEntryController extends Controller
             }
         }
 
-        if ($copiedSections !== null) {
-            $sections = $copiedSections;
-        } elseif ($request->layout_id) {
-            $layout = Layout::find($request->layout_id);
-            $sections = [...($layout->sections ?? []), ...Sections::injectGlobals()];
-        } else {
-            $sections = Sections::injectGlobals();
-        }
+        $sections = $copiedSections ?? [];
 
         $entry = $collection->entries()->create([
             'data' => $data['data'] ?? [],
@@ -135,12 +128,12 @@ class CollectionEntryController extends Controller
             $block = $registry->get($item['name']);
             $section = Sections::createDefaultSection($item['name']);
             $html = '';
-            if ($block && $section && view()->exists($block->view())) {
-                $html = view($block->view(), [
-                    'data' => $section['data'],
-                    '_key' => '',
-                    'preview' => true,
-                ])->render();
+            if ($block && $section) {
+                $html = $block->render(
+                    data: $section['data'],
+                    _key: '',
+                    preview: true,
+                );
             }
 
             return [...$item, 'previewHtml' => $html];
@@ -148,17 +141,25 @@ class CollectionEntryController extends Controller
 
         $homeGlobals = Sections::injectGlobals();
 
+        $pages = collect();
+        if (Schema::hasTable('collection_entries')) {
+            $pages = CollectionEntry::whereHas('collection', fn ($q) => $q->where('slug', 'pages'))
+                ->orderBy('position')
+                ->get(['id', 'slug', 'data'])
+                ->map(fn ($p) => [
+                    'id' => $p->id,
+                    'title' => $p->title,
+                    'route' => $p->route(),
+                ]);
+        }
+
         return view('admin.collections.entries.editor', [
             'collection' => $collection,
             'entry' => $entry,
             'blockSchemas' => $registry->schemas(),
             'homeGlobals' => $homeGlobals,
             'blockList' => $blockList,
-            'pages' => CollectionEntry::whereNotNull('slug')->orderBy('position')->get(['id', 'slug', 'data'])->map(fn ($p) => [
-                'id' => $p->id,
-                'title' => $p->title,
-                'route' => $p->slug === 'home' ? '/' : '/'.$p->slug,
-            ]),
+            'pages' => $pages,
         ]);
     }
 
@@ -175,7 +176,8 @@ class CollectionEntryController extends Controller
 
         $entry->update(['sections' => $request->sections]);
 
-        $globalNames = [];
+        $registry = app(BlockRegistry::class);
+        $globalNames = $registry->globals()->pluck('name')->toArray();
 
         $propagated = Sections::sectionsToPropagate($request->sections, $globalNames);
 

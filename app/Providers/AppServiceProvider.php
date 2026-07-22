@@ -2,7 +2,6 @@
 
 namespace App\Providers;
 
-use App\Blocks\BlockRegistry;
 use App\Models\Collection;
 use App\Models\Form;
 use App\Widgets\WidgetRegistry;
@@ -15,7 +14,6 @@ class AppServiceProvider extends ServiceProvider
 {
     public function register(): void
     {
-        $this->app->singleton(BlockRegistry::class);
         $this->app->singleton(WidgetRegistry::class);
     }
 

@@ -2,12 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Blocks\BlockRegistry;
 use App\Http\Controllers\Controller;
-use App\Models\Page;
-use App\Support\Sections;
-use Illuminate\Http\Request;
-
 use App\Models\Collection;
 use App\Models\CollectionEntry;
 

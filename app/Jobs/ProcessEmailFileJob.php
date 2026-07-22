@@ -2,6 +2,7 @@
 
 namespace App\Jobs;
 
+use App\Models\Setting;
 use Egulias\EmailValidator\EmailValidator;
 use Egulias\EmailValidator\Validation\DNSCheckValidation;
 use Egulias\EmailValidator\Validation\MultipleValidationWithAnd;
@@ -154,7 +155,7 @@ class ProcessEmailFileJob implements ShouldQueue
         curl_setopt($ch, CURLOPT_POST, 1);
         curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($data));
         curl_setopt($ch, CURLOPT_HTTPHEADER, [
-            'Authorization: Bearer '.\App\Models\Setting::getSendGridApiKey(),
+            'Authorization: Bearer '.Setting::getSendGridApiKey(),
             'Content-Type: application/json',
         ]);
 

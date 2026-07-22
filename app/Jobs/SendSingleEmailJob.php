@@ -6,6 +6,7 @@ use App\Models\Marketing\Campaign;
 use App\Models\Marketing\Contact;
 use App\Models\Marketing\Stats;
 use App\Models\Marketing\Template;
+use App\Models\Setting;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
@@ -140,7 +141,7 @@ class SendSingleEmailJob implements ShouldQueue
             CURLOPT_POST => true,
             CURLOPT_POSTFIELDS => json_encode($data),
             CURLOPT_HTTPHEADER => [
-                'Authorization: Bearer '.\App\Models\Setting::getSendGridApiKey(),
+                'Authorization: Bearer '.Setting::getSendGridApiKey(),
                 'Content-Type: application/json',
             ],
             CURLOPT_RETURNTRANSFER => true,

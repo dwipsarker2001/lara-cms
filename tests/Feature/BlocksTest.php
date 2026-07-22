@@ -2,15 +2,14 @@
 
 use App\Blocks\Block;
 use App\Blocks\BlockRegistry;
-use App\Blocks\Common\HeroSimple;
+use App\Blocks\common\HeroBanner;
+use App\Blocks\common\TravelDeals;
 use App\Blocks\Field;
 
 test('Block::render returns a string for a block with a view', function () {
-    $block = new HeroSimple;
+    $block = new HeroBanner;
 
-    // HeroSimple has a $background=false override plus background is auto-prepended for non-global
-    // blocks, but the headline-only default data is enough to render the existing heroSimple view.
-    $html = $block->render(data: ['headline' => 'Test headline', 'subtitle' => '', 'ctaLabel' => '', 'ctaUrl' => '', 'dashboardImage' => '', 'rating' => '', 'ratingLabel' => '', 'badge' => '']);
+    $html = $block->render(data: ['headline' => 'Test headline', 'backgroundImage' => '', 'badge' => '', 'description' => '', 'searchUrl' => '', 'searchPlaceholder' => '', 'datePlaceholder' => '']);
 
     expect($html)
         ->toBeString()
@@ -36,11 +35,11 @@ test('Block::render returns empty string when the view does not exist', function
         }
     };
 
-    expect($block->render())->toBe('');
+    expect($block->render(data: []))->toBe('');
 });
 
 test('Block::resolvedFields prepends background for non-global blocks', function () {
-    $block = new \App\Blocks\Common\TravelDeals;
+    $block = new TravelDeals;
 
     $names = array_column($block->resolvedFields(), 'name');
 
@@ -49,13 +48,13 @@ test('Block::resolvedFields prepends background for non-global blocks', function
 });
 
 test('Block::toArray exposes name, label, global and fields', function () {
-    $block = new HeroSimple;
+    $block = new HeroBanner;
 
     $array = $block->toArray();
 
     expect($array)
         ->toHaveKeys(['name', 'label', 'global', 'fields'])
-        ->and($array['name'])->toBe('heroSimple')
+        ->and($array['name'])->toBe('heroBanner')
         ->and($array['global'])->toBeFalse();
 });
 
@@ -63,8 +62,8 @@ test('BlockRegistry discovers concrete block subclasses', function () {
     $registry = app(BlockRegistry::class);
     $all = $registry->all();
 
-    expect($all)->toHaveKey('heroSimple')
-        ->and($all['heroSimple'])->toBeInstanceOf(HeroSimple::class);
+    expect($all)->toHaveKey('heroBanner')
+        ->and($all['heroBanner'])->toBeInstanceOf(HeroBanner::class);
 });
 
 test('Field::background returns a structured object field with image, color, opacity', function () {

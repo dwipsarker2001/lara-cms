@@ -12,6 +12,7 @@ use App\Models\Marketing\Group;
 use App\Models\Marketing\Schedule;
 use App\Models\Marketing\Stats;
 use App\Models\Marketing\Template;
+use App\Models\Setting;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 
@@ -359,7 +360,7 @@ class CampaignController extends Controller
         $jsonData = json_encode($data);
 
         try {
-            $apiKey = \App\Models\Setting::getSendGridApiKey();
+            $apiKey = Setting::getSendGridApiKey();
             $url = env('SENDGRID_APIENDPOINT');
 
             $ch = curl_init();

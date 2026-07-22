@@ -12,7 +12,7 @@
     <script>window.FA_ICONS = {{ Js::from(json_decode(file_get_contents(public_path('fa-icons.json')))) }};</script>
     @stack('styles')
 </head>
-<body class="admin-root antialiased bg-header-bg text-text-primary min-h-full" x-data="{ navCollapsed: {{ (request()->routeIs('admin.pages.editor') || request()->routeIs('admin.layouts.editor') || request()->routeIs('admin.forms.editor') || request()->routeIs('admin.collections.entries.editor') || request()->routeIs('admin.email-templates.editor')) ? 'true' : 'false' }}, userMenuOpen: false }">
+<body class="admin-root antialiased bg-header-bg text-text-primary min-h-full" x-data="{ navCollapsed: {{ (request()->routeIs('admin.forms.editor') || request()->routeIs('admin.collections.entries.editor') || request()->routeIs('admin.email-templates.editor')) ? 'true' : 'false' }}, userMenuOpen: false }">
     {{-- Fixed header --}}
     <header class="fixed top-0 left-0 right-0 h-14 px-4 flex items-center gap-3 z-50 bg-header-bg text-header-text">
         <div class="flex items-center gap-3">

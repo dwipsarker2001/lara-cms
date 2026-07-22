@@ -55,6 +55,3 @@ it('can update a subscription plan', function () {
         ->and((float) $plan->price)->toBe(49.99)
         ->and($plan->max_emails)->toBe(2000);
 });
-
-
-

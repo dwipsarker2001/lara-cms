@@ -1,78 +1,83 @@
-name: Deploy to VPS
+name: Laravel Deploy
 
-# Triggers deployment whenever code is pushed to the 'deploy' branch
 on:
   push:
-    branches: [deploy]
+    branches: deploy
 
 jobs:
-  build-and-deploy:
+  deploy:
     runs-on: ubuntu-latest
-    name: Build and Deploy
     steps:
-      # Step 1: Checkout the latest code from the repository
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
 
-      # Step 2: Setup Node.js for building frontend assets
-      - name: Setup Node
-        uses: actions/setup-node@v4
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
         with:
-          node-version: 22
-          cache: npm
+          php-version: "8.3"
+          tools: composer:v2
 
-      # Step 3: Install Node dependencies (no scripts to avoid build cycles)
-      - name: Install Node dependencies
-        run: npm ci --ignore-scripts
+      - name: Install Dependencies
+        run: composer install --no-ansi --no-interaction --no-scripts --no-progress --prefer-dist --optimize-autoloader
 
-      # Step 4: Build frontend (Vite compiles CSS/JS into public/build/)
-      - name: Build frontend
-        run: npm run build
+      - name: Build assets
+        run: |
+          npm ci
+          npm run build
 
-      # Step 5: Sync all project files to the VPS via rsync
-      # Excludes: .env (env-specific), .git (repo), node_modules/vendor (installed on VPS), storage (persistent data)
-      - name: Deploy code to VPS via rsync
-        uses: burnett01/rsync-deployments@7.0.1
+      - name: Create deployment zip
+        run: |
+          cp .env.example .env
+          php artisan key:generate
+          zip -r deploy.zip . \
+            -x ".git/*" \
+            -x ".github/*" \
+            -x "node_modules/*" \
+            -x "resources/js/*" \
+            -x "resources/css/*" \
+            -x "tests/*" \
+            -x ".editorconfig" \
+            -x ".gitattributes" \
+            -x ".gitignore" \
+            -x "composer.json" \
+            -x "composer.lock" \
+            -x "package.json" \
+            -x "package-lock.json" \
+            -x "postcss.config.js" \
+            -x "tailwind.config.js" \
+            -x "vite.config.js" \
+            -x "phpunit.xml"
+
+      - name: Upload zip via FTP
+        uses: SamKirkland/FTP-Deploy-Action@v4.4.0
         with:
-          switches: -avz --delete --exclude='.env' --exclude='.git' --exclude='node_modules' --exclude='vendor' --exclude='storage'
-          path: .
-          remote_path: ${{ secrets.DEPLOY_PATH }}
-          remote_host: ${{ secrets.SSH_HOST }}
-          remote_port: ${{ secrets.SSH_PORT || '22' }}
-          remote_user: ${{ secrets.SSH_USERNAME }}
-          remote_key: ${{ secrets.SSH_PRIVATE_KEY }}
+          server: ${{ secrets.FTP_SERVER }}
+          username: ${{ secrets.FTP_USERNAME }}
+          password: ${{ secrets.FTP_PASSWORD }}
+          local-dir: ./
+          server-dir: /backend/
+          exclude: |
+            *
 
-      # Step 6: Run post-deployment commands directly on the VPS
-      - name: Post-deploy commands
-        uses: appleboy/ssh-action@v1.0.3
+      - name: Upload deploy.zip
+        env:
+          FTP_SERVER: ${{ secrets.FTP_SERVER }}
+          FTP_USERNAME: ${{ secrets.FTP_USERNAME }}
+          FTP_PASSWORD: ${{ secrets.FTP_PASSWORD }}
+        run: |
+          curl -T deploy.zip "ftp://$FTP_SERVER/backend/" --user "$FTP_USERNAME:$FTP_PASSWORD" --ftp-create-dirs
+
+      - name: SSH extract and post-deploy
+        uses: appleboy/ssh-action@v1.2.0
         with:
           host: ${{ secrets.SSH_HOST }}
           username: ${{ secrets.SSH_USERNAME }}
-          key: ${{ secrets.SSH_PRIVATE_KEY }}
-          port: ${{ secrets.SSH_PORT || '22' }}
+          password: ${{ secrets.SSH_PASSWORD }}
+          key: ${{ secrets.SSH_KEY }}
           script: |
-            # Use Plesk PHP 8.5 (SSH non-interactive shell uses system PHP 8.3 otherwise)
-            export PATH="/opt/plesk/php/8.5/bin:$PATH"
-
-            cd ${{ secrets.DEPLOY_PATH }}
-
-            php artisan down --retry=60
-
-            [ ! -f .env ] && cp .env.example .env
-
-            mkdir -p storage/framework/views storage/framework/cache storage/framework/testing storage/logs
-
-            composer install --no-dev --no-interaction --prefer-dist --optimize-autoloader
-
+            cd /backend
+            unzip -o deploy.zip
+            rm deploy.zip
             php artisan migrate --force
-            php artisan storage:link --force
-
-            if ! grep -q "^APP_KEY=base64:" .env; then
-                php artisan key:generate --force
-            fi
-
+            php artisan storage:link
             php artisan optimize
-
-            chmod -R 775 storage bootstrap/cache public/build
-            chmod +x artisan
-
-            php artisan up
+            chmod -R 775 storage bootstrap/cache

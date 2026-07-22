@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Marketing;
 use App\Http\Controllers\Controller;
 use App\Models\Marketing\DefaultSetting;
 use App\Models\Marketing\Sender;
+use App\Models\Setting;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 
@@ -110,7 +111,7 @@ class SettingController extends Controller
             return redirect()->to(route('login'));
         }
 
-        $apiKey = \App\Models\Setting::getSendGridApiKey();
+        $apiKey = Setting::getSendGridApiKey();
         $sg = new \SendGrid($apiKey);
 
         $senders = Sender::where('user_id', auth()->id())->orderBy('created_at', 'desc')->get();
@@ -153,7 +154,7 @@ class SettingController extends Controller
         }
 
         $domain_name = $request->domain;
-        $apiKey = \App\Models\Setting::getSendGridApiKey();
+        $apiKey = Setting::getSendGridApiKey();
         $sg = new \SendGrid($apiKey);
 
         $request_body = (object) [
@@ -209,7 +210,7 @@ class SettingController extends Controller
                 ->with('error', 'Domain not found or access denied.');
         }
 
-        $apiKey = \App\Models\Setting::getSendGridApiKey();
+        $apiKey = Setting::getSendGridApiKey();
         $sg = new \SendGrid($apiKey);
 
         $request_body = (object) [
@@ -267,7 +268,7 @@ class SettingController extends Controller
         Log::info('Sender', [
             'sender' => $sender,
         ]);
-        $apiKey = \App\Models\Setting::getSendGridApiKey();
+        $apiKey = Setting::getSendGridApiKey();
         $sg = new \SendGrid($apiKey);
 
         try {

@@ -3,7 +3,8 @@
 namespace App\Support;
 
 use App\Blocks\BlockRegistry;
-use App\Models\Page;
+use App\Models\CollectionEntry;
+use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Str;
 
 class Sections
@@ -47,7 +48,11 @@ class Sections
 
     public static function withGlobals(?array $sections): array
     {
-        $home = \App\Models\CollectionEntry::where('slug', 'home')->first();
+        if (! Schema::hasTable('collection_entries')) {
+            return $sections ?? [];
+        }
+
+        $home = CollectionEntry::where('slug', 'home')->first();
 
         if (! $home || ! $home->sections) {
             return $sections ?? [];
@@ -59,16 +64,26 @@ class Sections
             ->filter(fn ($s) => $registry->get($s['name'])?->global)
             ->keyBy('name');
 
-        return collect($sections)->map(function ($s) use ($homeGlobals) {
+        $merged = collect($sections)->map(function ($s) use ($homeGlobals) {
             $global = $homeGlobals->get($s['name'] ?? '');
 
             return $global ? [...$s, 'data' => $global['data']] : $s;
-        })->all();
+        });
+
+        $present = $merged->pluck('name');
+
+        $missing = $homeGlobals->reject(fn ($g, $name) => $present->contains($name));
+
+        return $missing->values()->merge($merged)->all();
     }
 
     public static function injectGlobals(): array
     {
-        $home = \App\Models\CollectionEntry::where('slug', 'home')->first();
+        if (! Schema::hasTable('collection_entries')) {
+            return [];
+        }
+
+        $home = CollectionEntry::where('slug', 'home')->first();
         if (! $home || ! $home->sections) {
             return [];
         }

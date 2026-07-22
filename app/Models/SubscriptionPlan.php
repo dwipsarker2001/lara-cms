@@ -2,10 +2,9 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
-
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Casts\Attribute;
+use Illuminate\Database\Eloquent\Model;
 
 #[Fillable(['name', 'price', 'max_emails', 'max_contacts', 'max_campaigns', 'max_groups'])]
 class SubscriptionPlan extends Model
@@ -14,6 +13,7 @@ class SubscriptionPlan extends Model
     {
         return Attribute::get(fn () => $this->name);
     }
+
     /**
      * Get the attributes that should be cast.
      *

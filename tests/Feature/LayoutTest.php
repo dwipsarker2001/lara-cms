@@ -10,7 +10,7 @@ use function Pest\Laravel\patch;
 use function Pest\Laravel\post;
 
 beforeEach(function () {
-    $this->markTestSkipped('Layouts functionality has been removed.');
+    $this->markTestSkipped('Layout routes are not registered.');
     $this->admin = Admin::factory()->create();
     actingAs($this->admin, 'admin');
 });
@@ -80,26 +80,4 @@ it('deletes a layout', function () {
         ->assertRedirect(route('admin.layouts.index'));
 
     expect(Layout::find($layout->id))->toBeNull();
-});
-
-it('loads the layout editor', function () {
-    $layout = Layout::factory()->create();
-
-    get(route('admin.layouts.editor', $layout))
-        ->assertSuccessful()
-        ->assertSee('Sections');
-});
-
-it('updates layout sections', function () {
-    $layout = Layout::factory()->create();
-
-    $sections = [
-        ['_key' => 'key-1', 'name' => 'PageBanner', 'data' => ['title' => 'Hello'], 'enabled' => true],
-    ];
-
-    patch(route('admin.layouts.update-sections', $layout), [
-        'sections' => $sections,
-    ])->assertSuccessful()->assertJson(['message' => 'Sections saved.']);
-
-    expect($layout->fresh()->sections)->toBe($sections);
 });

@@ -76,4 +76,3 @@ it('allows reassigning user subscription plan', function () {
         ->and($user->subscriptions()->count())->toBe(2)
         ->and($user->subscriptions()->where('status', 'cancelled')->count())->toBe(1);
 });
-

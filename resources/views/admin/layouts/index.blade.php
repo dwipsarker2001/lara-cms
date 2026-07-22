@@ -32,7 +32,7 @@
             sortable-id="sortable-layouts"
             data-key="layoutId"
             reorder-route="admin.layouts.reorder"
-            edit-route="admin.layouts.editor"
+            edit-route="admin.layouts.edit"
             delete-route="admin.layouts.destroy"
             :show-settings="true"
             settings-route="admin.layouts.edit"

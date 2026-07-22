@@ -3,7 +3,6 @@
 use App\Models\Admin;
 use App\Models\Collection;
 use App\Models\CollectionEntry;
-use App\Models\Page;
 use App\Models\Setting;
 
 use function Pest\Laravel\actingAs;

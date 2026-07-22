@@ -49,4 +49,3 @@ class Subscription extends Model
         return true;
     }
 }
-

@@ -107,4 +107,3 @@ class User extends Authenticatable
         return $this->activeSubscription?->plan;
     }
 }
-

@@ -6,6 +6,7 @@ use App\Models\Marketing\Campaign;
 use App\Models\Marketing\Contact;
 use App\Models\Marketing\Stats;
 use App\Models\Marketing\Template;
+use App\Models\Setting;
 use Carbon\Carbon;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Log;
@@ -163,7 +164,7 @@ class ScheduleCampaign extends Command
             CURLOPT_POST => true,
             CURLOPT_POSTFIELDS => json_encode($data),
             CURLOPT_HTTPHEADER => [
-                'Authorization: Bearer '.\App\Models\Setting::getSendGridApiKey(),
+                'Authorization: Bearer '.Setting::getSendGridApiKey(),
                 'Content-Type: application/json',
             ],
             CURLOPT_RETURNTRANSFER => true,
