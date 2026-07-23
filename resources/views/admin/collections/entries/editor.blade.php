@@ -13,6 +13,7 @@
     window.editorHomeGlobals = @json($homeGlobals);
     window.editorSaveRoute = '{{ route('admin.collections.entries.update-sections', [$collection, $entry]) }}';
     window.editorPostId = null;
+
 </script>
 <div class="flex h-full gap-3 p-3 relative" x-data="pageEditor()"     x-init="init(window.editorSections, window.editorSchemas, window.editorBlockList, window.editorSlug, window.editorPages, window.editorHomeGlobals)" x-on:section-selected.window="addSection($event.detail.name)">
     {{-- Editor panel --}}
@@ -660,6 +661,8 @@
                 </div>
             </div>
         </div>
+
+
 
         {{-- Footer --}}
         <div class="shrink-0 px-4 py-3 border-t border-content-border bg-body-bg flex items-center justify-end gap-2">
@@ -1359,4 +1362,5 @@
         };
     }
 </script>
+
 @endpush

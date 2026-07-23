@@ -1,4 +1,8 @@
-@php $d = $data; @endphp
+@php
+    $d = $data;
+@endphp
+
+
 <section data-block="travelDetails" class="py-12">
     <div class="max-w-6xl mx-auto px-6">
         {{-- ── Section 1: Hero / Gallery ── --}}
@@ -190,41 +194,70 @@
                     <h2 class="text-xl font-bold text-gray-900" data-edit="itineraryTitle">{{ $d['itineraryTitle'] }}</h2>
                     @endif
                     @if(!empty($d['itinerary']))
-                    <div class="mt-6 relative">
-                        {{-- Timeline line --}}
-                        <div class="absolute left-[11px] top-4 bottom-4 w-0.5 bg-gray-200"></div>
-
-                        @php $stopIndex = 0; @endphp
+                    <div class="space-y-3 mt-4">
                         @foreach($d['itinerary'] as $item)
                             @if($item)
-                            <div class="relative pl-10 mb-6" data-list="itinerary" x-data="{ open: false }">
-                                @if(isset($item['stopName']) && $item['stopName'])
-                                    {{-- Stop Header --}}
-                                    <div class="absolute left-0 w-6 h-6 rounded-full {{ $stopIndex % 2 === 0 ? 'bg-primary' : 'bg-orange-400' }} border-4 border-white flex items-center justify-center top-0 z-10"></div>
-                                    <div class="mb-3">
-                                        <span class="font-bold text-gray-900" data-edit="stopName">{{ $item['stopName'] }}</span>
-                                        @if($item['departure'] ?? false)
-                                        <span class="text-sm text-gray-500 ml-2" data-edit="departure">( {{ $item['departure'] }} )</span>
-                                        @endif
-                                    </div>
-                                    @php $stopIndex++; @endphp
-                                @endif
+                            @php
+                                $hasStopName = !empty($item['stopName']);
+                                $itinKey = 'itin-' . $loop->index;
+                            @endphp
 
-                                @if($item['dayLabel'] ?? false)
-                                {{-- Day Entry --}}
-                                @if(!isset($item['stopName']) || !$item['stopName'])
-                                <div class="absolute left-[7px] w-2.5 h-2.5 rounded-full bg-gray-400 border-2 border-white top-2 z-10"></div>
+                            {{-- Stop Header (shown when stopName or departure is present) --}}
+                            @if($hasStopName || ($item['departure'] ?? false))
+                            <div class="flex items-center gap-2 mt-6 mb-2 pt-2">
+                                <div class="w-5 h-5 rounded-full bg-[#00a651] text-white flex items-center justify-center shrink-0">
+                                    <svg class="w-3 h-3" fill="none" stroke="currentColor" stroke-width="3" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/>
+                                    </svg>
+                                </div>
+                                @if($item['stopName'] ?? false)
+                                <span class="font-bold text-gray-900 text-sm md:text-base" data-edit="stopName">{{ $item['stopName'] }}</span>
                                 @endif
-                                <button @click="open = !open" class="w-full flex items-center justify-between text-left focus:outline-none py-1 group">
+                                @if($item['departure'] ?? false)
+                                <span class="text-xs md:text-sm text-gray-400 font-normal ml-0.5" data-edit="departure">( {{ $item['departure'] }} )</span>
+                                @endif
+                            </div>
+                            @endif
+
+                            {{-- Day Card Item --}}
+                            @if(!empty($preview))
+                            <div class="border border-gray-200 rounded-xl bg-white" data-list="itinerary"
+                                x-data="{ open: false }"
+                                x-init="
+                                    open = (window.__cms_acc = window.__cms_acc || {})['{{ $itinKey }}'] ?? false;
+                                    $watch('open', v => { (window.__cms_acc = window.__cms_acc || {})['{{ $itinKey }}'] = v; });
+                                ">
+                            @else
+                            <div class="border border-gray-200 rounded-xl bg-white" data-list="itinerary" x-data="{ open: false }">
+                            @endif
+                                <button @click="open = !open" class="w-full flex items-center justify-between p-4 text-left focus:outline-none group">
                                     <div class="flex items-center gap-3">
-                                        <span class="text-sm font-bold text-primary" data-edit="dayLabel">{{ $item['dayLabel'] }}</span>
-                                        @if($item['dayTitle'] ?? false)
-                                        <span class="text-sm text-gray-700" data-edit="dayTitle">{{ $item['dayTitle'] }}</span>
-                                        @endif
+                                        <div class="w-6 h-6 rounded-full border border-[#00a651] text-[#00a651] flex items-center justify-center shrink-0">
+                                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/>
+                                                <path stroke-linecap="round" stroke-linejoin="round" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/>
+                                            </svg>
+                                        </div>
+                                        <div class="flex items-center gap-2">
+                                            @if($item['dayLabel'] ?? false)
+                                            <span class="font-bold text-gray-900 text-sm shrink-0" data-edit="dayLabel">{{ $item['dayLabel'] }}</span>
+                                            @endif
+                                            @if($item['dayTitle'] ?? false)
+                                            <span class="text-gray-700 text-sm font-normal" data-edit="dayTitle">{{ $item['dayTitle'] }}</span>
+                                            @endif
+                                        </div>
                                     </div>
-                                    <svg class="w-4 h-4 text-gray-400 transition-transform duration-200 shrink-0" :class="{'rotate-180': open}" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+                                    <svg class="w-4 h-4 text-gray-400 transition-transform duration-200 shrink-0 ml-2" :class="{'rotate-180': open}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+                                    </svg>
                                 </button>
-                                @endif
+                                <div x-show="open" x-transition class="px-4 pb-4 text-sm text-gray-600">
+                                    @if($item['dayDescription'] ?? false)
+                                    <div class="pt-3 border-t border-gray-100" data-edit="dayDescription">{{ $item['dayDescription'] }}</div>
+                                    @else
+                                    <div class="pt-3 border-t border-gray-100 text-gray-400 italic" data-edit="dayDescription">Add day details / description...</div>
+                                    @endif
+                                </div>
                             </div>
                             @endif
                         @endforeach
@@ -330,7 +363,17 @@
                     <div class="space-y-3 mt-4">
                         @foreach($d['faqs'] as $faq)
                             @if($faq)
+                            @php $faqKey = 'faq-' . $loop->index; @endphp
+                            @if(!empty($preview))
+                            <div class="border border-gray-200 rounded-lg" data-list="faqs"
+                                x-data="{ open: false }"
+                                x-init="
+                                    open = (window.__cms_acc = window.__cms_acc || {})['{{ $faqKey }}'] ?? false;
+                                    $watch('open', v => { (window.__cms_acc = window.__cms_acc || {})['{{ $faqKey }}'] = v; });
+                                ">
+                            @else
                             <div class="border border-gray-200 rounded-lg" data-list="faqs" x-data="{ open: false }">
+                            @endif
                                 <button @click="open = !open" class="w-full flex items-center justify-between p-4 text-left focus:outline-none">
                                     @if($faq['question'] ?? false)
                                     <span class="text-sm font-medium text-gray-900" data-edit="question">{{ $faq['question'] }}</span>
@@ -354,7 +397,7 @@
             {{-- Right Column (Booking Sidebar) --}}
             <div class="lg:w-2/5">
                 <div class="lg:sticky lg:top-24">
-                    <div class="bg-white rounded-2xl border border-gray-100 shadow-[0_2px_16px_rgba(0,0,0,0.06)] p-5">
+                    <div class="bg-white rounded-2xl border border-gray-200 p-5">
 
                         {{-- Discount Badge --}}
                         @if(($d['originalPrice'] ?? false) && ($d['price'] ?? false))

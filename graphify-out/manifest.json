@@ -5,7 +5,7 @@
     "semantic_hash": "ee8f920cd448a8a5036dda43d44c1d64"
   },
   "app/Blocks/Block.php": {
-    "mtime": 1784683878.6835544,
+    "mtime": 1784741579.6978905,
     "ast_hash": "42b8c9e27f6d72c0b5cb40f28886c66e",
     "semantic_hash": ""
   },
@@ -975,22 +975,22 @@
     "semantic_hash": ""
   },
   "resources/views/admin/collections/create.blade.php": {
-    "mtime": 1784687017.8169334,
+    "mtime": 1784741579.6993484,
     "ast_hash": "646518830700f44db8b7f235861ce440",
     "semantic_hash": ""
   },
   "resources/views/admin/collections/edit.blade.php": {
-    "mtime": 1784687072.2089844,
+    "mtime": 1784741579.699831,
     "ast_hash": "f8dbbbaa15fef7bf647c243119fec6e4",
     "semantic_hash": ""
   },
   "resources/views/admin/collections/entries/create.blade.php": {
-    "mtime": 1784656083.4314573,
+    "mtime": 1784741579.7003396,
     "ast_hash": "76ea1b26bf7ad47821c659811506d3e4",
     "semantic_hash": ""
   },
   "resources/views/admin/collections/entries/edit.blade.php": {
-    "mtime": 1784685300.8000402,
+    "mtime": 1784741579.7009425,
     "ast_hash": "952e53eb653f651562a0d026c45028d5",
     "semantic_hash": ""
   },
@@ -1869,76 +1869,6 @@
     "ast_hash": "bce78de51e2a3af6a89995da7af7bc0b",
     "semantic_hash": ""
   },
-  "app/Blocks/common/PackageAbout.php": {
-    "mtime": 1784683878.687197,
-    "ast_hash": "8c2fff8733b5c9da9af818caa2a92b2f",
-    "semantic_hash": ""
-  },
-  "app/Blocks/common/PackageBooking.php": {
-    "mtime": 1784683878.6872997,
-    "ast_hash": "fd93ea615278cd49f2c4c3d2571a8c17",
-    "semantic_hash": ""
-  },
-  "app/Blocks/common/PackageDetails.php": {
-    "mtime": 1784683878.6873991,
-    "ast_hash": "1f0edebf7bfa4c89e66dcc4addc411dc",
-    "semantic_hash": ""
-  },
-  "app/Blocks/common/PackageFaq.php": {
-    "mtime": 1784683878.6874962,
-    "ast_hash": "e09e5563d43c57d565d390da322acc7f",
-    "semantic_hash": ""
-  },
-  "app/Blocks/common/PackageFeatures.php": {
-    "mtime": 1784683878.6876035,
-    "ast_hash": "efec570aa31a857fdd98944c232a84b8",
-    "semantic_hash": ""
-  },
-  "app/Blocks/common/PackageGalleryHero.php": {
-    "mtime": 1784683878.6877024,
-    "ast_hash": "1379c12f6f6928de39036208ba324a07",
-    "semantic_hash": ""
-  },
-  "app/Blocks/common/PackageHero.php": {
-    "mtime": 1784683878.6878002,
-    "ast_hash": "249fdf498a077d754be8f52c59fd7af4",
-    "semantic_hash": ""
-  },
-  "app/Blocks/common/PackageHighlights.php": {
-    "mtime": 1784683878.6879416,
-    "ast_hash": "196a307b3663803ab8f41a2beabd4cf7",
-    "semantic_hash": ""
-  },
-  "app/Blocks/common/PackageInfo.php": {
-    "mtime": 1784683878.6881037,
-    "ast_hash": "c365d317cf94bc0351f071711159c977",
-    "semantic_hash": ""
-  },
-  "app/Blocks/common/PackageItinerary.php": {
-    "mtime": 1784683878.6882586,
-    "ast_hash": "0edb1d25150d2c6c2c12cc9b4b68d45e",
-    "semantic_hash": ""
-  },
-  "app/Blocks/common/PackageList.php": {
-    "mtime": 1784683878.6882586,
-    "ast_hash": "afb30086e7cb884e5e8a77e391f5d5dd",
-    "semantic_hash": ""
-  },
-  "app/Blocks/common/PackageLocations.php": {
-    "mtime": 1784683878.6885288,
-    "ast_hash": "9a4985c5aa8c735f0cad607a2ac68954",
-    "semantic_hash": ""
-  },
-  "app/Blocks/common/PackageMap.php": {
-    "mtime": 1784683878.6886597,
-    "ast_hash": "7aa593a8e1cdea5f2a14ad37568a978a",
-    "semantic_hash": ""
-  },
-  "app/Blocks/common/PackagePostSlot.php": {
-    "mtime": 1784683878.6887784,
-    "ast_hash": "69a5c4bf955aeb86cb08bb389926e170",
-    "semantic_hash": ""
-  },
   "app/Blocks/common/PageBanner.php": {
     "mtime": 1784683878.688869,
     "ast_hash": "a72508a902c119ff9b0ce183318da8ae",
@@ -2029,81 +1959,6 @@
     "ast_hash": "48e2168da05f0adb534111b8981fcc9f",
     "semantic_hash": ""
   },
-  "resources/views/blocks/package-about.blade.php": {
-    "mtime": 1784683878.6919556,
-    "ast_hash": "aefbfb7480ce2b3ae4fa58c2dd6d5c7a",
-    "semantic_hash": ""
-  },
-  "resources/views/blocks/package-booking.blade.php": {
-    "mtime": 1784683878.6922362,
-    "ast_hash": "97579654c79f5878b31ce0b6a4fafc30",
-    "semantic_hash": ""
-  },
-  "resources/views/blocks/package-detail.blade.php": {
-    "mtime": 1784683878.6925168,
-    "ast_hash": "25a8395ba756acba024429526ea7484f",
-    "semantic_hash": ""
-  },
-  "resources/views/blocks/package-details.blade.php": {
-    "mtime": 1784683878.6926181,
-    "ast_hash": "91d589780a8ad6ad323defd530474c02",
-    "semantic_hash": ""
-  },
-  "resources/views/blocks/package-faq.blade.php": {
-    "mtime": 1784683878.6927147,
-    "ast_hash": "7743e16e729ce76fb2d7b7a7db0050d5",
-    "semantic_hash": ""
-  },
-  "resources/views/blocks/package-features.blade.php": {
-    "mtime": 1784683878.6928074,
-    "ast_hash": "798efe0cc198e8538cbc04d8a2d72b30",
-    "semantic_hash": ""
-  },
-  "resources/views/blocks/package-gallery-hero.blade.php": {
-    "mtime": 1784683878.6928983,
-    "ast_hash": "fe55f192fa3c18f546aa7124d226f3c7",
-    "semantic_hash": ""
-  },
-  "resources/views/blocks/package-hero.blade.php": {
-    "mtime": 1784683878.6929889,
-    "ast_hash": "3517c547fa2b61f8cbf0f749493cfc76",
-    "semantic_hash": ""
-  },
-  "resources/views/blocks/package-highlights.blade.php": {
-    "mtime": 1784683878.6931467,
-    "ast_hash": "f00a7d771c31394d0028e1d933f85e2b",
-    "semantic_hash": ""
-  },
-  "resources/views/blocks/package-info.blade.php": {
-    "mtime": 1784683878.6932645,
-    "ast_hash": "1ee0b279fbe269965c3e37d740176edb",
-    "semantic_hash": ""
-  },
-  "resources/views/blocks/package-itinerary.blade.php": {
-    "mtime": 1784683878.6933622,
-    "ast_hash": "74d1fb576eb344f7fe117253e9ba4ad6",
-    "semantic_hash": ""
-  },
-  "resources/views/blocks/package-list.blade.php": {
-    "mtime": 1784683878.6934462,
-    "ast_hash": "b507f884cf68778b4575045ede43e9dc",
-    "semantic_hash": ""
-  },
-  "resources/views/blocks/package-locations.blade.php": {
-    "mtime": 1784683878.6935456,
-    "ast_hash": "b126342b83c6faa0f0f53da34883b65b",
-    "semantic_hash": ""
-  },
-  "resources/views/blocks/package-map.blade.php": {
-    "mtime": 1784683878.6936731,
-    "ast_hash": "629ac8f2ca46166b6696db94f58cdc71",
-    "semantic_hash": ""
-  },
-  "resources/views/blocks/package-post-slot.blade.php": {
-    "mtime": 1784683878.6938324,
-    "ast_hash": "fba6e7989882f5ef9eb0540f8188bb39",
-    "semantic_hash": ""
-  },
   "resources/views/blocks/page-banner.blade.php": {
     "mtime": 1784683878.6939526,
     "ast_hash": "7c572220c1f672a58814e1a534645433",
@@ -2142,6 +1997,16 @@
   "tests/Feature/PreviewControllerTest.php": {
     "mtime": 1784689441.9318056,
     "ast_hash": "bff621a8b8297617cf83f3dee64b7cdf",
+    "semantic_hash": ""
+  },
+  "app/Blocks/common/TravelDetails.php": {
+    "mtime": 1784736062.9032505,
+    "ast_hash": "67036a0c7ab604e753d6826f5fa145ed",
+    "semantic_hash": ""
+  },
+  "resources/views/blocks/travel-details.blade.php": {
+    "mtime": 1784742388.5714455,
+    "ast_hash": "2d88f6f38fcd9aea40688fe28b1917df",
     "semantic_hash": ""
   }
 }

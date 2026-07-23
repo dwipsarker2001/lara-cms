@@ -15,9 +15,18 @@ class PreviewController extends Controller
             'sections.*._key' => 'required|string',
             'sections.*.name' => 'required|string',
             'sections.*.data' => 'required',
+            'entry_data' => 'nullable|array',
         ]);
 
-        $html = BlockPreview::render($data['sections'], withGlobals: false);
+        // Build a lightweight $page stub so blocks can read custom field values
+        // via $page->data just as they would with a real CollectionEntry model.
+        $page = null;
+        if (! empty($data['entry_data'])) {
+            $page = new \stdClass;
+            $page->data = $data['entry_data'];
+        }
+
+        $html = BlockPreview::render($data['sections'], withGlobals: false, page: $page);
 
         return response()->json(['html' => $html]);
     }

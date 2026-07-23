@@ -160,6 +160,7 @@ class CollectionEntryController extends Controller
             'homeGlobals' => $homeGlobals,
             'blockList' => $blockList,
             'pages' => $pages,
+
         ]);
     }
 

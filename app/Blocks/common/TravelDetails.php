@@ -72,6 +72,7 @@ class TravelDetails extends Block
                 Field::string('departure', 'Departure Info', default: ''),
                 Field::string('dayLabel', 'Day Label', default: 'Day-01'),
                 Field::string('dayTitle', 'Day Title', default: 'Sylhet to Jaintiapur'),
+                Field::text('dayDescription', 'Day Description', default: ''),
             ], count: 4),
 
             // ── Destination Map ──
