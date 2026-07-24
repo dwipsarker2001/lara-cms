@@ -85,6 +85,30 @@
                                     </div>
                                     <div class="flex items-center gap-0.5 shrink-0 ml-auto pr-1">
                                         <button
+                                            type="button"
+                                            @click.stop="moveSection(i, i - 1)"
+                                            :disabled="i === 0"
+                                            :class="i === 0 ? 'opacity-30 cursor-not-allowed' : 'hover:text-primary hover:bg-text-primary/10'"
+                                            class="p-1 text-text-muted/60 transition-colors rounded"
+                                            title="Move section up"
+                                        >
+                                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="size-4">
+                                                <path d="M18 15l-6-6-6 6" stroke-linecap="round" stroke-linejoin="round" />
+                                            </svg>
+                                        </button>
+                                        <button
+                                            type="button"
+                                            @click.stop="moveSection(i, i + 1)"
+                                            :disabled="i === sections.length - 1"
+                                            :class="i === sections.length - 1 ? 'opacity-30 cursor-not-allowed' : 'hover:text-primary hover:bg-text-primary/10'"
+                                            class="p-1 text-text-muted/60 transition-colors rounded"
+                                            title="Move section down"
+                                        >
+                                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="size-4">
+                                                <path d="M6 9l6 6 6-6" stroke-linecap="round" stroke-linejoin="round" />
+                                            </svg>
+                                        </button>
+                                        <button
                                             @click.stop="edit(i)"
                                             class="p-1 text-text-muted/60 hover:text-primary group-hover:text-primary transition-colors rounded hover:bg-text-primary/10"
                                             title="Edit"
@@ -597,31 +621,22 @@
                                                                      const name = el.dataset.fieldName;
                                                                      if (!name) return;
 
-                                                                     if (evt.newIndex > evt.oldIndex) {
-                                                                         parent.insertBefore(evt.item, parent.children[evt.oldIndex]);
-                                                                     } else {
-                                                                         parent.insertBefore(evt.item, parent.children[evt.oldIndex].nextSibling);
-                                                                     }
+                                                                      try { el._sortable.destroy(); } catch (e) {}
 
-                                                                     // Adjust index for TEMPLATE element at index 0
-                                                                     const offset = (parent.children[0] && parent.children[0].tagName === 'TEMPLATE') ? 1 : 0;
-                                                                     const oldIdx = evt.oldIndex - offset;
-                                                                     const newIdx = evt.newIndex - offset;
+                                                                      const list = getList(name);
+                                                                      const item = list.splice(evt.oldIndex, 1)[0];
+                                                                      list.splice(evt.newIndex, 0, item);
 
-                                                                     const list = getList(name);
-                                                                     const item = list.splice(oldIdx, 1)[0];
-                                                                     list.splice(newIdx, 0, item);
+                                                                      // Re-assign list array reference to force Alpine reactivity update
+                                                                      let d = this.sections[this.active].data;
+                                                                      for (const crumb of this.crumbs) {
+                                                                          d = d[crumb.key];
+                                                                          if (crumb.index !== undefined) d = d[crumb.index];
+                                                                      }
+                                                                      d[name] = [...list];
 
-                                                                     // Re-assign list array reference to force Alpine reactivity update
-                                                                     let d = this.sections[this.active].data;
-                                                                     for (const crumb of this.crumbs) {
-                                                                         d = d[crumb.key];
-                                                                         if (crumb.index !== undefined) d = d[crumb.index];
-                                                                     }
-                                                                     d[name] = [...list];
-
-                                                                     dirty = true;
-                                                                     schedulePreview();
+                                                                      this.dirty = true;
+                                                                      this.schedulePreview();
                                                                  },
                                                              });
                                                          })"
@@ -787,32 +802,34 @@
                     onEnd: (evt) => {
                         if (evt.oldIndex === evt.newIndex) return;
 
-                        // Revert Sortable DOM manipulation physically so Alpine stays in control
-                        const parent = evt.from;
-                        if (evt.newIndex > evt.oldIndex) {
-                            parent.insertBefore(evt.item, parent.children[evt.oldIndex]);
-                        } else {
-                            parent.insertBefore(evt.item, parent.children[evt.oldIndex].nextSibling);
+                        if (this._sectionSortable) {
+                            try { this._sectionSortable.destroy(); } catch (e) {}
+                            this._sectionSortable = null;
                         }
 
-                        // Adjust index for TEMPLATE element at index 0
-                        const offset = (parent.children[0] && parent.children[0].tagName === 'TEMPLATE') ? 1 : 0;
-                        const oldIdx = evt.oldIndex - offset;
-                        const newIdx = evt.newIndex - offset;
-
-                        const item = this.sections.splice(oldIdx, 1)[0];
-                        this.sections.splice(newIdx, 0, item);
+                        const item = this.sections.splice(evt.oldIndex, 1)[0];
+                        this.sections.splice(evt.newIndex, 0, item);
                         this.dirty = true;
                         this.schedulePreview();
+                        this.$nextTick(() => this.initSectionSortable());
                     },
                 });
             },
 
             moveSection(from, to) {
+                if (from < 0 || from >= this.sections.length) return;
+                if (to < 0 || to >= this.sections.length) return;
+
+                if (this._sectionSortable) {
+                    try { this._sectionSortable.destroy(); } catch (e) {}
+                    this._sectionSortable = null;
+                }
+
                 const item = this.sections.splice(from, 1)[0];
                 this.sections.splice(to, 0, item);
                 this.dirty = true;
                 this.schedulePreview();
+                this.$nextTick(() => this.initSectionSortable());
             },
 
             sectionLabel(section) {

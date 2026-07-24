@@ -1,7 +1,7 @@
 # Graph Report - lara-cms  (2026-07-24)
 
 ## Corpus Check
-- 398 files · ~203,630 words
+- 398 files · ~203,843 words
 - Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
@@ -10,7 +10,7 @@
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `273761d0`
+- Built from commit: `79c92115`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
@@ -75,14 +75,14 @@
 - site-footer.blade.php
 - @templatical/quality
 - @tiptap/core
-- PageBanner.php
-- Collection
 - PagesWidget
+- SlaTableWidget
+- StatWidget
 - RedirectResponse
 - View
-- AdminUserController
+- UpdatesListWidget
 - index.blade.php
-- StatWidget
+- WebsiteAnalyticsWidget
 - Lara-CMS — Full Rebuild Specification
 - WhyChooseUs.php
 - Package
@@ -118,14 +118,14 @@
 - Routing & Controllers Best Practices
 - Conventions & Style
 - Validation & Forms Best Practices
-- UpdatesListWidget
-- WebsiteAnalyticsWidget
 - SettingsController.php
+- Form.php
 - psr-4
-- Term
+- require
+- BlogList.php
 - Appendix A — full block catalog
-- Seeder
 - post-create-project-cmd
+- LatestBlog.php
 - 13. Other collections: Blog, Packages, Bookings
 - 5. The block system (the engine)
 - 7. Public website rendering
@@ -133,15 +133,15 @@
 - 8. Admin panel — shell, nav, layout
 - BlogList.php
 - FormEntry
-- extra
-- Form.php
-- ProfileBento.php
+- PageBanner.php
+- SimpleText.php
 - WhyChooseUs.php
+- SiteNavbar.php
+- extra
+- ProfileBento.php
 - 9. Pages CRUD
-- Seeder
 - UserController
 - Post.php
-- SlaTableWidget
 - @codemirror/lang-json
 - UpdatesListWidget
 - WebsiteAnalyticsWidget
@@ -263,16 +263,16 @@ Cohesion: 0.12
 Nodes (15): 1. PHP Block Class, 2. Blade View, Architecture Overview, Code of Conduct, Contributing, Creating a Block (Two Files), Creating Content Blocks, Editor Integration Attributes (+7 more)
 
 ### Community 28 - "TeamCards.php"
-Cohesion: 0.23
-Nodes (5): Controller, Request, SearchController, SupportController, BlogController
+Cohesion: 0.24
+Nodes (3): Request, TaxonomyController, Taxonomy
 
 ### Community 29 - "TravelDeals.php"
 Cohesion: 0.07
 Nodes (13): AdminUserController, RedirectResponse, Request, View, LayoutController, Request, Admin, Layout (+5 more)
 
 ### Community 31 - "SiteFooter.php"
-Cohesion: 0.24
-Nodes (4): CommandSearchController, Request, WidgetLayout, JsonResponse
+Cohesion: 0.23
+Nodes (5): Controller, Request, SearchController, SupportController, BlogController
 
 ### Community 32 - "SiteNavbar.php"
 Cohesion: 0.11
@@ -282,9 +282,9 @@ Nodes (10): AdminFactory, static, CollectionFactory, FormEntryFactory, FormFacto
 Cohesion: 0.22
 Nodes (8): Global Constraints, Subscription Management Implementation Plan, Task 1: Create Subscriptions Migration + Model, Task 2: Update RegisterController, Task 3: Update CampaignController Limits, Task 4: Update ContactController + GroupController Limits, Task 5: Admin User Edit — Subscription Management, Task 6: Verify
 
-### Community 43 - "require-dev"
-Cohesion: 0.20
-Nodes (10): require-dev, fakerphp/faker, laravel/boost, laravel/pail, laravel/pao, laravel/pint, mockery/mockery, nunomaduro/collision (+2 more)
+### Community 39 - "FormController"
+Cohesion: 0.24
+Nodes (4): CommandSearchController, Request, WidgetLayout, JsonResponse
 
 ### Community 45 - "Collection.php"
 Cohesion: 0.13
@@ -302,6 +302,10 @@ Nodes (4): CollectionEntryController, Request, Collection, HasMany
 Cohesion: 0.33
 Nodes (5): Configuration Best Practices, `env()` Only in Config Files, Use `App::environment()` for Environment Checks, Use Constants and Language Files, Use Encrypted Env or External Secrets
 
+### Community 87 - "Widget"
+Cohesion: 0.20
+Nodes (10): require-dev, fakerphp/faker, laravel/boost, laravel/pail, laravel/pao, laravel/pint, mockery/mockery, nunomaduro/collision (+2 more)
+
 ### Community 95 - "blog-list.blade.php"
 Cohesion: 0.25
 Nodes (4): Request, SettingController, DefaultSetting, Sender
@@ -310,23 +314,27 @@ Nodes (4): Request, SettingController, DefaultSetting, Sender
 Cohesion: 0.29
 Nodes (5): Consistency First, Decision Rules, How to Apply, Laravel Best Practices, Rule Index
 
-### Community 99 - ".sendCampaign"
+### Community 101 - "PreviewController.php"
 Cohesion: 0.25
 Nodes (8): post-root-package-install, setup, composer install, npm install --ignore-scripts, npm run build, @php artisan key:generate, @php artisan migrate --force, @php -r \"file_exists('.env') || copy('.env.example', '.env');\
 
-### Community 101 - "PreviewController.php"
+### Community 102 - "TrackPageViews.php"
 Cohesion: 0.38
 Nodes (3): Request, PreviewController, BlockPreview
-
-### Community 102 - "TrackPageViews.php"
-Cohesion: 0.52
-Nodes (4): Request, TrackPageViews, Closure, Response
 
 ### Community 103 - "CollectionEntryController.php"
 Cohesion: 0.67
 Nodes (3): alpinejs, alpinejs, alpinejs
 
 ### Community 104 - "config"
+Cohesion: 0.52
+Nodes (4): Request, TrackPageViews, Closure, Response
+
+### Community 107 - "BlogList.php"
+Cohesion: 0.29
+Nodes (3): BelongsTo, BelongsToMany, Term
+
+### Community 108 - "site-footer.blade.php"
 Cohesion: 0.29
 Nodes (7): pestphp/pest-plugin, php-http/discovery, config, allow-plugins, optimize-autoloader, preferred-install, sort-packages
 
@@ -450,23 +458,19 @@ Nodes (6): Conventions & Style, Follow Laravel Naming Conventions, No Inline JS/
 Cohesion: 0.29
 Nodes (6): Always Use `validated()`, Array vs. String Notation for Rules, Use Form Request Classes, Use `Rule::when()` for Conditional Validation, Use the `after()` Method for Custom Validation, Validation & Forms Best Practices
 
-### Community 192 - "psr-4"
+### Community 191 - "psr-4"
 Cohesion: 0.40
 Nodes (5): autoload, psr-4, App\\, Database\\Factories\\, Database\\Seeders\\
 
-### Community 193 - "Term"
-Cohesion: 0.29
-Nodes (3): BelongsTo, BelongsToMany, Term
+### Community 192 - "require"
+Cohesion: 0.40
+Nodes (5): require, laravel/framework, laravel/tinker, php, sendgrid/sendgrid
 
 ### Community 194 - "Appendix A — full block catalog"
 Cohesion: 0.29
 Nodes (7): Appendix A — full block catalog, Blog collection blocks, Global blocks (`global: true`, shared site-wide), Home collection blocks, Package detail blocks (stored in `packages.blocks`), Packages collection blocks, Reference implementation notes
 
-### Community 195 - "Seeder"
-Cohesion: 0.40
-Nodes (5): require, laravel/framework, laravel/tinker, php, sendgrid/sendgrid
-
-### Community 196 - "post-create-project-cmd"
+### Community 195 - "post-create-project-cmd"
 Cohesion: 0.50
 Nodes (4): post-create-project-cmd, @php artisan key:generate --ansi, @php artisan migrate --graceful --ansi, @php -r \"file_exists('database/database.sqlite') || touch('database/database.sqlite');\
 
@@ -490,17 +494,13 @@ Nodes (4): 16. Routes reference, Admin (`admin.php`, prefix `admin`, `auth`), Pu
 Cohesion: 0.50
 Nodes (4): 8.1 Layout (`admin/layout.blade.php`), 8.2 Sidebar nav groups (`nav-client`), 8.3 Dashboard (`/admin`), 8. Admin panel — shell, nav, layout
 
-### Community 204 - "extra"
+### Community 208 - "extra"
 Cohesion: 0.67
 Nodes (3): extra, laravel, dont-discover
 
 ### Community 214 - "9. Pages CRUD"
 Cohesion: 0.67
 Nodes (3): 9.1 List (`/admin/pages`), 9.2 Create / edit page settings (Page Entry Form), 9. Pages CRUD
-
-### Community 223 - "Seeder"
-Cohesion: 0.24
-Nodes (3): Request, TaxonomyController, Taxonomy
 
 ### Community 238 - "Post.php"
 Cohesion: 0.14
@@ -522,11 +522,11 @@ Nodes (4): Creating a New Plugin, Example plugins, How it works, Plugins Directo
 ## Suggested Questions
 _Questions this graph is uniquely positioned to answer:_
 
-- **Why does `Controller` connect `TeamCards.php` to `Page`, `LoginController.php`, `Taxonomy`, `View`, `BlockRegistry`, `PackageList.php`, `PackagePostSlot.php`, `TravelDeals.php`, `SiteFooter.php`, `FormController`, `DashboardController.php`, `Collection.php`, `User`, `artisan`, `SettingsController.php`, `BlogList.php`, `Seeder`, `blog-list.blade.php`, `PreviewController.php`, `Collection`, `@codemirror/lang-json`?**
+- **Why does `Controller` connect `SiteFooter.php` to `Page`, `LoginController.php`, `Taxonomy`, `View`, `BlockRegistry`, `PackageList.php`, `PackagePostSlot.php`, `TeamCards.php`, `TravelDeals.php`, `FormController`, `require-dev`, `DashboardController.php`, `Collection.php`, `User`, `artisan`, `SettingsController.php`, `BlogList.php`, `CommandSearch`, `blog-list.blade.php`, `TrackPageViews.php`, `@codemirror/lang-json`?**
   _High betweenness centrality (0.038) - this node is a cross-community bridge._
-- **Why does `Block` connect `Block` to `UpdatesListWidget`, `Page`, `Field.php`, `WhyChooseUs.php`, `ClientTestimonials.php`, `FeatureImageCards.php`, `WhyChooseUs.php`, `Advanced Query Patterns`, `Database Performance Best Practices`, `2026_07_10_185347_create_posts_table.php`, `FormEntry`, `ProfileBento.php`, `WhyChooseUs.php`, `CampaignController.php`, `UserController`, `BlogList.php`, `site-footer.blade.php`, `PageBanner.php`, `SlaTableWidget`?**
+- **Why does `Block` connect `Block` to `UpdatesListWidget`, `Page`, `Field.php`, `WhyChooseUs.php`, `ClientTestimonials.php`, `FeatureImageCards.php`, `WhyChooseUs.php`, `Advanced Query Patterns`, `Database Performance Best Practices`, `2026_07_10_185347_create_posts_table.php`, `FormEntry`, `BlogList.php`, `LatestBlog.php`, `PageBanner.php`, `SimpleText.php`, `WhyChooseUs.php`, `SiteNavbar.php`, `ProfileBento.php`, `UserController`?**
   _High betweenness centrality (0.037) - this node is a cross-community bridge._
-- **Why does `CollectionEntry` connect `Collection.php` to `Term`, `BlogList.php`, `Post.php`, `artisan`, `LatestBlog.php`, `PagesWidget`?**
+- **Why does `CollectionEntry` connect `Collection.php` to `BlogList.php`, `BlogList.php`, `Post.php`, `PagesWidget`, `artisan`, `LatestBlog.php`?**
   _High betweenness centrality (0.018) - this node is a cross-community bridge._
 - **What connects `php`, `$schema`, `name` to the rest of the system?**
   _453 weakly-connected nodes found - possible documentation gaps or missing edges._

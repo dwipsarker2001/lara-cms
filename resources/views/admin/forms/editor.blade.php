@@ -345,18 +345,7 @@
                     onEnd: (evt) => {
                         if (evt.oldIndex === evt.newIndex) return;
 
-                        // Revert Sortable DOM manipulation physically so Alpine stays in control
-                        const parent = evt.from;
-                        const siblings = Array.from(parent.children).filter(child => child !== evt.item);
-                        const refNode = siblings[evt.oldIndex] || null;
-                        parent.insertBefore(evt.item, refNode);
-
-                        // Adjust index for TEMPLATE element at index 0
-                        const offset = (parent.children[0] && parent.children[0].tagName === 'TEMPLATE') ? 1 : 0;
-                        const oldIdx = evt.oldIndex - offset;
-                        const newIdx = evt.newIndex - offset;
-
-                        const item = this.fields.splice(oldIdx, 1)[0];
+                        const item = this.fields.splice(evt.oldIndex, 1)[0];
                         this.fields.splice(newIdx, 0, item);
                         this.dirty = true;
                     },
