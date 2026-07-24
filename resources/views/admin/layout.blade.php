@@ -9,7 +9,55 @@
     <link href="https://fonts.bunny.net/css?family=inter:400,500,600,700&display=swap" rel="stylesheet">
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer" />
-    <script>window.FA_ICONS = {{ Js::from(json_decode(file_get_contents(public_path('fa-icons.json')))) }};</script>
+    <script>
+        window.categoryPicker = function(initialSelected, termsList) {
+            return {
+                selected: Array.isArray(initialSelected) ? initialSelected : (initialSelected ? [initialSelected] : []),
+                terms: termsList || [],
+                open: false,
+                isSelected(id, title, slug) {
+                    if (!this.selected || this.selected.length === 0) return false;
+                    const sel = this.selected.map(String);
+                    const strId = String(id);
+                    const strTitle = title ? String(title).toLowerCase() : '';
+                    const strSlug = slug ? String(slug).toLowerCase() : '';
+                    return sel.some(function(s) {
+                        const strS = String(s).toLowerCase();
+                        return strS === strId || (strTitle && strS === strTitle) || (strSlug && strS === strSlug);
+                    });
+                },
+                toggle(id, title) {
+                    if (this.isSelected(id, title)) {
+                        const strId = String(id);
+                        const strTitle = title ? String(title).toLowerCase() : '';
+                        this.selected = this.selected.filter(function(x) {
+                            const strX = String(x).toLowerCase();
+                            return strX !== strId && (strTitle ? strX !== strTitle : true);
+                        });
+                    } else {
+                        this.selected.push(id);
+                    }
+                },
+                getSelectedLabels() {
+                    if (!this.selected || this.selected.length === 0) return 'Choose categories...';
+                    const self = this;
+                    const labels = [];
+                    for (let i = 0; i < this.terms.length; i++) {
+                        const t = this.terms[i];
+                        if (self.isSelected(t.id, t.title, t.slug)) {
+                            labels.push(t.title);
+                        }
+                    }
+                    return labels.length ? labels.join(', ') : 'Choose categories...';
+                }
+            };
+        };
+        document.addEventListener('alpine:init', function() {
+            if (window.Alpine) {
+                window.Alpine.data('categoryPicker', window.categoryPicker);
+            }
+        });
+    </script>
     @stack('styles')
 </head>
 <body class="admin-root antialiased bg-header-bg text-text-primary min-h-full" x-data="{ navCollapsed: {{ (request()->routeIs('admin.forms.editor') || request()->routeIs('admin.collections.entries.editor') || request()->routeIs('admin.email-templates.editor')) ? 'true' : 'false' }}, userMenuOpen: false }">
@@ -242,7 +290,7 @@
                                         <line x1="16" y1="3" x2="14" y2="21" />
                                     </svg>
                                 </span>
-                                Taxonomies
+                                Categories
                             </a>
                         </li>
                         <li>

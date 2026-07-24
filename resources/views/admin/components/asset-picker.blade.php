@@ -143,21 +143,21 @@
 
                                 {{-- Action Menu --}}
                                 <div class="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity z-[60]">
-                                    <div class="relative" x-data="{ menuOpen: false }" @click.outside="menuOpen = false">
-                                        <button @click="menuOpen = !menuOpen" class="size-7 flex items-center justify-center rounded-md bg-white/90 border border-gray-200 hover:bg-white text-gray-500 hover:text-gray-700 cursor-pointer">
+                                    <div class="relative" @click.outside="if (openMenuId === item.id) openMenuId = null">
+                                        <button type="button" @click.stop="openMenuId = (openMenuId === item.id ? null : item.id)" class="size-7 flex items-center justify-center rounded-md bg-white/90 border border-gray-200 hover:bg-white text-gray-500 hover:text-gray-700 cursor-pointer">
                                             <svg viewBox="0 0 16 3" class="size-4" fill="currentColor"><circle cx="2" cy="1.5" r="1.5" /><circle cx="8" cy="1.5" r="1.5" /><circle cx="14" cy="1.5" r="1.5" /></svg>
                                         </button>
-                                        <div x-show="menuOpen" x-cloak @click="menuOpen = false"
+                                        <div x-show="openMenuId === item.id" x-cloak @click.stop="openMenuId = null"
                                             class="absolute right-0 top-full mt-1 z-[70] min-w-[10rem] rounded-xl border border-gray-200 bg-white shadow-xl p-1.5"
                                         >
-                                            <button type="button" role="menuitem" @click="menuOpen = false; startRename(item)"
+                                            <button type="button" role="menuitem" @click="openMenuId = null; startRename(item)"
                                                 class="flex w-full items-center gap-2.5 px-3 py-2 rounded-lg text-sm text-gray-700 hover:bg-gray-50 cursor-pointer"
                                             >
                                                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" class="size-4 shrink-0 text-gray-400"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7" /><path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z" /></svg>
                                                 <span>Rename</span>
                                             </button>
                                             <hr class="my-1 border-gray-100">
-                                            <button type="button" role="menuitem" @click="menuOpen = false; deleteConfirm = item"
+                                            <button type="button" role="menuitem" @click="openMenuId = null; deleteConfirm = item"
                                                 class="flex w-full items-center gap-2.5 px-3 py-2 rounded-lg text-sm text-red-600 hover:bg-red-50 cursor-pointer"
                                             >
                                                 <svg viewBox="0 0 20 20" fill="currentColor" class="size-4 shrink-0 text-red-500"><path fill-rule="evenodd" d="M8.75 1A2.75 2.75 0 006 3.75v.443c-.795.077-1.584.176-2.365.298a.75.75 0 10.23 1.482l.149-.022.841 10.518A2.75 2.75 0 007.596 19h4.807a2.75 2.75 0 002.742-2.53l.841-10.52.149.023a.75.75 0 00.23-1.482A41.03 41.03 0 0014 4.193V3.75A2.75 2.75 0 0011.25 1h-2.5zM10 4c-.84 0-1.673.025-2.5.075V3.75c0-.69.56-1.25 1.25-1.25h2.5c.69 0 1.25.56 1.25 1.25v.325C11.673 4.025 10.84 4 10 4zM8.58 7.72a.75.75 0 00-1.5.06l.3 7.5a.75.75 0 101.5-.06l-.3-7.5zm4.34.06a.75.75 0 10-1.5-.06l-.3 7.5a.75.75 0 101.5.06l.3-7.5z" clip-rule="evenodd" /></svg>
@@ -216,6 +216,7 @@
             renamingId: null,
             renameValue: '',
             deleteConfirm: null,
+            openMenuId: null,
             dragOver: false,
             dragCounter: 0,
             dragTargetId: null,
@@ -232,6 +233,7 @@
                 this.assets = [];
                 this.renamingId = null;
                 this.deleteConfirm = null;
+                this.openMenuId = null;
                 this.$nextTick(() => this.fetchAssets());
             },
 

@@ -4,6 +4,8 @@ use App\Models\Admin;
 use App\Models\Collection;
 use App\Models\CollectionEntry;
 use App\Models\Setting;
+use App\Models\Taxonomy;
+use App\Models\Term;
 
 use function Pest\Laravel\actingAs;
 use function Pest\Laravel\get;
@@ -167,4 +169,85 @@ it('renders SEO tags dynamically on the public layout', function () {
         ->assertSee('<meta name="description" content="This is a custom SEO optimized description.">', false)
         ->assertSee('<link rel="canonical" href="https://customsite.com/sample-article">', false)
         ->assertSee('<meta name="robots" content="noindex, nofollow">', false);
+});
+
+it('can create and edit collection entries using taxonomies custom field type', function () {
+    $taxonomy = Taxonomy::create(['title' => 'Travel Tags', 'slug' => 'travel-tags']);
+    $term1 = Term::create(['taxonomy_id' => $taxonomy->id, 'title' => 'Adventure', 'slug' => 'adventure']);
+    $term2 = Term::create(['taxonomy_id' => $taxonomy->id, 'title' => 'Heritage', 'slug' => 'heritage']);
+
+    $collection = Collection::create([
+        'name' => 'Tour Packages',
+        'slug' => 'tours',
+        'position' => 6,
+        'fields' => [
+            [
+                'title' => 'Tags Selection',
+                'description' => 'Select tags for the package',
+                'type' => 'taxonomies',
+                'template' => 'tags_selection',
+                'taxonomy_id' => (string) $taxonomy->id,
+            ],
+        ],
+    ]);
+
+    // Create entry selecting multiple terms (IDs)
+    post(route('admin.collections.entries.store', $collection), [
+        'data' => [
+            'title' => 'Adventure Package',
+            'tags_selection' => [(string) $term1->id, (string) $term2->id],
+        ],
+        'slug' => 'adventure-package',
+        'published' => '1',
+    ])->assertRedirect();
+
+    $entry = CollectionEntry::where('slug', 'adventure-package')->firstOrFail();
+    expect($entry->data['tags_selection'])->toBeArray();
+    expect($entry->data['tags_selection'])->toContain((string) $term1->id);
+    expect($entry->data['tags_selection'])->toContain((string) $term2->id);
+
+    // Get the edit page to verify tags load correctly
+    get(route('admin.collections.entries.edit', [$collection, $entry]))
+        ->assertSuccessful()
+        ->assertSee('Adventure')
+        ->assertSee('Heritage');
+});
+
+it('can create and edit collection entries using tags custom field type', function () {
+    $collection = Collection::create([
+        'name' => 'News Articles',
+        'slug' => 'news-articles',
+        'position' => 7,
+        'fields' => [
+            [
+                'title' => 'Article Tags',
+                'description' => 'Enter tags for this article',
+                'type' => 'tags',
+                'template' => 'article_tags',
+            ],
+        ],
+    ]);
+
+    // Create entry with tags
+    post(route('admin.collections.entries.store', $collection), [
+        'data' => [
+            'title' => 'Breaking News',
+            'article_tags' => ['Tech', 'Laravel', 'AI'],
+        ],
+        'slug' => 'breaking-news',
+        'published' => '1',
+    ])->assertRedirect();
+
+    $entry = CollectionEntry::where('slug', 'breaking-news')->firstOrFail();
+    expect($entry->data['article_tags'])->toBeArray();
+    expect($entry->data['article_tags'])->toContain('Tech');
+    expect($entry->data['article_tags'])->toContain('Laravel');
+    expect($entry->data['article_tags'])->toContain('AI');
+
+    // Get the edit page to verify tags load correctly
+    get(route('admin.collections.entries.edit', [$collection, $entry]))
+        ->assertSuccessful()
+        ->assertSee('Tech')
+        ->assertSee('Laravel')
+        ->assertSee('AI');
 });

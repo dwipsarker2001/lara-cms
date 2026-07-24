@@ -585,8 +585,7 @@
                                                             <span class="text-sm font-semibold text-text-primary" x-text="field.label"></span>
                                                             <button type="button" @click="addListItem(field.name)" class="text-xs text-primary hover:text-primary/80 font-medium">+ Add <span x-text="field.label.toLowerCase()"></span></button>
                                                 </div>
-                                                <template x-if="getList(field.name).length > 0">
-                                                    <div class="space-y-0.5" data-sortable-list :data-field-name="field.name"
+                                                <template x-if="getList(field.name).length > 0"                                                     <div class="space-y-0.5" data-sortable-list :data-field-name="field.name"
                                                          x-init="$nextTick(() => {
                                                              const el = $el;
                                                              el._sortable = new Sortable(el, {
@@ -598,12 +597,10 @@
                                                                      const name = el.dataset.fieldName;
                                                                      if (!name) return;
 
-                                                                     // Revert Sortable DOM manipulation physically so Alpine stays in control
-                                                                     const parent = evt.from;
                                                                      if (evt.newIndex > evt.oldIndex) {
                                                                          parent.insertBefore(evt.item, parent.children[evt.oldIndex]);
                                                                      } else {
-                                                                         parent.insertBefore(evt.item, parent.children[evt.oldIndex + 1]);
+                                                                         parent.insertBefore(evt.item, parent.children[evt.oldIndex].nextSibling);
                                                                      }
 
                                                                      // Adjust index for TEMPLATE element at index 0
@@ -788,26 +785,26 @@
                     easing: 'cubic-bezier(0.25, 0.1, 0.25, 1)',
                     ghostClass: 'sortable-ghost',
                     onEnd: (evt) => {
-                                                                      if (evt.oldIndex === evt.newIndex) return;
+                        if (evt.oldIndex === evt.newIndex) return;
 
-                                                                      // Revert Sortable DOM manipulation physically so Alpine stays in control
-                                                                      const parent = evt.from;
-                                                                      if (evt.newIndex > evt.oldIndex) {
-                                                                          parent.insertBefore(evt.item, parent.children[evt.oldIndex]);
-                                                                      } else {
-                                                                          parent.insertBefore(evt.item, parent.children[evt.oldIndex + 1]);
-                                                                      }
+                        // Revert Sortable DOM manipulation physically so Alpine stays in control
+                        const parent = evt.from;
+                        if (evt.newIndex > evt.oldIndex) {
+                            parent.insertBefore(evt.item, parent.children[evt.oldIndex]);
+                        } else {
+                            parent.insertBefore(evt.item, parent.children[evt.oldIndex].nextSibling);
+                        }
 
-                                                                      // Adjust index for TEMPLATE element at index 0
-                                                                      const offset = (parent.children[0] && parent.children[0].tagName === 'TEMPLATE') ? 1 : 0;
-                                                                      const oldIdx = evt.oldIndex - offset;
-                                                                      const newIdx = evt.newIndex - offset;
+                        // Adjust index for TEMPLATE element at index 0
+                        const offset = (parent.children[0] && parent.children[0].tagName === 'TEMPLATE') ? 1 : 0;
+                        const oldIdx = evt.oldIndex - offset;
+                        const newIdx = evt.newIndex - offset;
 
-                                                                      const item = this.sections.splice(oldIdx, 1)[0];
-                                                                      this.sections.splice(newIdx, 0, item);
-                                                                      this.dirty = true;
-                                                                      this.schedulePreview();
-                                                                  },
+                        const item = this.sections.splice(oldIdx, 1)[0];
+                        this.sections.splice(newIdx, 0, item);
+                        this.dirty = true;
+                        this.schedulePreview();
+                    },
                 });
             },
 

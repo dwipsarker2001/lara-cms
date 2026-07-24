@@ -19,10 +19,10 @@ class CommandSearch
     {
         return [
             ['id' => 'nav-dashboard', 'group' => 'Navigation', 'title' => 'Dashboard', 'keywords' => 'home overview', 'href' => route('admin.dashboard')],
-            ['id' => 'nav-taxonomies', 'group' => 'Navigation', 'title' => 'Collection » Taxonomies', 'keywords' => 'tags categories', 'href' => route('admin.taxonomies.index')],
+            ['id' => 'nav-taxonomies', 'group' => 'Navigation', 'title' => 'Collection » Categories', 'keywords' => 'tags categories', 'href' => route('admin.taxonomies.index')],
             ['id' => 'nav-assets', 'group' => 'Navigation', 'title' => 'Collection » Assets', 'keywords' => 'media images files', 'href' => route('admin.assets.index')],
             ['id' => 'nav-globals', 'group' => 'Navigation', 'title' => 'Settings » Globals', 'keywords' => 'site settings', 'href' => route('admin.settings')],
-            ['id' => 'act-new-taxonomy', 'group' => 'Navigation', 'title' => 'Create » New Taxonomy', 'keywords' => 'add new taxonomy category', 'href' => route('admin.taxonomies.create')],
+            ['id' => 'act-new-taxonomy', 'group' => 'Navigation', 'title' => 'Create » New Category', 'keywords' => 'add new taxonomy category', 'href' => route('admin.taxonomies.create')],
         ];
     }
 
@@ -38,7 +38,7 @@ class CommandSearch
         foreach (Taxonomy::query()->orderBy('title')->get(['id', 'title', 'slug']) as $taxonomy) {
             $commands[] = [
                 'id' => 'tax-'.$taxonomy->id,
-                'group' => 'Taxonomies',
+                'group' => 'Categories',
                 'title' => $taxonomy->title,
                 'subtitle' => $taxonomy->slug,
                 'href' => route('admin.taxonomies.edit', $taxonomy),

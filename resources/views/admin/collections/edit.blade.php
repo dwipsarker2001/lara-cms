@@ -258,12 +258,14 @@
                     </div>
                     <div>
                         <label class="block text-sm font-medium text-text-heading mb-1">Input Type</label>
-                        <select x-model="fieldForm.type"
+                         <select x-model="fieldForm.type"
                             class="w-full block bg-white border border-gray-300 text-text-primary text-sm rounded-lg px-3 py-2 h-9 transition-all duration-150 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary">
                             <option value="text">Text</option>
                             <option value="textarea">Textarea</option>
                             <option value="number">Number</option>
                             <option value="collection">Collection</option>
+                            <option value="taxonomies">Categories</option>
+                            <option value="tags">Tags</option>
                         </select>
                     </div>
                     <div x-show="fieldForm.type === 'collection'" style="display: none;">
@@ -275,7 +277,17 @@
                             @endforeach
                         </select>
                     </div>
-                    <div x-show="fieldForm.type !== 'collection'">
+                    <div x-show="fieldForm.type === 'taxonomies'" style="display: none;">
+                        <label class="block text-sm font-medium text-text-heading mb-1">Specific Category Filter (Optional)</label>
+                        <select x-model="fieldForm.taxonomy_id" class="w-full block bg-white border border-gray-300 text-text-primary text-sm rounded-lg px-3 py-2 h-9 transition-all duration-150 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary">
+                            <option value="">All Categories (Default)</option>
+                            @foreach($taxonomies as $tax)
+                                <option value="{{ $tax->id }}">{{ $tax->title }}</option>
+                            @endforeach
+                        </select>
+                        <p class="text-xs text-text-muted mt-1">Leave as "All Categories" to allow selecting any category for posts.</p>
+                    </div>
+                    <div>
                         <label class="block text-sm font-medium text-text-heading mb-1">Key</label>
                         <input type="text" x-model="fieldForm.template" readonly
                             class="w-full block bg-gray-50 border border-gray-200 text-text-muted text-sm rounded-lg px-3 py-2 h-9 cursor-not-allowed">
@@ -322,7 +334,8 @@
                 description: '',
                 type: 'text',
                 template: '',
-                collection_id: ''
+                collection_id: '',
+                taxonomy_id: ''
             },
             enableSeo: @json($collection->enable_seo ?? true),
 
@@ -357,7 +370,8 @@
                     description: '',
                     type: 'text',
                     template: '',
-                    collection_id: ''
+                    collection_id: '',
+                    taxonomy_id: ''
                 };
                 this.showFieldModal = true;
             },
@@ -392,13 +406,11 @@
                              onEnd: (evt) => {
                                  if (evt.oldIndex === evt.newIndex) return;
 
-                                 // Revert Sortable DOM manipulation physically so Alpine stays in control
-                                 const parent = evt.from;
-                                 if (evt.newIndex > evt.oldIndex) {
-                                     parent.insertBefore(evt.item, parent.children[evt.oldIndex]);
-                                 } else {
-                                     parent.insertBefore(evt.item, parent.children[evt.oldIndex + 1]);
-                                 }
+                                  // Revert Sortable DOM manipulation physically so Alpine stays in control
+                                  const parent = evt.from;
+                                  const siblings = Array.from(parent.children).filter(child => child !== evt.item);
+                                  const refNode = siblings[evt.oldIndex] || null;
+                                  parent.insertBefore(evt.item, refNode);
 
                                  // Adjust index for TEMPLATE element at index 0
                                  const offset = (parent.children[0] && parent.children[0].tagName === 'TEMPLATE') ? 1 : 0;
@@ -426,11 +438,9 @@
 
                         // Revert Sortable DOM manipulation physically so Alpine stays in control
                         const parent = evt.from;
-                        if (evt.newIndex > evt.oldIndex) {
-                            parent.insertBefore(evt.item, parent.children[evt.oldIndex]);
-                        } else {
-                            parent.insertBefore(evt.item, parent.children[evt.oldIndex + 1]);
-                        }
+                        const siblings = Array.from(parent.children).filter(child => child !== evt.item);
+                        const refNode = siblings[evt.oldIndex] || null;
+                        parent.insertBefore(evt.item, refNode);
 
                         // Adjust index for TEMPLATE element at index 0
                         const offset = (parent.children[0] && parent.children[0].tagName === 'TEMPLATE') ? 1 : 0;

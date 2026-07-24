@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Collection;
+use App\Models\Taxonomy;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 
@@ -53,6 +54,7 @@ class CollectionController extends Controller
         return view('admin.collections.edit', [
             'collection' => $collection,
             'collections' => Collection::orderBy('name')->get(),
+            'taxonomies' => Taxonomy::orderBy('title')->get(),
         ]);
     }
 

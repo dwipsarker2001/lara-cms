@@ -72,7 +72,7 @@ class CollectionEntryController extends Controller
         $sections = $copiedSections ?? [];
 
         $entry = $collection->entries()->create([
-            'data' => $data['data'] ?? [],
+            'data' => $request->input('data', []),
             'slug' => $data['slug'],
             'published' => $request->boolean('published', true),
             'meta' => $entryMeta,

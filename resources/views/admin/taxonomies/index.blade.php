@@ -1,7 +1,7 @@
 @extends('admin.layout')
 
-@section('title', 'Taxonomies')
-@section('breadcrumb', 'Taxonomies')
+@section('title', 'Categories')
+@section('breadcrumb', 'Categories')
 
 @section('content')
     <div class="max-w-5xl mx-auto px-2 sm:px-0">
@@ -13,7 +13,7 @@
                     <line x1="10" y1="3" x2="8" y2="21" />
                     <line x1="16" y1="3" x2="14" y2="21" />
                 </svg>
-                Taxonomies
+                Categories
             </h1>
             <div class="flex flex-wrap items-center gap-3">
                 <a href="{{ route('admin.taxonomies.create') }}"
@@ -22,21 +22,21 @@
                         <line x1="12" y1="5" x2="12" y2="19" />
                         <line x1="5" y1="12" x2="19" y2="12" />
                     </svg>
-                    Create Taxonomy
+                    Create Category
                 </a>
             </div>
         </header>
 
         <div class="bg-panel-bg rounded-2xl mb-8 p-[7px]">
             <div class="px-[18px] py-3 text-sm font-medium text-text-heading flex items-center gap-2">
-                <div>All Taxonomies</div>
+                <div>All Categories</div>
             </div>
             <div class="px-1.5 pb-2">
                 @if ($taxonomies->isEmpty())
                     <div class="flex flex-col items-center justify-center py-8">
-                        <p class="text-sm font-medium text-text-heading">No taxonomies yet.</p>
+                        <p class="text-sm font-medium text-text-heading">No categories yet.</p>
                         <p class="text-sm text-text-muted mt-1">
-                            <a href="{{ route('admin.taxonomies.create') }}" class="text-primary hover:text-primary/80 no-underline font-medium">Create your first taxonomy</a>
+                            <a href="{{ route('admin.taxonomies.create') }}" class="text-primary hover:text-primary/80 no-underline font-medium">Create your first category group</a>
                         </p>
                     </div>
                 @else
@@ -96,7 +96,7 @@
                                             <form method="POST" action="{{ route('admin.taxonomies.destroy', $taxonomy) }}" class="w-full">
                                                 @csrf @method('DELETE')
                                                 <button type="submit" role="menuitem"
-                                                    onclick="return confirm('Delete this taxonomy?')"
+                                                    onclick="return confirm('Delete this category group?')"
                                                     class="flex w-full items-center justify-start gap-2.5 px-3 py-2 rounded-lg text-sm transition-colors text-red-600 hover:bg-red-50 cursor-pointer"
                                                 >
                                                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" class="size-4 shrink-0 text-red-500">

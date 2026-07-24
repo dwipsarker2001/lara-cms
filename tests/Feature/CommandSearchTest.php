@@ -64,7 +64,7 @@ it('returns no dynamic content for empty query even when content exists', functi
     $response = getJson(route('admin.search'))->assertSuccessful();
 
     $groups = collect($response->json('groups'))->pluck('group')->all();
-    expect($groups)->not->toContain('Taxonomies');
+    expect($groups)->not->toContain('Categories');
 });
 
 it('returns navigation matches when typing a nav keyword', function () {
@@ -87,7 +87,7 @@ it('caps each group to the per-group limit', function () {
 
     $response = getJson(route('admin.search', ['q' => 'Travel Guide']))->assertSuccessful();
 
-    $taxGroup = collect($response->json('groups'))->firstWhere('group', 'Taxonomies');
+    $taxGroup = collect($response->json('groups'))->firstWhere('group', 'Categories');
     expect($taxGroup)->not->toBeNull();
     expect(count($taxGroup['items']))->toBeLessThanOrEqual(7);
 });

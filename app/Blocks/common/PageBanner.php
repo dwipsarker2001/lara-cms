@@ -16,7 +16,7 @@ class PageBanner extends Block
     public function fields(): array
     {
         return [
-            Field::string('title', 'Title', default: 'Page Title'),
+            Field::string('title', 'Title', default: 'Page Title', source: 'title'),
             Field::image('backgroundImage', 'Background Image', default: '/placeholder-image.png'),
         ];
     }

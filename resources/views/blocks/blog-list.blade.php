@@ -5,23 +5,59 @@
     $searchQuery = request()->query('search');
     $perPage = max(1, (int) ($d['postsPerPage'] ?? 6));
     $layout = $d['layout'] ?? 'grid';
+    $selectedCollection = $d['postCollection'] ?? null;
 
     $posts = collect();
-    $allTags = [];
-    $recentPosts = collect();
+    $sidebarCategories = [];
+    $sidebarTags = [];
+    $sidebarRecentPosts = [];
     $totalPosts = 0;
     $totalPages = 1;
 
-    if (\Illuminate\Support\Facades\Schema::hasTable('posts')) {
-        $query = \App\Models\Post::where('published', true);
-        if ($categoryTag) {
-            $query->whereJsonContains('tags', $categoryTag);
+    if (\Illuminate\Support\Facades\Schema::hasTable('collection_entries')) {
+        $query = \App\Models\CollectionEntry::where('published', true);
+
+        if (! empty($selectedCollection)) {
+            $query->whereHas('collection', fn ($q) => $q->where('slug', $selectedCollection));
+        } else {
+            $query->whereHas('collection', function ($q) {
+                $q->whereIn('slug', ['posts', 'blog', 'news', 'articles'])
+                    ->orWhere('slug', '!=', 'pages');
+            });
         }
+
+        if ($categoryTag) {
+            $matchedTaxonomy = \App\Models\Taxonomy::where('slug', $categoryTag)->orWhere('title', $categoryTag)->first();
+            $matchedTerm = \App\Models\Term::where('slug', $categoryTag)->orWhere('title', $categoryTag)->first();
+            $matchedValues = array_filter([
+                $categoryTag,
+                $matchedTaxonomy?->id,
+                (string) $matchedTaxonomy?->id,
+                $matchedTaxonomy?->title,
+                $matchedTaxonomy?->slug,
+                $matchedTerm?->id,
+                (string) $matchedTerm?->id,
+                $matchedTerm?->title,
+                $matchedTerm?->slug,
+            ]);
+
+            $query->where(function ($qry) use ($matchedValues) {
+                foreach ($matchedValues as $val) {
+                    $qry->orWhereJsonContains('data->category', $val)
+                        ->orWhere('data->category', $val)
+                        ->orWhereJsonContains('data->tags', $val)
+                        ->orWhere('data->tags', 'like', "%{$val}%");
+                }
+            });
+        }
+
         if ($searchQuery) {
             $q = trim($searchQuery);
             $query->where(function ($qry) use ($q) {
-                $qry->where('title', 'like', "%{$q}%")
-                    ->orWhere('excerpt', 'like', "%{$q}%");
+                $qry->where('slug', 'like', "%{$q}%")
+                    ->orWhere('data->title', 'like', "%{$q}%")
+                    ->orWhere('data->content', 'like', "%{$q}%")
+                    ->orWhere('data->excerpt', 'like', "%{$q}%");
             });
         }
 
@@ -29,32 +65,85 @@
         $totalPages = max(1, (int) ceil($totalPosts / $perPage));
         $currentPage = min($currentPage, $totalPages);
 
-        $posts = $query->orderBy('date', 'desc')
+        $entries = $query->latest()
             ->skip(($currentPage - 1) * $perPage)
             ->take($perPage)
             ->get();
 
-        $allTags = \App\Models\Post::where('published', true)
-            ->whereNotNull('tags')
-            ->pluck('tags')
-            ->flatten()
-            ->unique()
-            ->sort()
-            ->values()
-            ->toArray();
+        $posts = $entries->map(function ($entry) {
+            $eData = $entry->data ?? [];
+            $image = $eData['image'] ?? $eData['hero_image'] ?? $eData['socialImage'] ?? $eData['banner_img'] ?? 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=600&q=80';
+            $title = $eData['title'] ?? $entry->title ?? 'Untitled Post';
 
-        $recentPosts = \App\Models\Post::where('published', true)
-            ->where('id', '!=', $posts->pluck('id')->toArray())
-            ->orderBy('date', 'desc')
-            ->take(3)
-            ->get();
+            // Resolve description/excerpt from entry fields, meta, or page sections
+            $rawDescription = $eData['excerpt']
+                ?? $eData['description']
+                ?? $eData['summary']
+                ?? $eData['content']
+                ?? $eData['body']
+                ?? $entry->meta['metaDescription']
+                ?? null;
 
-        if ($recentPosts->count() < 3) {
-            $recentPosts = \App\Models\Post::where('published', true)
-                ->orderBy('date', 'desc')
-                ->take(3)
-                ->get();
-        }
+            if (empty($rawDescription) && ! empty($entry->sections)) {
+                foreach ($entry->sections as $sec) {
+                    if (! empty($sec['data']['content'])) {
+                        $rawDescription = $sec['data']['content'];
+                        break;
+                    }
+                    if (! empty($sec['data']['description'])) {
+                        $rawDescription = $sec['data']['description'];
+                        break;
+                    }
+                }
+            }
+
+            $excerpt = ! empty($rawDescription)
+                ? \Illuminate\Support\Str::limit(\Illuminate\Support\Str::squish(strip_tags($rawDescription)), 140)
+                : '';
+
+            $author = $entry->meta['author'] ?? $eData['author'] ?? 'Admin';
+            $date = $entry->created_at ? $entry->created_at->format('M d, Y') : 'Recent';
+            $dt = $entry->created_at ?? now();
+
+            $catVal = $eData['category'] ?? null;
+            $catName = null;
+            if ($catVal) {
+                $cIds = [];
+                if (is_array($catVal)) {
+                    $cIds = $catVal;
+                } elseif (is_string($catVal) && (str_starts_with(trim($catVal), '[') || str_starts_with(trim($catVal), '{'))) {
+                    $decoded = json_decode($catVal, true);
+                    $cIds = is_array($decoded) ? $decoded : [$catVal];
+                } else {
+                    $cIds = [$catVal];
+                }
+                $cIds = array_filter(array_map('strval', $cIds));
+
+                $catName = \App\Models\Term::whereIn('id', $cIds)->value('title')
+                    ?? \App\Models\Taxonomy::whereIn('id', $cIds)->value('title')
+                    ?? \App\Models\Term::whereIn('slug', $cIds)->value('title')
+                    ?? \App\Models\Taxonomy::whereIn('slug', $cIds)->value('title')
+                    ?? (is_string($catVal) ? $catVal : null);
+            }
+
+            return (object) [
+                'id' => $entry->id,
+                'slug' => $entry->slug,
+                'link' => $entry->route(),
+                'title' => $title,
+                'excerpt' => $excerpt,
+                'image' => $image,
+                'author' => $author,
+                'date' => $date,
+                'dt' => $dt,
+                'categoryName' => $catName,
+                'body' => $eData['content'] ?? $rawDescription ?? '',
+            ];
+        });
+
+        $sidebarCategories = \App\Support\BlogSidebarData::getCategories($selectedCollection);
+        $sidebarTags = \App\Support\BlogSidebarData::getTags($selectedCollection);
+        $sidebarRecentPosts = \App\Support\BlogSidebarData::getRecentPosts(3, $selectedCollection);
     }
 
     $total = $totalPages;
@@ -89,7 +178,7 @@
     };
 
     $excerptText = function ($post, $len = 120) {
-        if ($post->excerpt) {
+        if (!empty($post->excerpt)) {
             return \Illuminate\Support\Str::limit($post->excerpt, $len);
         }
         return \Illuminate\Support\Str::limit(\Illuminate\Support\Str::squish(strip_tags($post->body ?? '')), $len);
@@ -120,9 +209,9 @@
                     @if($layout === 'grid')
                         <div class="grid grid-cols-1 gap-7 md:grid-cols-2">
                             @foreach($posts as $post)
-                                <a href="/blogs/{{ $post->slug }}" class="group flex h-full flex-col overflow-hidden rounded-2xl border border-gray-100 bg-white shadow-sm transition-all duration-300 hover:-translate-y-1 hover:border-gray-200 hover:shadow-xl hover:shadow-brand/5">
+                                <a href="{{ $post->link }}" class="group flex h-full flex-col overflow-hidden rounded-2xl border border-gray-100 bg-white shadow-sm transition-all duration-300 hover:-translate-y-1 hover:border-gray-200 hover:shadow-xl hover:shadow-brand/5">
                                     <div class="relative aspect-[4/3] overflow-hidden bg-gray-100">
-                                        @php $img = $post->hero_img ?? $post->banner_img ?? null; @endphp
+                                        @php $img = $post->image; @endphp
                                         @if($img)
                                             <img src="{{ $img }}" alt="{{ $post->title }}" class="absolute inset-0 w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-110" />
                                         @else
@@ -132,7 +221,7 @@
                                         @endif
                                         <div class="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent"></div>
                                         @if($post->date)
-                                            @php $dt = \Carbon\Carbon::parse($post->date); @endphp
+                                            @php $dt = $post->dt; @endphp
                                             <div class="absolute left-4 top-4 flex h-14 w-14 flex-col items-center justify-center rounded-xl bg-white/95 text-gray-900 shadow-lg backdrop-blur-sm ring-1 ring-black/5">
                                                 <span class="text-base font-bold leading-none">{{ $dt->format('j') }}</span>
                                                 <span class="mt-0.5 text-[10px] font-semibold uppercase tracking-wider text-brand">{{ $dt->format('M') }}</span>
@@ -143,21 +232,20 @@
                                         <div class="flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-gray-500">
                                             <span class="inline-flex items-center gap-1">
                                                 <svg class="h-3 w-3" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
-                                                <span class="font-medium text-gray-700">{{ $post->author ?: 'Anonymous' }}</span>
+                                                <span class="font-medium text-gray-700">{{ $post->author ?: 'Admin' }}</span>
                                             </span>
-                                            @php $tag = $post->tags[0] ?? null; @endphp
-                                            @if($tag)
+                                            @if($post->categoryName)
                                                 <span class="text-gray-300">•</span>
                                                 <span class="inline-flex items-center gap-1 text-brand">
                                                     <svg class="h-3 w-3" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M12 2H2v10l9.29 9.29c.94.94 2.48.94 3.42 0l6.58-6.58c.94-.94.94-2.48 0-3.42L12 2Z"/><path d="M7 7h.01"/></svg>
-                                                    {{ $tag }}
+                                                    {{ $post->categoryName }}
                                                 </span>
                                             @endif
                                             @if($post->date)
                                                 <span class="text-gray-300">•</span>
                                                 <span class="inline-flex items-center gap-1">
                                                     <svg class="h-3 w-3" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-                                                    {{ $dt->format('M d, Y') }}
+                                                    {{ $post->date }}
                                                 </span>
                                             @endif
                                         </div>
@@ -177,8 +265,8 @@
                     @else
                         <div class="flex flex-col gap-6">
                             @foreach($posts as $post)
-                                <a href="/blogs/{{ $post->slug }}" class="group flex flex-col overflow-hidden rounded-2xl border border-gray-100 bg-white p-3 shadow-sm transition-all duration-300 hover:-translate-y-0.5 hover:border-gray-200 hover:shadow-lg sm:flex-row sm:gap-5">
-                                    @php $img = $post->hero_img ?? $post->banner_img ?? null; @endphp
+                                <a href="{{ $post->link }}" class="group flex flex-col overflow-hidden rounded-2xl border border-gray-100 bg-white p-3 shadow-sm transition-all duration-300 hover:-translate-y-0.5 hover:border-gray-200 hover:shadow-lg sm:flex-row sm:gap-5">
+                                    @php $img = $post->image; @endphp
                                     <div class="relative aspect-[4/3] w-full shrink-0 overflow-hidden rounded-xl bg-gray-100 sm:aspect-auto sm:h-48 sm:w-72">
                                         @if($img)
                                             <img src="{{ $img }}" alt="{{ $post->title }}" class="absolute inset-0 w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-110" />
@@ -189,7 +277,7 @@
                                         @endif
                                         <div class="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent"></div>
                                         @if($post->date)
-                                            @php $dt = \Carbon\Carbon::parse($post->date); @endphp
+                                            @php $dt = $post->dt; @endphp
                                             <div class="absolute left-4 top-4 flex h-14 w-14 flex-col items-center justify-center rounded-xl bg-white/95 text-gray-900 shadow-lg backdrop-blur-sm ring-1 ring-black/5">
                                                 <span class="text-base font-bold leading-none">{{ $dt->format('j') }}</span>
                                                 <span class="mt-0.5 text-[10px] font-semibold uppercase tracking-wider text-brand">{{ $dt->format('M') }}</span>
@@ -200,21 +288,20 @@
                                         <div class="flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-gray-500">
                                             <span class="inline-flex items-center gap-1">
                                                 <svg class="h-3 w-3" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
-                                                <span class="font-medium text-gray-700">{{ $post->author ?: 'Anonymous' }}</span>
+                                                <span class="font-medium text-gray-700">{{ $post->author ?: 'Admin' }}</span>
                                             </span>
-                                            @php $tag = $post->tags[0] ?? null; @endphp
-                                            @if($tag)
+                                            @if($post->categoryName)
                                                 <span class="text-gray-300">•</span>
                                                 <span class="inline-flex items-center gap-1 text-brand">
                                                     <svg class="h-3 w-3" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M12 2H2v10l9.29 9.29c.94.94 2.48.94 3.42 0l6.58-6.58c.94-.94.94-2.48 0-3.42L12 2Z"/><path d="M7 7h.01"/></svg>
-                                                    {{ $tag }}
+                                                    {{ $post->categoryName }}
                                                 </span>
                                             @endif
                                             @if($post->date)
                                                 <span class="text-gray-300">•</span>
                                                 <span class="inline-flex items-center gap-1">
                                                     <svg class="h-3 w-3" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-                                                    {{ $dt->format('M d, Y') }}
+                                                    {{ $post->date }}
                                                 </span>
                                             @endif
                                         </div>
@@ -306,16 +393,19 @@
                         Categories
                     </h3>
                     <ul class="space-y-1 rounded-xl border border-gray-100 bg-white p-2 shadow-sm">
-                        @forelse($allTags as $tag)
-                            @php $active = $categoryTag === $tag; @endphp
+                        @forelse($sidebarCategories as $cat)
+                            @php
+                                $catSlug = $cat['slug'] ?? \Illuminate\Support\Str::slug($cat['name']);
+                                $active = $categoryTag && (mb_strtolower($categoryTag) === mb_strtolower($catSlug) || mb_strtolower($categoryTag) === mb_strtolower($cat['name']));
+                            @endphp
                             <li>
-                                <a href="{{ $buildUrl(['category' => $active ? null : $tag, 'page' => null]) }}"
+                                <a href="{{ $buildUrl(['category' => $active ? null : $catSlug, 'page' => null]) }}"
                                    class="flex w-full items-center justify-between rounded-lg px-3 py-2 text-sm transition-all duration-200 {{ $active ? 'bg-brand text-white shadow-sm shadow-brand/20' : 'text-gray-700 hover:bg-brand/5 hover:text-brand' }}">
                                     <span class="flex items-center gap-2.5">
                                         <span class="h-2 w-2 rounded-full transition-all {{ $active ? 'bg-white scale-110' : 'bg-gray-300' }}"></span>
-                                        {{ $tag }}
+                                        {{ $cat['name'] }}
                                     </span>
-                                    <svg class="h-3.5 w-3.5 transition-transform {{ $active ? 'translate-x-0.5' : 'opacity-0' }}" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M9 18l6-6-6-6"/></svg>
+                                    <span class="text-xs font-mono opacity-80">({{ $cat['count'] }})</span>
                                 </a>
                             </li>
                         @empty
@@ -331,13 +421,12 @@
                         Recent Post
                     </h3>
                     <div class="space-y-4 rounded-xl border border-gray-100 bg-white p-4 shadow-sm">
-                        @forelse($recentPosts as $post)
-                            <a href="/blogs/{{ $post->slug }}"
+                        @forelse($sidebarRecentPosts as $rPost)
+                            <a href="{{ $rPost['link'] ?? '#' }}"
                                class="group flex gap-3 rounded-lg p-1.5 transition-colors hover:bg-gray-50">
-                                @php $img = $post->hero_img ?? $post->banner_img ?? null; @endphp
-                                @if($img)
+                                @if($rPost['image'] ?? null)
                                     <div class="relative h-16 w-20 shrink-0 overflow-hidden rounded-lg">
-                                        <img src="{{ $img }}" alt="{{ $post->title }}" class="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" />
+                                        <img src="{{ $rPost['image'] }}" alt="{{ $rPost['title'] }}" class="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" />
                                     </div>
                                 @else
                                     <div class="flex h-16 w-20 shrink-0 items-center justify-center rounded-lg bg-gradient-to-br from-gray-100 to-gray-200">
@@ -345,14 +434,13 @@
                                     </div>
                                 @endif
                                 <div class="flex-1">
-                                    @if($post->date)
-                                        @php $dt = \Carbon\Carbon::parse($post->date); @endphp
+                                    @if($rPost['date'] ?? null)
                                         <p class="mb-1 inline-flex items-center gap-1 text-[11px] font-medium text-gray-400">
                                             <svg class="h-3 w-3" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><rect width="18" height="18" x="3" y="4" rx="2" ry="2"/><line x1="16" x2="16" y1="2" y2="6"/><line x1="8" x2="8" y1="2" y2="6"/><line x1="3" x2="21" y1="10" y2="10"/></svg>
-                                            {{ $dt->format('d M Y') }}
+                                            {{ $rPost['date'] }}
                                         </p>
                                     @endif
-                                    <p class="line-clamp-2 text-sm font-semibold leading-snug text-gray-800 transition-colors group-hover:text-brand">{{ $post->title }}</p>
+                                    <p class="line-clamp-2 text-sm font-semibold leading-snug text-gray-800 transition-colors group-hover:text-brand">{{ $rPost['title'] }}</p>
                                 </div>
                             </a>
                         @empty
@@ -368,7 +456,7 @@
                         Tags
                     </h3>
                     <div class="flex flex-wrap gap-2">
-                        @forelse($allTags as $tag)
+                        @forelse($sidebarTags as $tag)
                             @php $active = $categoryTag === $tag; @endphp
                             <a href="{{ $buildUrl(['category' => $active ? null : $tag, 'page' => null]) }}"
                                class="rounded-full border px-3.5 py-1.5 text-xs font-medium transition-all duration-200 {{ $active ? 'border-brand bg-brand text-white shadow-sm shadow-brand/20' : 'border-gray-200 bg-white text-gray-600 hover:border-brand hover:bg-brand/5 hover:text-brand' }}">

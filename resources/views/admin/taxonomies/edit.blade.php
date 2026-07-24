@@ -1,7 +1,7 @@
 @extends('admin.layout')
 
-@section('title', 'Edit Taxonomy')
-@section('breadcrumb', 'Edit Taxonomy')
+@section('title', 'Edit Category')
+@section('breadcrumb', 'Edit Category')
 
 @section('content')
     <div
@@ -24,7 +24,7 @@
                         <line x1="10" y1="3" x2="8" y2="21" />
                         <line x1="16" y1="3" x2="14" y2="21" />
                     </svg>
-                    Edit Taxonomy
+                    Edit Category
                 </h1>
                 <div class="flex flex-wrap items-center gap-2 sm:gap-3">
                     @if ($errors->any())
@@ -38,21 +38,21 @@
                     <button type="submit"
                         class="inline-flex items-center justify-center gap-2 whitespace-nowrap shrink-0 font-medium cursor-pointer no-underline rounded-lg transition-colors h-10 text-sm leading-tight px-4 bg-primary hover:opacity-90 text-white shadow-sm"
                     >
-                        <span>Update Taxonomy</span>
+                        <span>Update Category</span>
                     </button>
                 </div>
             </header>
 
             <div class="bg-panel-bg rounded-2xl mb-8 p-[7px]">
-                <div class="px-[18px] pt-3 pb-1 text-sm font-medium text-text-heading">Taxonomy Details</div>
-                <p class="px-[18px] pb-3 text-sm text-text-muted">Update this taxonomy group.</p>
+                <div class="px-[18px] pt-3 pb-1 text-sm font-medium text-text-heading">Category Details</div>
+                <p class="px-[18px] pb-3 text-sm text-text-muted">Update this category group.</p>
                 <div class="px-1.5 pb-2">
                     <div class="bg-content-bg rounded-xl ring-1 ring-content-border shadow-sm px-3 py-3">
                         <div class="divide-y divide-content-border">
                             <div class="grid md:grid-cols-2 items-start px-[18px] py-4 gap-y-3 md:gap-y-0 md:gap-x-5">
                                 <div class="flex flex-col gap-1.5">
                                     <label for="field-title" class="text-sm font-medium text-text-heading">Title</label>
-                                    <div class="text-sm text-text-muted">A descriptive name for this taxonomy group.</div>
+                                    <div class="text-sm text-text-muted">A descriptive name for this category group.</div>
                                 </div>
                                 <div class="flex items-center gap-2">
                                     <div class="flex-1">
