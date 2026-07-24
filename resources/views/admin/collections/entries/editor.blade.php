@@ -181,7 +181,7 @@
                                         <label class="block text-sm font-semibold text-text-primary mb-1" x-text="field.label"></label>
                                         <template x-if="isSourceField(field.name)">
                                             <div>
-                                                <textarea disabled class="w-full rounded-lg border border-primary/30 bg-primary/5 px-3 py-2 text-sm text-text-primary cursor-not-allowed opacity-75 resize-y min-h-[80px]" rows="3" x-text="getField(field.name)"></textarea>
+                                                <textarea disabled class="w-full rounded-lg border border-primary/30 bg-primary/5 px-3 py-2 text-sm text-text-primary cursor-not-allowed opacity-75 resize-y min-h-[140px]" rows="6" x-text="getField(field.name)"></textarea>
                                                 <div class="flex items-center gap-1 mt-1 text-xs text-primary/70">
                                                     <svg class="size-3" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"/></svg>
                                                     <span>Linked to custom entry field</span>
@@ -191,7 +191,7 @@
                                         <template x-if="!isSourceField(field.name)">
                                             <textarea :value="getField(field.name)" @input="setField(field.name, $event.target.value)"
                                                 :data-field-target="field.name"
-                                                class="w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm text-text-primary shadow-[0_2px_3px_-2px_rgba(0,0,0,0.15)] focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary resize-y min-h-[80px]" rows="3"></textarea>
+                                                class="w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm text-text-primary shadow-[0_2px_3px_-2px_rgba(0,0,0,0.15)] focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary resize-y min-h-[140px]" rows="6"></textarea>
                                         </template>
                                     </div>
                                 </template>
@@ -828,6 +828,7 @@
 
                         const item = this.sections.splice(evt.oldIndex, 1)[0];
                         this.sections.splice(evt.newIndex, 0, item);
+                        this.sections = [...this.sections];
                         this.dirty = true;
                         this.schedulePreview();
                         this.$nextTick(() => this.initSectionSortable());
@@ -846,6 +847,7 @@
 
                 const item = this.sections.splice(from, 1)[0];
                 this.sections.splice(to, 0, item);
+                this.sections = [...this.sections];
                 this.dirty = true;
                 this.schedulePreview();
                 this.$nextTick(() => this.initSectionSortable());
@@ -1063,6 +1065,7 @@
                 const section = this.createDefault(name);
                 if (section) {
                     this.sections.push(section);
+                    this.sections = [...this.sections];
                     this.dirty = true;
                     this.schedulePreview();
                     this.$nextTick(() => this.initSectionSortable());
@@ -1127,6 +1130,7 @@
                     this._sectionSortable = null;
                 }
                 this.sections.splice(i, 1);
+                this.sections = [...this.sections];
                 if (this.active === i || this.active >= this.sections.length) { this.active = null; this.crumbs = []; }
                 this.dirty = true;
                 this.schedulePreview();

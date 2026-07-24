@@ -263,56 +263,58 @@
                             @endforeach
                         </div>
                     @else
-                        <div class="flex flex-col gap-6">
+                        <div class="flex flex-col gap-4">
                             @foreach($posts as $post)
-                                <a href="{{ $post->link }}" class="group flex flex-col overflow-hidden rounded-2xl border border-gray-100 bg-white p-3 shadow-sm transition-all duration-300 hover:-translate-y-0.5 hover:border-gray-200 hover:shadow-lg sm:flex-row sm:gap-5">
+                                <a href="{{ $post->link }}" class="group flex flex-col overflow-hidden rounded-2xl border border-gray-100 bg-white p-2.5 shadow-sm transition-all duration-300 hover:-translate-y-0.5 hover:border-gray-200 hover:shadow-lg sm:flex-row sm:items-center sm:gap-4">
                                     @php $img = $post->image; @endphp
-                                    <div class="relative aspect-[4/3] w-full shrink-0 overflow-hidden rounded-xl bg-gray-100 sm:aspect-auto sm:h-48 sm:w-72">
+                                    <div class="relative aspect-[16/9] w-full shrink-0 overflow-hidden rounded-xl bg-gray-100 sm:aspect-auto sm:h-36 sm:w-52">
                                         @if($img)
                                             <img src="{{ $img }}" alt="{{ $post->title }}" class="absolute inset-0 w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-110" />
                                         @else
                                             <div class="flex h-full w-full items-center justify-center bg-gradient-to-br from-gray-100 to-gray-200">
-                                                <svg class="h-10 w-10 text-gray-300" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6.042A8.967 8.967 0 006 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 016 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 016-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0018 18a8.967 8.967 0 00-6 2.292m0-14.25v14.25"/></svg>
+                                                <svg class="h-8 w-8 text-gray-300" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6.042A8.967 8.967 0 006 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 016 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 016-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0018 18a8.967 8.967 0 00-6 2.292m0-14.25v14.25"/></svg>
                                             </div>
                                         @endif
                                         <div class="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent"></div>
                                         @if($post->date)
                                             @php $dt = $post->dt; @endphp
-                                            <div class="absolute left-4 top-4 flex h-14 w-14 flex-col items-center justify-center rounded-xl bg-white/95 text-gray-900 shadow-lg backdrop-blur-sm ring-1 ring-black/5">
-                                                <span class="text-base font-bold leading-none">{{ $dt->format('j') }}</span>
-                                                <span class="mt-0.5 text-[10px] font-semibold uppercase tracking-wider text-brand">{{ $dt->format('M') }}</span>
+                                            <div class="absolute left-3 top-3 flex h-11 w-11 flex-col items-center justify-center rounded-lg bg-white/95 text-gray-900 shadow-md backdrop-blur-sm ring-1 ring-black/5">
+                                                <span class="text-sm font-bold leading-none">{{ $dt->format('j') }}</span>
+                                                <span class="mt-0.5 text-[9px] font-semibold uppercase tracking-wider text-brand">{{ $dt->format('M') }}</span>
                                             </div>
                                         @endif
                                     </div>
-                                    <div class="flex flex-1 flex-col p-5 sm:p-0 sm:py-2">
-                                        <div class="flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-gray-500">
-                                            <span class="inline-flex items-center gap-1">
-                                                <svg class="h-3 w-3" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
-                                                <span class="font-medium text-gray-700">{{ $post->author ?: 'Admin' }}</span>
-                                            </span>
-                                            @if($post->categoryName)
-                                                <span class="text-gray-300">•</span>
-                                                <span class="inline-flex items-center gap-1 text-brand">
-                                                    <svg class="h-3 w-3" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M12 2H2v10l9.29 9.29c.94.94 2.48.94 3.42 0l6.58-6.58c.94-.94.94-2.48 0-3.42L12 2Z"/><path d="M7 7h.01"/></svg>
-                                                    {{ $post->categoryName }}
-                                                </span>
-                                            @endif
-                                            @if($post->date)
-                                                <span class="text-gray-300">•</span>
+                                    <div class="flex flex-1 flex-col justify-between p-3 sm:p-1 sm:pr-2">
+                                        <div>
+                                            <div class="flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-gray-500">
                                                 <span class="inline-flex items-center gap-1">
-                                                    <svg class="h-3 w-3" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-                                                    {{ $post->date }}
+                                                    <svg class="h-3 w-3" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                                                    <span class="font-medium text-gray-700">{{ $post->author ?: 'Admin' }}</span>
                                                 </span>
-                                            @endif
+                                                @if($post->categoryName)
+                                                    <span class="text-gray-300">•</span>
+                                                    <span class="inline-flex items-center gap-1 text-brand">
+                                                        <svg class="h-3 w-3" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M12 2H2v10l9.29 9.29c.94.94 2.48.94 3.42 0l6.58-6.58c.94-.94.94-2.48 0-3.42L12 2Z"/><path d="M7 7h.01"/></svg>
+                                                        {{ $post->categoryName }}
+                                                    </span>
+                                                @endif
+                                                @if($post->date)
+                                                    <span class="text-gray-300">•</span>
+                                                    <span class="inline-flex items-center gap-1">
+                                                        <svg class="h-3 w-3" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                                                        {{ $post->date }}
+                                                    </span>
+                                                @endif
+                                            </div>
+                                            <h3 class="mt-1.5 line-clamp-1 text-base font-bold leading-snug tracking-tight text-gray-900 transition-colors duration-200 group-hover:text-brand sm:text-lg">{{ $post->title }}</h3>
+                                            <p class="mt-1 line-clamp-2 text-xs leading-relaxed text-gray-500 sm:text-sm">{{ $excerptText($post, 110) }}</p>
                                         </div>
-                                        <h3 class="mt-3 line-clamp-2 text-lg font-bold leading-snug tracking-tight text-gray-900 transition-colors duration-200 group-hover:text-brand sm:text-xl">{{ $post->title }}</h3>
-                                        <p class="mt-2 line-clamp-2 text-sm leading-relaxed text-gray-500">{{ $excerptText($post) }}</p>
-                                        <div class="mt-auto flex items-center justify-between pt-3">
-                                            <span class="inline-flex items-center gap-1.5 text-sm font-semibold text-brand transition-all duration-200 group-hover:gap-2.5">
+                                        <div class="mt-2.5 flex items-center justify-between">
+                                            <span class="inline-flex items-center gap-1.5 text-xs font-semibold text-brand transition-all duration-200 group-hover:gap-2.5 sm:text-sm">
                                                 Read more
-                                                <svg class="h-4 w-4 transition-transform duration-200 group-hover:rotate-45" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M7 17l9.2-9.2M17 17V7H7"/></svg>
+                                                <svg class="h-3.5 w-3.5 transition-transform duration-200 group-hover:rotate-45" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M7 17l9.2-9.2M17 17V7H7"/></svg>
                                             </span>
-                                            <span class="text-xs font-medium text-gray-400">{{ $estReadTime($post->body) }}</span>
+                                            <span class="text-[11px] font-medium text-gray-400 sm:text-xs">{{ $estReadTime($post->body) }}</span>
                                         </div>
                                     </div>
                                 </a>

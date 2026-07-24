@@ -180,7 +180,7 @@
                                         <label class="block text-sm font-semibold text-text-primary mb-1" x-text="field.label"></label>
                                         <textarea :value="getField(field.name)" @input="setField(field.name, $event.target.value)"
                                             :data-field-target="field.name"
-                                            class="w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm text-text-primary shadow-[0_2px_3px_-2px_rgba(0,0,0,0.15)] focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary resize-y min-h-[80px]" rows="3"></textarea>
+                                            class="w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm text-text-primary shadow-[0_2px_3px_-2px_rgba(0,0,0,0.15)] focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary resize-y min-h-[140px]" rows="6"></textarea>
                                     </div>
                                 </template>
 
@@ -809,6 +809,7 @@
 
                         const item = this.sections.splice(evt.oldIndex, 1)[0];
                         this.sections.splice(evt.newIndex, 0, item);
+                        this.sections = [...this.sections];
                         this.dirty = true;
                         this.schedulePreview();
                         this.$nextTick(() => this.initSectionSortable());
@@ -827,6 +828,7 @@
 
                 const item = this.sections.splice(from, 1)[0];
                 this.sections.splice(to, 0, item);
+                this.sections = [...this.sections];
                 this.dirty = true;
                 this.schedulePreview();
                 this.$nextTick(() => this.initSectionSortable());
@@ -1038,6 +1040,7 @@
                 const section = this.createDefault(name);
                 if (section) {
                     this.sections.push(section);
+                    this.sections = [...this.sections];
                     this.dirty = true;
                     this.schedulePreview();
                     this.$nextTick(() => this.initSectionSortable());
@@ -1102,6 +1105,7 @@
                     this._sectionSortable = null;
                 }
                 this.sections.splice(i, 1);
+                this.sections = [...this.sections];
                 if (this.active === i || this.active >= this.sections.length) { this.active = null; this.crumbs = []; }
                 this.dirty = true;
                 this.schedulePreview();
