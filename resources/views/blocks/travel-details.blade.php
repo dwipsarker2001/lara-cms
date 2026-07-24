@@ -7,13 +7,10 @@
     <div class="max-w-6xl mx-auto px-6">
         {{-- ── Section 1: Hero / Gallery ── --}}
         <div class="mb-8">
-            @if($d['breadcrumb'] ?? false)
-            <div class="text-sm text-gray-500 mb-4" data-edit="breadcrumb">
-                <a href="/" class="hover:text-primary">Home</a> &gt; {{ $d['breadcrumb'] }}
-            </div>
-            @endif
-
             @if($d['title'] ?? false)
+            <div class="text-sm text-gray-500 mb-4">
+                <a href="/" class="hover:text-primary">Home</a> &gt; {{ $d['title'] }}
+            </div>
             <h1 class="text-3xl font-bold text-gray-900 mb-4" data-edit="title">{{ $d['title'] }}</h1>
             @endif
 

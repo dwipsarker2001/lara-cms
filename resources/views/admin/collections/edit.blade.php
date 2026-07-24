@@ -165,8 +165,9 @@
                                                 </svg>
                                             </div>
                                             <div class="flex flex-1 min-w-0 items-center px-1.5 py-2.5 text-xs leading-normal">
-                                                <div class="flex min-w-0 flex-1 items-center gap-1.5">
+                                                <div class="flex min-w-0 flex-1 items-center gap-2">
                                                     <span class="text-sm font-semibold text-text-heading group-hover:text-primary truncate leading-normal transition-colors" x-text="field.title"></span>
+                                                    <span x-show="field.template" class="text-[11px] font-mono text-text-muted bg-gray-100 px-1.5 py-0.5 rounded border border-gray-200" x-text="field.template"></span>
                                                 </div>
                                                 <div class="flex items-center gap-0.5 shrink-0 ml-1">
                                                     <button type="button" @click="editField(index)" class="p-1 text-text-muted/60 hover:text-primary transition-colors rounded hover:bg-text-primary/10" title="Edit">
@@ -275,7 +276,7 @@
                         </select>
                     </div>
                     <div x-show="fieldForm.type !== 'collection'">
-                        <label class="block text-sm font-medium text-text-heading mb-1">Template String</label>
+                        <label class="block text-sm font-medium text-text-heading mb-1">Key</label>
                         <input type="text" x-model="fieldForm.template" readonly
                             class="w-full block bg-gray-50 border border-gray-200 text-text-muted text-sm rounded-lg px-3 py-2 h-9 cursor-not-allowed">
                     </div>
@@ -309,7 +310,11 @@
             iconSearch: '',
             iconLoading: false,
             faIcons: window.FA_ICONS || [],
-            fields: (existingFields || []).map(f => ({ ...f, _key: f._key || crypto.randomUUID() })),
+            fields: (existingFields || []).map(f => ({
+                ...f,
+                template: (f.template || '').replace(/[^a-zA-Z0-9_]+/g, ''),
+                _key: f._key || crypto.randomUUID()
+            })),
             showFieldModal: false,
             editingFieldIndex: null,
             fieldForm: {
@@ -342,7 +347,7 @@
 
             generateTemplate() {
                 const slug = this.fieldForm.title.replace(/[^a-zA-Z0-9]+/g, '_').replace(/^_|_$/g, '').toLowerCase();
-                this.fieldForm.template = slug ? '@{{' + slug + '@}}' : '';
+                this.fieldForm.template = slug;
             },
 
             openFieldModal() {
@@ -359,14 +364,19 @@
 
             editField(index) {
                 this.editingFieldIndex = index;
-                this.fieldForm = {
-                    ...this.fields[index]
-                };
+                const field = { ...this.fields[index] };
+                if (field.template) {
+                    field.template = field.template.replace(/[^a-zA-Z0-9_]+/g, '');
+                }
+                this.fieldForm = field;
                 this.showFieldModal = true;
             },
 
             saveField() {
                 if (!this.fieldForm.title.trim()) return;
+                if (this.fieldForm.template) {
+                    this.fieldForm.template = this.fieldForm.template.replace(/[^a-zA-Z0-9_]+/g, '').toLowerCase();
+                }
                 if (this.editingFieldIndex !== null) {
                     this.fields[this.editingFieldIndex] = { ...this.fieldForm, _key: this.fields[this.editingFieldIndex]._key };
                     this.fields = [...this.fields]; // Force Alpine reactivity update

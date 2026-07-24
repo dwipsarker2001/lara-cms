@@ -67,7 +67,38 @@ abstract class Block
             return '';
         }
 
+        if ($page) {
+            $data = self::mergeSourceData($data, $this->resolvedFields(), $page);
+        }
+
         return view($this->view(), compact('data', '_key', 'preview', 'page'))->render();
+    }
+
+    /**
+     * Overlay entry custom-field values onto block data for fields that declare a source.
+     * Source values take priority if non-empty; block data is the fallback.
+     *
+     * @param  array<string, mixed>  $data
+     * @param  array<int, array>  $fields
+     * @return array<string, mixed>
+     */
+    public static function mergeSourceData(array $data, array $fields, object $page): array
+    {
+        $entryData = is_array($page->data ?? null) ? $page->data : [];
+
+        foreach ($fields as $field) {
+            $name = $field['name'] ?? '';
+            $source = $field['source'] ?? '';
+
+            if ($source !== '' && $name !== '') {
+                $entryValue = $entryData[$source] ?? null;
+                if ($entryValue !== null && $entryValue !== '') {
+                    $data[$name] = $entryValue;
+                }
+            }
+        }
+
+        return $data;
     }
 
     /** Serializable shape handed to the admin editor (JSON). */

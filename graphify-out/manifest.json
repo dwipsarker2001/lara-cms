@@ -5,8 +5,8 @@
     "semantic_hash": "ee8f920cd448a8a5036dda43d44c1d64"
   },
   "app/Blocks/Block.php": {
-    "mtime": 1784741579.6978905,
-    "ast_hash": "42b8c9e27f6d72c0b5cb40f28886c66e",
+    "mtime": 1784865801.5167832,
+    "ast_hash": "668ca7cbf4ab516d52f35d681d680e39",
     "semantic_hash": ""
   },
   "app/Blocks/BlockRegistry.php": {
@@ -15,8 +15,8 @@
     "semantic_hash": ""
   },
   "app/Blocks/Field.php": {
-    "mtime": 1784683878.685469,
-    "ast_hash": "82f9bc40362777c0e0b12e0a46e2c09f",
+    "mtime": 1784865754.7979963,
+    "ast_hash": "f67a5eac523acda5aabfbb23ea9c6273",
     "semantic_hash": ""
   },
   "app/Blocks/global/SiteNavbar.php": {
@@ -45,8 +45,8 @@
     "semantic_hash": ""
   },
   "app/Http/Controllers/Admin/PreviewController.php": {
-    "mtime": 1784689339.4680707,
-    "ast_hash": "523dfe2772defdfb5df2752154e37cc1",
+    "mtime": 1784828325.0732164,
+    "ast_hash": "9e623bf1f2ffa916267222ed908beaa0",
     "semantic_hash": ""
   },
   "app/Http/Controllers/Admin/ProfileController.php": {
@@ -925,8 +925,8 @@
     "semantic_hash": ""
   },
   "app/Http/Controllers/Admin/CollectionEntryController.php": {
-    "mtime": 1784684248.575956,
-    "ast_hash": "1022639be0cecc24b0bed1a40d49058d",
+    "mtime": 1784831087.326018,
+    "ast_hash": "6a4acfd46a3cc77e9b87f543d92d03cd",
     "semantic_hash": ""
   },
   "app/Models/Collection.php": {
@@ -975,28 +975,28 @@
     "semantic_hash": ""
   },
   "resources/views/admin/collections/create.blade.php": {
-    "mtime": 1784741579.6993484,
-    "ast_hash": "646518830700f44db8b7f235861ce440",
+    "mtime": 1784831214.4282093,
+    "ast_hash": "ce785b09395aeaeceaeddb70be4b7d0b",
     "semantic_hash": ""
   },
   "resources/views/admin/collections/edit.blade.php": {
-    "mtime": 1784741579.699831,
-    "ast_hash": "f8dbbbaa15fef7bf647c243119fec6e4",
+    "mtime": 1784866313.7424161,
+    "ast_hash": "315978e97db534f9a584fb966598718d",
     "semantic_hash": ""
   },
   "resources/views/admin/collections/entries/create.blade.php": {
-    "mtime": 1784741579.7003396,
-    "ast_hash": "76ea1b26bf7ad47821c659811506d3e4",
+    "mtime": 1784866187.932864,
+    "ast_hash": "598d7b9a8dbbdb37dcd2f859799a0104",
     "semantic_hash": ""
   },
   "resources/views/admin/collections/entries/edit.blade.php": {
-    "mtime": 1784741579.7009425,
-    "ast_hash": "952e53eb653f651562a0d026c45028d5",
+    "mtime": 1784866196.865684,
+    "ast_hash": "57099156a47581d6ef22989ef0cc52be",
     "semantic_hash": ""
   },
   "resources/views/admin/collections/entries/editor.blade.php": {
-    "mtime": 1784689353.5494394,
-    "ast_hash": "13cd905f7af96a1ea529c434ad3595c2",
+    "mtime": 1784865798.6530416,
+    "ast_hash": "62a9b6079164ab041595cdd65ff007e3",
     "semantic_hash": ""
   },
   "resources/views/admin/collections/entries/index.blade.php": {
@@ -2000,13 +2000,18 @@
     "semantic_hash": ""
   },
   "app/Blocks/common/TravelDetails.php": {
-    "mtime": 1784736062.9032505,
-    "ast_hash": "67036a0c7ab604e753d6826f5fa145ed",
+    "mtime": 1784865776.6470118,
+    "ast_hash": "6d9bcd3f2b40f4314d767e5d3f818394",
     "semantic_hash": ""
   },
   "resources/views/blocks/travel-details.blade.php": {
-    "mtime": 1784742388.5714455,
-    "ast_hash": "2d88f6f38fcd9aea40688fe28b1917df",
+    "mtime": 1784864382.5444827,
+    "ast_hash": "cf28cb54ec82722a6f5490eee059b9c8",
+    "semantic_hash": ""
+  },
+  "tests/Unit/BlockSourceBindingTest.php": {
+    "mtime": 1784865823.1673028,
+    "ast_hash": "ff0b3ce02ded9ae8570a44a54544439a",
     "semantic_hash": ""
   }
 }

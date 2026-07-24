@@ -15,54 +15,99 @@ namespace App\Blocks;
  */
 class Field
 {
-    public static function string(string $name, string $label, string $default = '', bool $multiline = false): array
+    public static function string(string $name, string $label, string $default = '', bool $multiline = false, string $source = ''): array
     {
-        return compact('name', 'label') + ['type' => 'string', 'defaultValue' => $default, 'multiline' => $multiline];
+        $field = compact('name', 'label') + ['type' => 'string', 'defaultValue' => $default, 'multiline' => $multiline];
+        if ($source !== '') {
+            $field['source'] = $source;
+        }
+
+        return $field;
     }
 
-    public static function text(string $name, string $label, string $default = ''): array
+    public static function text(string $name, string $label, string $default = '', string $source = ''): array
     {
-        return self::string($name, $label, $default, multiline: true);
+        return self::string($name, $label, $default, multiline: true, source: $source);
     }
 
-    public static function number(string $name, string $label, int|float|string $default = ''): array
+    public static function number(string $name, string $label, int|float|string $default = '', string $source = ''): array
     {
-        return compact('name', 'label') + ['type' => 'number', 'defaultValue' => (string) $default];
+        $field = compact('name', 'label') + ['type' => 'number', 'defaultValue' => (string) $default];
+        if ($source !== '') {
+            $field['source'] = $source;
+        }
+
+        return $field;
     }
 
-    public static function boolean(string $name, string $label, bool $default = false): array
+    public static function boolean(string $name, string $label, bool $default = false, string $source = ''): array
     {
-        return compact('name', 'label') + ['type' => 'boolean', 'defaultValue' => $default ? 'true' : 'false'];
+        $field = compact('name', 'label') + ['type' => 'boolean', 'defaultValue' => $default ? 'true' : 'false'];
+        if ($source !== '') {
+            $field['source'] = $source;
+        }
+
+        return $field;
     }
 
-    public static function datetime(string $name, string $label, string $default = ''): array
+    public static function datetime(string $name, string $label, string $default = '', string $source = ''): array
     {
-        return compact('name', 'label') + ['type' => 'datetime', 'defaultValue' => $default];
+        $field = compact('name', 'label') + ['type' => 'datetime', 'defaultValue' => $default];
+        if ($source !== '') {
+            $field['source'] = $source;
+        }
+
+        return $field;
     }
 
-    public static function image(string $name, string $label, string $default = ''): array
+    public static function image(string $name, string $label, string $default = '', string $source = ''): array
     {
-        return compact('name', 'label') + ['type' => 'image', 'defaultValue' => $default];
+        $field = compact('name', 'label') + ['type' => 'image', 'defaultValue' => $default];
+        if ($source !== '') {
+            $field['source'] = $source;
+        }
+
+        return $field;
     }
 
-    public static function icon(string $name, string $label, string $default = ''): array
+    public static function icon(string $name, string $label, string $default = '', string $source = ''): array
     {
-        return compact('name', 'label') + ['type' => 'icon', 'defaultValue' => $default];
+        $field = compact('name', 'label') + ['type' => 'icon', 'defaultValue' => $default];
+        if ($source !== '') {
+            $field['source'] = $source;
+        }
+
+        return $field;
     }
 
-    public static function richText(string $name, string $label, string $default = ''): array
+    public static function richText(string $name, string $label, string $default = '', string $source = ''): array
     {
-        return compact('name', 'label') + ['type' => 'rich-text', 'defaultValue' => $default];
+        $field = compact('name', 'label') + ['type' => 'rich-text', 'defaultValue' => $default];
+        if ($source !== '') {
+            $field['source'] = $source;
+        }
+
+        return $field;
     }
 
-    public static function link(string $name, string $label, string $default = ''): array
+    public static function link(string $name, string $label, string $default = '', string $source = ''): array
     {
-        return compact('name', 'label') + ['type' => 'link', 'defaultValue' => $default];
+        $field = compact('name', 'label') + ['type' => 'link', 'defaultValue' => $default];
+        if ($source !== '') {
+            $field['source'] = $source;
+        }
+
+        return $field;
     }
 
-    public static function tags(string $name, string $label): array
+    public static function tags(string $name, string $label, string $source = ''): array
     {
-        return compact('name', 'label') + ['type' => 'tags', 'defaultValue' => '[]'];
+        $field = compact('name', 'label') + ['type' => 'tags', 'defaultValue' => '[]'];
+        if ($source !== '') {
+            $field['source'] = $source;
+        }
+
+        return $field;
     }
 
     public static function background(): array
@@ -92,9 +137,14 @@ class Field
         ];
     }
 
-    public static function select(string $name, string $label, array $options, string $default = ''): array
+    public static function select(string $name, string $label, array $options, string $default = '', string $source = ''): array
     {
-        return compact('name', 'label', 'options') + ['type' => 'select', 'defaultValue' => $default];
+        $field = compact('name', 'label', 'options') + ['type' => 'select', 'defaultValue' => $default];
+        if ($source !== '') {
+            $field['source'] = $source;
+        }
+
+        return $field;
     }
 
     /**

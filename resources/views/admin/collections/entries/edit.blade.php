@@ -127,8 +127,9 @@
                             {{-- Dynamic Fields --}}
                             @foreach($collection->fields ?? [] as $field)
                                 @php
-                                    $key = $field['template'] ?? $loop->index;
-                                    $value = old('data.' . $key, $entry->data[$key] ?? '');
+                                    $rawKey = $field['template'] ?? $loop->index;
+                                    $key = str_replace(['@{{', '@}}', '@{', '}@'], '', $rawKey);
+                                    $value = old('data.' . $key, $entry->data[$key] ?? $entry->data[$rawKey] ?? '');
                                 @endphp
                                 <div class="grid md:grid-cols-2 items-start px-[18px] py-4 gap-y-3 md:gap-y-0 md:gap-x-5">
                                     <div class="flex flex-col gap-1.5">

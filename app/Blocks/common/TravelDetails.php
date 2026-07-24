@@ -17,11 +17,10 @@ class TravelDetails extends Block
     {
         return [
             // ── Hero / Gallery ──
-            Field::string('breadcrumb', 'Breadcrumb Text', default: 'Sylhet Adventure & Hiking Tour'),
-            Field::string('title', 'Tour Title', default: 'Sylhet Adventure & Hiking Tour'),
-            Field::string('rating', 'Rating', default: '4.8'),
-            Field::string('reviewCount', 'Review Count', default: '2 reviews'),
-            Field::string('location', 'Location', default: 'Sylhet, Bangladesh'),
+            Field::string('title', 'Tour Title', default: 'Sylhet Adventure & Hiking Tour', source: 'title'),
+            Field::string('rating', 'Rating', default: '4.8', source: 'rating'),
+            Field::string('reviewCount', 'Review Count', default: '2 reviews', source: 'review_count'),
+            Field::string('location', 'Location', default: 'Sylhet, Bangladesh', source: 'location'),
             Field::list('galleryImages', 'Gallery Images', [
                 Field::image('image', 'Image'),
             ], count: 4),
@@ -39,8 +38,8 @@ class TravelDetails extends Block
 
             // ── Booking Sidebar ──
             Field::string('priceLabel', 'Price Label', default: 'Starting From'),
-            Field::string('originalPrice', 'Original Price', default: '৳9500'),
-            Field::string('price', 'Current Price', default: '৳8500'),
+            Field::string('originalPrice', 'Original Price', default: '৳9500', source: 'orginal_price'),
+            Field::string('price', 'Current Price', default: '৳8500', source: 'current_price'),
             Field::string('priceSuffix', 'Price Suffix', default: 'per person'),
             Field::list('priceFeatures', 'Price Bullet Points', [
                 Field::string('text', 'Feature Text', default: 'Money Back Guarantee.'),

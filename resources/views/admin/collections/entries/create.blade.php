@@ -166,7 +166,8 @@
                             {{-- Custom fields --}}
                             @foreach($collection->fields ?? [] as $field)
                                 @php
-                                    $key = $field['template'] ?? $loop->index;
+                                    $rawKey = $field['template'] ?? $loop->index;
+                                    $key = str_replace(['@{{', '@}}', '@{', '}@'], '', $rawKey);
                                     $value = old('data.' . $key, '');
                                 @endphp
                                 <div class="grid md:grid-cols-2 items-start px-[18px] py-4 gap-y-3 md:gap-y-0 md:gap-x-5">

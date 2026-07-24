@@ -11,6 +11,7 @@
     window.editorSlug = '{{ Str::slug($entry->title) }}';
     window.editorPages = @json($pages);
     window.editorHomeGlobals = @json($homeGlobals);
+    window.editorEntryData = @json($entry->data ?? []);
     window.editorSaveRoute = '{{ route('admin.collections.entries.update-sections', [$collection, $entry]) }}';
     window.editorPostId = null;
 
@@ -132,9 +133,21 @@
                                 <template x-if="field.type === 'string' && !field.multiline">
                                     <div>
                                         <label class="block text-sm font-semibold text-text-primary mb-1" x-text="field.label"></label>
-                                        <input type="text" :value="getField(field.name)" @input="setField(field.name, $event.target.value)"
-                                            :data-field-target="field.name"
-                                            class="w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm text-text-primary shadow-[0_2px_3px_-2px_rgba(0,0,0,0.15)] focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary">
+                                        <template x-if="isSourceField(field.name)">
+                                            <div>
+                                                <input type="text" :value="getField(field.name)" disabled
+                                                    class="w-full rounded-lg border border-primary/30 bg-primary/5 px-3 py-2 text-sm text-text-primary cursor-not-allowed opacity-75">
+                                                <div class="flex items-center gap-1 mt-1 text-xs text-primary/70">
+                                                    <svg class="size-3" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"/></svg>
+                                                    <span>Linked to custom entry field</span>
+                                                </div>
+                                            </div>
+                                        </template>
+                                        <template x-if="!isSourceField(field.name)">
+                                            <input type="text" :value="getField(field.name)" @input="setField(field.name, $event.target.value)"
+                                                :data-field-target="field.name"
+                                                class="w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm text-text-primary shadow-[0_2px_3px_-2px_rgba(0,0,0,0.15)] focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary">
+                                        </template>
                                     </div>
                                 </template>
 
@@ -142,9 +155,20 @@
                                 <template x-if="field.type === 'string' && field.multiline">
                                     <div>
                                         <label class="block text-sm font-semibold text-text-primary mb-1" x-text="field.label"></label>
-                                        <textarea :value="getField(field.name)" @input="setField(field.name, $event.target.value)"
-                                            :data-field-target="field.name"
-                                            class="w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm text-text-primary shadow-[0_2px_3px_-2px_rgba(0,0,0,0.15)] focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary resize-y min-h-[80px]" rows="3"></textarea>
+                                        <template x-if="isSourceField(field.name)">
+                                            <div>
+                                                <textarea disabled class="w-full rounded-lg border border-primary/30 bg-primary/5 px-3 py-2 text-sm text-text-primary cursor-not-allowed opacity-75 resize-y min-h-[80px]" rows="3" x-text="getField(field.name)"></textarea>
+                                                <div class="flex items-center gap-1 mt-1 text-xs text-primary/70">
+                                                    <svg class="size-3" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"/></svg>
+                                                    <span>Linked to custom entry field</span>
+                                                </div>
+                                            </div>
+                                        </template>
+                                        <template x-if="!isSourceField(field.name)">
+                                            <textarea :value="getField(field.name)" @input="setField(field.name, $event.target.value)"
+                                                :data-field-target="field.name"
+                                                class="w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm text-text-primary shadow-[0_2px_3px_-2px_rgba(0,0,0,0.15)] focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary resize-y min-h-[80px]" rows="3"></textarea>
+                                        </template>
                                     </div>
                                 </template>
 
@@ -152,9 +176,21 @@
                                 <template x-if="field.type === 'number'">
                                     <div>
                                         <label class="block text-sm font-semibold text-text-primary mb-1" x-text="field.label"></label>
-                                        <input type="number" :value="getField(field.name)" @input="setField(field.name, parseFloat($event.target.value) || '')"
-                                            :data-field-target="field.name"
-                                            class="w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm text-text-primary shadow-[0_2px_3px_-2px_rgba(0,0,0,0.15)] focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary">
+                                        <template x-if="isSourceField(field.name)">
+                                            <div>
+                                                <input type="number" :value="getField(field.name)" disabled
+                                                    class="w-full rounded-lg border border-primary/30 bg-primary/5 px-3 py-2 text-sm text-text-primary cursor-not-allowed opacity-75">
+                                                <div class="flex items-center gap-1 mt-1 text-xs text-primary/70">
+                                                    <svg class="size-3" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"/></svg>
+                                                    <span>Linked to custom entry field</span>
+                                                </div>
+                                            </div>
+                                        </template>
+                                        <template x-if="!isSourceField(field.name)">
+                                            <input type="number" :value="getField(field.name)" @input="setField(field.name, parseFloat($event.target.value) || '')"
+                                                :data-field-target="field.name"
+                                                class="w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm text-text-primary shadow-[0_2px_3px_-2px_rgba(0,0,0,0.15)] focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary">
+                                        </template>
                                     </div>
                                 </template>
 
@@ -715,6 +751,7 @@
             blockList: [],
             slug: '',
             pages: [],
+            entryData: {},
             linkModes: {},
             active: null,
             crumbs: [],
@@ -745,6 +782,7 @@
                 this.slug = slug;
                 this.pages = pages;
                 this.homeGlobals = homeGlobals;
+                this.entryData = window.editorEntryData || {};
                 this.$nextTick(() => this.initSectionSortable());
                 this.refreshPreview();
             },
@@ -848,7 +886,18 @@
             },
 
             getField(name) {
+                const fields = this.currentFields();
+                const fieldDef = fields?.find(f => f.name === name);
+                if (fieldDef?.source && this.entryData[fieldDef.source] !== undefined && this.entryData[fieldDef.source] !== '') {
+                    return this.entryData[fieldDef.source];
+                }
                 return this.currentData()[name] ?? '';
+            },
+
+            isSourceField(name) {
+                const fields = this.currentFields();
+                const fieldDef = fields?.find(f => f.name === name);
+                return !!(fieldDef?.source && this.entryData[fieldDef.source] !== undefined && this.entryData[fieldDef.source] !== '');
             },
 
             getLinkMode(name) {
@@ -1166,7 +1215,7 @@
                     el.innerHTML = '';
                     return;
                 }
-                const payload = { sections: this.sections };
+                const payload = { sections: this.sections, entry_data: this.entryData };
                 if (window.editorPostId) payload.post_id = window.editorPostId;
                 fetch('{{ route('admin.preview') }}', {
                     method: 'POST',
