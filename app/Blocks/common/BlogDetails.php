@@ -19,7 +19,7 @@ class BlogDetails extends Block
     {
         return [
             // ── Hero & Content ──
-            Field::image('image', 'Featured Image', default: 'https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?auto=format&fit=crop&w=1200&q=80', source: 'featured_image'),
+            Field::image('image', 'Featured Image', default: '', source: 'featured_image'),
             Field::string('title', 'Post Title', default: 'নেপাল ভ্রমণ: সাগরমাথার দেশে অ্যাডভেঞ্চার ও শান্তির সন্ধানে', source: 'title'),
             Field::tags('tag', 'Tags', source: 'tag'),
             Field::string('category', 'Category', default: 'Travel', source: 'category'),

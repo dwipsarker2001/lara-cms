@@ -1,6 +1,6 @@
 @php
     $d = $data;
-    $heroImage = $d['featured_image'] ?? $d['image'] ?? $d['hero_image'] ?? 'https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?auto=format&fit=crop&w=1200&q=80';
+    $heroImage = $d['featured_image'] ?? $d['image'] ?? $d['hero_image'] ?? null;
     $title = $d['title'] ?? 'নেপাল ভ্রমণ: সাগরমাথার দেশে অ্যাডভেঞ্চার ও শান্তির সন্ধানে';
     $content = $d['content'] ?? '';
 
@@ -98,8 +98,8 @@
 
                 {{-- Featured Hero Image --}}
                 @if($heroImage)
-                    <div class="relative w-full h-[320px] sm:h-[420px] lg:h-[460px] rounded-2xl overflow-hidden shadow-sm bg-gray-100 border border-gray-100">
-                        <img src="{{ $heroImage }}" alt="{{ $title }}" class="w-full h-full object-cover" data-edit="image">
+                    <div class="relative w-full h-[320px] sm:h-[420px] lg:h-[460px] rounded-2xl overflow-hidden shadow-sm bg-gray-100 border border-gray-100" data-edit="image">
+                        <img src="{{ $heroImage }}" alt="{{ $title }}" class="w-full h-full object-cover">
                     </div>
                 @endif
 
