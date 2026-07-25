@@ -201,7 +201,7 @@
 
                             {{-- Stop Header (shown when stopName or departure is present) --}}
                             @if($hasStopName || ($item['departure'] ?? false))
-                            <div class="flex items-center gap-2 mt-6 mb-2 pt-2">
+                            <div class="flex items-center gap-2 mt-6 mb-2 pt-2" data-list="itinerary" data-list-index="{{ $loop->index }}">
                                 <div class="w-5 h-5 rounded-full bg-[#00a651] text-white flex items-center justify-center shrink-0">
                                     <svg class="w-3 h-3" fill="none" stroke="currentColor" stroke-width="3" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/>
@@ -218,7 +218,7 @@
 
                             {{-- Day Card Item --}}
                             @if(!empty($preview))
-                            <div class="border border-gray-200 rounded-xl bg-white" data-list="itinerary"
+                            <div class="border border-gray-200 rounded-xl bg-white" data-list="itinerary" data-list-index="{{ $loop->index }}"
                                 x-data="{ open: false }"
                                 x-init="
                                     open = (window.__cms_acc = window.__cms_acc || {})['{{ $itinKey }}'] ?? false;
@@ -362,7 +362,7 @@
                             @if($faq)
                             @php $faqKey = 'faq-' . $loop->index; @endphp
                             @if(!empty($preview))
-                            <div class="border border-gray-200 rounded-lg" data-list="faqs"
+                            <div class="border border-gray-200 rounded-lg" data-list="faqs" data-list-index="{{ $loop->index }}"
                                 x-data="{ open: false }"
                                 x-init="
                                     open = (window.__cms_acc = window.__cms_acc || {})['{{ $faqKey }}'] ?? false;

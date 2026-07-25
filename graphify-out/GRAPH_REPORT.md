@@ -1,7 +1,7 @@
 # Graph Report - lara-cms  (2026-07-25)
 
 ## Corpus Check
-- 604 files · ~449,057 words
+- 604 files · ~449,374 words
 - Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
@@ -10,7 +10,7 @@
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `5e6b1c1e`
+- Built from commit: `05509831`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 

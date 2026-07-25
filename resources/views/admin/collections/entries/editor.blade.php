@@ -1025,7 +1025,24 @@
                 const doc = iframe.contentDocument || iframe.contentWindow?.document;
                 if (!doc) return false;
 
-                const target = doc.querySelector(`[data-edit="${name}"]`);
+                let context = doc;
+                const container = doc.getElementById('preview-content');
+                if (container && this.active !== null && container.children[this.active]) {
+                    context = container.children[this.active];
+                }
+
+                if (this.crumbs && this.crumbs.length > 0) {
+                    for (const crumb of this.crumbs) {
+                        const listElements = Array.from(context.querySelectorAll(`[data-list="${crumb.key}"]`));
+                        if (crumb.index !== undefined && listElements[crumb.index]) {
+                            context = listElements[crumb.index];
+                        } else if (listElements.length > 0) {
+                            context = listElements[0];
+                        }
+                    }
+                }
+
+                const target = context.querySelector(`[data-edit="${name}"]`);
                 if (!target) return false;
 
                 if (target.tagName === 'IMG') {
@@ -1475,11 +1492,16 @@
                 while (current) {
                     const listName = current.getAttribute('data-list');
                     if (listName) {
-                        const parent = current.parentElement;
-                        if (parent) {
-                            const siblings = Array.from(parent.querySelectorAll(`[data-list="${listName}"]`));
-                            const index = siblings.indexOf(current);
-                            if (index >= 0) listParts.unshift(`${listName}:${index}`);
+                        const explicitIndex = current.getAttribute('data-list-index');
+                        if (explicitIndex !== null && explicitIndex !== '') {
+                            listParts.unshift(`${listName}:${explicitIndex}`);
+                        } else {
+                            const parent = current.parentElement;
+                            if (parent) {
+                                const siblings = Array.from(parent.querySelectorAll(`[data-list="${listName}"]`));
+                                const index = siblings.indexOf(current);
+                                if (index >= 0) listParts.unshift(`${listName}:${index}`);
+                            }
                         }
                     }
                     current = current.parentElement?.closest('[data-list]') ?? null;

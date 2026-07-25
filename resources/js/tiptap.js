@@ -277,28 +277,6 @@ export function mountTipTap(fieldName, wrapperEl, initialContent, onUpdate) {
             const html = ed.getHTML();
             if (onUpdate) onUpdate(html);
             updateActiveButtons(wrapperEl, ed);
-
-            if (window.__isResizingImage || window.__skipNextPreviewRefresh) {
-                return;
-            }
-
-            // Sync preview iframe DOM instantly on typing without server fetch or flash
-            const iframe = document.getElementById('preview-iframe');
-            if (iframe && fieldName) {
-                const iframeDoc = iframe.contentDocument || iframe.contentWindow?.document;
-                if (iframeDoc) {
-                    const target = iframeDoc.querySelector(`[data-edit="${fieldName}"]`);
-                    if (target) {
-                        if (window.morphdom) {
-                            const wrapper = iframeDoc.createElement('div');
-                            wrapper.innerHTML = html;
-                            window.morphdom(target, wrapper, { childrenOnly: true });
-                        } else {
-                            target.innerHTML = html;
-                        }
-                    }
-                }
-            }
         },
         onFocus: () => {
             wrapperEl.classList.add('tt-focused');
