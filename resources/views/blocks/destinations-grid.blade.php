@@ -21,9 +21,7 @@
                         @foreach(array_slice($places, 0, 3) as $i => $place)
                             <div class="{{ $spans[$i] }}">
                                 <a href="{{ $place['slug'] ?? '#' }}" data-list="places" class="group relative block h-[280px] overflow-hidden rounded-2xl bg-gray-100">
-                                    @if($place['image'] ?? false)
-                                        <img src="{{ $place['image'] }}" alt="{{ $place['name'] ?? '' }}" data-edit="image" class="absolute inset-0 w-full h-full object-cover transition-transform duration-300 group-hover:scale-110" />
-                                    @endif
+                                    <img src="{{ $place['image'] ?? '' }}" alt="{{ $place['name'] ?? '' }}" data-edit="image" class="absolute inset-0 w-full h-full object-cover {{ empty($place['image']) ? 'hidden' : '' }}" />
                                     <div class="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent"></div>
                                     <div class="absolute bottom-5 left-5 text-white">
                                         <h3 data-edit="name" class="text-base font-bold">{{ $place['name'] ?? '' }}</h3>
@@ -39,9 +37,7 @@
                     <div class="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
                         @foreach($gridItems as $place)
                             <a href="{{ $place['slug'] ?? '#' }}" data-list="places" class="group relative block h-[280px] overflow-hidden rounded-2xl bg-gray-100">
-                                @if($place['image'] ?? false)
-                                    <img src="{{ $place['image'] }}" alt="{{ $place['name'] ?? '' }}" data-edit="image" class="absolute inset-0 w-full h-full object-cover transition-transform duration-300 group-hover:scale-110" />
-                                @endif
+                                <img src="{{ $place['image'] ?? '' }}" alt="{{ $place['name'] ?? '' }}" data-edit="image" class="absolute inset-0 w-full h-full object-cover {{ empty($place['image']) ? 'hidden' : '' }}" />
                                 <div class="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent"></div>
                                 <div class="absolute bottom-5 left-5 text-white">
                                     <h3 data-edit="name" class="text-base font-bold">{{ $place['name'] ?? '' }}</h3>

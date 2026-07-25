@@ -103,6 +103,17 @@
       "norm_label": "editor.blade.php"
     },
     {
+      "label": "travel-details.blade.php",
+      "file_type": "code",
+      "source_file": "resources/views/blocks/travel-details.blade.php",
+      "source_location": null,
+      "_origin": "ast",
+      "id": "resources_views_blocks_travel_details_blade",
+      "community": 51,
+      "community_name": "Campaign.php",
+      "norm_label": "travel-details.blade.php"
+    },
+    {
       "label": "BlogDetails.php",
       "file_type": "code",
       "source_file": "app/Blocks/common/BlogDetails.php",
@@ -18474,17 +18485,6 @@
       "id": "resources_views_blocks_travel_deals_blade"
     },
     {
-      "label": "travel-details.blade.php",
-      "file_type": "code",
-      "source_file": "resources/views/blocks/travel-details.blade.php",
-      "source_location": null,
-      "_origin": "ast",
-      "community": 51,
-      "community_name": "Campaign.php",
-      "norm_label": "travel-details.blade.php",
-      "id": "resources_views_blocks_travel_details_blade"
-    },
-    {
       "label": "why-choose-us.blade.php",
       "file_type": "code",
       "source_file": "resources/views/blocks/why-choose-us.blade.php",
@@ -24621,7 +24621,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "resources/js/tiptap.js",
-      "source_location": "L320",
+      "source_location": "L298",
       "weight": 1.0,
       "_origin": "ast",
       "source": "resources_js_tiptap_mounttiptap",
@@ -24633,7 +24633,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "resources/js/tiptap.js",
-      "source_location": "L322",
+      "source_location": "L300",
       "weight": 1.0,
       "_origin": "ast",
       "source": "resources_js_tiptap_mounttiptap",
@@ -24645,7 +24645,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "resources/js/tiptap.js",
-      "source_location": "L321",
+      "source_location": "L299",
       "weight": 1.0,
       "_origin": "ast",
       "source": "resources_js_tiptap_mounttiptap",
@@ -57050,5 +57050,5 @@
     }
   ],
   "hyperedges": [],
-  "built_at_commit": "05509831ac2ae866ba67c421365cc57cabd03368"
+  "built_at_commit": "9ad83a880981c1ba3e1169a3c9b4b7023bf3df90"
 }

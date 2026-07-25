@@ -340,8 +340,8 @@
     "semantic_hash": "34760cb269b769f6b9a990f432b345eb"
   },
   "resources/js/tiptap.js": {
-    "mtime": 1784980406.0669544,
-    "ast_hash": "fa698a14a0c32f0a10e3d8246857c783",
+    "mtime": 1784982105.0662723,
+    "ast_hash": "1b29bb16e8bdfc99f40e5818b0c92d64",
     "semantic_hash": ""
   },
   "resources/views/admin/assets/index.blade.php": {
@@ -415,8 +415,8 @@
     "semantic_hash": "80dbdeb5b229eb6d3fa430b80e75c869"
   },
   "resources/views/admin/pages/editor.blade.php": {
-    "mtime": 1784981176.4189317,
-    "ast_hash": "35b93745cbfaeef28e10b240e28a76b8",
+    "mtime": 1784982102.1447961,
+    "ast_hash": "2f6d8deb9adf4a6993429bc943164cdf",
     "semantic_hash": ""
   },
   "resources/views/admin/pages/index.blade.php": {
@@ -995,8 +995,8 @@
     "semantic_hash": ""
   },
   "resources/views/admin/collections/entries/editor.blade.php": {
-    "mtime": 1784981176.4209375,
-    "ast_hash": "8f307dfcf4ebc8477117080591c17d70",
+    "mtime": 1784982102.1467779,
+    "ast_hash": "80890f3d58f66f3ab843834e739fef30",
     "semantic_hash": ""
   },
   "resources/views/admin/collections/entries/index.blade.php": {
@@ -2005,8 +2005,8 @@
     "semantic_hash": ""
   },
   "resources/views/blocks/travel-details.blade.php": {
-    "mtime": 1784864382.5444827,
-    "ast_hash": "cf28cb54ec82722a6f5490eee059b9c8",
+    "mtime": 1784982102.1477163,
+    "ast_hash": "0c34928516d876b09395445d39164a57",
     "semantic_hash": ""
   },
   "tests/Unit/BlockSourceBindingTest.php": {

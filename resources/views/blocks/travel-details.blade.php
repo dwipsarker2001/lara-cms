@@ -105,7 +105,7 @@
                     <h2 class="text-xl font-bold text-gray-900" data-edit="aboutTitle">{{ $d['aboutTitle'] }}</h2>
                     @endif
                     @if($d['aboutDescription'] ?? false)
-                    <p class="text-sm text-gray-600 mt-3 leading-relaxed" data-edit="aboutDescription">{{ $d['aboutDescription'] }}</p>
+                    <div class="text-sm text-gray-900 mt-3 leading-relaxed" data-edit="aboutDescription">{!! $d['aboutDescription'] !!}</div>
                     @endif
                 </div>
 
@@ -140,14 +140,12 @@
                     <h2 class="text-xl font-bold text-gray-900" data-edit="locationsTitle">{{ $d['locationsTitle'] }}</h2>
                     @endif
                     @if(!empty($d['locations']))
-                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mt-4">
+                    <div class="flex gap-4 overflow-x-auto snap-x snap-mandatory px-1 py-1 pb-2 mt-4 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
                         @foreach($d['locations'] as $loc)
                             @if($loc)
-                            <div class="flex flex-col gap-2" data-list="locations">
+                            <div class="min-w-[200px] sm:min-w-[220px] max-w-[240px] shrink-0 snap-start flex flex-col gap-2" data-list="locations">
                                 <div class="rounded-xl h-40 overflow-hidden w-full bg-gray-100" data-edit="image">
-                                    @if($loc['image'] ?? false)
-                                    <img src="{{ $loc['image'] }}" alt="{{ $loc['name'] ?? 'Location' }}" class="w-full h-full object-cover">
-                                    @endif
+                                    <img src="{{ $loc['image'] ?? '' }}" alt="{{ $loc['name'] ?? 'Location' }}" class="w-full h-full object-cover {{ empty($loc['image']) ? 'hidden' : '' }}">
                                 </div>
                                 @if($loc['name'] ?? false)
                                 <h3 class="text-sm font-semibold text-gray-800" data-edit="name">{{ $loc['name'] }}</h3>
@@ -240,7 +238,7 @@
                                             <span class="font-bold text-gray-900 text-sm shrink-0" data-edit="dayLabel">{{ $item['dayLabel'] }}</span>
                                             @endif
                                             @if($item['dayTitle'] ?? false)
-                                            <span class="text-gray-700 text-sm font-normal" data-edit="dayTitle">{{ $item['dayTitle'] }}</span>
+                                            <span class="text-gray-900 text-sm font-medium" data-edit="dayTitle">{{ $item['dayTitle'] }}</span>
                                             @endif
                                         </div>
                                     </div>
@@ -248,9 +246,9 @@
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
                                     </svg>
                                 </button>
-                                <div x-show="open" x-transition class="px-4 pb-4 text-sm text-gray-600">
+                                <div x-show="open" x-transition class="px-4 pb-4 text-sm text-gray-900">
                                     @if($item['dayDescription'] ?? false)
-                                    <div class="pt-3 border-t border-gray-100" data-edit="dayDescription">{{ $item['dayDescription'] }}</div>
+                                    <div class="pt-3 border-t border-gray-100" data-edit="dayDescription">{!! $item['dayDescription'] !!}</div>
                                     @else
                                     <div class="pt-3 border-t border-gray-100 text-gray-400 italic" data-edit="dayDescription">Add day details / description...</div>
                                     @endif
@@ -267,12 +265,9 @@
                     @if($d['mapTitle'] ?? false)
                     <h2 class="text-xl font-bold text-gray-900" data-edit="mapTitle">{{ $d['mapTitle'] }}</h2>
                     @endif
-                    <div class="bg-gray-100 rounded-xl overflow-hidden mt-4 min-h-[200px] flex items-center justify-center" data-edit="mapImage">
-                        @if($d['mapImage'] ?? false)
-                            <img src="{{ $d['mapImage'] }}" alt="Map" class="w-full object-cover">
-                        @else
-                            <span class="text-gray-400">Map Image</span>
-                        @endif
+                    <div class="relative w-full h-64 sm:h-72 bg-gray-100 rounded-xl overflow-hidden mt-4 flex items-center justify-center" data-edit="mapImage">
+                        <img src="{{ $d['mapImage'] ?? '' }}" alt="Map" class="absolute inset-0 w-full h-full object-cover {{ empty($d['mapImage']) ? 'hidden' : '' }}">
+                        <span class="text-gray-400 {{ !empty($d['mapImage']) ? 'hidden' : '' }}">Map Image</span>
                     </div>
                 </div>
 
@@ -377,9 +372,9 @@
                                     @endif
                                     <svg class="w-4 h-4 text-gray-500 transition-transform duration-200 shrink-0" :class="{'rotate-180': open}" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
                                 </button>
-                                <div x-show="open" x-transition class="px-4 pb-4 text-sm text-gray-600">
+                                <div x-show="open" x-transition class="px-4 pb-4 text-sm text-gray-900">
                                     @if($faq['answer'] ?? false)
-                                    <div data-edit="answer">{{ $faq['answer'] }}</div>
+                                    <div data-edit="answer">{!! $faq['answer'] !!}</div>
                                     @endif
                                 </div>
                             </div>

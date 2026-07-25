@@ -1045,14 +1045,33 @@
                 const target = context.querySelector(`[data-edit="${name}"]`);
                 if (!target) return false;
 
-                if (target.tagName === 'IMG') {
-                    target.setAttribute('src', value ?? '');
-                    return true;
-                }
+                const isImgTag = target.tagName === 'IMG';
+                let imgEl = isImgTag ? target : target.querySelector('img');
+                const isImageField = name.toLowerCase().includes('image') || isImgTag || !!imgEl;
 
-                const img = target.querySelector('img');
-                if (img && typeof value === 'string' && /^(https?:|data:image|\/)/i.test(value)) {
-                    img.setAttribute('src', value);
+                if (isImageField) {
+                    if (!imgEl && !isImgTag) {
+                        imgEl = doc.createElement('img');
+                        imgEl.className = 'absolute inset-0 w-full h-full object-cover';
+                        target.appendChild(imgEl);
+                    }
+
+                    const activeImg = imgEl || target;
+                    if (value && typeof value === 'string') {
+                        activeImg.setAttribute('src', value);
+                        activeImg.classList.remove('hidden');
+                        activeImg.style.display = '';
+                        target.classList.remove('hidden');
+                        target.style.display = '';
+                        if (!isImgTag) {
+                            target.querySelectorAll('span, p, label').forEach(el => el.classList.add('hidden'));
+                        }
+                    } else {
+                        activeImg.classList.add('hidden');
+                        if (!isImgTag) {
+                            target.querySelectorAll('span, p, label').forEach(el => el.classList.remove('hidden'));
+                        }
+                    }
                     return true;
                 }
 

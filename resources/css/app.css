@@ -154,14 +154,22 @@
     outline: none;
 }
 
-.tt-editor .ProseMirror {
-    outline: none !important;
-    box-shadow: none !important;
+.tt-editor .ProseMirror,
+.tt-editor .ProseMirror p,
+.tt-editor .ProseMirror *,
+[data-edit="dayDescription"],
+[data-edit="dayDescription"] p,
+[data-edit="dayDescription"] *,
+[data-edit="aboutDescription"],
+[data-edit="aboutDescription"] p,
+[data-edit="aboutDescription"] * {
+    color: #111827 !important;
 }
 
 .tt-editor .ProseMirror-focused {
     outline: none !important;
     box-shadow: none !important;
+    color: #111827 !important;
 }
 
 .tt-wrapper.tt-focused {
