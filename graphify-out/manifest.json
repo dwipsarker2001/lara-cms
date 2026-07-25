@@ -415,8 +415,8 @@
     "semantic_hash": "80dbdeb5b229eb6d3fa430b80e75c869"
   },
   "resources/views/admin/pages/editor.blade.php": {
-    "mtime": 1784885287.8404293,
-    "ast_hash": "1ecd9394f83ae6c48d15b090d4333e90",
+    "mtime": 1784885689.5534618,
+    "ast_hash": "55bbae11e8c654a10387cfebb4ce608f",
     "semantic_hash": ""
   },
   "resources/views/admin/pages/index.blade.php": {
@@ -475,9 +475,9 @@
     "semantic_hash": ""
   },
   "resources/views/login.blade.php": {
-    "mtime": 1784656083.4461443,
-    "ast_hash": "7537a191563d259cdf14a9a0e2f0092b",
-    "semantic_hash": "7537a191563d259cdf14a9a0e2f0092b"
+    "mtime": 1784917852.3682733,
+    "ast_hash": "220398dc99165f08966f5fed79ccd1cc",
+    "semantic_hash": ""
   },
   "resources/views/public/layout.blade.php": {
     "mtime": 1784427274.7251248,
@@ -995,8 +995,8 @@
     "semantic_hash": ""
   },
   "resources/views/admin/collections/entries/editor.blade.php": {
-    "mtime": 1784885301.11334,
-    "ast_hash": "e73ade7f141dcded9f80ba48cb6a377a",
+    "mtime": 1784885663.945951,
+    "ast_hash": "87c917cefbb68960af4ec1b4ba3c3f6d",
     "semantic_hash": ""
   },
   "resources/views/admin/collections/entries/index.blade.php": {
@@ -1765,8 +1765,8 @@
     "semantic_hash": ""
   },
   ".github/workflows/deploy.yml": {
-    "mtime": 1784690766.568164,
-    "ast_hash": "c1ec2b981938514917d00a132896f413",
+    "mtime": 1784953320.222973,
+    "ast_hash": "1c0cc8937da25a9ea438d70301cd0354",
     "semantic_hash": ""
   },
   "docs/BLOCK_CREATION_GUIDE.md": {
