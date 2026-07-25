@@ -710,17 +710,44 @@
     </div>
 
     {{-- Preview pane --}}
-    <div class="flex-1 bg-white rounded-2xl border border-[#e8eaed] shadow-[0_1px_2px_rgba(16,24,40,0.04),0_8px_24px_-12px_rgba(16,24,40,0.12)] overflow-hidden flex flex-col">
-        <div class="shrink-0 px-4 py-2 border-b border-content-border bg-panel-bg flex items-center gap-2 text-[13px] text-text-muted">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" class="size-4">
-                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
-                <circle cx="12" cy="12" r="3" />
-            </svg>
-            <span>Preview</span>
-            <span x-show="dirty" class="text-xs text-primary font-medium ml-1">(unsaved)</span>
-        </div>
-        <div class="flex-1 overflow-y-auto preview-shell">
-            <div id="preview-content" class="min-h-full"></div>
+    <div class="flex-1 flex flex-col min-w-0 h-full relative items-center justify-start overflow-visible">
+        {{-- Frame wrapper --}}
+        <div class="relative flex-1 w-full h-full flex justify-center overflow-visible">
+            <div
+                class="relative flex flex-col"
+                :class="{ 'transition-none select-none': isResizing, 'transition-[width] duration-150 ease-out': !isResizing }"
+                :style="{ width: previewWidth, maxWidth: '100%', minWidth: '320px' }"
+                x-ref="previewFrame"
+            >
+                {{-- Drag Handle Grid in Center-Left --}}
+                <div
+                    class="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-1/2 z-50 cursor-ew-resize group flex items-center justify-center"
+                    @mousedown="startResize($event)"
+                    @touchstart="startResize($event)"
+                    title="Drag left/right to resize screen to mobile or desktop"
+                >
+                    <div class="w-[16px] h-[96px] rounded-md bg-white border border-gray-300 shadow-md group-hover:bg-gray-100 group-hover:border-gray-400 transition-all flex items-center justify-center cursor-ew-resize">
+                        <svg class="w-2.5 h-10 text-gray-400 group-hover:text-gray-600 transition-colors" fill="currentColor" viewBox="0 0 10 38">
+                            <circle cx="3" cy="4" r="1" />
+                            <circle cx="7" cy="4" r="1" />
+                            <circle cx="3" cy="10" r="1" />
+                            <circle cx="7" cy="10" r="1" />
+                            <circle cx="3" cy="16" r="1" />
+                            <circle cx="7" cy="16" r="1" />
+                            <circle cx="3" cy="22" r="1" />
+                            <circle cx="7" cy="22" r="1" />
+                            <circle cx="3" cy="28" r="1" />
+                            <circle cx="7" cy="28" r="1" />
+                            <circle cx="3" cy="34" r="1" />
+                            <circle cx="7" cy="34" r="1" />
+                        </svg>
+                    </div>
+                </div>
+
+                <div class="flex-1 overflow-hidden preview-shell h-full bg-white rounded-2xl border border-[#e8eaed] shadow-[0_1px_2px_rgba(16,24,40,0.04),0_8px_24px_-12px_rgba(16,24,40,0.12)]">
+                    <iframe id="preview-iframe" class="w-full h-full min-h-full border-0 block bg-white" :class="{ 'pointer-events-none': isResizing }"></iframe>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -759,6 +786,57 @@
             iconLoading: false,
             faIcons: window.FA_ICONS || [],
             sidebarOpen: false,
+            previewWidth: '100%',
+            isResizing: false,
+
+            get previewWidthStyle() {
+                return this.previewWidth === '100%' ? '100%' : this.previewWidth;
+            },
+
+            setPreviewWidth(width) {
+                this.previewWidth = width;
+            },
+
+            startResize(e) {
+                e.preventDefault();
+                this.isResizing = true;
+                document.body.style.userSelect = 'none';
+                document.body.style.cursor = 'ew-resize';
+
+                const startX = e.touches ? e.touches[0].clientX : e.clientX;
+                const container = this.$refs.previewFrame ? this.$refs.previewFrame.parentElement : null;
+                if (!container) return;
+                const containerRect = container.getBoundingClientRect();
+                const initialWidth = this.$refs.previewFrame.offsetWidth;
+
+                const onMove = (moveEvt) => {
+                    if (!this.isResizing) return;
+                    const currentX = moveEvt.touches ? moveEvt.touches[0].clientX : moveEvt.clientX;
+                    const deltaX = startX - currentX;
+                    let newWidth = initialWidth + (deltaX * 2);
+                    if (newWidth >= containerRect.width - 25) {
+                        this.previewWidth = '100%';
+                    } else {
+                        newWidth = Math.max(320, Math.min(containerRect.width, newWidth));
+                        this.previewWidth = Math.round(newWidth) + 'px';
+                    }
+                };
+
+                const onEnd = () => {
+                    this.isResizing = false;
+                    document.body.style.userSelect = '';
+                    document.body.style.cursor = '';
+                    window.removeEventListener('mousemove', onMove);
+                    window.removeEventListener('mouseup', onEnd);
+                    window.removeEventListener('touchmove', onMove);
+                    window.removeEventListener('touchend', onEnd);
+                };
+
+                window.addEventListener('mousemove', onMove);
+                window.addEventListener('mouseup', onEnd);
+                window.addEventListener('touchmove', onMove);
+                window.addEventListener('touchend', onEnd);
+            },
 
             init(sections, schemas, blockList, slug, pages, homeGlobals) {
                 if (!sections) sections = [];
@@ -1201,10 +1279,11 @@
             },
 
             refreshPreview() {
-                const el = document.getElementById('preview-content');
-                if (!el) return;
+                const iframe = document.getElementById('preview-iframe');
+                if (!iframe) return;
                 if (this.sections.length === 0) {
-                    el.innerHTML = '';
+                    const doc = iframe.contentDocument || iframe.contentWindow?.document;
+                    if (doc) doc.body.innerHTML = '';
                     return;
                 }
                 const payload = { sections: this.sections };
@@ -1215,12 +1294,52 @@
                     body: JSON.stringify(payload),
                 })
                 .then(r => { if (!r.ok) throw new Error('Preview response ' + r.status); return r.json(); })
-                .then(data => { el.innerHTML = data.html; this.attachPreviewListeners(el); })
+                .then(data => { this.updateIframeContent(iframe, data.html); })
                 .catch(e => console.error('Preview fetch failed:', e));
             },
 
-            attachPreviewListeners(el) {
-                el.addEventListener('click', (e) => {
+            updateIframeContent(iframe, html) {
+                const doc = iframe.contentDocument || iframe.contentWindow?.document;
+                if (!doc) return;
+
+                doc.body.className = 'antialiased text-gray-800 m-0 p-0 min-h-full bg-white preview-shell';
+                doc.body.innerHTML = '<div id="preview-content">' + html + '</div>';
+
+                if (!doc.head.querySelector('[data-preview-styles]')) {
+                    const styleMarker = doc.createElement('meta');
+                    styleMarker.setAttribute('data-preview-styles', 'true');
+                    doc.head.appendChild(styleMarker);
+
+                    const vp = doc.createElement('meta');
+                    vp.name = 'viewport';
+                    vp.content = 'width=device-width, initial-scale=1';
+                    doc.head.appendChild(vp);
+
+                    document.querySelectorAll('link[rel="stylesheet"], style').forEach(el => {
+                        doc.head.appendChild(el.cloneNode(true));
+                    });
+
+                    const baseStyle = doc.createElement('style');
+                    baseStyle.textContent = 'html, body { margin: 0; padding: 0; min-height: 100%; background-color: #ffffff; }\n' +
+                        '::-webkit-scrollbar { width: 6px; height: 6px; }\n' +
+                        '::-webkit-scrollbar-track { background: transparent; }\n' +
+                        '::-webkit-scrollbar-thumb { background: rgba(156, 163, 175, 0.4); border-radius: 9999px; }\n' +
+                        '::-webkit-scrollbar-thumb:hover { background: rgba(107, 114, 128, 0.7); }\n' +
+                        '* { scrollbar-width: thin; scrollbar-color: rgba(156, 163, 175, 0.4) transparent; }\n' +
+                        '[data-edit], [data-list], [data-section-index] { cursor: pointer !important; }\n' +
+                        '[data-edit]:hover { outline: 1px dashed #3b82f6 !important; position: relative; z-index: 50; }\n' +
+                        '[data-edit]:not(img):not([data-edit-button]):hover { background-color: rgba(59, 130, 246, 0.07) !important; }\n' +
+                        '[data-section-index]:hover { outline: 1px dashed #3b82f6 !important; border-radius: 4px; }\n' +
+                        '[data-list]:hover { outline: 1px dashed #3b82f6 !important; }\n' +
+                        '[data-package-block]:hover { outline: 1px dashed #3b82f6 !important; }';
+                    doc.head.appendChild(baseStyle);
+                }
+
+                this.attachPreviewListeners(doc);
+            },
+
+            attachPreviewListeners(doc) {
+                doc.addEventListener('click', (e) => {
                     const sectionEl = e.target.closest('[data-section-index]');
                     if (!sectionEl) return;
                     const link = e.target.closest('a');
