@@ -117,8 +117,37 @@
 }
 
 /* TipTap Editor Styles */
+.tt-toolbar {
+    position: sticky;
+    top: 0;
+    z-index: 30;
+    background-color: #ffffff;
+}
+
 .tt-editor {
     min-height: 200px;
+    max-height: 480px;
+    overflow-y: auto;
+    scrollbar-width: thin;
+    scrollbar-color: rgba(156, 163, 175, 0.4) transparent;
+}
+
+.tt-editor::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+}
+
+.tt-editor::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.tt-editor::-webkit-scrollbar-thumb {
+    background: rgba(156, 163, 175, 0.4);
+    border-radius: 9999px;
+}
+
+.tt-editor::-webkit-scrollbar-thumb:hover {
+    background: rgba(107, 114, 128, 0.7);
 }
 
 .tt-editor:focus {
@@ -214,24 +243,45 @@
 }
 
 .tt-editor h1 {
-    font-size: 1.875rem;
-    font-weight: 700;
-    margin: 1.5rem 0 0.5rem;
-    line-height: 1.2;
+    font-size: 1.25rem !important;
+    font-weight: 700 !important;
+    margin: 0.75rem 0 0.35rem !important;
+    line-height: 1.25 !important;
 }
 
 .tt-editor h2 {
-    font-size: 1.5rem;
-    font-weight: 700;
-    margin: 1.25rem 0 0.5rem;
-    line-height: 1.3;
+    font-size: 1.1rem !important;
+    font-weight: 700 !important;
+    margin: 0.65rem 0 0.3rem !important;
+    line-height: 1.3 !important;
 }
 
 .tt-editor h3 {
-    font-size: 1.25rem;
-    font-weight: 700;
-    margin: 1rem 0 0.5rem;
-    line-height: 1.4;
+    font-size: 1rem !important;
+    font-weight: 600 !important;
+    margin: 0.55rem 0 0.25rem !important;
+    line-height: 1.35 !important;
+}
+
+.tt-editor h4 {
+    font-size: 0.925rem !important;
+    font-weight: 600 !important;
+    margin: 0.5rem 0 0.25rem !important;
+    line-height: 1.4 !important;
+}
+
+.tt-editor h5 {
+    font-size: 0.875rem !important;
+    font-weight: 600 !important;
+    margin: 0.4rem 0 0.2rem !important;
+}
+
+.tt-editor h6 {
+    font-size: 0.825rem !important;
+    font-weight: 600 !important;
+    margin: 0.4rem 0 0.2rem !important;
+    text-transform: uppercase !important;
+    letter-spacing: 0.04em !important;
 }
 
 .tt-editor p {
@@ -374,8 +424,8 @@ img[data-align="right"] {
     box-shadow: 0 0 0 2px rgba(22, 163, 74, 0.2);
 }
 
-/* Rich Text & Typography Content Styles (Heading tags h1-h6, lists, blockquotes) */
-.rich-text-content h1, .prose h1 {
+/* Rich Text & Typography Content Styles for Web Page Output */
+.rich-text-content h1, .prose:not(.tt-editor) h1 {
     font-size: 2rem !important;
     font-weight: 700 !important;
     line-height: 1.25 !important;
@@ -384,7 +434,7 @@ img[data-align="right"] {
     color: #111827 !important;
 }
 
-.rich-text-content h2, .prose h2 {
+.rich-text-content h2, .prose:not(.tt-editor) h2 {
     font-size: 1.5rem !important;
     font-weight: 700 !important;
     line-height: 1.35 !important;
@@ -393,7 +443,7 @@ img[data-align="right"] {
     color: #111827 !important;
 }
 
-.rich-text-content h3, .prose h3 {
+.rich-text-content h3, .prose:not(.tt-editor) h3 {
     font-size: 1.25rem !important;
     font-weight: 700 !important;
     line-height: 1.4 !important;
@@ -402,7 +452,7 @@ img[data-align="right"] {
     color: #1f2937 !important;
 }
 
-.rich-text-content h4, .prose h4 {
+.rich-text-content h4, .prose:not(.tt-editor) h4 {
     font-size: 1.125rem !important;
     font-weight: 600 !important;
     line-height: 1.5 !important;
@@ -411,7 +461,7 @@ img[data-align="right"] {
     color: #1f2937 !important;
 }
 
-.rich-text-content h5, .prose h5 {
+.rich-text-content h5, .prose:not(.tt-editor) h5 {
     font-size: 1rem !important;
     font-weight: 600 !important;
     margin-top: 1rem !important;
@@ -419,7 +469,7 @@ img[data-align="right"] {
     color: #374151 !important;
 }
 
-.rich-text-content h6, .prose h6 {
+.rich-text-content h6, .prose:not(.tt-editor) h6 {
     font-size: 0.875rem !important;
     font-weight: 600 !important;
     margin-top: 0.875rem !important;

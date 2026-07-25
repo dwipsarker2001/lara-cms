@@ -379,7 +379,7 @@
                                           <div class="tt-wrapper border border-gray-300 rounded-lg overflow-hidden"
                                               :data-field-target="field.name"
                                               x-init="mountTipTap(field.name, $el, getField(field.name) || '', (html) => setField(field.name, html))">
-                                              <div class="tt-toolbar flex items-center gap-px px-3 py-2 border-b border-gray-200 bg-white select-none overflow-hidden shadow-[0_1px_2px_rgba(0,0,0,0.04)]">
+                                              <div class="tt-toolbar sticky top-0 z-30 flex items-center gap-px px-3 py-2 border-b border-gray-200 bg-white select-none overflow-hidden shadow-[0_1px_2px_rgba(0,0,0,0.04)]">
                                                   {{-- Heading dropdown --}}
                                                   <div class="relative tt-dropdown">
                                                       <button type="button" data-tt-cmd="toggle-dropdown" data-tt-dropdown="heading"
@@ -502,7 +502,7 @@
                                                       <div data-tt-panel="overflow" class="bg-white rounded-lg shadow-lg border border-gray-200 p-1 min-w-[170px] hidden"></div>
                                                   </div>
                                               </div>
-                                             <div class="tt-editor px-4 py-3 min-h-[200px] prose prose-sm max-w-none focus:outline-none overflow-hidden"></div>
+                                             <div class="tt-editor px-4 py-3 min-h-[200px] max-h-[480px] overflow-y-auto prose prose-sm max-w-none focus:outline-none"></div>
                                          </div>
                                      </div>
                                  </template>

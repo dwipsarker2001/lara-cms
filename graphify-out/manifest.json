@@ -2020,8 +2020,8 @@
     "semantic_hash": ""
   },
   "resources/views/blocks/blog-details.blade.php": {
-    "mtime": 1784974619.125223,
-    "ast_hash": "7ba2d25fba11c2a780cc1c33b56e5157",
+    "mtime": 1784975517.8349721,
+    "ast_hash": "eaa65ae36a916ce27d1574395b0e45d9",
     "semantic_hash": ""
   },
   "tests/Unit/BlogDetailsBlockTest.php": {
