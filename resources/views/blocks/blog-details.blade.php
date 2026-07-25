@@ -104,7 +104,7 @@
                 @endif
 
                 {{-- Rich Text Body Content --}}
-                <div class="prose prose-lg prose-emerald max-w-none text-gray-700 leading-relaxed font-normal space-y-6 pt-2" data-edit="content">
+                <div class="rich-text-content prose prose-lg prose-emerald max-w-none text-gray-700 leading-relaxed font-normal space-y-6 pt-2" data-edit="content">
                     {!! $content !!}
                 </div>
 

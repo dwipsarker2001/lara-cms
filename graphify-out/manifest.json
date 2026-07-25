@@ -2015,13 +2015,13 @@
     "semantic_hash": ""
   },
   "app/Blocks/common/BlogDetails.php": {
-    "mtime": 1784875748.3716078,
-    "ast_hash": "0e532d04721402eedc1b51976a37e17d",
+    "mtime": 1784973712.5197291,
+    "ast_hash": "20f0cf92eacd8f318a356ab4f972fd91",
     "semantic_hash": ""
   },
   "resources/views/blocks/blog-details.blade.php": {
-    "mtime": 1784970256.7603624,
-    "ast_hash": "266d1b1738b98799c016713cfdae899b",
+    "mtime": 1784974619.125223,
+    "ast_hash": "7ba2d25fba11c2a780cc1c33b56e5157",
     "semantic_hash": ""
   },
   "tests/Unit/BlogDetailsBlockTest.php": {

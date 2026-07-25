@@ -5,12 +5,12 @@
 - Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
-- 2219 nodes · 2865 edges · 381 communities (324 shown, 57 thin omitted)
-- Extraction: 94% EXTRACTED · 6% INFERRED · 0% AMBIGUOUS · INFERRED: 184 edges (avg confidence: 0.8)
+- 2220 nodes · 2863 edges · 372 communities (324 shown, 48 thin omitted)
+- Extraction: 94% EXTRACTED · 6% INFERRED · 0% AMBIGUOUS · INFERRED: 182 edges (avg confidence: 0.8)
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `85d486b4`
+- Built from commit: `3bf4f825`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
@@ -80,9 +80,7 @@
 - StatWidget
 - RedirectResponse
 - View
-- UpdatesListWidget
 - index.blade.php
-- WebsiteAnalyticsWidget
 - Lara-CMS — Full Rebuild Specification
 - WhyChooseUs.php
 - Package
@@ -119,7 +117,6 @@
 - Conventions & Style
 - Validation & Forms Best Practices
 - SettingsController.php
-- Form.php
 - Systematic Debugging
 - Persuasion Principles for Skill Design
 - BlogList.php
@@ -135,7 +132,6 @@
 - FormEntry
 - PageBanner.php
 - SimpleText.php
-- WhyChooseUs.php
 - SiteNavbar.php
 - Using Git Worktrees
 - Writing Skills
@@ -146,7 +142,6 @@
 - Writing Plans
 - [Analysis Title]
 - Returns: "OK" or lists conflicts
-- UserController
 - AdminUserController
 - Post.php
 - Executing Plans
@@ -169,7 +164,6 @@
 - @tiptap/extension-link
 - @tiptap/starter-kit
 - Gemini CLI Tool Mapping
-- Subscription
 - config
 - Seeder
 - SKILL.md
@@ -182,10 +176,8 @@
 - Anti-Patterns
 - Testing All Skill Types
 - RED-GREEN-REFACTOR for Skills
-- SettingsController.php
 - psr-4
 - require
-- UserFactory
 - Pi Tool Mapping
 - Evaluation and iteration
 - Checklist for effective Skills
@@ -206,10 +198,10 @@
 
 ## God Nodes (most connected - your core abstractions)
 1. `Controller` - 67 edges
-2. `Block` - 54 edges
+2. `Block` - 52 edges
 3. `Admin` - 38 edges
-4. `Field` - 37 edges
-5. `Collection` - 35 edges
+4. `Field` - 36 edges
+5. `Collection` - 34 edges
 6. `Template` - 32 edges
 7. `Stats` - 29 edges
 8. `CollectionEntry` - 27 edges
@@ -217,21 +209,21 @@
 10. `Campaign` - 23 edges
 
 ## Surprising Connections (you probably didn't know these)
-- `BlogDetails` --inherits--> `Block`  [EXTRACTED]
-  app/Blocks/common/BlogDetails.php → app/Blocks/Block.php
+- `AboutIntro` --inherits--> `Block`  [EXTRACTED]
+  app/Blocks/common/AboutIntro.php → app/Blocks/Block.php
 - `BlogList` --inherits--> `Block`  [EXTRACTED]
   app/Blocks/common/BlogList.php → app/Blocks/Block.php
 - `BlogPostSlot` --inherits--> `Block`  [EXTRACTED]
   app/Blocks/common/BlogPostSlot.php → app/Blocks/Block.php
 - `ClientTestimonials` --inherits--> `Block`  [EXTRACTED]
   app/Blocks/common/ClientTestimonials.php → app/Blocks/Block.php
-- `DestinationsGrid` --inherits--> `Block`  [EXTRACTED]
-  app/Blocks/common/DestinationsGrid.php → app/Blocks/Block.php
+- `Contact` --inherits--> `Block`  [EXTRACTED]
+  app/Blocks/common/Contact.php → app/Blocks/Block.php
 
 ## Import Cycles
 - None detected.
 
-## Communities (381 total, 57 thin omitted)
+## Communities (372 total, 48 thin omitted)
 
 ### Community 0 - "dependencies"
 Cohesion: 0.10
@@ -246,8 +238,8 @@ Cohesion: 0.14
 Nodes (13): autoload-dev, psr-4, description, keywords, license, minimum-stability, name, prefer-stable (+5 more)
 
 ### Community 3 - "Page"
-Cohesion: 0.16
-Nodes (4): ContactController, Request, Group, HasMany
+Cohesion: 0.08
+Nodes (12): CampaignController, Request, ContactController, Request, FormController, Request, Campaign, BelongsTo (+4 more)
 
 ### Community 4 - "Controller"
 Cohesion: 0.11
@@ -262,7 +254,7 @@ Cohesion: 0.13
 Nodes (15): scripts, dev, post-autoload-dump, post-update-cmd, pre-package-uninstall, test, Composer\\Config::disableProcessTimeout, Illuminate\\Foundation\\ComposerScripts::postAutoloadDump (+7 more)
 
 ### Community 7 - "Model"
-Cohesion: 0.21
+Cohesion: 0.24
 Nodes (3): FormEntriesTableWidget, Form, static
 
 ### Community 8 - "LoginController.php"
@@ -274,8 +266,8 @@ Cohesion: 0.13
 Nodes (5): EmailTemplateController, Request, Request, TemplateController, Template
 
 ### Community 11 - "Block"
-Cohesion: 0.15
-Nodes (5): Block, AboutIntro, BlogSection, Contact, TravelDetails
+Cohesion: 0.16
+Nodes (5): Block, BlogSection, DestinationsGrid, WhyChooseUs, SiteFooter
 
 ### Community 12 - "command"
 Cohesion: 0.08
@@ -288,6 +280,10 @@ Nodes (10): RedirectResponse, View, ProfileController, LoginController, Redirect
 ### Community 14 - "tiptap.js"
 Cohesion: 0.46
 Nodes (6): mountTipTap(), ResizableImage, setupImageToolbar(), setupResizeHandle(), setupToolbarOverflow(), updateActiveButtons()
+
+### Community 16 - "AppServiceProvider.php"
+Cohesion: 0.05
+Nodes (12): Request, TrackPageViews, PageView, SlaTableWidget, StatWidget, UpdatesListWidget, VisitorWidget, WebsiteAnalyticsWidget (+4 more)
 
 ### Community 18 - "BlogPostSlot.php"
 Cohesion: 0.10
@@ -302,7 +298,7 @@ Cohesion: 0.11
 Nodes (17): Architecture Testing, Assertions, Basic Test Structure, Basic Usage, Browser Test Example, Common Pitfalls, Creating Tests, Datasets (+9 more)
 
 ### Community 24 - "PackageList.php"
-Cohesion: 0.19
+Cohesion: 0.21
 Nodes (6): Request, ReportController, Request, TrackerController, BelongsTo, Stats
 
 ### Community 25 - "PackagePostSlot.php"
@@ -318,20 +314,20 @@ Cohesion: 0.12
 Nodes (15): 1. PHP Block Class, 2. Blade View, Architecture Overview, Code of Conduct, Contributing, Creating a Block (Two Files), Creating Content Blocks, Editor Integration Attributes (+7 more)
 
 ### Community 28 - "TeamCards.php"
-Cohesion: 0.15
-Nodes (3): Admin, BelongsToMany, Authenticatable
+Cohesion: 0.13
+Nodes (4): Admin, BelongsToMany, Authenticatable, Notifiable
 
 ### Community 29 - "TravelDeals.php"
 Cohesion: 0.28
 Nodes (3): LayoutController, Request, Layout
 
 ### Community 31 - "SiteFooter.php"
-Cohesion: 0.09
-Nodes (11): Controller, AccountController, Request, FormController, Request, Request, SearchController, SupportController (+3 more)
+Cohesion: 0.10
+Nodes (15): RedirectResponse, Request, RegisterController, Controller, AccountController, Request, DashboardController, Request (+7 more)
 
 ### Community 32 - "SiteNavbar.php"
 Cohesion: 0.13
-Nodes (8): AdminFactory, static, CollectionFactory, FormEntryFactory, FormFactory, LayoutFactory, PostFactory, Factory
+Nodes (8): CollectionFactory, FormEntryFactory, FormFactory, LayoutFactory, PostFactory, static, UserFactory, Factory
 
 ### Community 38 - "2026_07_10_185347_create_bookings_table.php"
 Cohesion: 0.22
@@ -342,20 +338,24 @@ Cohesion: 0.06
 Nodes (26): Code Reviewer Prompt Template, Example Output, Common Rationalizations, Example, How to Request, Red Flags, Requesting Code Review, When to Request Review (+18 more)
 
 ### Community 40 - "2026_07_10_185347_create_posts_table.php"
-Cohesion: 0.30
-Nodes (3): CampaignController, Request, Campaign
+Cohesion: 0.32
+Nodes (3): BelongsTo, BelongsToMany, Term
 
 ### Community 43 - "require-dev"
-Cohesion: 0.24
-Nodes (4): CollectionController, Request, Collection, HasMany
+Cohesion: 0.29
+Nodes (3): CollectionController, Request, Collection
 
-### Community 45 - "Collection.php"
-Cohesion: 0.12
-Nodes (4): BelongsTo, BelongsToMany, Term, BlogSidebarData
+### Community 49 - "FormEntry"
+Cohesion: 0.38
+Nodes (3): Request, PreviewController, BlockPreview
 
 ### Community 54 - "User"
-Cohesion: 0.17
-Nodes (4): Request, SeoController, Page, Seo
+Cohesion: 0.12
+Nodes (5): Request, SettingsController, UpdateController, Page, Seo
+
+### Community 55 - "artisan"
+Cohesion: 0.22
+Nodes (3): CollectionEntryController, Request, CollectionEntry
 
 ### Community 70 - "UserController"
 Cohesion: 0.33
@@ -366,16 +366,16 @@ Cohesion: 0.06
 Nodes (29): Common Rationalizations, Debugging Integration, Example: Bug Fix, Final Rule, Good Tests, GREEN - Minimal Code, Overview, Red Flags - STOP and Start Over (+21 more)
 
 ### Community 87 - "Widget"
-Cohesion: 0.18
+Cohesion: 0.23
 Nodes (4): Request, SubscriptionPlanController, SubscriptionPlan, Attribute
 
 ### Community 88 - "CampaignController.php"
-Cohesion: 0.08
-Nodes (11): CommandSearchController, Request, Request, PreviewController, Request, TaxonomyController, Taxonomy, WidgetLayout (+3 more)
+Cohesion: 0.12
+Nodes (7): CommandSearchController, Request, Request, TaxonomyController, Taxonomy, CommandSearch, JsonResponse
 
 ### Community 95 - "blog-list.blade.php"
-Cohesion: 0.18
-Nodes (5): UpdateController, Request, SettingController, Sender, Setting
+Cohesion: 0.25
+Nodes (4): Request, SettingController, Sender, Setting
 
 ### Community 98 - "contact.blade.php"
 Cohesion: 0.14
@@ -393,21 +393,9 @@ Nodes (19): Browser Events Format, Cards (visual designs), Cleaning Up, CSS Clas
 Cohesion: 0.67
 Nodes (3): alpinejs, alpinejs, alpinejs
 
-### Community 104 - "config"
-Cohesion: 0.52
-Nodes (4): Request, TrackPageViews, Closure, Response
-
 ### Community 107 - "BlogList.php"
 Cohesion: 0.10
 Nodes (19): Bulletproofing Elements, Creation Log: Systematic Debugging Skill, Enhancement 1: TDD Reference, Extraction Decisions, Final Outcome, Initial Version, Iterations, Key Insight (+11 more)
-
-### Community 108 - "site-footer.blade.php"
-Cohesion: 0.20
-Nodes (5): DashboardController, Request, BelongsTo, HasMany, HasOne
-
-### Community 113 - "PagesWidget"
-Cohesion: 0.14
-Nodes (4): PageController, CollectionEntry, BelongsTo, PagesWidget
 
 ### Community 136 - "RedirectResponse"
 Cohesion: 0.11
@@ -420,6 +408,10 @@ Nodes (4): FormController, Form, Request, FormFieldTypes
 ### Community 144 - "Lara-CMS — Full Rebuild Specification"
 Cohesion: 0.13
 Nodes (14): 11. Field editor widgets (Alpine), 12. Global sections (site-wide navbar/footer), 14. Settings, SEO, Taxonomies, Assets, Users, 15. Theme system, 17. Build order / milestones, 1. Core concept & mental model, 2. Tech stack & project setup, 3. Architecture & directory layout (+6 more)
+
+### Community 145 - "WhyChooseUs.php"
+Cohesion: 0.15
+Nodes (4): BlogDetails, PageController, HasMany, Block
 
 ### Community 146 - "Package"
 Cohesion: 0.07
@@ -569,6 +561,10 @@ Nodes (4): 16. Routes reference, Admin (`admin.php`, prefix `admin`, `auth`), Pu
 Cohesion: 0.50
 Nodes (4): 8.1 Layout (`admin/layout.blade.php`), 8.2 Sidebar nav groups (`nav-client`), 8.3 Dashboard (`/admin`), 8. Admin panel — shell, nav, layout
 
+### Community 203 - "FormEntry"
+Cohesion: 0.28
+Nodes (3): FormEntry, BelongsTo, WidgetLayout
+
 ### Community 208 - "Using Git Worktrees"
 Cohesion: 0.13
 Nodes (14): 1a. Native Worktree Tools (preferred), 1b. Git Worktree Fallback, Common Rationalizations, Create the Worktree, Directory Selection, Overview, Quick Reference, Report (+6 more)
@@ -606,8 +602,8 @@ Cohesion: 0.33
 Nodes (4): AdminUserController, RedirectResponse, Request, View
 
 ### Community 238 - "Post.php"
-Cohesion: 0.14
-Nodes (14): Booking, Destination, Form, HasMany, Contact, BelongsTo, DefaultSetting, Form (+6 more)
+Cohesion: 0.10
+Nodes (15): Booking, Destination, Form, HasMany, Contact, BelongsTo, DefaultSetting, Form (+7 more)
 
 ### Community 239 - "Executing Plans"
 Cohesion: 0.20
@@ -619,7 +615,7 @@ Nodes (9): Common Mistakes, Condition-Based Waiting, Core Pattern, Implementatio
 
 ### Community 254 - "@codemirror/lang-json"
 Cohesion: 0.09
-Nodes (14): ScheduleCampaign, SendReports, RedirectResponse, Request, View, UserController, RedirectResponse, Request (+6 more)
+Nodes (12): ScheduleCampaign, SendReports, RedirectResponse, Request, View, UserController, BelongsTo, Subscription (+4 more)
 
 ### Community 255 - "Verification Before Completion"
 Cohesion: 0.20
@@ -760,17 +756,17 @@ Nodes (3): extra, laravel, dont-discover
 ## Knowledge Gaps
 - **819 isolated node(s):** `Anti-Pattern: "This Is Too Simple To Need A Design"`, `Checklist`, `Process Flow`, `The Process`, `After the Design` (+814 more)
   These have ≤1 connection - possible missing edges or undocumented components.
-- **57 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
+- **48 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
 
 ## Suggested Questions
 _Questions this graph is uniquely positioned to answer:_
 
-- **Why does `Controller` connect `SiteFooter.php` to `Page`, `Taxonomy`, `View`, `BlockRegistry`, `PackageList.php`, `PackagePostSlot.php`, `TravelDeals.php`, `2026_07_10_185347_create_posts_table.php`, `require-dev`, `User`, `artisan`, `BlogList.php`, `Widget`, `CampaignController.php`, `blog-list.blade.php`, `SettingsController.php`, `AdminUserController`, `site-footer.blade.php`, `PagesWidget`, `CollectionEntryController.php`, `@codemirror/lang-json`?**
-  _High betweenness centrality (0.031) - this node is a cross-community bridge._
-- **Why does `Block` connect `Block` to `UpdatesListWidget`, `BlockRegistry`, `Field.php`, `WhyChooseUs.php`, `ClientTestimonials.php`, `FeatureImageCards.php`, `WhyChooseUs.php`, `Advanced Query Patterns`, `Database Performance Best Practices`, `2026_07_10_185347_create_posts_table.php`, `FormEntry`, `BlogList.php`, `LatestBlog.php`, `PageBanner.php`, `SimpleText.php`, `WhyChooseUs.php`, `SiteNavbar.php`, `ProfileBento.php`, `UserController`?**
-  _High betweenness centrality (0.025) - this node is a cross-community bridge._
-- **Why does `Admin` connect `TeamCards.php` to `SiteNavbar.php`, `Model`, `2026_07_10_185347_create_posts_table.php`, `Taxonomy`, `AdminUserController`, `BlockRegistry`, `Post.php`, `Seeder`, `Collection.php`, `CollectionEntryController.php`, `User`, `artisan`, `PackageList.php`, `Widget`, `@codemirror/lang-json`?**
-  _High betweenness centrality (0.020) - this node is a cross-community bridge._
+- **Why does `Controller` connect `SiteFooter.php` to `Page`, `Taxonomy`, `View`, `BlockRegistry`, `WhyChooseUs.php`, `PackageList.php`, `PackagePostSlot.php`, `TravelDeals.php`, `require-dev`, `FormEntry`, `User`, `artisan`, `BlogList.php`, `Widget`, `CampaignController.php`, `blog-list.blade.php`, `.sendCampaign`, `AdminUserController`, `Post.php`, `@codemirror/lang-json`?**
+  _High betweenness centrality (0.034) - this node is a cross-community bridge._
+- **Why does `Block` connect `Block` to `Database Performance Best Practices`, `BlogList.php`, `UpdatesListWidget`, `Page`, `LatestBlog.php`, `BlockRegistry`, `site-footer.blade.php`, `PageBanner.php`, `SimpleText.php`, `Field.php`, `SiteNavbar.php`, `ClientTestimonials.php`, `ProfileBento.php`, `FeatureImageCards.php`, `SlaTableWidget`, `StatWidget`, `WhyChooseUs.php`, `Advanced Query Patterns`?**
+  _High betweenness centrality (0.021) - this node is a cross-community bridge._
+- **Why does `Admin` connect `TeamCards.php` to `Page`, `2026_07_10_185347_create_posts_table.php`, `Taxonomy`, `FormEntry`, `AdminUserController`, `BlockRegistry`, `Post.php`, `Seeder`, `User`, `artisan`?**
+  _High betweenness centrality (0.019) - this node is a cross-community bridge._
 - **What connects `Anti-Pattern: "This Is Too Simple To Need A Design"`, `Checklist`, `Process Flow` to the rest of the system?**
   _819 weakly-connected nodes found - possible documentation gaps or missing edges._
 - **Should `dependencies` be split into smaller, more focused modules?**
