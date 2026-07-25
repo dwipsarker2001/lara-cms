@@ -1,7 +1,7 @@
 # Graph Report - lara-cms  (2026-07-25)
 
 ## Corpus Check
-- 604 files · ~448,586 words
+- 604 files · ~449,057 words
 - Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
@@ -10,7 +10,7 @@
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `3bf4f825`
+- Built from commit: `5e6b1c1e`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
@@ -762,11 +762,11 @@ Nodes (3): extra, laravel, dont-discover
 _Questions this graph is uniquely positioned to answer:_
 
 - **Why does `Controller` connect `SiteFooter.php` to `Page`, `Taxonomy`, `View`, `BlockRegistry`, `WhyChooseUs.php`, `PackageList.php`, `PackagePostSlot.php`, `TravelDeals.php`, `require-dev`, `FormEntry`, `User`, `artisan`, `BlogList.php`, `Widget`, `CampaignController.php`, `blog-list.blade.php`, `.sendCampaign`, `AdminUserController`, `Post.php`, `@codemirror/lang-json`?**
-  _High betweenness centrality (0.034) - this node is a cross-community bridge._
+  _High betweenness centrality (0.027) - this node is a cross-community bridge._
 - **Why does `Block` connect `Block` to `Database Performance Best Practices`, `BlogList.php`, `UpdatesListWidget`, `Page`, `LatestBlog.php`, `BlockRegistry`, `site-footer.blade.php`, `PageBanner.php`, `SimpleText.php`, `Field.php`, `SiteNavbar.php`, `ClientTestimonials.php`, `ProfileBento.php`, `FeatureImageCards.php`, `SlaTableWidget`, `StatWidget`, `WhyChooseUs.php`, `Advanced Query Patterns`?**
-  _High betweenness centrality (0.021) - this node is a cross-community bridge._
+  _High betweenness centrality (0.023) - this node is a cross-community bridge._
 - **Why does `Admin` connect `TeamCards.php` to `Page`, `2026_07_10_185347_create_posts_table.php`, `Taxonomy`, `FormEntry`, `AdminUserController`, `BlockRegistry`, `Post.php`, `Seeder`, `User`, `artisan`?**
-  _High betweenness centrality (0.019) - this node is a cross-community bridge._
+  _High betweenness centrality (0.020) - this node is a cross-community bridge._
 - **What connects `Anti-Pattern: "This Is Too Simple To Need A Design"`, `Checklist`, `Process Flow` to the rest of the system?**
   _819 weakly-connected nodes found - possible documentation gaps or missing edges._
 - **Should `dependencies` be split into smaller, more focused modules?**

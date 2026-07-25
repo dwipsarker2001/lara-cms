@@ -4,6 +4,7 @@
 @section('breadcrumb', 'Editor')
 
 @section('content-full')
+<script src="https://cdn.jsdelivr.net/npm/morphdom@2.7.4/dist/morphdom-umd.min.js"></script>
 <script>
     window.editorSections = @json($entry->sections ?? []);
     window.editorSchemas = @json($blockSchemas);
@@ -1017,10 +1018,52 @@
                 this.setField(name, linkValue);
             },
 
+            syncPreviewField(name, value) {
+                const iframe = document.getElementById('preview-iframe');
+                if (!iframe) return false;
+
+                const doc = iframe.contentDocument || iframe.contentWindow?.document;
+                if (!doc) return false;
+
+                const target = doc.querySelector(`[data-edit="${name}"]`);
+                if (!target) return false;
+
+                if (target.tagName === 'IMG') {
+                    target.setAttribute('src', value ?? '');
+                    return true;
+                }
+
+                const img = target.querySelector('img');
+                if (img && typeof value === 'string' && /^(https?:|data:image|\/)/i.test(value)) {
+                    img.setAttribute('src', value);
+                    return true;
+                }
+
+                const text = value == null || value === undefined ? '' : String(value);
+                const looksLikeHtml = typeof text === 'string' && /<\/?[a-z][\s\S]*>/i.test(text);
+
+                if (looksLikeHtml) {
+                    if (window.morphdom) {
+                        const wrapper = doc.createElement('div');
+                        wrapper.innerHTML = text;
+                        window.morphdom(target, wrapper, { childrenOnly: true });
+                    } else {
+                        target.innerHTML = text;
+                    }
+                } else {
+                    target.textContent = text;
+                }
+
+                return true;
+            },
+
             setField(name, value) {
                 this.setNested(name, value);
                 this.dirty = true;
-                this.schedulePreview();
+                const synced = this.syncPreviewField(name, value);
+                if (!synced) {
+                    this.schedulePreview();
+                }
             },
 
             setNested(name, value) {
@@ -1311,7 +1354,7 @@
                     return;
                 }
                 clearTimeout(this.previewTimer);
-                this.previewTimer = setTimeout(() => this.refreshPreview(), 0);
+                this.previewTimer = setTimeout(() => this.refreshPreview(), 250);
             },
 
             refreshPreview() {
@@ -1343,20 +1386,24 @@
                 if (!container) {
                     doc.body.innerHTML = '<div id="preview-content">' + html + '</div>';
                 } else {
-                    const parser = new DOMParser();
-                    const newDoc = parser.parseFromString(html, 'text/html');
-                    const newNodes = Array.from(newDoc.body.children);
-                    const currentNodes = Array.from(container.children);
+                    if (window.morphdom) {
+                        window.morphdom(container, '<div id="preview-content">' + html + '</div>');
+                    } else {
+                        const parser = new DOMParser();
+                        const newDoc = parser.parseFromString(html, 'text/html');
+                        const newNodes = Array.from(newDoc.body.children);
+                        const currentNodes = Array.from(container.children);
 
-                    if (newNodes.length === currentNodes.length && newNodes.length > 0) {
-                        newNodes.forEach((node, idx) => {
-                            const cur = currentNodes[idx];
-                            if (cur && cur.outerHTML !== node.outerHTML) {
-                                cur.replaceWith(doc.importNode(node, true));
-                            }
-                        });
-                    } else if (container.innerHTML !== html) {
-                        container.innerHTML = html;
+                        if (newNodes.length === currentNodes.length && newNodes.length > 0) {
+                            newNodes.forEach((node, idx) => {
+                                const cur = currentNodes[idx];
+                                if (cur && cur.outerHTML !== node.outerHTML) {
+                                    cur.replaceWith(doc.importNode(node, true));
+                                }
+                            });
+                        } else if (container.innerHTML !== html) {
+                            container.innerHTML = html;
+                        }
                     }
                 }
 

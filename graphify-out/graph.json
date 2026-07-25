@@ -4,15 +4,114 @@
   "graph": {},
   "nodes": [
     {
+      "label": "tiptap.js",
+      "file_type": "code",
+      "source_file": "resources/js/tiptap.js",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "resources_js_tiptap",
+      "community": 14,
+      "community_name": "tiptap.js",
+      "norm_label": "tiptap.js"
+    },
+    {
+      "label": "ResizableImage",
+      "file_type": "code",
+      "source_file": "resources/js/tiptap.js",
+      "source_location": "L11",
+      "_origin": "ast",
+      "id": "resources_js_tiptap_resizableimage",
+      "community": 14,
+      "community_name": "tiptap.js",
+      "norm_label": "resizableimage"
+    },
+    {
+      "label": "updateActiveButtons()",
+      "file_type": "code",
+      "source_file": "resources/js/tiptap.js",
+      "source_location": "L38",
+      "_origin": "ast",
+      "id": "resources_js_tiptap_updateactivebuttons",
+      "community": 14,
+      "community_name": "tiptap.js",
+      "norm_label": "updateactivebuttons()"
+    },
+    {
+      "label": "setupImageToolbar()",
+      "file_type": "code",
+      "source_file": "resources/js/tiptap.js",
+      "source_location": "L71",
+      "_origin": "ast",
+      "id": "resources_js_tiptap_setupimagetoolbar",
+      "community": 14,
+      "community_name": "tiptap.js",
+      "norm_label": "setupimagetoolbar()"
+    },
+    {
+      "label": "setupToolbarOverflow()",
+      "file_type": "code",
+      "source_file": "resources/js/tiptap.js",
+      "source_location": "L74",
+      "_origin": "ast",
+      "id": "resources_js_tiptap_setuptoolbaroverflow",
+      "community": 14,
+      "community_name": "tiptap.js",
+      "norm_label": "setuptoolbaroverflow()"
+    },
+    {
+      "label": "setupResizeHandle()",
+      "file_type": "code",
+      "source_file": "resources/js/tiptap.js",
+      "source_location": "L122",
+      "_origin": "ast",
+      "id": "resources_js_tiptap_setupresizehandle",
+      "community": 14,
+      "community_name": "tiptap.js",
+      "norm_label": "setupresizehandle()"
+    },
+    {
+      "label": "mountTipTap()",
+      "file_type": "code",
+      "source_file": "resources/js/tiptap.js",
+      "source_location": "L247",
+      "_origin": "ast",
+      "id": "resources_js_tiptap_mounttiptap",
+      "community": 14,
+      "community_name": "tiptap.js",
+      "norm_label": "mounttiptap()"
+    },
+    {
+      "label": "editor.blade.php",
+      "file_type": "code",
+      "source_file": "resources/views/admin/collections/entries/editor.blade.php",
+      "source_location": null,
+      "_origin": "ast",
+      "id": "resources_views_admin_collections_entries_editor_blade",
+      "community": 250,
+      "community_name": "editor.blade.php",
+      "norm_label": "editor.blade.php"
+    },
+    {
+      "label": "editor.blade.php",
+      "file_type": "code",
+      "source_file": "resources/views/admin/pages/editor.blade.php",
+      "source_location": null,
+      "_origin": "ast",
+      "id": "resources_views_admin_pages_editor_blade",
+      "community": 84,
+      "community_name": "editor.blade.php",
+      "norm_label": "editor.blade.php"
+    },
+    {
       "label": "BlogDetails.php",
       "file_type": "code",
       "source_file": "app/Blocks/common/BlogDetails.php",
       "source_location": "L1",
       "_origin": "ast",
-      "id": "app_blocks_common_blogdetails",
       "community": 145,
       "community_name": "WhyChooseUs.php",
-      "norm_label": "blogdetails.php"
+      "norm_label": "blogdetails.php",
+      "id": "app_blocks_common_blogdetails"
     },
     {
       "label": "BlogDetails",
@@ -20,10 +119,10 @@
       "source_file": "app/Blocks/common/BlogDetails.php",
       "source_location": "L10",
       "_origin": "ast",
-      "id": "app_blocks_common_blogdetails_blogdetails",
       "community": 145,
       "community_name": "WhyChooseUs.php",
-      "norm_label": "blogdetails"
+      "norm_label": "blogdetails",
+      "id": "app_blocks_common_blogdetails_blogdetails"
     },
     {
       "label": "Block",
@@ -31,10 +130,10 @@
       "source_file": "",
       "source_location": "",
       "_origin": "ast",
-      "id": "block",
       "community": 145,
       "community_name": "WhyChooseUs.php",
-      "norm_label": "block"
+      "norm_label": "block",
+      "id": "block"
     },
     {
       "label": ".fields()",
@@ -42,10 +141,10 @@
       "source_file": "app/Blocks/common/BlogDetails.php",
       "source_location": "L18",
       "_origin": "ast",
-      "id": "app_blocks_common_blogdetails_blogdetails_fields",
       "community": 145,
       "community_name": "WhyChooseUs.php",
-      "norm_label": ".fields()"
+      "norm_label": ".fields()",
+      "id": "app_blocks_common_blogdetails_blogdetails_fields"
     },
     {
       "label": ".collectionOptions()",
@@ -53,10 +152,10 @@
       "source_file": "app/Blocks/common/BlogDetails.php",
       "source_location": "L40",
       "_origin": "ast",
-      "id": "app_blocks_common_blogdetails_blogdetails_collectionoptions",
       "community": 145,
       "community_name": "WhyChooseUs.php",
-      "norm_label": ".collectionoptions()"
+      "norm_label": ".collectionoptions()",
+      "id": "app_blocks_common_blogdetails_blogdetails_collectionoptions"
     },
     {
       "label": "blog-details.blade.php",
@@ -64,10 +163,10 @@
       "source_file": "resources/views/blocks/blog-details.blade.php",
       "source_location": null,
       "_origin": "ast",
-      "id": "resources_views_blocks_blog_details_blade",
       "community": 96,
       "community_name": "SettingsController.php",
-      "norm_label": "blog-details.blade.php"
+      "norm_label": "blog-details.blade.php",
+      "id": "resources_views_blocks_blog_details_blade"
     },
     {
       "label": "SKILL.md",
@@ -5827,28 +5926,6 @@
       "community_name": "PreviewController.php",
       "norm_label": "real-world impact",
       "id": "agents_skills_writing_skills_testing_skills_with_subagents_real_world_impact"
-    },
-    {
-      "label": "editor.blade.php",
-      "file_type": "code",
-      "source_file": "resources/views/admin/collections/entries/editor.blade.php",
-      "source_location": null,
-      "_origin": "ast",
-      "community": 250,
-      "community_name": "editor.blade.php",
-      "norm_label": "editor.blade.php",
-      "id": "resources_views_admin_collections_entries_editor_blade"
-    },
-    {
-      "label": "editor.blade.php",
-      "file_type": "code",
-      "source_file": "resources/views/admin/pages/editor.blade.php",
-      "source_location": null,
-      "_origin": "ast",
-      "community": 84,
-      "community_name": "editor.blade.php",
-      "norm_label": "editor.blade.php",
-      "id": "resources_views_admin_pages_editor_blade"
     },
     {
       "label": "BlogSidebarData.php",
@@ -17583,83 +17660,6 @@
       "id": "resources_js_template_importer"
     },
     {
-      "label": "tiptap.js",
-      "file_type": "code",
-      "source_file": "resources/js/tiptap.js",
-      "source_location": "L1",
-      "_origin": "ast",
-      "community": 14,
-      "community_name": "tiptap.js",
-      "norm_label": "tiptap.js",
-      "id": "resources_js_tiptap"
-    },
-    {
-      "label": "ResizableImage",
-      "file_type": "code",
-      "source_file": "resources/js/tiptap.js",
-      "source_location": "L11",
-      "_origin": "ast",
-      "community": 14,
-      "community_name": "tiptap.js",
-      "norm_label": "resizableimage",
-      "id": "resources_js_tiptap_resizableimage"
-    },
-    {
-      "label": "updateActiveButtons()",
-      "file_type": "code",
-      "source_file": "resources/js/tiptap.js",
-      "source_location": "L38",
-      "_origin": "ast",
-      "community": 14,
-      "community_name": "tiptap.js",
-      "norm_label": "updateactivebuttons()",
-      "id": "resources_js_tiptap_updateactivebuttons"
-    },
-    {
-      "label": "setupImageToolbar()",
-      "file_type": "code",
-      "source_file": "resources/js/tiptap.js",
-      "source_location": "L71",
-      "_origin": "ast",
-      "community": 14,
-      "community_name": "tiptap.js",
-      "norm_label": "setupimagetoolbar()",
-      "id": "resources_js_tiptap_setupimagetoolbar"
-    },
-    {
-      "label": "setupToolbarOverflow()",
-      "file_type": "code",
-      "source_file": "resources/js/tiptap.js",
-      "source_location": "L74",
-      "_origin": "ast",
-      "community": 14,
-      "community_name": "tiptap.js",
-      "norm_label": "setuptoolbaroverflow()",
-      "id": "resources_js_tiptap_setuptoolbaroverflow"
-    },
-    {
-      "label": "setupResizeHandle()",
-      "file_type": "code",
-      "source_file": "resources/js/tiptap.js",
-      "source_location": "L122",
-      "_origin": "ast",
-      "community": 14,
-      "community_name": "tiptap.js",
-      "norm_label": "setupresizehandle()",
-      "id": "resources_js_tiptap_setupresizehandle"
-    },
-    {
-      "label": "mountTipTap()",
-      "file_type": "code",
-      "source_file": "resources/js/tiptap.js",
-      "source_location": "L195",
-      "_origin": "ast",
-      "community": 14,
-      "community_name": "tiptap.js",
-      "norm_label": "mounttiptap()",
-      "id": "resources_js_tiptap_mounttiptap"
-    },
-    {
       "label": "create.blade.php",
       "file_type": "code",
       "source_file": "resources/views/admin/administrators/create.blade.php",
@@ -24515,39 +24515,165 @@
   ],
   "links": [
     {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "resources/js/app.js",
+      "source_location": "L3",
+      "weight": 1.0,
+      "_origin": "ast",
+      "confidence_score": 1.0,
+      "source": "resources_js_app",
+      "target": "resources_js_tiptap"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "resources/js/tiptap.js",
+      "source_location": "L247",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "resources_js_tiptap",
+      "target": "resources_js_tiptap_mounttiptap",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "resources/js/tiptap.js",
+      "source_location": "L11",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "resources_js_tiptap",
+      "target": "resources_js_tiptap_resizableimage",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "resources/js/tiptap.js",
+      "source_location": "L71",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "resources_js_tiptap",
+      "target": "resources_js_tiptap_setupimagetoolbar",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "resources/js/tiptap.js",
+      "source_location": "L122",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "resources_js_tiptap",
+      "target": "resources_js_tiptap_setupresizehandle",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "resources/js/tiptap.js",
+      "source_location": "L74",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "resources_js_tiptap",
+      "target": "resources_js_tiptap_setuptoolbaroverflow",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "resources/js/tiptap.js",
+      "source_location": "L38",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "resources_js_tiptap",
+      "target": "resources_js_tiptap_updateactivebuttons",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "references",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "resources/js/tiptap.js",
+      "source_location": "L267",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "resources_js_tiptap_mounttiptap",
+      "target": "resources_js_tiptap_resizableimage"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "resources/js/tiptap.js",
+      "source_location": "L275",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "resources_js_tiptap_mounttiptap",
+      "target": "resources_js_tiptap_updateactivebuttons",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "resources/js/tiptap.js",
+      "source_location": "L306",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "resources_js_tiptap_mounttiptap",
+      "target": "resources_js_tiptap_setupimagetoolbar",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "resources/js/tiptap.js",
+      "source_location": "L308",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "resources_js_tiptap_mounttiptap",
+      "target": "resources_js_tiptap_setuptoolbaroverflow",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "resources/js/tiptap.js",
+      "source_location": "L307",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "resources_js_tiptap_mounttiptap",
+      "target": "resources_js_tiptap_setupresizehandle",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "resources/js/app.js",
+      "source_location": "L3",
+      "weight": 1.0,
+      "_origin": "ast",
+      "confidence_score": 1.0,
+      "source": "resources_js_app",
+      "target": "resources_js_tiptap_mounttiptap"
+    },
+    {
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "app/Blocks/common/BlogDetails.php",
       "source_location": "L10",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "app_blocks_common_blogdetails",
-      "target": "app_blocks_common_blogdetails_blogdetails",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "imports",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "app/Blocks/common/BlogDetails.php",
-      "source_location": "L5",
-      "weight": 1.0,
-      "_origin": "ast",
-      "source": "app_blocks_common_blogdetails",
-      "target": "block",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "imports",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "app/Blocks/common/BlogDetails.php",
-      "source_location": "L7",
-      "weight": 1.0,
-      "_origin": "ast",
-      "source": "app_blocks_common_blogdetails",
-      "target": "app_models_collection",
-      "confidence_score": 1.0
+      "target": "app_blocks_common_blogdetails_blogdetails"
     },
     {
       "relation": "imports",
@@ -24557,9 +24683,33 @@
       "source_location": "L6",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "app_blocks_common_blogdetails",
-      "target": "app_blocks_field",
-      "confidence_score": 1.0
+      "target": "app_blocks_field"
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "app/Blocks/common/BlogDetails.php",
+      "source_location": "L7",
+      "weight": 1.0,
+      "_origin": "ast",
+      "confidence_score": 1.0,
+      "source": "app_blocks_common_blogdetails",
+      "target": "app_models_collection"
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "app/Blocks/common/BlogDetails.php",
+      "source_location": "L5",
+      "weight": 1.0,
+      "_origin": "ast",
+      "confidence_score": 1.0,
+      "source": "app_blocks_common_blogdetails",
+      "target": "block"
     },
     {
       "relation": "imports",
@@ -24580,9 +24730,9 @@
       "source_location": "L40",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "app_blocks_common_blogdetails_blogdetails",
-      "target": "app_blocks_common_blogdetails_blogdetails_collectionoptions",
-      "confidence_score": 1.0
+      "target": "app_blocks_common_blogdetails_blogdetails_collectionoptions"
     },
     {
       "relation": "method",
@@ -24591,9 +24741,9 @@
       "source_location": "L18",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "app_blocks_common_blogdetails_blogdetails",
-      "target": "app_blocks_common_blogdetails_blogdetails_fields",
-      "confidence_score": 1.0
+      "target": "app_blocks_common_blogdetails_blogdetails_fields"
     },
     {
       "relation": "inherits",
@@ -24602,9 +24752,9 @@
       "source_location": "L10",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "app_blocks_common_blogdetails_blogdetails",
-      "target": "block",
-      "confidence_score": 1.0
+      "target": "block"
     },
     {
       "relation": "contains",
@@ -51837,30 +51987,6 @@
       "target": "sortablejs"
     },
     {
-      "relation": "imports_from",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "resources/js/app.js",
-      "source_location": "L3",
-      "weight": 1.0,
-      "_origin": "ast",
-      "confidence_score": 1.0,
-      "source": "resources_js_app",
-      "target": "resources_js_tiptap"
-    },
-    {
-      "relation": "imports",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "resources/js/app.js",
-      "source_location": "L3",
-      "weight": 1.0,
-      "_origin": "ast",
-      "confidence_score": 1.0,
-      "source": "resources_js_app",
-      "target": "resources_js_tiptap_mounttiptap"
-    },
-    {
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "resources/js/block-editor.js",
@@ -51881,132 +52007,6 @@
       "confidence_score": 1.0,
       "source": "resources_js_email_editor",
       "target": "resources_js_email_editor_onchange"
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "resources/js/tiptap.js",
-      "source_location": "L195",
-      "weight": 1.0,
-      "_origin": "ast",
-      "confidence_score": 1.0,
-      "source": "resources_js_tiptap",
-      "target": "resources_js_tiptap_mounttiptap"
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "resources/js/tiptap.js",
-      "source_location": "L11",
-      "weight": 1.0,
-      "_origin": "ast",
-      "confidence_score": 1.0,
-      "source": "resources_js_tiptap",
-      "target": "resources_js_tiptap_resizableimage"
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "resources/js/tiptap.js",
-      "source_location": "L71",
-      "weight": 1.0,
-      "_origin": "ast",
-      "confidence_score": 1.0,
-      "source": "resources_js_tiptap",
-      "target": "resources_js_tiptap_setupimagetoolbar"
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "resources/js/tiptap.js",
-      "source_location": "L122",
-      "weight": 1.0,
-      "_origin": "ast",
-      "confidence_score": 1.0,
-      "source": "resources_js_tiptap",
-      "target": "resources_js_tiptap_setupresizehandle"
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "resources/js/tiptap.js",
-      "source_location": "L74",
-      "weight": 1.0,
-      "_origin": "ast",
-      "confidence_score": 1.0,
-      "source": "resources_js_tiptap",
-      "target": "resources_js_tiptap_setuptoolbaroverflow"
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "resources/js/tiptap.js",
-      "source_location": "L38",
-      "weight": 1.0,
-      "_origin": "ast",
-      "confidence_score": 1.0,
-      "source": "resources_js_tiptap",
-      "target": "resources_js_tiptap_updateactivebuttons"
-    },
-    {
-      "relation": "references",
-      "context": "call",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "source_file": "resources/js/tiptap.js",
-      "source_location": "L215",
-      "weight": 1.0,
-      "_origin": "ast",
-      "source": "resources_js_tiptap_mounttiptap",
-      "target": "resources_js_tiptap_resizableimage"
-    },
-    {
-      "relation": "calls",
-      "context": "call",
-      "confidence": "EXTRACTED",
-      "source_file": "resources/js/tiptap.js",
-      "source_location": "L222",
-      "weight": 1.0,
-      "_origin": "ast",
-      "confidence_score": 1.0,
-      "source": "resources_js_tiptap_mounttiptap",
-      "target": "resources_js_tiptap_updateactivebuttons"
-    },
-    {
-      "relation": "calls",
-      "context": "call",
-      "confidence": "EXTRACTED",
-      "source_file": "resources/js/tiptap.js",
-      "source_location": "L241",
-      "weight": 1.0,
-      "_origin": "ast",
-      "confidence_score": 1.0,
-      "source": "resources_js_tiptap_mounttiptap",
-      "target": "resources_js_tiptap_setupimagetoolbar"
-    },
-    {
-      "relation": "calls",
-      "context": "call",
-      "confidence": "EXTRACTED",
-      "source_file": "resources/js/tiptap.js",
-      "source_location": "L243",
-      "weight": 1.0,
-      "_origin": "ast",
-      "confidence_score": 1.0,
-      "source": "resources_js_tiptap_mounttiptap",
-      "target": "resources_js_tiptap_setuptoolbaroverflow"
-    },
-    {
-      "relation": "calls",
-      "context": "call",
-      "confidence": "EXTRACTED",
-      "source_file": "resources/js/tiptap.js",
-      "source_location": "L242",
-      "weight": 1.0,
-      "_origin": "ast",
-      "confidence_score": 1.0,
-      "source": "resources_js_tiptap_mounttiptap",
-      "target": "resources_js_tiptap_setupresizehandle"
     },
     {
       "relation": "contains",
@@ -57050,5 +57050,5 @@
     }
   ],
   "hyperedges": [],
-  "built_at_commit": "3bf4f825aba23aadcaaa1dcf0ae8a5315fd33a11"
+  "built_at_commit": "5e6b1c1eceab1060308f5fbe5ea4b12126723105"
 }

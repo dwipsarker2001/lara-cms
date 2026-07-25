@@ -132,6 +132,8 @@ function setupResizeHandle(wrapperEl, editor, fieldName) {
     let startW = 0;
     let currentImg = null;
     let currentPct = null;
+    let cachedIframeImgs = [];
+    let rafId = null;
 
     const findImage = () => {
         const sel = editorEl.querySelector('img.ProseMirror-selectednode');
@@ -178,6 +180,25 @@ function setupResizeHandle(wrapperEl, editor, fieldName) {
         startW = currentImg.offsetWidth;
         document.body.style.cursor = 'se-resize';
         document.body.style.userSelect = 'none';
+
+        cachedIframeImgs = [];
+        const src = currentImg.getAttribute('src');
+        const iframe = document.getElementById('preview-iframe');
+        if (iframe && src) {
+            const iframeDoc = iframe.contentDocument || iframe.contentWindow?.document;
+            if (iframeDoc) {
+                const contentContainer = (fieldName ? iframeDoc.querySelector(`[data-edit="${fieldName}"]`) : null)
+                    || iframeDoc.querySelector('.rich-text-content')
+                    || iframeDoc.querySelector('.prose');
+                if (contentContainer) {
+                    contentContainer.querySelectorAll('img').forEach(img => {
+                        if (img.getAttribute('src') === src) {
+                            cachedIframeImgs.push(img);
+                        }
+                    });
+                }
+            }
+        }
     });
 
     document.addEventListener('mousemove', (e) => {
@@ -188,31 +209,12 @@ function setupResizeHandle(wrapperEl, editor, fieldName) {
         const pct = Math.round((maxW / editorEl.clientWidth) * 100);
         currentPct = pct + '%';
 
-        // 1. Direct local editor DOM update at 60fps
-        currentImg.style.width = currentPct;
-        updateHandle();
-
-        // 2. Direct preview iframe DOM update at 60fps ONLY for images inside the target rich text container
-        const iframe = document.getElementById('preview-iframe');
-        if (iframe) {
-            const iframeDoc = iframe.contentDocument || iframe.contentWindow?.document;
-            if (iframeDoc) {
-                const src = currentImg.getAttribute('src');
-                if (src) {
-                    const contentContainer = (fieldName ? iframeDoc.querySelector(`[data-edit="${fieldName}"]`) : null)
-                        || iframeDoc.querySelector('.rich-text-content')
-                        || iframeDoc.querySelector('.prose');
-
-                    if (contentContainer) {
-                        contentContainer.querySelectorAll('img').forEach(img => {
-                            if (img.getAttribute('src') === src) {
-                                img.style.width = currentPct;
-                            }
-                        });
-                    }
-                }
-            }
-        }
+        if (rafId) cancelAnimationFrame(rafId);
+        rafId = requestAnimationFrame(() => {
+            if (currentImg) currentImg.style.width = currentPct;
+            updateHandle();
+            cachedIframeImgs.forEach(img => img.style.width = currentPct);
+        });
     });
 
     document.addEventListener('mouseup', () => {
@@ -220,6 +222,8 @@ function setupResizeHandle(wrapperEl, editor, fieldName) {
             resizing = false;
             document.body.style.cursor = '';
             document.body.style.userSelect = '';
+            if (rafId) cancelAnimationFrame(rafId);
+            cachedIframeImgs = [];
 
             // Prevent server preview refetch to eliminate flash effect after mouse release
             window.__skipNextPreviewRefresh = true;
@@ -274,6 +278,10 @@ export function mountTipTap(fieldName, wrapperEl, initialContent, onUpdate) {
             if (onUpdate) onUpdate(html);
             updateActiveButtons(wrapperEl, ed);
 
+            if (window.__isResizingImage || window.__skipNextPreviewRefresh) {
+                return;
+            }
+
             // Sync preview iframe DOM instantly on typing without server fetch or flash
             const iframe = document.getElementById('preview-iframe');
             if (iframe && fieldName) {
@@ -281,7 +289,13 @@ export function mountTipTap(fieldName, wrapperEl, initialContent, onUpdate) {
                 if (iframeDoc) {
                     const target = iframeDoc.querySelector(`[data-edit="${fieldName}"]`);
                     if (target) {
-                        target.innerHTML = html;
+                        if (window.morphdom) {
+                            const wrapper = iframeDoc.createElement('div');
+                            wrapper.innerHTML = html;
+                            window.morphdom(target, wrapper, { childrenOnly: true });
+                        } else {
+                            target.innerHTML = html;
+                        }
                     }
                 }
             }
