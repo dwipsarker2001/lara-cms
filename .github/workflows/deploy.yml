@@ -8,7 +8,7 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     steps:
-      - name: Execute deployment script on VPS
+      - name: Deploy to VPS via SSH
         uses: appleboy/ssh-action@v1.2.0
         with:
           host: ${{ secrets.SSH_HOST }}
@@ -19,9 +19,7 @@ jobs:
             cd /var/www/travel.eapply.site
             git fetch origin deploy
             git reset --hard origin/deploy
-            composer install --no-dev --prefer-dist --optimize-autoloader --no-interaction
-            npm ci
-            npm run build
-            php artisan migrate --force
-            php artisan optimize
-            chmod -R 775 storage bootstrap/cache
+            docker compose exec -T app composer install --no-dev --prefer-dist --optimize-autoloader --no-interaction
+            docker compose exec -T app php artisan migrate --force
+            docker compose exec -T app php artisan optimize
+            docker compose restart app

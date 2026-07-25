@@ -705,8 +705,8 @@
     "semantic_hash": ""
   },
   "docker-compose.yml": {
-    "mtime": 1784084721.3308735,
-    "ast_hash": "805206c231caf55ca7c981c8ff78d6e3",
+    "mtime": 1784954703.6681802,
+    "ast_hash": "79d400c5a18dfc466261011c606810ba",
     "semantic_hash": ""
   },
   "docs/REBUILD.md": {
@@ -1765,8 +1765,8 @@
     "semantic_hash": ""
   },
   ".github/workflows/deploy.yml": {
-    "mtime": 1784953320.222973,
-    "ast_hash": "1c0cc8937da25a9ea438d70301cd0354",
+    "mtime": 1784954718.8974698,
+    "ast_hash": "407601b1864031def57fdd4a03ad6831",
     "semantic_hash": ""
   },
   "docs/BLOCK_CREATION_GUIDE.md": {
