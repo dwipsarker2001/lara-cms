@@ -1,6 +1,6 @@
 @php
     $d = $data;
-    $heroImage = $d['image'] ?? 'https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?auto=format&fit=crop&w=1200&q=80';
+    $heroImage = $d['featured_image'] ?? $d['image'] ?? $d['hero_image'] ?? 'https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?auto=format&fit=crop&w=1200&q=80';
     $title = $d['title'] ?? 'নেপাল ভ্রমণ: সাগরমাথার দেশে অ্যাডভেঞ্চার ও শান্তির সন্ধানে';
     $content = $d['content'] ?? '';
 

@@ -72,7 +72,31 @@
 
         $posts = $entries->map(function ($entry) {
             $eData = $entry->data ?? [];
-            $image = $eData['image'] ?? $eData['hero_image'] ?? $eData['socialImage'] ?? $eData['banner_img'] ?? 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=600&q=80';
+            $image = $eData['featured_image']
+                ?? $eData['image']
+                ?? $eData['hero_image']
+                ?? $eData['socialImage']
+                ?? $eData['banner_img']
+                ?? $eData['cover_image']
+                ?? $eData['thumbnail']
+                ?? $eData['thumb']
+                ?? $entry->meta['featured_image']
+                ?? $entry->meta['image']
+                ?? null;
+
+            if (empty($image) && ! empty($entry->sections)) {
+                foreach ($entry->sections as $sec) {
+                    $secImg = $sec['data']['featured_image']
+                        ?? $sec['data']['image']
+                        ?? $sec['data']['hero_image']
+                        ?? null;
+                    if (! empty($secImg)) {
+                        $image = $secImg;
+                        break;
+                    }
+                }
+            }
+
             $title = $eData['title'] ?? $entry->title ?? 'Untitled Post';
 
             // Resolve description/excerpt from entry fields, meta, or page sections

@@ -42,7 +42,30 @@ class BlogSidebarData
 
             return $entries->map(function (CollectionEntry $entry) {
                 $data = $entry->data ?? [];
-                $image = $data['image'] ?? $data['socialImage'] ?? $data['hero_image'] ?? 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=150&q=80';
+                $image = $data['featured_image']
+                    ?? $data['image']
+                    ?? $data['hero_image']
+                    ?? $data['socialImage']
+                    ?? $data['banner_img']
+                    ?? $data['cover_image']
+                    ?? $data['thumbnail']
+                    ?? $data['thumb']
+                    ?? $entry->meta['featured_image']
+                    ?? $entry->meta['image']
+                    ?? null;
+
+                if (empty($image) && ! empty($entry->sections)) {
+                    foreach ($entry->sections as $sec) {
+                        $secImg = $sec['data']['featured_image']
+                            ?? $sec['data']['image']
+                            ?? $sec['data']['hero_image']
+                            ?? null;
+                        if (! empty($secImg)) {
+                            $image = $secImg;
+                            break;
+                        }
+                    }
+                }
 
                 return [
                     'id' => $entry->id,
