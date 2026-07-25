@@ -4,81 +4,48 @@
   "graph": {},
   "nodes": [
     {
-      "label": "tiptap.js",
+      "label": "CheckoutForm.php",
       "file_type": "code",
-      "source_file": "resources/js/tiptap.js",
+      "source_file": "app/Blocks/common/CheckoutForm.php",
       "source_location": "L1",
       "_origin": "ast",
-      "id": "resources_js_tiptap",
-      "community": 14,
-      "community_name": "tiptap.js",
-      "norm_label": "tiptap.js"
+      "id": "app_blocks_common_checkoutform",
+      "community": 145,
+      "community_name": "WhyChooseUs.php",
+      "norm_label": "checkoutform.php"
     },
     {
-      "label": "ResizableImage",
+      "label": "CheckoutForm",
       "file_type": "code",
-      "source_file": "resources/js/tiptap.js",
-      "source_location": "L11",
+      "source_file": "app/Blocks/common/CheckoutForm.php",
+      "source_location": "L8",
       "_origin": "ast",
-      "id": "resources_js_tiptap_resizableimage",
-      "community": 14,
-      "community_name": "tiptap.js",
-      "norm_label": "resizableimage"
+      "id": "app_blocks_common_checkoutform_checkoutform",
+      "community": 145,
+      "community_name": "WhyChooseUs.php",
+      "norm_label": "checkoutform"
     },
     {
-      "label": "updateActiveButtons()",
+      "label": "Block",
       "file_type": "code",
-      "source_file": "resources/js/tiptap.js",
-      "source_location": "L38",
+      "source_file": "",
+      "source_location": "",
       "_origin": "ast",
-      "id": "resources_js_tiptap_updateactivebuttons",
-      "community": 14,
-      "community_name": "tiptap.js",
-      "norm_label": "updateactivebuttons()"
+      "id": "block",
+      "community": 145,
+      "community_name": "WhyChooseUs.php",
+      "norm_label": "block"
     },
     {
-      "label": "setupImageToolbar()",
+      "label": ".fields()",
       "file_type": "code",
-      "source_file": "resources/js/tiptap.js",
-      "source_location": "L71",
+      "source_file": "app/Blocks/common/CheckoutForm.php",
+      "source_location": "L16",
       "_origin": "ast",
-      "id": "resources_js_tiptap_setupimagetoolbar",
-      "community": 14,
-      "community_name": "tiptap.js",
-      "norm_label": "setupimagetoolbar()"
-    },
-    {
-      "label": "setupToolbarOverflow()",
-      "file_type": "code",
-      "source_file": "resources/js/tiptap.js",
-      "source_location": "L74",
-      "_origin": "ast",
-      "id": "resources_js_tiptap_setuptoolbaroverflow",
-      "community": 14,
-      "community_name": "tiptap.js",
-      "norm_label": "setuptoolbaroverflow()"
-    },
-    {
-      "label": "setupResizeHandle()",
-      "file_type": "code",
-      "source_file": "resources/js/tiptap.js",
-      "source_location": "L122",
-      "_origin": "ast",
-      "id": "resources_js_tiptap_setupresizehandle",
-      "community": 14,
-      "community_name": "tiptap.js",
-      "norm_label": "setupresizehandle()"
-    },
-    {
-      "label": "mountTipTap()",
-      "file_type": "code",
-      "source_file": "resources/js/tiptap.js",
-      "source_location": "L251",
-      "_origin": "ast",
-      "id": "resources_js_tiptap_mounttiptap",
-      "community": 14,
-      "community_name": "tiptap.js",
-      "norm_label": "mounttiptap()"
+      "id": "app_blocks_common_checkoutform_checkoutform_fields",
+      "community": 145,
+      "community_name": "WhyChooseUs.php",
+      "norm_label": ".fields()"
     },
     {
       "label": "editor.blade.php",
@@ -103,6 +70,28 @@
       "norm_label": "editor.blade.php"
     },
     {
+      "label": "checkout-form.blade.php",
+      "file_type": "code",
+      "source_file": "resources/views/blocks/checkout-form.blade.php",
+      "source_location": null,
+      "_origin": "ast",
+      "id": "resources_views_blocks_checkout_form_blade",
+      "community": 55,
+      "community_name": "artisan",
+      "norm_label": "checkout-form.blade.php"
+    },
+    {
+      "label": "destinations-grid.blade.php",
+      "file_type": "code",
+      "source_file": "resources/views/blocks/destinations-grid.blade.php",
+      "source_location": null,
+      "_origin": "ast",
+      "id": "resources_views_blocks_destinations_grid_blade",
+      "community": 341,
+      "community_name": "destinations-grid.blade.php",
+      "norm_label": "destinations-grid.blade.php"
+    },
+    {
       "label": "travel-details.blade.php",
       "file_type": "code",
       "source_file": "resources/views/blocks/travel-details.blade.php",
@@ -112,6 +101,83 @@
       "community": 51,
       "community_name": "Campaign.php",
       "norm_label": "travel-details.blade.php"
+    },
+    {
+      "label": "tiptap.js",
+      "file_type": "code",
+      "source_file": "resources/js/tiptap.js",
+      "source_location": "L1",
+      "_origin": "ast",
+      "community": 14,
+      "community_name": "tiptap.js",
+      "norm_label": "tiptap.js",
+      "id": "resources_js_tiptap"
+    },
+    {
+      "label": "ResizableImage",
+      "file_type": "code",
+      "source_file": "resources/js/tiptap.js",
+      "source_location": "L11",
+      "_origin": "ast",
+      "community": 14,
+      "community_name": "tiptap.js",
+      "norm_label": "resizableimage",
+      "id": "resources_js_tiptap_resizableimage"
+    },
+    {
+      "label": "updateActiveButtons()",
+      "file_type": "code",
+      "source_file": "resources/js/tiptap.js",
+      "source_location": "L38",
+      "_origin": "ast",
+      "community": 14,
+      "community_name": "tiptap.js",
+      "norm_label": "updateactivebuttons()",
+      "id": "resources_js_tiptap_updateactivebuttons"
+    },
+    {
+      "label": "setupImageToolbar()",
+      "file_type": "code",
+      "source_file": "resources/js/tiptap.js",
+      "source_location": "L71",
+      "_origin": "ast",
+      "community": 14,
+      "community_name": "tiptap.js",
+      "norm_label": "setupimagetoolbar()",
+      "id": "resources_js_tiptap_setupimagetoolbar"
+    },
+    {
+      "label": "setupToolbarOverflow()",
+      "file_type": "code",
+      "source_file": "resources/js/tiptap.js",
+      "source_location": "L74",
+      "_origin": "ast",
+      "community": 14,
+      "community_name": "tiptap.js",
+      "norm_label": "setuptoolbaroverflow()",
+      "id": "resources_js_tiptap_setuptoolbaroverflow"
+    },
+    {
+      "label": "setupResizeHandle()",
+      "file_type": "code",
+      "source_file": "resources/js/tiptap.js",
+      "source_location": "L122",
+      "_origin": "ast",
+      "community": 14,
+      "community_name": "tiptap.js",
+      "norm_label": "setupresizehandle()",
+      "id": "resources_js_tiptap_setupresizehandle"
+    },
+    {
+      "label": "mountTipTap()",
+      "file_type": "code",
+      "source_file": "resources/js/tiptap.js",
+      "source_location": "L251",
+      "_origin": "ast",
+      "community": 14,
+      "community_name": "tiptap.js",
+      "norm_label": "mounttiptap()",
+      "id": "resources_js_tiptap_mounttiptap"
     },
     {
       "label": "BlogDetails.php",
@@ -134,17 +200,6 @@
       "community_name": "WhyChooseUs.php",
       "norm_label": "blogdetails",
       "id": "app_blocks_common_blogdetails_blogdetails"
-    },
-    {
-      "label": "Block",
-      "file_type": "code",
-      "source_file": "",
-      "source_location": "",
-      "_origin": "ast",
-      "community": 145,
-      "community_name": "WhyChooseUs.php",
-      "norm_label": "block",
-      "id": "block"
     },
     {
       "label": ".fields()",
@@ -6184,8 +6239,8 @@
       "source_file": "app/Blocks/BlockRegistry.php",
       "source_location": "L1",
       "_origin": "ast",
-      "community": 55,
-      "community_name": "artisan",
+      "community": 23,
+      "community_name": "LatestBlog.php",
       "norm_label": "blockregistry.php",
       "id": "app_blocks_blockregistry"
     },
@@ -6690,8 +6745,8 @@
       "source_file": "app/Blocks/common/ClientTestimonials.php",
       "source_location": "L1",
       "_origin": "ast",
-      "community": 19,
-      "community_name": "ClientTestimonials.php",
+      "community": 11,
+      "community_name": "Block",
       "norm_label": "clienttestimonials.php",
       "id": "app_blocks_common_clienttestimonials"
     },
@@ -6701,8 +6756,8 @@
       "source_file": "app/Blocks/common/ClientTestimonials.php",
       "source_location": "L8",
       "_origin": "ast",
-      "community": 19,
-      "community_name": "ClientTestimonials.php",
+      "community": 11,
+      "community_name": "Block",
       "norm_label": "clienttestimonials",
       "id": "app_blocks_common_clienttestimonials_clienttestimonials"
     },
@@ -6712,8 +6767,8 @@
       "source_file": "app/Blocks/common/ClientTestimonials.php",
       "source_location": "L14",
       "_origin": "ast",
-      "community": 19,
-      "community_name": "ClientTestimonials.php",
+      "community": 11,
+      "community_name": "Block",
       "norm_label": ".fields()",
       "id": "app_blocks_common_clienttestimonials_clienttestimonials_fields"
     },
@@ -7086,8 +7141,8 @@
       "source_file": "app/Blocks/common/WhyChooseUs.php",
       "source_location": "L1",
       "_origin": "ast",
-      "community": 11,
-      "community_name": "Block",
+      "community": 19,
+      "community_name": "ClientTestimonials.php",
       "norm_label": "whychooseus.php",
       "id": "app_blocks_common_whychooseus"
     },
@@ -7097,8 +7152,8 @@
       "source_file": "app/Blocks/common/WhyChooseUs.php",
       "source_location": "L8",
       "_origin": "ast",
-      "community": 11,
-      "community_name": "Block",
+      "community": 19,
+      "community_name": "ClientTestimonials.php",
       "norm_label": "whychooseus",
       "id": "app_blocks_common_whychooseus_whychooseus"
     },
@@ -7108,8 +7163,8 @@
       "source_file": "app/Blocks/common/WhyChooseUs.php",
       "source_location": "L14",
       "_origin": "ast",
-      "community": 11,
-      "community_name": "Block",
+      "community": 19,
+      "community_name": "ClientTestimonials.php",
       "norm_label": ".fields()",
       "id": "app_blocks_common_whychooseus_whychooseus_fields"
     },
@@ -7119,8 +7174,8 @@
       "source_file": "app/Blocks/global/SiteFooter.php",
       "source_location": "L1",
       "_origin": "ast",
-      "community": 11,
-      "community_name": "Block",
+      "community": 49,
+      "community_name": "FormEntry",
       "norm_label": "sitefooter.php",
       "id": "app_blocks_global_sitefooter"
     },
@@ -7130,8 +7185,8 @@
       "source_file": "app/Blocks/global/SiteFooter.php",
       "source_location": "L8",
       "_origin": "ast",
-      "community": 11,
-      "community_name": "Block",
+      "community": 49,
+      "community_name": "FormEntry",
       "norm_label": "sitefooter",
       "id": "app_blocks_global_sitefooter_sitefooter"
     },
@@ -7141,8 +7196,8 @@
       "source_file": "app/Blocks/global/SiteFooter.php",
       "source_location": "L18",
       "_origin": "ast",
-      "community": 11,
-      "community_name": "Block",
+      "community": 49,
+      "community_name": "FormEntry",
       "norm_label": ".fields()",
       "id": "app_blocks_global_sitefooter_sitefooter_fields"
     },
@@ -7152,8 +7207,8 @@
       "source_file": "app/Blocks/global/SiteNavbar.php",
       "source_location": "L1",
       "_origin": "ast",
-      "community": 207,
-      "community_name": "SiteNavbar.php",
+      "community": 11,
+      "community_name": "Block",
       "norm_label": "sitenavbar.php",
       "id": "app_blocks_global_sitenavbar"
     },
@@ -7163,8 +7218,8 @@
       "source_file": "app/Blocks/global/SiteNavbar.php",
       "source_location": "L8",
       "_origin": "ast",
-      "community": 207,
-      "community_name": "SiteNavbar.php",
+      "community": 11,
+      "community_name": "Block",
       "norm_label": "sitenavbar",
       "id": "app_blocks_global_sitenavbar_sitenavbar"
     },
@@ -7174,8 +7229,8 @@
       "source_file": "app/Blocks/global/SiteNavbar.php",
       "source_location": "L18",
       "_origin": "ast",
-      "community": 207,
-      "community_name": "SiteNavbar.php",
+      "community": 11,
+      "community_name": "Block",
       "norm_label": ".fields()",
       "id": "app_blocks_global_sitenavbar_sitenavbar_fields"
     },
@@ -7218,8 +7273,8 @@
       "source_file": "app/Console/Commands/ScheduleCampaign.php",
       "source_location": "L1",
       "_origin": "ast",
-      "community": 254,
-      "community_name": "@codemirror/lang-json",
+      "community": 238,
+      "community_name": "Post.php",
       "norm_label": "schedulecampaign.php",
       "id": "app_console_commands_schedulecampaign"
     },
@@ -7229,8 +7284,8 @@
       "source_file": "app/Console/Commands/ScheduleCampaign.php",
       "source_location": "L14",
       "_origin": "ast",
-      "community": 254,
-      "community_name": "@codemirror/lang-json",
+      "community": 3,
+      "community_name": "Page",
       "norm_label": "schedulecampaign",
       "id": "app_console_commands_schedulecampaign_schedulecampaign"
     },
@@ -7251,8 +7306,8 @@
       "source_file": "app/Console/Commands/ScheduleCampaign.php",
       "source_location": "L20",
       "_origin": "ast",
-      "community": 254,
-      "community_name": "@codemirror/lang-json",
+      "community": 3,
+      "community_name": "Page",
       "norm_label": ".handle()",
       "id": "app_console_commands_schedulecampaign_schedulecampaign_handle"
     },
@@ -7262,8 +7317,8 @@
       "source_file": "app/Console/Commands/ScheduleCampaign.php",
       "source_location": "L41",
       "_origin": "ast",
-      "community": 254,
-      "community_name": "@codemirror/lang-json",
+      "community": 3,
+      "community_name": "Page",
       "norm_label": ".sendcampaign()",
       "id": "app_console_commands_schedulecampaign_schedulecampaign_sendcampaign"
     },
@@ -7273,8 +7328,8 @@
       "source_file": "app/Console/Commands/ScheduleCampaign.php",
       "source_location": "L141",
       "_origin": "ast",
-      "community": 254,
-      "community_name": "@codemirror/lang-json",
+      "community": 3,
+      "community_name": "Page",
       "norm_label": ".sendemail()",
       "id": "app_console_commands_schedulecampaign_schedulecampaign_sendemail"
     },
@@ -7724,8 +7779,8 @@
       "source_file": "app/Http/Controllers/Admin/CollectionEntryController.php",
       "source_location": "L1",
       "_origin": "ast",
-      "community": 55,
-      "community_name": "artisan",
+      "community": 23,
+      "community_name": "LatestBlog.php",
       "norm_label": "collectionentrycontroller.php",
       "id": "app_http_controllers_admin_collectionentrycontroller"
     },
@@ -7735,8 +7790,8 @@
       "source_file": "app/Http/Controllers/Admin/CollectionEntryController.php",
       "source_location": "L15",
       "_origin": "ast",
-      "community": 55,
-      "community_name": "artisan",
+      "community": 43,
+      "community_name": "require-dev",
       "norm_label": "collectionentrycontroller",
       "id": "app_http_controllers_admin_collectionentrycontroller_collectionentrycontroller"
     },
@@ -7746,8 +7801,8 @@
       "source_file": "app/Http/Controllers/Admin/CollectionEntryController.php",
       "source_location": "L17",
       "_origin": "ast",
-      "community": 55,
-      "community_name": "artisan",
+      "community": 43,
+      "community_name": "require-dev",
       "norm_label": ".index()",
       "id": "app_http_controllers_admin_collectionentrycontroller_collectionentrycontroller_index"
     },
@@ -7757,8 +7812,8 @@
       "source_file": "app/Http/Controllers/Admin/CollectionEntryController.php",
       "source_location": "L24",
       "_origin": "ast",
-      "community": 55,
-      "community_name": "artisan",
+      "community": 43,
+      "community_name": "require-dev",
       "norm_label": ".create()",
       "id": "app_http_controllers_admin_collectionentrycontroller_collectionentrycontroller_create"
     },
@@ -7768,8 +7823,8 @@
       "source_file": "app/Http/Controllers/Admin/CollectionEntryController.php",
       "source_location": "L32",
       "_origin": "ast",
-      "community": 55,
-      "community_name": "artisan",
+      "community": 43,
+      "community_name": "require-dev",
       "norm_label": ".store()",
       "id": "app_http_controllers_admin_collectionentrycontroller_collectionentrycontroller_store"
     },
@@ -7779,8 +7834,8 @@
       "source_file": "",
       "source_location": "",
       "_origin": "ast",
-      "community": 55,
-      "community_name": "artisan",
+      "community": 43,
+      "community_name": "require-dev",
       "norm_label": "request",
       "id": "app_http_controllers_admin_collectionentrycontroller_php_request"
     },
@@ -7790,8 +7845,8 @@
       "source_file": "app/Http/Controllers/Admin/CollectionEntryController.php",
       "source_location": "L86",
       "_origin": "ast",
-      "community": 55,
-      "community_name": "artisan",
+      "community": 43,
+      "community_name": "require-dev",
       "norm_label": ".edit()",
       "id": "app_http_controllers_admin_collectionentrycontroller_collectionentrycontroller_edit"
     },
@@ -7801,8 +7856,8 @@
       "source_file": "app/Http/Controllers/Admin/CollectionEntryController.php",
       "source_location": "L94",
       "_origin": "ast",
-      "community": 55,
-      "community_name": "artisan",
+      "community": 43,
+      "community_name": "require-dev",
       "norm_label": ".update()",
       "id": "app_http_controllers_admin_collectionentrycontroller_collectionentrycontroller_update"
     },
@@ -7812,8 +7867,8 @@
       "source_file": "app/Http/Controllers/Admin/CollectionEntryController.php",
       "source_location": "L121",
       "_origin": "ast",
-      "community": 55,
-      "community_name": "artisan",
+      "community": 43,
+      "community_name": "require-dev",
       "norm_label": ".editor()",
       "id": "app_http_controllers_admin_collectionentrycontroller_collectionentrycontroller_editor"
     },
@@ -7823,8 +7878,8 @@
       "source_file": "app/Http/Controllers/Admin/CollectionEntryController.php",
       "source_location": "L167",
       "_origin": "ast",
-      "community": 55,
-      "community_name": "artisan",
+      "community": 43,
+      "community_name": "require-dev",
       "norm_label": ".updatesections()",
       "id": "app_http_controllers_admin_collectionentrycontroller_collectionentrycontroller_updatesections"
     },
@@ -7834,8 +7889,8 @@
       "source_file": "app/Http/Controllers/Admin/CollectionEntryController.php",
       "source_location": "L202",
       "_origin": "ast",
-      "community": 55,
-      "community_name": "artisan",
+      "community": 43,
+      "community_name": "require-dev",
       "norm_label": ".destroy()",
       "id": "app_http_controllers_admin_collectionentrycontroller_collectionentrycontroller_destroy"
     },
@@ -7845,8 +7900,8 @@
       "source_file": "app/Http/Controllers/Admin/CollectionEntryController.php",
       "source_location": "L212",
       "_origin": "ast",
-      "community": 55,
-      "community_name": "artisan",
+      "community": 43,
+      "community_name": "require-dev",
       "norm_label": ".reorder()",
       "id": "app_http_controllers_admin_collectionentrycontroller_collectionentrycontroller_reorder"
     },
@@ -8406,8 +8461,8 @@
       "source_file": "app/Http/Controllers/Admin/PreviewController.php",
       "source_location": "L1",
       "_origin": "ast",
-      "community": 49,
-      "community_name": "FormEntry",
+      "community": 23,
+      "community_name": "LatestBlog.php",
       "norm_label": "previewcontroller.php",
       "id": "app_http_controllers_admin_previewcontroller"
     },
@@ -8417,8 +8472,8 @@
       "source_file": "app/Http/Controllers/Admin/PreviewController.php",
       "source_location": "L9",
       "_origin": "ast",
-      "community": 49,
-      "community_name": "FormEntry",
+      "community": 23,
+      "community_name": "LatestBlog.php",
       "norm_label": "previewcontroller",
       "id": "app_http_controllers_admin_previewcontroller_previewcontroller"
     },
@@ -8428,8 +8483,8 @@
       "source_file": "app/Http/Controllers/Admin/PreviewController.php",
       "source_location": "L11",
       "_origin": "ast",
-      "community": 49,
-      "community_name": "FormEntry",
+      "community": 23,
+      "community_name": "LatestBlog.php",
       "norm_label": ".__invoke()",
       "id": "app_http_controllers_admin_previewcontroller_previewcontroller_invoke"
     },
@@ -8439,8 +8494,8 @@
       "source_file": "",
       "source_location": "",
       "_origin": "ast",
-      "community": 49,
-      "community_name": "FormEntry",
+      "community": 23,
+      "community_name": "LatestBlog.php",
       "norm_label": "request",
       "id": "app_http_controllers_admin_previewcontroller_php_request"
     },
@@ -8747,8 +8802,8 @@
       "source_file": "app/Http/Controllers/Admin/TaxonomyController.php",
       "source_location": "L1",
       "_origin": "ast",
-      "community": 88,
-      "community_name": "CampaignController.php",
+      "community": 7,
+      "community_name": "Model",
       "norm_label": "taxonomycontroller.php",
       "id": "app_http_controllers_admin_taxonomycontroller"
     },
@@ -8758,8 +8813,8 @@
       "source_file": "app/Http/Controllers/Admin/TaxonomyController.php",
       "source_location": "L9",
       "_origin": "ast",
-      "community": 88,
-      "community_name": "CampaignController.php",
+      "community": 7,
+      "community_name": "Model",
       "norm_label": "taxonomycontroller",
       "id": "app_http_controllers_admin_taxonomycontroller_taxonomycontroller"
     },
@@ -8769,8 +8824,8 @@
       "source_file": "app/Http/Controllers/Admin/TaxonomyController.php",
       "source_location": "L11",
       "_origin": "ast",
-      "community": 88,
-      "community_name": "CampaignController.php",
+      "community": 7,
+      "community_name": "Model",
       "norm_label": ".index()",
       "id": "app_http_controllers_admin_taxonomycontroller_taxonomycontroller_index"
     },
@@ -8780,8 +8835,8 @@
       "source_file": "app/Http/Controllers/Admin/TaxonomyController.php",
       "source_location": "L18",
       "_origin": "ast",
-      "community": 88,
-      "community_name": "CampaignController.php",
+      "community": 7,
+      "community_name": "Model",
       "norm_label": ".create()",
       "id": "app_http_controllers_admin_taxonomycontroller_taxonomycontroller_create"
     },
@@ -8791,8 +8846,8 @@
       "source_file": "app/Http/Controllers/Admin/TaxonomyController.php",
       "source_location": "L23",
       "_origin": "ast",
-      "community": 88,
-      "community_name": "CampaignController.php",
+      "community": 7,
+      "community_name": "Model",
       "norm_label": ".store()",
       "id": "app_http_controllers_admin_taxonomycontroller_taxonomycontroller_store"
     },
@@ -8802,8 +8857,8 @@
       "source_file": "",
       "source_location": "",
       "_origin": "ast",
-      "community": 88,
-      "community_name": "CampaignController.php",
+      "community": 7,
+      "community_name": "Model",
       "norm_label": "request",
       "id": "app_http_controllers_admin_taxonomycontroller_php_request"
     },
@@ -8813,8 +8868,8 @@
       "source_file": "app/Http/Controllers/Admin/TaxonomyController.php",
       "source_location": "L36",
       "_origin": "ast",
-      "community": 88,
-      "community_name": "CampaignController.php",
+      "community": 7,
+      "community_name": "Model",
       "norm_label": ".edit()",
       "id": "app_http_controllers_admin_taxonomycontroller_taxonomycontroller_edit"
     },
@@ -8824,8 +8879,8 @@
       "source_file": "app/Http/Controllers/Admin/TaxonomyController.php",
       "source_location": "L41",
       "_origin": "ast",
-      "community": 88,
-      "community_name": "CampaignController.php",
+      "community": 7,
+      "community_name": "Model",
       "norm_label": ".update()",
       "id": "app_http_controllers_admin_taxonomycontroller_taxonomycontroller_update"
     },
@@ -8835,8 +8890,8 @@
       "source_file": "app/Http/Controllers/Admin/TaxonomyController.php",
       "source_location": "L54",
       "_origin": "ast",
-      "community": 88,
-      "community_name": "CampaignController.php",
+      "community": 7,
+      "community_name": "Model",
       "norm_label": ".destroy()",
       "id": "app_http_controllers_admin_taxonomycontroller_taxonomycontroller_destroy"
     },
@@ -8846,8 +8901,8 @@
       "source_file": "app/Http/Controllers/Admin/UpdateController.php",
       "source_location": "L1",
       "_origin": "ast",
-      "community": 54,
-      "community_name": "User",
+      "community": 31,
+      "community_name": "SiteFooter.php",
       "norm_label": "updatecontroller.php",
       "id": "app_http_controllers_admin_updatecontroller"
     },
@@ -8857,8 +8912,8 @@
       "source_file": "app/Http/Controllers/Admin/UpdateController.php",
       "source_location": "L14",
       "_origin": "ast",
-      "community": 54,
-      "community_name": "User",
+      "community": 31,
+      "community_name": "SiteFooter.php",
       "norm_label": "updatecontroller",
       "id": "app_http_controllers_admin_updatecontroller_updatecontroller"
     },
@@ -8868,8 +8923,8 @@
       "source_file": "app/Http/Controllers/Admin/UpdateController.php",
       "source_location": "L21",
       "_origin": "ast",
-      "community": 54,
-      "community_name": "User",
+      "community": 31,
+      "community_name": "SiteFooter.php",
       "norm_label": ".check()",
       "id": "app_http_controllers_admin_updatecontroller_updatecontroller_check"
     },
@@ -8879,8 +8934,8 @@
       "source_file": "app/Http/Controllers/Admin/UpdateController.php",
       "source_location": "L45",
       "_origin": "ast",
-      "community": 54,
-      "community_name": "User",
+      "community": 31,
+      "community_name": "SiteFooter.php",
       "norm_label": ".run()",
       "id": "app_http_controllers_admin_updatecontroller_updatecontroller_run"
     },
@@ -9099,8 +9154,8 @@
       "source_file": "app/Http/Controllers/Auth/RegisterController.php",
       "source_location": "L1",
       "_origin": "ast",
-      "community": 31,
-      "community_name": "SiteFooter.php",
+      "community": 13,
+      "community_name": "BlockRegistry",
       "norm_label": "registercontroller.php",
       "id": "app_http_controllers_auth_registercontroller"
     },
@@ -9110,8 +9165,8 @@
       "source_file": "app/Http/Controllers/Auth/RegisterController.php",
       "source_location": "L13",
       "_origin": "ast",
-      "community": 31,
-      "community_name": "SiteFooter.php",
+      "community": 13,
+      "community_name": "BlockRegistry",
       "norm_label": "registercontroller",
       "id": "app_http_controllers_auth_registercontroller_registercontroller"
     },
@@ -9121,8 +9176,8 @@
       "source_file": "app/Http/Controllers/Auth/RegisterController.php",
       "source_location": "L15",
       "_origin": "ast",
-      "community": 31,
-      "community_name": "SiteFooter.php",
+      "community": 13,
+      "community_name": "BlockRegistry",
       "norm_label": ".store()",
       "id": "app_http_controllers_auth_registercontroller_registercontroller_store"
     },
@@ -9132,8 +9187,8 @@
       "source_file": "",
       "source_location": "",
       "_origin": "ast",
-      "community": 31,
-      "community_name": "SiteFooter.php",
+      "community": 13,
+      "community_name": "BlockRegistry",
       "norm_label": "request",
       "id": "app_http_controllers_auth_registercontroller_php_request"
     },
@@ -9143,8 +9198,8 @@
       "source_file": "",
       "source_location": "",
       "_origin": "ast",
-      "community": 31,
-      "community_name": "SiteFooter.php",
+      "community": 13,
+      "community_name": "BlockRegistry",
       "norm_label": "redirectresponse",
       "id": "app_http_controllers_auth_registercontroller_php_redirectresponse"
     },
@@ -9429,8 +9484,8 @@
       "source_file": "app/Http/Controllers/Marketing/ContactController.php",
       "source_location": "L1",
       "_origin": "ast",
-      "community": 3,
-      "community_name": "Page",
+      "community": 238,
+      "community_name": "Post.php",
       "norm_label": "contactcontroller.php",
       "id": "app_http_controllers_marketing_contactcontroller"
     },
@@ -10001,8 +10056,8 @@
       "source_file": "app/Http/Controllers/Marketing/SettingController.php",
       "source_location": "L72",
       "_origin": "ast",
-      "community": 238,
-      "community_name": "Post.php",
+      "community": 95,
+      "community_name": "blog-list.blade.php",
       "norm_label": ".default()",
       "id": "app_http_controllers_marketing_settingcontroller_settingcontroller_default"
     },
@@ -10375,8 +10430,8 @@
       "source_file": "app/Http/Controllers/Marketing/VerifyController.php",
       "source_location": "L1",
       "_origin": "ast",
-      "community": 31,
-      "community_name": "SiteFooter.php",
+      "community": 8,
+      "community_name": "LoginController.php",
       "norm_label": "verifycontroller.php",
       "id": "app_http_controllers_marketing_verifycontroller"
     },
@@ -10386,8 +10441,8 @@
       "source_file": "app/Http/Controllers/Marketing/VerifyController.php",
       "source_location": "L9",
       "_origin": "ast",
-      "community": 31,
-      "community_name": "SiteFooter.php",
+      "community": 8,
+      "community_name": "LoginController.php",
       "norm_label": "verifycontroller",
       "id": "app_http_controllers_marketing_verifycontroller_verifycontroller"
     },
@@ -10397,8 +10452,8 @@
       "source_file": "app/Http/Controllers/Marketing/VerifyController.php",
       "source_location": "L12",
       "_origin": "ast",
-      "community": 31,
-      "community_name": "SiteFooter.php",
+      "community": 8,
+      "community_name": "LoginController.php",
       "norm_label": ".index()",
       "id": "app_http_controllers_marketing_verifycontroller_verifycontroller_index"
     },
@@ -10408,8 +10463,8 @@
       "source_file": "app/Http/Controllers/Marketing/VerifyController.php",
       "source_location": "L18",
       "_origin": "ast",
-      "community": 31,
-      "community_name": "SiteFooter.php",
+      "community": 8,
+      "community_name": "LoginController.php",
       "norm_label": ".upload()",
       "id": "app_http_controllers_marketing_verifycontroller_verifycontroller_upload"
     },
@@ -10419,8 +10474,8 @@
       "source_file": "",
       "source_location": "",
       "_origin": "ast",
-      "community": 31,
-      "community_name": "SiteFooter.php",
+      "community": 8,
+      "community_name": "LoginController.php",
       "norm_label": "request",
       "id": "app_http_controllers_marketing_verifycontroller_php_request"
     },
@@ -10452,8 +10507,8 @@
       "source_file": "app/Http/Controllers/Public/BlogController.php",
       "source_location": "L10",
       "_origin": "ast",
-      "community": 238,
-      "community_name": "Post.php",
+      "community": 31,
+      "community_name": "SiteFooter.php",
       "norm_label": ".show()",
       "id": "app_http_controllers_public_blogcontroller_blogcontroller_show"
     },
@@ -10463,8 +10518,8 @@
       "source_file": "app/Http/Controllers/Public/PageController.php",
       "source_location": "L1",
       "_origin": "ast",
-      "community": 145,
-      "community_name": "WhyChooseUs.php",
+      "community": 113,
+      "community_name": "PagesWidget",
       "norm_label": "pagecontroller.php",
       "id": "app_http_controllers_public_pagecontroller"
     },
@@ -10474,8 +10529,8 @@
       "source_file": "app/Http/Controllers/Public/PageController.php",
       "source_location": "L9",
       "_origin": "ast",
-      "community": 145,
-      "community_name": "WhyChooseUs.php",
+      "community": 113,
+      "community_name": "PagesWidget",
       "norm_label": "pagecontroller",
       "id": "app_http_controllers_public_pagecontroller_pagecontroller"
     },
@@ -10485,8 +10540,8 @@
       "source_file": "app/Http/Controllers/Public/PageController.php",
       "source_location": "L11",
       "_origin": "ast",
-      "community": 145,
-      "community_name": "WhyChooseUs.php",
+      "community": 113,
+      "community_name": "PagesWidget",
       "norm_label": ".home()",
       "id": "app_http_controllers_public_pagecontroller_pagecontroller_home"
     },
@@ -10496,8 +10551,8 @@
       "source_file": "app/Http/Controllers/Public/PageController.php",
       "source_location": "L22",
       "_origin": "ast",
-      "community": 145,
-      "community_name": "WhyChooseUs.php",
+      "community": 113,
+      "community_name": "PagesWidget",
       "norm_label": ".show()",
       "id": "app_http_controllers_public_pagecontroller_pagecontroller_show"
     },
@@ -10507,8 +10562,8 @@
       "source_file": "app/Http/Controllers/Public/PageController.php",
       "source_location": "L29",
       "_origin": "ast",
-      "community": 145,
-      "community_name": "WhyChooseUs.php",
+      "community": 113,
+      "community_name": "PagesWidget",
       "norm_label": ".showcollectionentry()",
       "id": "app_http_controllers_public_pagecontroller_pagecontroller_showcollectionentry"
     },
@@ -11035,8 +11090,8 @@
       "source_file": "",
       "source_location": "",
       "_origin": "ast",
-      "community": 28,
-      "community_name": "TeamCards.php",
+      "community": 254,
+      "community_name": "@codemirror/lang-json",
       "norm_label": "authenticatable",
       "id": "authenticatable"
     },
@@ -11145,8 +11200,8 @@
       "source_file": "app/Models/Collection.php",
       "source_location": "L1",
       "_origin": "ast",
-      "community": 145,
-      "community_name": "WhyChooseUs.php",
+      "community": 45,
+      "community_name": "Collection.php",
       "norm_label": "collection.php",
       "id": "app_models_collection"
     },
@@ -11167,8 +11222,8 @@
       "source_file": "app/Models/Collection.php",
       "source_location": "L17",
       "_origin": "ast",
-      "community": 145,
-      "community_name": "WhyChooseUs.php",
+      "community": 45,
+      "community_name": "Collection.php",
       "norm_label": ".entries()",
       "id": "app_models_collection_collection_entries"
     },
@@ -11178,8 +11233,8 @@
       "source_file": "",
       "source_location": "",
       "_origin": "ast",
-      "community": 145,
-      "community_name": "WhyChooseUs.php",
+      "community": 45,
+      "community_name": "Collection.php",
       "norm_label": "hasmany",
       "id": "app_models_collection_php_hasmany"
     },
@@ -11222,8 +11277,8 @@
       "source_file": "app/Models/CollectionEntry.php",
       "source_location": "L8",
       "_origin": "ast",
-      "community": 55,
-      "community_name": "artisan",
+      "community": 113,
+      "community_name": "PagesWidget",
       "norm_label": "collectionentry",
       "id": "app_models_collectionentry_collectionentry"
     },
@@ -11255,8 +11310,8 @@
       "source_file": "app/Models/CollectionEntry.php",
       "source_location": "L17",
       "_origin": "ast",
-      "community": 55,
-      "community_name": "artisan",
+      "community": 113,
+      "community_name": "PagesWidget",
       "norm_label": ".gettitleattribute()",
       "id": "app_models_collectionentry_collectionentry_gettitleattribute"
     },
@@ -11266,8 +11321,8 @@
       "source_file": "app/Models/CollectionEntry.php",
       "source_location": "L29",
       "_origin": "ast",
-      "community": 55,
-      "community_name": "artisan",
+      "community": 113,
+      "community_name": "PagesWidget",
       "norm_label": ".route()",
       "id": "app_models_collectionentry_collectionentry_route"
     },
@@ -11277,8 +11332,8 @@
       "source_file": "app/Models/CollectionEntry.php",
       "source_location": "L43",
       "_origin": "ast",
-      "community": 55,
-      "community_name": "artisan",
+      "community": 113,
+      "community_name": "PagesWidget",
       "norm_label": ".casts()",
       "id": "app_models_collectionentry_collectionentry_casts"
     },
@@ -11409,8 +11464,8 @@
       "source_file": "app/Models/FormEntry.php",
       "source_location": "L1",
       "_origin": "ast",
-      "community": 203,
-      "community_name": "FormEntry",
+      "community": 137,
+      "community_name": "View",
       "norm_label": "formentry.php",
       "id": "app_models_formentry"
     },
@@ -11420,8 +11475,8 @@
       "source_file": "app/Models/FormEntry.php",
       "source_location": "L10",
       "_origin": "ast",
-      "community": 203,
-      "community_name": "FormEntry",
+      "community": 137,
+      "community_name": "View",
       "norm_label": "formentry",
       "id": "app_models_formentry_formentry"
     },
@@ -11431,8 +11486,8 @@
       "source_file": "app/Models/FormEntry.php",
       "source_location": "L17",
       "_origin": "ast",
-      "community": 203,
-      "community_name": "FormEntry",
+      "community": 137,
+      "community_name": "View",
       "norm_label": ".casts()",
       "id": "app_models_formentry_formentry_casts"
     },
@@ -11442,8 +11497,8 @@
       "source_file": "app/Models/FormEntry.php",
       "source_location": "L22",
       "_origin": "ast",
-      "community": 203,
-      "community_name": "FormEntry",
+      "community": 137,
+      "community_name": "View",
       "norm_label": ".form()",
       "id": "app_models_formentry_formentry_form"
     },
@@ -11453,8 +11508,8 @@
       "source_file": "",
       "source_location": "",
       "_origin": "ast",
-      "community": 203,
-      "community_name": "FormEntry",
+      "community": 137,
+      "community_name": "View",
       "norm_label": "belongsto",
       "id": "app_models_formentry_php_belongsto"
     },
@@ -11640,8 +11695,8 @@
       "source_file": "app/Models/Marketing/DefaultSetting.php",
       "source_location": "L1",
       "_origin": "ast",
-      "community": 238,
-      "community_name": "Post.php",
+      "community": 95,
+      "community_name": "blog-list.blade.php",
       "norm_label": "defaultsetting.php",
       "id": "app_models_marketing_defaultsetting"
     },
@@ -11651,8 +11706,8 @@
       "source_file": "app/Models/Marketing/DefaultSetting.php",
       "source_location": "L8",
       "_origin": "ast",
-      "community": 238,
-      "community_name": "Post.php",
+      "community": 95,
+      "community_name": "blog-list.blade.php",
       "norm_label": "defaultsetting",
       "id": "app_models_marketing_defaultsetting_defaultsetting"
     },
@@ -11893,8 +11948,8 @@
       "source_file": "app/Models/Page.php",
       "source_location": "L1",
       "_origin": "ast",
-      "community": 54,
-      "community_name": "User",
+      "community": 238,
+      "community_name": "Post.php",
       "norm_label": "page.php",
       "id": "app_models_page"
     },
@@ -11904,8 +11959,8 @@
       "source_file": "app/Models/Page.php",
       "source_location": "L12",
       "_origin": "ast",
-      "community": 54,
-      "community_name": "User",
+      "community": 238,
+      "community_name": "Post.php",
       "norm_label": "page",
       "id": "app_models_page_page"
     },
@@ -11915,8 +11970,8 @@
       "source_file": "app/Models/Page.php",
       "source_location": "L22",
       "_origin": "ast",
-      "community": 54,
-      "community_name": "User",
+      "community": 238,
+      "community_name": "Post.php",
       "norm_label": ".collectionentry()",
       "id": "app_models_page_page_collectionentry"
     },
@@ -11926,8 +11981,8 @@
       "source_file": "app/Models/Page.php",
       "source_location": "L28",
       "_origin": "ast",
-      "community": 54,
-      "community_name": "User",
+      "community": 238,
+      "community_name": "Post.php",
       "norm_label": ".route()",
       "id": "app_models_page_page_route"
     },
@@ -11970,8 +12025,8 @@
       "source_file": "app/Models/Post.php",
       "source_location": "L10",
       "_origin": "ast",
-      "community": 238,
-      "community_name": "Post.php",
+      "community": 31,
+      "community_name": "SiteFooter.php",
       "norm_label": "post",
       "id": "app_models_post_post"
     },
@@ -12190,8 +12245,8 @@
       "source_file": "app/Models/Taxonomy.php",
       "source_location": "L7",
       "_origin": "ast",
-      "community": 88,
-      "community_name": "CampaignController.php",
+      "community": 7,
+      "community_name": "Model",
       "norm_label": "taxonomy",
       "id": "app_models_taxonomy_taxonomy"
     },
@@ -12443,8 +12498,8 @@
       "source_file": "app/Models/WidgetLayout.php",
       "source_location": "L1",
       "_origin": "ast",
-      "community": 203,
-      "community_name": "FormEntry",
+      "community": 54,
+      "community_name": "User",
       "norm_label": "widgetlayout.php",
       "id": "app_models_widgetlayout"
     },
@@ -12454,8 +12509,8 @@
       "source_file": "app/Models/WidgetLayout.php",
       "source_location": "L7",
       "_origin": "ast",
-      "community": 203,
-      "community_name": "FormEntry",
+      "community": 54,
+      "community_name": "User",
       "norm_label": "widgetlayout",
       "id": "app_models_widgetlayout_widgetlayout"
     },
@@ -12564,8 +12619,8 @@
       "source_file": "app/Support/BlockPreview.php",
       "source_location": "L1",
       "_origin": "ast",
-      "community": 49,
-      "community_name": "FormEntry",
+      "community": 23,
+      "community_name": "LatestBlog.php",
       "norm_label": "blockpreview.php",
       "id": "app_support_blockpreview"
     },
@@ -12575,8 +12630,8 @@
       "source_file": "app/Support/BlockPreview.php",
       "source_location": "L7",
       "_origin": "ast",
-      "community": 49,
-      "community_name": "FormEntry",
+      "community": 23,
+      "community_name": "LatestBlog.php",
       "norm_label": "blockpreview",
       "id": "app_support_blockpreview_blockpreview"
     },
@@ -12586,8 +12641,8 @@
       "source_file": "app/Support/BlockPreview.php",
       "source_location": "L9",
       "_origin": "ast",
-      "community": 49,
-      "community_name": "FormEntry",
+      "community": 23,
+      "community_name": "LatestBlog.php",
       "norm_label": ".render()",
       "id": "app_support_blockpreview_blockpreview_render"
     },
@@ -12828,8 +12883,8 @@
       "source_file": "app/Support/Sections.php",
       "source_location": "L1",
       "_origin": "ast",
-      "community": 55,
-      "community_name": "artisan",
+      "community": 23,
+      "community_name": "LatestBlog.php",
       "norm_label": "sections.php",
       "id": "app_support_sections"
     },
@@ -12993,8 +13048,8 @@
       "source_file": "app/Widgets/FormEntriesTableWidget.php",
       "source_location": "L1",
       "_origin": "ast",
-      "community": 7,
-      "community_name": "Model",
+      "community": 137,
+      "community_name": "View",
       "norm_label": "formentriestablewidget.php",
       "id": "app_widgets_formentriestablewidget"
     },
@@ -13004,8 +13059,8 @@
       "source_file": "app/Widgets/FormEntriesTableWidget.php",
       "source_location": "L8",
       "_origin": "ast",
-      "community": 7,
-      "community_name": "Model",
+      "community": 137,
+      "community_name": "View",
       "norm_label": "formentriestablewidget",
       "id": "app_widgets_formentriestablewidget_formentriestablewidget"
     },
@@ -13015,8 +13070,8 @@
       "source_file": "app/Widgets/FormEntriesTableWidget.php",
       "source_location": "L10",
       "_origin": "ast",
-      "community": 7,
-      "community_name": "Model",
+      "community": 137,
+      "community_name": "View",
       "norm_label": ".__construct()",
       "id": "app_widgets_formentriestablewidget_formentriestablewidget_construct"
     },
@@ -13026,8 +13081,8 @@
       "source_file": "app/Widgets/FormEntriesTableWidget.php",
       "source_location": "L14",
       "_origin": "ast",
-      "community": 7,
-      "community_name": "Model",
+      "community": 137,
+      "community_name": "View",
       "norm_label": ".type()",
       "id": "app_widgets_formentriestablewidget_formentriestablewidget_type"
     },
@@ -13037,8 +13092,8 @@
       "source_file": "app/Widgets/FormEntriesTableWidget.php",
       "source_location": "L19",
       "_origin": "ast",
-      "community": 7,
-      "community_name": "Model",
+      "community": 137,
+      "community_name": "View",
       "norm_label": ".zone()",
       "id": "app_widgets_formentriestablewidget_formentriestablewidget_zone"
     },
@@ -13048,8 +13103,8 @@
       "source_file": "app/Widgets/FormEntriesTableWidget.php",
       "source_location": "L24",
       "_origin": "ast",
-      "community": 7,
-      "community_name": "Model",
+      "community": 137,
+      "community_name": "View",
       "norm_label": ".make()",
       "id": "app_widgets_formentriestablewidget_formentriestablewidget_make"
     },
@@ -13059,8 +13114,8 @@
       "source_file": "",
       "source_location": "",
       "_origin": "ast",
-      "community": 7,
-      "community_name": "Model",
+      "community": 137,
+      "community_name": "View",
       "norm_label": "static",
       "id": "app_widgets_formentriestablewidget_php_static"
     },
@@ -13070,8 +13125,8 @@
       "source_file": "app/Widgets/FormEntriesTableWidget.php",
       "source_location": "L31",
       "_origin": "ast",
-      "community": 7,
-      "community_name": "Model",
+      "community": 137,
+      "community_name": "View",
       "norm_label": ".label()",
       "id": "app_widgets_formentriestablewidget_formentriestablewidget_label"
     },
@@ -13081,8 +13136,8 @@
       "source_file": "app/Widgets/FormEntriesTableWidget.php",
       "source_location": "L36",
       "_origin": "ast",
-      "community": 7,
-      "community_name": "Model",
+      "community": 137,
+      "community_name": "View",
       "norm_label": ".render()",
       "id": "app_widgets_formentriestablewidget_formentriestablewidget_render"
     },
@@ -13092,8 +13147,8 @@
       "source_file": "app/Widgets/FormEntriesTableWidget.php",
       "source_location": "L67",
       "_origin": "ast",
-      "community": 7,
-      "community_name": "Model",
+      "community": 137,
+      "community_name": "View",
       "norm_label": ".resolveform()",
       "id": "app_widgets_formentriestablewidget_formentriestablewidget_resolveform"
     },
@@ -13103,8 +13158,8 @@
       "source_file": "",
       "source_location": "",
       "_origin": "ast",
-      "community": 7,
-      "community_name": "Model",
+      "community": 137,
+      "community_name": "View",
       "norm_label": "form",
       "id": "app_widgets_formentriestablewidget_php_form"
     },
@@ -13675,8 +13730,8 @@
       "source_file": "artisan",
       "source_location": "L1",
       "_origin": "ast",
-      "community": 254,
-      "community_name": "@codemirror/lang-json",
+      "community": 238,
+      "community_name": "Post.php",
       "norm_label": "artisan",
       "id": "artisan"
     },
@@ -14610,8 +14665,8 @@
       "source_file": "database/factories/AdminFactory.php",
       "source_location": "L1",
       "_origin": "ast",
-      "community": 28,
-      "community_name": "TeamCards.php",
+      "community": 104,
+      "community_name": "config",
       "norm_label": "adminfactory.php",
       "id": "database_factories_adminfactory"
     },
@@ -14709,8 +14764,8 @@
       "source_file": "database/factories/FormEntryFactory.php",
       "source_location": "L1",
       "_origin": "ast",
-      "community": 203,
-      "community_name": "FormEntry",
+      "community": 137,
+      "community_name": "View",
       "norm_label": "formentryfactory.php",
       "id": "database_factories_formentryfactory"
     },
@@ -14720,8 +14775,8 @@
       "source_file": "database/factories/FormEntryFactory.php",
       "source_location": "L12",
       "_origin": "ast",
-      "community": 32,
-      "community_name": "SiteNavbar.php",
+      "community": 137,
+      "community_name": "View",
       "norm_label": "formentryfactory",
       "id": "database_factories_formentryfactory_formentryfactory"
     },
@@ -14731,8 +14786,8 @@
       "source_file": "database/factories/FormEntryFactory.php",
       "source_location": "L16",
       "_origin": "ast",
-      "community": 32,
-      "community_name": "SiteNavbar.php",
+      "community": 137,
+      "community_name": "View",
       "norm_label": ".definition()",
       "id": "database_factories_formentryfactory_formentryfactory_definition"
     },
@@ -18353,17 +18408,6 @@
       "id": "resources_views_blocks_contact_blade"
     },
     {
-      "label": "destinations-grid.blade.php",
-      "file_type": "code",
-      "source_file": "resources/views/blocks/destinations-grid.blade.php",
-      "source_location": null,
-      "_origin": "ast",
-      "community": 341,
-      "community_name": "destinations-grid.blade.php",
-      "norm_label": "destinations-grid.blade.php",
-      "id": "resources_views_blocks_destinations_grid_blade"
-    },
-    {
       "label": "feature-image-cards.blade.php",
       "file_type": "code",
       "source_file": "resources/views/blocks/feature-image-cards.blade.php",
@@ -18974,8 +19018,8 @@
       "source_file": "routes/console.php",
       "source_location": "L1",
       "_origin": "ast",
-      "community": 254,
-      "community_name": "@codemirror/lang-json",
+      "community": 238,
+      "community_name": "Post.php",
       "norm_label": "console.php",
       "id": "routes_console"
     },
@@ -18985,8 +19029,8 @@
       "source_file": "routes/marketing/marketing.php",
       "source_location": "L1",
       "_origin": "ast",
-      "community": 31,
-      "community_name": "SiteFooter.php",
+      "community": 24,
+      "community_name": "PackageList.php",
       "norm_label": "marketing.php",
       "id": "routes_marketing_marketing"
     },
@@ -19084,8 +19128,8 @@
       "source_file": "tests/Feature/CommandSearchTest.php",
       "source_location": "L1",
       "_origin": "ast",
-      "community": 28,
-      "community_name": "TeamCards.php",
+      "community": 7,
+      "community_name": "Model",
       "norm_label": "commandsearchtest.php",
       "id": "tests_feature_commandsearchtest"
     },
@@ -19139,8 +19183,8 @@
       "source_file": "tests/Feature/FormEntriesTableWidgetTest.php",
       "source_location": "L1",
       "_origin": "ast",
-      "community": 203,
-      "community_name": "FormEntry",
+      "community": 137,
+      "community_name": "View",
       "norm_label": "formentriestablewidgettest.php",
       "id": "tests_feature_formentriestablewidgettest"
     },
@@ -19392,8 +19436,8 @@
       "source_file": ".agents/skills/laravel-best-practices/SKILL.md",
       "source_location": "L1",
       "_origin": "ast",
-      "community": 98,
-      "community_name": "contact.blade.php",
+      "community": 184,
+      "community_name": "Mail Best Practices",
       "norm_label": "skill.md",
       "id": "agents_skills_laravel_best_practices_skill"
     },
@@ -19403,8 +19447,8 @@
       "source_file": ".agents/skills/laravel-best-practices/SKILL.md",
       "source_location": "L9",
       "_origin": "ast",
-      "community": 98,
-      "community_name": "contact.blade.php",
+      "community": 184,
+      "community_name": "Mail Best Practices",
       "norm_label": "laravel best practices",
       "id": "agents_skills_laravel_best_practices_skill_laravel_best_practices"
     },
@@ -19414,8 +19458,8 @@
       "source_file": ".agents/skills/laravel-best-practices/SKILL.md",
       "source_location": "L13",
       "_origin": "ast",
-      "community": 98,
-      "community_name": "contact.blade.php",
+      "community": 184,
+      "community_name": "Mail Best Practices",
       "norm_label": "consistency first",
       "id": "agents_skills_laravel_best_practices_skill_consistency_first"
     },
@@ -19425,8 +19469,8 @@
       "source_file": ".agents/skills/laravel-best-practices/SKILL.md",
       "source_location": "L19",
       "_origin": "ast",
-      "community": 98,
-      "community_name": "contact.blade.php",
+      "community": 184,
+      "community_name": "Mail Best Practices",
       "norm_label": "how to apply",
       "id": "agents_skills_laravel_best_practices_skill_how_to_apply"
     },
@@ -19436,8 +19480,8 @@
       "source_file": ".agents/skills/laravel-best-practices/SKILL.md",
       "source_location": "L28",
       "_origin": "ast",
-      "community": 98,
-      "community_name": "contact.blade.php",
+      "community": 184,
+      "community_name": "Mail Best Practices",
       "norm_label": "rule index",
       "id": "agents_skills_laravel_best_practices_skill_rule_index"
     },
@@ -19447,8 +19491,8 @@
       "source_file": ".agents/skills/laravel-best-practices/SKILL.md",
       "source_location": "L55",
       "_origin": "ast",
-      "community": 98,
-      "community_name": "contact.blade.php",
+      "community": 184,
+      "community_name": "Mail Best Practices",
       "norm_label": "decision rules",
       "id": "agents_skills_laravel_best_practices_skill_decision_rules"
     },
@@ -19568,8 +19612,8 @@
       "source_file": ".agents/skills/laravel-best-practices/rules/architecture.md",
       "source_location": "L1",
       "_origin": "ast",
-      "community": 151,
-      "community_name": "Architecture Best Practices",
+      "community": 184,
+      "community_name": "Mail Best Practices",
       "norm_label": "architecture.md",
       "id": "agents_skills_laravel_best_practices_rules_architecture"
     },
@@ -20976,8 +21020,8 @@
       "source_file": ".agents/skills/laravel-best-practices/rules/security.md",
       "source_location": "L1",
       "_origin": "ast",
-      "community": 98,
-      "community_name": "contact.blade.php",
+      "community": 153,
+      "community_name": "Security Best Practices",
       "norm_label": "security.md",
       "id": "agents_skills_laravel_best_practices_rules_security"
     },
@@ -24515,6 +24559,86 @@
   ],
   "links": [
     {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "app/Blocks/common/CheckoutForm.php",
+      "source_location": "L8",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "app_blocks_common_checkoutform",
+      "target": "app_blocks_common_checkoutform_checkoutform",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "app/Blocks/common/CheckoutForm.php",
+      "source_location": "L5",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "app_blocks_common_checkoutform",
+      "target": "block",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "app/Blocks/common/CheckoutForm.php",
+      "source_location": "L6",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "app_blocks_common_checkoutform",
+      "target": "app_blocks_field",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "app/Blocks/common/CheckoutForm.php",
+      "source_location": "L16",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "app_blocks_common_checkoutform_checkoutform",
+      "target": "app_blocks_common_checkoutform_checkoutform_fields",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "inherits",
+      "confidence": "EXTRACTED",
+      "source_file": "app/Blocks/common/CheckoutForm.php",
+      "source_location": "L8",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "app_blocks_common_checkoutform_checkoutform",
+      "target": "block",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "app/Blocks/common/BlogDetails.php",
+      "source_location": "L5",
+      "weight": 1.0,
+      "_origin": "ast",
+      "confidence_score": 1.0,
+      "source": "app_blocks_common_blogdetails",
+      "target": "block"
+    },
+    {
+      "relation": "inherits",
+      "confidence": "EXTRACTED",
+      "source_file": "app/Blocks/common/BlogDetails.php",
+      "source_location": "L10",
+      "weight": 1.0,
+      "_origin": "ast",
+      "confidence_score": 1.0,
+      "source": "app_blocks_common_blogdetails_blogdetails",
+      "target": "block"
+    },
+    {
       "relation": "imports_from",
       "context": "import",
       "confidence": "EXTRACTED",
@@ -24533,9 +24657,9 @@
       "source_location": "L251",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "resources_js_tiptap",
-      "target": "resources_js_tiptap_mounttiptap",
-      "confidence_score": 1.0
+      "target": "resources_js_tiptap_mounttiptap"
     },
     {
       "relation": "contains",
@@ -24544,9 +24668,9 @@
       "source_location": "L11",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "resources_js_tiptap",
-      "target": "resources_js_tiptap_resizableimage",
-      "confidence_score": 1.0
+      "target": "resources_js_tiptap_resizableimage"
     },
     {
       "relation": "contains",
@@ -24555,9 +24679,9 @@
       "source_location": "L71",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "resources_js_tiptap",
-      "target": "resources_js_tiptap_setupimagetoolbar",
-      "confidence_score": 1.0
+      "target": "resources_js_tiptap_setupimagetoolbar"
     },
     {
       "relation": "contains",
@@ -24566,9 +24690,9 @@
       "source_location": "L122",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "resources_js_tiptap",
-      "target": "resources_js_tiptap_setupresizehandle",
-      "confidence_score": 1.0
+      "target": "resources_js_tiptap_setupresizehandle"
     },
     {
       "relation": "contains",
@@ -24577,9 +24701,9 @@
       "source_location": "L74",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "resources_js_tiptap",
-      "target": "resources_js_tiptap_setuptoolbaroverflow",
-      "confidence_score": 1.0
+      "target": "resources_js_tiptap_setuptoolbaroverflow"
     },
     {
       "relation": "contains",
@@ -24588,9 +24712,9 @@
       "source_location": "L38",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "resources_js_tiptap",
-      "target": "resources_js_tiptap_updateactivebuttons",
-      "confidence_score": 1.0
+      "target": "resources_js_tiptap_updateactivebuttons"
     },
     {
       "relation": "references",
@@ -24612,9 +24736,9 @@
       "source_location": "L279",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "resources_js_tiptap_mounttiptap",
-      "target": "resources_js_tiptap_updateactivebuttons",
-      "confidence_score": 1.0
+      "target": "resources_js_tiptap_updateactivebuttons"
     },
     {
       "relation": "calls",
@@ -24624,9 +24748,9 @@
       "source_location": "L298",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "resources_js_tiptap_mounttiptap",
-      "target": "resources_js_tiptap_setupimagetoolbar",
-      "confidence_score": 1.0
+      "target": "resources_js_tiptap_setupimagetoolbar"
     },
     {
       "relation": "calls",
@@ -24636,9 +24760,9 @@
       "source_location": "L300",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "resources_js_tiptap_mounttiptap",
-      "target": "resources_js_tiptap_setuptoolbaroverflow",
-      "confidence_score": 1.0
+      "target": "resources_js_tiptap_setuptoolbaroverflow"
     },
     {
       "relation": "calls",
@@ -24648,9 +24772,9 @@
       "source_location": "L299",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "resources_js_tiptap_mounttiptap",
-      "target": "resources_js_tiptap_setupresizehandle",
-      "confidence_score": 1.0
+      "target": "resources_js_tiptap_setupresizehandle"
     },
     {
       "relation": "imports",
@@ -24703,18 +24827,6 @@
       "relation": "imports",
       "context": "import",
       "confidence": "EXTRACTED",
-      "source_file": "app/Blocks/common/BlogDetails.php",
-      "source_location": "L5",
-      "weight": 1.0,
-      "_origin": "ast",
-      "confidence_score": 1.0,
-      "source": "app_blocks_common_blogdetails",
-      "target": "block"
-    },
-    {
-      "relation": "imports",
-      "context": "import",
-      "confidence": "EXTRACTED",
       "source_file": "tests/Unit/BlogDetailsBlockTest.php",
       "source_location": "L4",
       "weight": 1.0,
@@ -24744,17 +24856,6 @@
       "confidence_score": 1.0,
       "source": "app_blocks_common_blogdetails_blogdetails",
       "target": "app_blocks_common_blogdetails_blogdetails_fields"
-    },
-    {
-      "relation": "inherits",
-      "confidence": "EXTRACTED",
-      "source_file": "app/Blocks/common/BlogDetails.php",
-      "source_location": "L10",
-      "weight": 1.0,
-      "_origin": "ast",
-      "confidence_score": 1.0,
-      "source": "app_blocks_common_blogdetails_blogdetails",
-      "target": "block"
     },
     {
       "relation": "contains",
@@ -57050,5 +57151,5 @@
     }
   ],
   "hyperedges": [],
-  "built_at_commit": "9ad83a880981c1ba3e1169a3c9b4b7023bf3df90"
+  "built_at_commit": "1366e41cefd290c08e8862749455b428b9386987"
 }

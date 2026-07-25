@@ -31,42 +31,34 @@
 /* Preview: no visual indicator on editable fields by default */
 .preview-shell [data-edit],
 .preview-shell [data-list],
-.preview-shell [data-section-index],
-[data-edit],
-[data-list],
-[data-section-index] {
+.preview-shell [data-section-index] {
     cursor: pointer;
 }
 
 /* Preview: dashed blue border on hover */
-.preview-shell [data-edit]:hover,
-[data-edit]:hover {
+.preview-shell [data-edit]:hover {
     outline: 1px dashed #3b82f6 !important;
     position: relative;
     z-index: 50;
 }
 
 /* Only text elements get blue background; images get border only */
-.preview-shell [data-edit]:not(img):not([data-edit-button]):hover,
-[data-edit]:not(img):not([data-edit-button]):hover {
+.preview-shell [data-edit]:not(img):not([data-edit-button]):hover {
     background-color: rgba(59, 130, 246, 0.07) !important;
 }
 
-.preview-shell [data-section-index]:hover,
-[data-section-index]:hover {
+.preview-shell [data-section-index]:hover {
     outline: 1px dashed #3b82f6 !important;
     border-radius: 4px;
 }
 
 /* Preview: highlight list containers on hover */
-.preview-shell [data-list]:hover,
-[data-list]:hover {
+.preview-shell [data-list]:hover {
     outline: 1px dashed #3b82f6 !important;
 }
 
 /* Preview: full package block hover */
-.preview-shell [data-package-block]:hover,
-[data-package-block]:hover {
+.preview-shell [data-package-block]:hover {
     outline: 1px dashed #3b82f6 !important;
 }
 

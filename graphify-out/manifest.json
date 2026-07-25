@@ -415,8 +415,8 @@
     "semantic_hash": "80dbdeb5b229eb6d3fa430b80e75c869"
   },
   "resources/views/admin/pages/editor.blade.php": {
-    "mtime": 1784982102.1447961,
-    "ast_hash": "2f6d8deb9adf4a6993429bc943164cdf",
+    "mtime": 1784984041.6680691,
+    "ast_hash": "6d15b1ae9b99d1bf08118f0f2024a7aa",
     "semantic_hash": ""
   },
   "resources/views/admin/pages/index.blade.php": {
@@ -995,8 +995,8 @@
     "semantic_hash": ""
   },
   "resources/views/admin/collections/entries/editor.blade.php": {
-    "mtime": 1784982102.1467779,
-    "ast_hash": "80890f3d58f66f3ab843834e739fef30",
+    "mtime": 1784984046.3025067,
+    "ast_hash": "28547f612c5577750a3412d0639d713c",
     "semantic_hash": ""
   },
   "resources/views/admin/collections/entries/index.blade.php": {
@@ -1945,8 +1945,8 @@
     "semantic_hash": ""
   },
   "resources/views/blocks/destinations-grid.blade.php": {
-    "mtime": 1784683878.6917458,
-    "ast_hash": "85a12b91b7be84fcb85638a5c2cf5663",
+    "mtime": 1784983675.1434727,
+    "ast_hash": "d97115bb47acc2f9e45a9f6f5ddb8597",
     "semantic_hash": ""
   },
   "resources/views/blocks/hero-banner.blade.php": {
@@ -2005,8 +2005,8 @@
     "semantic_hash": ""
   },
   "resources/views/blocks/travel-details.blade.php": {
-    "mtime": 1784982102.1477163,
-    "ast_hash": "0c34928516d876b09395445d39164a57",
+    "mtime": 1784984035.0204418,
+    "ast_hash": "f0c7bb09571eb0b4a016a84aa821790a",
     "semantic_hash": ""
   },
   "tests/Unit/BlockSourceBindingTest.php": {
@@ -3152,6 +3152,16 @@
   ".agents/skills/superpowers/assets/superpowers-small.svg": {
     "mtime": 1784970797.6110063,
     "ast_hash": "8c39dc35e79dce44358f7602116c33d5",
+    "semantic_hash": ""
+  },
+  "app/Blocks/common/CheckoutForm.php": {
+    "mtime": 1784985762.6895618,
+    "ast_hash": "ae78e82cd3b56273c7c82b4cdc9494f0",
+    "semantic_hash": ""
+  },
+  "resources/views/blocks/checkout-form.blade.php": {
+    "mtime": 1784986963.893618,
+    "ast_hash": "074f0c0d5660ba05129151b0bfe30321",
     "semantic_hash": ""
   }
 }
