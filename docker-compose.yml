@@ -38,11 +38,10 @@ services:
     container_name: lara-cms-phpmyadmin
     restart: unless-stopped
     ports:
-      - "8080:80"
+      - "127.0.0.1:8080:80"
     environment:
       PMA_HOST: mysql
-      PMA_USER: root
-      PMA_PASSWORD: ${DB_PASSWORD:-secret}
+      PMA_ABSOLUTE_URI: http://travel.eapply.site/phpmyadmin/
       UPLOAD_LIMIT: 64M
     depends_on:
       mysql:
