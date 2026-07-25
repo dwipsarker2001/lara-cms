@@ -21,10 +21,9 @@ class CheckoutForm extends Block
             Field::string('productName', 'Package Name', default: 'Gourmet Coffee Beans'),
             Field::text('productDesc', 'Package Description', default: 'Premium quality, ethically sourced.'),
             Field::image('productImage', 'Package Image', default: 'https://images.unsplash.com/photo-1559056199-641a0ac8b55e?q=80&w=300&auto=format&fit=crop'),
-            Field::string('subtotal', 'Subtotal Amount', default: '$99.00'),
-            Field::string('shipping', 'Service Fee', default: '$5.00'),
-            Field::string('tax', 'Tax Amount', default: '$8.92'),
-            Field::string('total', 'Total Amount', default: '$112.92'),
+            Field::number('adultPrice', 'Adult Price ($)', default: 99.00),
+            Field::number('childPrice', 'Child Price ($)', default: 49.50),
+            Field::number('extraService', 'Extra Service ($)', default: 0.00),
             Field::string('buttonText', 'Button Text', default: 'Confirm Booking'),
         ];
     }

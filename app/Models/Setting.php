@@ -40,6 +40,29 @@ class Setting extends Model
     {
         $dbEmail = static::first()?->sendgrid_from_email;
 
-        return ! empty($dbEmail) ? $dbEmail : env('MAIL_FROM_ADDRESS');
+        return ! empty($dbEmail) ? $dbEmail : env('SENDGRID_FROM_EMAIL');
+    }
+
+    public static function getCurrencySymbol(): string
+    {
+        $code = static::first()?->currency ?? 'USD';
+
+        return match (strtoupper($code)) {
+            'EUR' => '€',
+            'GBP' => '£',
+            'BDT' => '৳',
+            'INR' => '₹',
+            'CAD' => 'C$',
+            'AUD' => 'A$',
+            'JPY', 'CNY' => '¥',
+            'SAR' => '﷼',
+            'AED' => 'د.إ',
+            default => '$',
+        };
+    }
+
+    public static function getCurrencyCode(): string
+    {
+        return static::first()?->currency ?? 'USD';
     }
 }
