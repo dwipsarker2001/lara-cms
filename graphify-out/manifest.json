@@ -415,8 +415,8 @@
     "semantic_hash": "80dbdeb5b229eb6d3fa430b80e75c869"
   },
   "resources/views/admin/pages/editor.blade.php": {
-    "mtime": 1784973321.490939,
-    "ast_hash": "4e5e2bca968ce15ec3425478d54e3616",
+    "mtime": 1784976104.166975,
+    "ast_hash": "618a00ae34b17754a0ae56c3a39302c5",
     "semantic_hash": ""
   },
   "resources/views/admin/pages/index.blade.php": {
@@ -995,8 +995,8 @@
     "semantic_hash": ""
   },
   "resources/views/admin/collections/entries/editor.blade.php": {
-    "mtime": 1784973287.1007118,
-    "ast_hash": "5c1d32f7a6c72dfa45476df4463a3fa6",
+    "mtime": 1784976031.7410474,
+    "ast_hash": "fa032b289d93f70510118d75bf4d8b2a",
     "semantic_hash": ""
   },
   "resources/views/admin/collections/entries/index.blade.php": {

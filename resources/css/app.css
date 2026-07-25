@@ -366,52 +366,29 @@
     color: #16a34a;
 }
 
-/* Image resize + alignment in editor */
-.tt-editor img[data-align="left"] {
-    display: block;
-    margin-right: auto;
-    margin-left: 0;
-    float: none;
-}
-
-.tt-editor img[data-align="center"] {
-    display: block;
-    margin-left: auto;
-    margin-right: auto;
-    float: none;
-}
-
-.tt-editor img[data-align="right"] {
-    display: block;
-    margin-left: auto;
-    margin-right: 0;
-    float: none;
-}
-
-/* Resize handle visibility on selected image */
-.tt-editor img.ProseMirror-selectednode {
-    outline: 3px solid #16a34a;
-    outline-offset: 2px;
-}
-
-/* Front-end image alignment (rendered from rich text) */
+/* Image resize + alignment in editor and front-end */
+.tt-editor img[data-align="left"],
 img[data-align="left"] {
-    display: block;
-    margin-right: auto;
-    margin-left: 0;
-    float: none;
+    display: block !important;
+    margin-right: auto !important;
+    margin-left: 0 !important;
+    float: none !important;
 }
 
+.tt-editor img[data-align="center"],
 img[data-align="center"] {
-    display: block;
-    margin-left: auto;
-    margin-right: auto;
+    display: block !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
+    float: none !important;
 }
+
+.tt-editor img[data-align="right"],
 img[data-align="right"] {
-    display: block;
-    margin-left: auto;
-    margin-right: 0;
-    float: none;
+    display: block !important;
+    margin-left: auto !important;
+    margin-right: 0 !important;
+    float: none !important;
 }
 
 .tt-image-width {

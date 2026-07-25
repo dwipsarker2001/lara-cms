@@ -119,11 +119,11 @@ function setupToolbarOverflow(wrapperEl) {
     setTimeout(update, 150); // re-run once layout/fonts settle
 }
 
-function setupResizeHandle(wrapperEl, editor) {
+function setupResizeHandle(wrapperEl, editor, fieldName) {
     const editorEl = wrapperEl.querySelector('.tt-editor');
     const handle = document.createElement('div');
     handle.className = 'tt-resize-handle';
-    handle.style.cssText = 'display:none;position:absolute;bottom:-6px;right:-6px;width:14px;height:14px;background:#16a34a;border:2px solid #fff;border-radius:2px;cursor:se-resize;z-index:10;box-shadow:0 1px 3px rgba(0,0,0,0.3);';
+    handle.style.cssText = 'display:none;position:absolute;width:14px;height:14px;background:#16a34a;border:2px solid #fff;border-radius:2px;cursor:se-resize;z-index:40;box-shadow:0 1px 3px rgba(0,0,0,0.3);';
     editorEl.parentElement.style.position = 'relative';
     editorEl.parentElement.appendChild(handle);
 
@@ -131,19 +131,40 @@ function setupResizeHandle(wrapperEl, editor) {
     let startX = 0;
     let startW = 0;
     let currentImg = null;
+    let currentPct = null;
+
+    const findImage = () => {
+        const sel = editorEl.querySelector('img.ProseMirror-selectednode');
+        if (sel) return sel;
+        const selParent = editorEl.querySelector('.ProseMirror-selectednode');
+        if (selParent) {
+            if (selParent.tagName === 'IMG') return selParent;
+            const childImg = selParent.querySelector('img');
+            if (childImg) return childImg;
+        }
+        return resizing ? currentImg : null;
+    };
 
     const updateHandle = () => {
-        const img = editorEl.querySelector('.ProseMirror-selectednode');
+        const img = findImage();
         if (img && img.tagName === 'IMG') {
             currentImg = img;
-            const rect = img.getBoundingClientRect();
-            const editorRect = editorEl.parentElement.getBoundingClientRect();
+            const imgRect = img.getBoundingClientRect();
+            const wrapperRect = wrapperEl.getBoundingClientRect();
+            const editorRect = editorEl.getBoundingClientRect();
+
+            // Hide handle if image is scrolled out of view inside editor container
+            if (imgRect.bottom < editorRect.top + 10 || imgRect.top > editorRect.bottom - 10) {
+                handle.style.display = 'none';
+                return;
+            }
+
             handle.style.display = 'block';
-            handle.style.left = (rect.right - editorRect.left - 7) + 'px';
-            handle.style.top = (rect.bottom - editorRect.top - 7) + 'px';
+            handle.style.left = (imgRect.right - wrapperRect.left - 7) + 'px';
+            handle.style.top = (imgRect.bottom - wrapperRect.top - 7) + 'px';
         } else {
             handle.style.display = 'none';
-            currentImg = null;
+            if (!resizing) currentImg = null;
         }
     };
 
@@ -152,6 +173,7 @@ function setupResizeHandle(wrapperEl, editor) {
         e.stopPropagation();
         if (!currentImg) return;
         resizing = true;
+        window.__isResizingImage = true;
         startX = e.clientX;
         startW = currentImg.offsetWidth;
         document.body.style.cursor = 'se-resize';
@@ -164,19 +186,33 @@ function setupResizeHandle(wrapperEl, editor) {
         const newW = Math.max(50, startW + diff);
         const maxW = Math.min(editorEl.clientWidth, newW);
         const pct = Math.round((maxW / editorEl.clientWidth) * 100);
-        currentImg.style.width = pct + '%';
+        currentPct = pct + '%';
 
-        const pos = editor.view.posAtDOM(currentImg, 0);
-        if (pos) {
-            const node = editor.view.state.doc.nodeAt(pos);
-            if (node && node.type.name === 'image') {
-                editor.chain().setMeta('addToHistory', false).updateAttributes('image', { width: pct + '%' }).run();
+        // 1. Direct local editor DOM update at 60fps
+        currentImg.style.width = currentPct;
+        updateHandle();
+
+        // 2. Direct preview iframe DOM update at 60fps ONLY for images inside the target rich text container
+        const iframe = document.getElementById('preview-iframe');
+        if (iframe) {
+            const iframeDoc = iframe.contentDocument || iframe.contentWindow?.document;
+            if (iframeDoc) {
+                const src = currentImg.getAttribute('src');
+                if (src) {
+                    const contentContainer = (fieldName ? iframeDoc.querySelector(`[data-edit="${fieldName}"]`) : null)
+                        || iframeDoc.querySelector('.rich-text-content')
+                        || iframeDoc.querySelector('.prose');
+
+                    if (contentContainer) {
+                        contentContainer.querySelectorAll('img').forEach(img => {
+                            if (img.getAttribute('src') === src) {
+                                img.style.width = currentPct;
+                            }
+                        });
+                    }
+                }
             }
         }
-
-        updateHandle();
-        handle.style.left = (currentImg.getBoundingClientRect().right - editorEl.parentElement.getBoundingClientRect().left - 7) + 'px';
-        handle.style.top = (currentImg.getBoundingClientRect().bottom - editorEl.parentElement.getBoundingClientRect().top - 7) + 'px';
     });
 
     document.addEventListener('mouseup', () => {
@@ -184,10 +220,26 @@ function setupResizeHandle(wrapperEl, editor) {
             resizing = false;
             document.body.style.cursor = '';
             document.body.style.userSelect = '';
+
+            // Prevent server preview refetch to eliminate flash effect after mouse release
+            window.__skipNextPreviewRefresh = true;
+
+            // Persist the updated image width to TipTap and Alpine state
+            if (currentImg && currentPct) {
+                const pos = editor.view.posAtDOM(currentImg, 0);
+                if (pos !== undefined && pos !== null) {
+                    editor.chain().updateAttributes('image', { width: currentPct }).run();
+                }
+            }
+            currentPct = null;
+            window.__isResizingImage = false;
+            setTimeout(updateHandle, 10);
+            setTimeout(() => { window.__skipNextPreviewRefresh = false; }, 300);
         }
     });
 
     editor.on('selectionUpdate', updateHandle);
+    editorEl.addEventListener('scroll', updateHandle);
     const observer = new MutationObserver(() => updateHandle());
     observer.observe(editorEl, { childList: true, subtree: true, attributes: true, attributeFilter: ['class', 'style'] });
 }
@@ -218,8 +270,21 @@ export function mountTipTap(fieldName, wrapperEl, initialContent, onUpdate) {
         ],
         content: initialContent || '',
         onUpdate: ({ editor: ed }) => {
-            if (onUpdate) onUpdate(ed.getHTML());
+            const html = ed.getHTML();
+            if (onUpdate) onUpdate(html);
             updateActiveButtons(wrapperEl, ed);
+
+            // Sync preview iframe DOM instantly on typing without server fetch or flash
+            const iframe = document.getElementById('preview-iframe');
+            if (iframe && fieldName) {
+                const iframeDoc = iframe.contentDocument || iframe.contentWindow?.document;
+                if (iframeDoc) {
+                    const target = iframeDoc.querySelector(`[data-edit="${fieldName}"]`);
+                    if (target) {
+                        target.innerHTML = html;
+                    }
+                }
+            }
         },
         onFocus: () => {
             wrapperEl.classList.add('tt-focused');
@@ -239,7 +304,7 @@ export function mountTipTap(fieldName, wrapperEl, initialContent, onUpdate) {
     // Set initial heading dropdown label (no-op if label element removed)
 
     setupImageToolbar(wrapperEl, editor);
-    setupResizeHandle(wrapperEl, editor);
+    setupResizeHandle(wrapperEl, editor, fieldName);
     setupToolbarOverflow(wrapperEl);
 
     // Dropdown toggle handler via wrapper click delegation
@@ -323,10 +388,33 @@ export function mountTipTap(fieldName, wrapperEl, initialContent, onUpdate) {
             return;
         }
 
-        if (cmd === 'setTextAlign' && editor.isActive('image')) {
-            editor.chain().focus().updateAttributes('image', { 'data-align': args[0] }).run();
-            closeParentPanel();
-            return;
+        if (cmd === 'setTextAlign') {
+            const selectedImg = editorEl.querySelector('img.ProseMirror-selectednode')
+                || editorEl.querySelector('.ProseMirror-selectednode img')
+                || (editor.isActive('image') ? editorEl.querySelector('.ProseMirror-selectednode') : null);
+
+            if (selectedImg || editor.isActive('image')) {
+                const alignValue = args[0];
+                editor.chain().focus().updateAttributes('image', { 'data-align': alignValue }).run();
+
+                if (selectedImg && selectedImg.tagName === 'IMG') {
+                    selectedImg.setAttribute('data-align', alignValue);
+                    const src = selectedImg.getAttribute('src');
+                    const iframe = document.getElementById('preview-iframe');
+                    if (iframe && src) {
+                        const iframeDoc = iframe.contentDocument || iframe.contentWindow?.document;
+                        if (iframeDoc) {
+                            iframeDoc.querySelectorAll('img').forEach(img => {
+                                if (img.getAttribute('src') === src) {
+                                    img.setAttribute('data-align', alignValue);
+                                }
+                            });
+                        }
+                    }
+                }
+                closeParentPanel();
+                return;
+            }
         }
 
         if (cmd === 'toggleHeading') {

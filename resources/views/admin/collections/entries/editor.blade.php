@@ -1307,6 +1307,9 @@
             },
 
             schedulePreview() {
+                if (window.__isResizingImage || window.__skipNextPreviewRefresh) {
+                    return;
+                }
                 clearTimeout(this.previewTimer);
                 this.previewTimer = setTimeout(() => this.refreshPreview(), 0);
             },
@@ -1336,7 +1339,26 @@
                 if (!doc) return;
 
                 doc.body.className = 'antialiased text-gray-800 m-0 p-0 min-h-full bg-white preview-shell';
-                doc.body.innerHTML = '<div id="preview-content">' + html + '</div>';
+                let container = doc.getElementById('preview-content');
+                if (!container) {
+                    doc.body.innerHTML = '<div id="preview-content">' + html + '</div>';
+                } else {
+                    const parser = new DOMParser();
+                    const newDoc = parser.parseFromString(html, 'text/html');
+                    const newNodes = Array.from(newDoc.body.children);
+                    const currentNodes = Array.from(container.children);
+
+                    if (newNodes.length === currentNodes.length && newNodes.length > 0) {
+                        newNodes.forEach((node, idx) => {
+                            const cur = currentNodes[idx];
+                            if (cur && cur.outerHTML !== node.outerHTML) {
+                                cur.replaceWith(doc.importNode(node, true));
+                            }
+                        });
+                    } else if (container.innerHTML !== html) {
+                        container.innerHTML = html;
+                    }
+                }
 
                 if (!doc.head.querySelector('[data-preview-styles]')) {
                     const styleMarker = doc.createElement('meta');
