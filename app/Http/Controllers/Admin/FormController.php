@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Form;
 use App\Models\FormEntry;
+use App\Models\WidgetLayout;
 use App\Support\FormFieldTypes;
 use Illuminate\Http\Request;
 use Illuminate\Pagination\LengthAwarePaginator;
@@ -75,7 +76,10 @@ class FormController extends Controller
             ? $form->entries()->latest()->paginate(15)
             : new LengthAwarePaginator([], 0, 15);
 
-        return view('admin.forms.entries', compact('form', 'entries'));
+        $savedColumns = WidgetLayout::where('admin_id', auth('admin')->id())
+            ->value('layout')['form_columns'][$form->id] ?? null;
+
+        return view('admin.forms.entries', compact('form', 'entries', 'savedColumns'));
     }
 
     public function entryJson(Form $form, FormEntry $entry)
@@ -146,5 +150,24 @@ class FormController extends Controller
         $form->update(['fields' => $request->fields]);
 
         return response()->json(['message' => 'Form fields saved.']);
+    }
+
+    public function saveColumns(Request $request, Form $form)
+    {
+        $validated = $request->validate([
+            'columns' => ['required', 'array'],
+        ]);
+
+        $layoutRecord = WidgetLayout::firstOrCreate(
+            ['admin_id' => auth('admin')->id()],
+            ['layout' => []]
+        );
+
+        $layout = $layoutRecord->layout ?? [];
+        $layout['form_columns'][$form->id] = $validated['columns'];
+
+        $layoutRecord->update(['layout' => $layout]);
+
+        return response()->json(['message' => 'Column preferences saved.']);
     }
 }

@@ -172,6 +172,7 @@ Route::middleware(['web', 'auth:admin', TrackPageViews::class])->prefix('admin')
     Route::get('forms/{form}/entries/export', [FormController::class, 'export'])->name('forms.export');
     Route::get('forms/{form}/entries/{entry}', [FormController::class, 'entryJson'])->name('forms.entries.json');
     Route::patch('forms/{form}/fields', [FormController::class, 'updateFields'])->name('forms.update-fields');
+    Route::post('forms/{form}/columns', [FormController::class, 'saveColumns'])->name('forms.save-columns');
     Route::resource('forms', FormController::class)->except(['show']);
 
     Route::patch('collections/reorder', [CollectionController::class, 'reorder'])->name('collections.reorder');

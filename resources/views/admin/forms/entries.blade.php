@@ -187,21 +187,21 @@
                             </div>
                             <div class="my-1 border-t border-content-border"></div>
                             <label class="flex items-center gap-2 px-2 py-1.5 rounded-lg hover:bg-body-bg text-xs text-text-primary cursor-pointer select-none">
-                                <input type="checkbox" x-model="visibleColumns['id']" class="rounded border-content-border text-primary focus:ring-primary/20">
+                                <input type="checkbox" x-model="visibleColumns['id']" @change="saveColumnPreferences()" class="rounded border-content-border text-primary focus:ring-primary/20">
                                 <span># (ID)</span>
                             </label>
                             @foreach ($fields as $field)
                                 <label class="flex items-center gap-2 px-2 py-1.5 rounded-lg hover:bg-body-bg text-xs text-text-primary cursor-pointer select-none">
-                                    <input type="checkbox" x-model="visibleColumns['{{ $field['name'] }}']" class="rounded border-content-border text-primary focus:ring-primary/20">
+                                    <input type="checkbox" x-model="visibleColumns['{{ $field['name'] }}']" @change="saveColumnPreferences()" class="rounded border-content-border text-primary focus:ring-primary/20">
                                     <span>{{ $field['label'] }}</span>
                                 </label>
                             @endforeach
                             <label class="flex items-center gap-2 px-2 py-1.5 rounded-lg hover:bg-body-bg text-xs text-text-primary cursor-pointer select-none">
-                                <input type="checkbox" x-model="visibleColumns['created']" class="rounded border-content-border text-primary focus:ring-primary/20">
+                                <input type="checkbox" x-model="visibleColumns['created']" @change="saveColumnPreferences()" class="rounded border-content-border text-primary focus:ring-primary/20">
                                 <span>Submitted Date</span>
                             </label>
                             <label class="flex items-center gap-2 px-2 py-1.5 rounded-lg hover:bg-body-bg text-xs text-text-primary cursor-pointer select-none">
-                                <input type="checkbox" x-model="visibleColumns['actions']" class="rounded border-content-border text-primary focus:ring-primary/20">
+                                <input type="checkbox" x-model="visibleColumns['actions']" @change="saveColumnPreferences()" class="rounded border-content-border text-primary focus:ring-primary/20">
                                 <span>Actions</span>
                             </label>
                         </div>
@@ -333,14 +333,37 @@
             defaultVisibility['{{ $field['name'] }}'] = true;
         @endforeach
 
+        const savedVis = @js($savedColumns ?? null);
+        const initialVisibility = (savedVis && typeof savedVis === 'object')
+            ? Object.assign(defaultVisibility, savedVis)
+            : defaultVisibility;
+
         return {
             search: '',
             filterColumn: 'all',
             sortColumn: 'created',
             sortDirection: 'desc',
-            visibleColumns: defaultVisibility,
+            visibleColumns: initialVisibility,
             fields: @js($fields->pluck('name')->toArray()),
             fieldLabels: @js($fields->pluck('label', 'name')->toArray()),
+
+            async saveColumnPreferences() {
+                const token = document.querySelector('meta[name="csrf-token"]')?.content
+                    || document.querySelector('[name=csrf-token]')?.content || '';
+                try {
+                    await fetch(@js(route('admin.forms.save-columns', $form)), {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRF-TOKEN': token,
+                            'Accept': 'application/json',
+                        },
+                        body: JSON.stringify({ columns: this.visibleColumns }),
+                    });
+                } catch (e) {
+                    console.error('Failed to save column preferences', e);
+                }
+            },
 
             get filterColumnLabel() {
                 if (this.filterColumn === 'all') return 'Filter: All';
