@@ -6,7 +6,7 @@
 ])
 
 <div class="overflow-x-auto rounded-xl ring-1 ring-content-border bg-content-bg shadow-sm">
-    <table class="w-full border-separate border-spacing-y-0 text-left text-[13px]">
+    <table class="w-full min-w-full border-separate border-spacing-y-0 text-left text-[13px]">
         <thead>
             @if (isset($thead))
                 {{ $thead }}
@@ -16,12 +16,14 @@
                         @php
                             $key = is_array($header) ? ($header['key'] ?? $header['label']) : $header;
                             $label = is_array($header) ? $header['label'] : $header;
+                            $isLast = $loop->last;
                         @endphp
                         <th 
                             @if(is_array($header) && isset($header['key']))
                                 x-show="visibleColumns['{{ $header['key'] }}'] !== false"
                             @endif
-                            class="whitespace-nowrap px-4 py-3 font-medium text-text-muted text-[12px] {{ $loop->first ? 'rounded-tl-xl' : '' }} {{ $loop->last ? 'rounded-tr-xl text-right' : '' }}"
+                            class="whitespace-nowrap px-4 py-3 font-medium text-text-muted text-[12px] {{ $loop->first ? 'rounded-tl-xl' : '' }} {{ $isLast ? 'sticky right-0 bg-[#f9fafb] z-20 text-right rounded-tr-xl shadow-[-4px_0_8px_-2px_rgba(0,0,0,0.06)]' : '' }}"
+                            title="{{ $label }}"
                         >
                             {{ $label }}
                         </th>

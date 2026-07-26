@@ -226,9 +226,9 @@
                                 data-field-{{ $f['name'] }}="{{ strtolower(is_array($entry->data[$f['name']] ?? null) ? implode(' ', $entry->data[$f['name']]) : (string)($entry->data[$f['name']] ?? '')) }}"
                             @endforeach
                             x-show="matchesSearch({{ json_encode($entry->data) }}, {{ $entry->id }}, {{ json_encode($entry->created_at->format('M j, Y g:i A')) }})"
-                            class="border-b border-content-border last:border-0 hover:bg-body-bg/50 transition-colors"
+                            class="group border-b border-content-border last:border-0 hover:bg-[#f9fafb] transition-colors"
                         >
-                            <td x-show="visibleColumns['id'] !== false" class="px-4 py-3 text-text-muted text-xs whitespace-nowrap">#{{ $entry->id }}</td>
+                            <td x-show="visibleColumns['id'] !== false" class="px-4 py-3 text-text-muted text-xs whitespace-nowrap min-w-[70px]">#{{ $entry->id }}</td>
                             
                             @foreach ($fields as $field)
                                 @php
@@ -242,15 +242,15 @@
                                         $value = str_replace(["\r\n", "\r", "\n"], ' ', $value);
                                     }
                                 @endphp
-                                <td x-show="visibleColumns['{{ $field['name'] }}'] !== false" class="px-4 py-3 text-text-primary max-w-[220px] truncate whitespace-nowrap" title="{{ is_scalar($value) ? $value : '' }}">
+                                <td x-show="visibleColumns['{{ $field['name'] }}'] !== false" class="px-4 py-3 text-text-primary min-w-[150px] max-w-[260px] truncate whitespace-nowrap" title="{{ is_scalar($value) ? $value : '' }}">
                                     {{ filled($value) || $value === 0 || $value === '0' ? $value : '—' }}
                                 </td>
                             @endforeach
 
-                            <td x-show="visibleColumns['created'] !== false" class="px-4 py-3 text-text-primary whitespace-nowrap">
+                            <td x-show="visibleColumns['created'] !== false" class="px-4 py-3 text-text-primary whitespace-nowrap min-w-[160px]">
                                 <span class="font-medium">{{ $entry->created_at->format('M j, Y g:i A') }}</span>
                             </td>
-                            <td x-show="visibleColumns['actions'] !== false" class="px-4 py-3 text-right whitespace-nowrap">
+                            <td x-show="visibleColumns['actions'] !== false" class="sticky right-0 bg-white group-hover:bg-[#f9fafb] z-10 px-4 py-3 text-right whitespace-nowrap shadow-[-4px_0_8px_-2px_rgba(0,0,0,0.06)] transition-colors">
                                 <div class="flex items-center justify-end gap-1.5">
                                     {{-- View Icon Button --}}
                                     <a href="#" @click.prevent="$dispatch('open-entry-detail', { id: {{ $entry->id }} })"
