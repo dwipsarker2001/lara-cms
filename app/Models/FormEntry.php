@@ -12,7 +12,7 @@ class FormEntry extends Model
     /** @use HasFactory<FormEntryFactory> */
     use HasFactory;
 
-    protected $fillable = ['form_id', 'data'];
+    protected $fillable = ['form_id', 'data', 'ip_address', 'user_agent'];
 
     protected function casts(): array
     {

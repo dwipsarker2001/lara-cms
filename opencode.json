@@ -19,6 +19,11 @@
             "command": ["npx", "-y", "@danielsogl/lighthouse-mcp@latest"],
             "enabled": true
         },
+        "chrome-devtools": {
+            "type": "local",
+            "command": ["npx", "-y", "chrome-devtools-mcp@latest"],
+            "enabled": true
+        },
         "firecrawl": {
             "type": "local",
             "command": [

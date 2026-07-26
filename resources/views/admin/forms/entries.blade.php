@@ -5,13 +5,31 @@
 
 @section('content')
 @php
-    $fields = collect($form->fields ?? [])
+    $formFieldNames = collect($form->fields ?? [])
         ->filter(fn ($field) => is_array($field) && filled($field['name'] ?? null))
-        ->values();
+        ->pluck('name')
+        ->toArray();
+
+    $entryDataKeys = $entries->flatMap(fn ($entry) => is_array($entry->data) ? array_keys($entry->data) : [])
+        ->unique()
+        ->values()
+        ->toArray();
+
+    $allKeys = array_unique(array_merge($formFieldNames, $entryDataKeys));
+
+    $fields = collect($allKeys)->map(function ($key) use ($form) {
+        $schemaField = collect($form->fields ?? [])->firstWhere('name', $key);
+        return [
+            'name' => $key,
+            'label' => !empty($schemaField['column_name']) 
+                ? $schemaField['column_name'] 
+                : (!empty($schemaField['label']) ? $schemaField['label'] : str($key)->replace('_', ' ')->title()->toString()),
+        ];
+    });
 
     $headers = ['#'];
     foreach ($fields as $field) {
-        $headers[] = $field['label'] ?? $field['name'];
+        $headers[] = $field['label'];
     }
     $headers[] = 'Submitted';
     $headers[] = 'Actions';

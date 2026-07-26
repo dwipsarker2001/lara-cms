@@ -5,6 +5,17 @@
 
 <section data-block="travelDetails" class="py-12">
     <div class="max-w-6xl mx-auto px-6">
+
+        @if(session('booking_success'))
+            <div class="mb-6 flex items-start gap-3 bg-emerald-50 border border-emerald-200 text-emerald-800 rounded-2xl px-5 py-4 shadow-sm">
+                <svg class="w-6 h-6 text-emerald-500 shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg>
+                <div>
+                    <p class="font-semibold text-sm">Booking Confirmed!</p>
+                    <p class="text-sm text-emerald-700 mt-0.5">{{ session('booking_success') }}</p>
+                </div>
+            </div>
+        @endif
+
         {{-- ── Section 1: Hero / Gallery ── --}}
         <div class="mb-8">
             @if($d['title'] ?? false)
@@ -439,7 +450,15 @@
 
                         {{-- Book Now --}}
                         @if($d['bookNowLabel'] ?? false)
-                        <a href="{{ $d['bookNowLink'] ?? '#' }}" class="block w-full bg-primary hover:bg-primary-hover text-white font-semibold py-3 rounded-full transition-colors text-center text-sm" data-edit="bookNowLabel" data-edit-button>{{ $d['bookNowLabel'] }}</a>
+                        @php
+                            $bookLink = $d['bookNowLink'] ?? '#';
+                            $currentPackage = $entry ?? $page ?? null;
+                            $packageId = isset($currentPackage->id) ? $currentPackage->id : null;
+                            if (($bookLink === '#' || empty($bookLink) || $bookLink === '/checkout') && $packageId) {
+                                $bookLink = url('/checkout') . '?package_id=' . $packageId;
+                            }
+                        @endphp
+                        <a href="{{ $bookLink }}" class="block w-full bg-primary hover:bg-primary-hover text-white font-semibold py-3 rounded-full transition-colors text-center text-sm" data-edit="bookNowLabel" data-edit-button>{{ $d['bookNowLabel'] }}</a>
                         @endif
 
                         {{-- WhatsApp --}}

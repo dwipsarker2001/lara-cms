@@ -120,8 +120,8 @@
     "semantic_hash": ""
   },
   "app/Models/Setting.php": {
-    "mtime": 1784656083.3984542,
-    "ast_hash": "8b14249f17df16d16b2f36740028d3c0",
+    "mtime": 1784989841.0121925,
+    "ast_hash": "64a911e2fb35c50ec0103440f194e290",
     "semantic_hash": ""
   },
   "app/Models/Taxonomy.php": {
@@ -310,8 +310,8 @@
     "semantic_hash": "a2b09f246e547b7551811604a3346c8d"
   },
   "opencode.json": {
-    "mtime": 1784656083.424964,
-    "ast_hash": "184db17db40eb411300f897159feb583",
+    "mtime": 1785082959.8437564,
+    "ast_hash": "a3e445c169370b7b8940309d09e8a54d",
     "semantic_hash": ""
   },
   "package.json": {
@@ -385,8 +385,8 @@
     "semantic_hash": ""
   },
   "resources/views/admin/layout.blade.php": {
-    "mtime": 1784880239.2951562,
-    "ast_hash": "85acae3c9f4fe3af80b2c5d9d8a3be2b",
+    "mtime": 1785084642.4678965,
+    "ast_hash": "c4c4c58d550f05abc61fb1c83acc87a3",
     "semantic_hash": ""
   },
   "resources/views/admin/layouts/create.blade.php": {
@@ -415,7 +415,7 @@
     "semantic_hash": "80dbdeb5b229eb6d3fa430b80e75c869"
   },
   "resources/views/admin/pages/editor.blade.php": {
-    "mtime": 1784984041.6680691,
+    "mtime": 1785082683.2240875,
     "ast_hash": "6d15b1ae9b99d1bf08118f0f2024a7aa",
     "semantic_hash": ""
   },
@@ -505,8 +505,8 @@
     "semantic_hash": ""
   },
   "routes/web.php": {
-    "mtime": 1784683786.1629517,
-    "ast_hash": "a1d842291ab9e7a547956a7e0383dd6b",
+    "mtime": 1785082959.8452337,
+    "ast_hash": "7c36dfabee422a3716345abb8869efa1",
     "semantic_hash": ""
   },
   "tailwind.config.js": {
@@ -705,8 +705,8 @@
     "semantic_hash": ""
   },
   "docker-compose.yml": {
-    "mtime": 1784966764.972136,
-    "ast_hash": "ddd9bf125289a0c6d6ca749727397947",
+    "mtime": 1785084355.6300554,
+    "ast_hash": "a4ea1cba31ed322fb2a0aa8cd345545d",
     "semantic_hash": ""
   },
   "docs/REBUILD.md": {
@@ -840,7 +840,7 @@
     "semantic_hash": ""
   },
   "app/Support/FormFieldTypes.php": {
-    "mtime": 1784270003.714558,
+    "mtime": 1785082683.2213764,
     "ast_hash": "0f867ee8a5986e5039f2830d4983a9fc",
     "semantic_hash": ""
   },
@@ -880,8 +880,8 @@
     "semantic_hash": ""
   },
   "resources/views/admin/forms/editor.blade.php": {
-    "mtime": 1784885292.4028695,
-    "ast_hash": "08db0507249a0f56b4a12ed818e61102",
+    "mtime": 1785083424.0283341,
+    "ast_hash": "f4b0603353ac2b9f259b50a8b2f1532c",
     "semantic_hash": ""
   },
   "resources/views/admin/forms/index.blade.php": {
@@ -890,8 +890,8 @@
     "semantic_hash": ""
   },
   "tests/Feature/FormEditorTest.php": {
-    "mtime": 1784270253.3198826,
-    "ast_hash": "0834a9d59098615db559ce2764e85572",
+    "mtime": 1785083378.5399194,
+    "ast_hash": "c34503a06fd6810e61c5908cd9f2e07a",
     "semantic_hash": ""
   },
   ".claude/settings.local.json": {
@@ -905,8 +905,8 @@
     "semantic_hash": ""
   },
   "app/Models/FormEntry.php": {
-    "mtime": 1784372703.4609368,
-    "ast_hash": "fe89f45fb09b971b8700b928e96e4ef0",
+    "mtime": 1785082959.8268003,
+    "ast_hash": "6ba93290cbe62dd30ec5df5dd41c1ec6",
     "semantic_hash": ""
   },
   "database/migrations/2026_07_17_110613_create_form_entries_table.php": {
@@ -915,8 +915,8 @@
     "semantic_hash": ""
   },
   "resources/views/admin/forms/entries.blade.php": {
-    "mtime": 1784427687.9198472,
-    "ast_hash": "18cc7d24f1caaec9845a9b0a7da3a78f",
+    "mtime": 1785082959.8442795,
+    "ast_hash": "3f5578efacb8ad2631baeb487ec06434",
     "semantic_hash": ""
   },
   "app/Http/Controllers/Admin/CollectionController.php": {
@@ -995,7 +995,7 @@
     "semantic_hash": ""
   },
   "resources/views/admin/collections/entries/editor.blade.php": {
-    "mtime": 1784984046.3025067,
+    "mtime": 1785082683.2223907,
     "ast_hash": "28547f612c5577750a3412d0639d713c",
     "semantic_hash": ""
   },
@@ -2005,8 +2005,8 @@
     "semantic_hash": ""
   },
   "resources/views/blocks/travel-details.blade.php": {
-    "mtime": 1784984035.0204418,
-    "ast_hash": "f0c7bb09571eb0b4a016a84aa821790a",
+    "mtime": 1785082959.8449535,
+    "ast_hash": "868a35b7975ef0897aa0e94a3a595640",
     "semantic_hash": ""
   },
   "tests/Unit/BlockSourceBindingTest.php": {
@@ -3155,13 +3155,43 @@
     "semantic_hash": ""
   },
   "app/Blocks/common/CheckoutForm.php": {
-    "mtime": 1784985762.6895618,
-    "ast_hash": "ae78e82cd3b56273c7c82b4cdc9494f0",
+    "mtime": 1785082683.2209692,
+    "ast_hash": "5636c27523d449707c7a73f43563606d",
     "semantic_hash": ""
   },
   "resources/views/blocks/checkout-form.blade.php": {
-    "mtime": 1784986963.893618,
-    "ast_hash": "074f0c0d5660ba05129151b0bfe30321",
+    "mtime": 1785083719.4120991,
+    "ast_hash": "1af3d08414df2a138e844f9c580f7769",
+    "semantic_hash": ""
+  },
+  "app/Http/Controllers/PublicFormController.php": {
+    "mtime": 1785083762.0102475,
+    "ast_hash": "152b6d21d25cf2c93a0c248edd667411",
+    "semantic_hash": ""
+  },
+  "database/migrations/2026_07_26_154854_add_ip_address_and_user_agent_to_form_entries_table.php": {
+    "mtime": 1785080953.575817,
+    "ast_hash": "4abc08eb3b5571342438980b879a58ad",
+    "semantic_hash": ""
+  },
+  "tests/Feature/PublicFormSubmissionTest.php": {
+    "mtime": 1785083764.9606535,
+    "ast_hash": "d8e6c795d8e4763ce685a09d63c51898",
+    "semantic_hash": ""
+  },
+  "tests/Feature/TravelDetailsPreviewTest.php": {
+    "mtime": 1785079722.3213768,
+    "ast_hash": "504c2a07ecdca99f02c9e1f99c0010d8",
+    "semantic_hash": ""
+  },
+  "docs/superpowers/specs/2026-07-26-dynamic-form-builder-checkout-design.md": {
+    "mtime": 1785083286.709366,
+    "ast_hash": "db1f737028ebba0da21b52b208d50911",
+    "semantic_hash": ""
+  },
+  "docs/superpowers/plans/2026-07-26-dynamic-form-builder-checkout.md": {
+    "mtime": 1785083298.0174193,
+    "ast_hash": "b2e47210a2bdcf0a85a889fb74a74f4e",
     "semantic_hash": ""
   }
 }
