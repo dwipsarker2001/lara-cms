@@ -275,6 +275,7 @@
             fieldSchemas: {
                 text: [
                     { name: 'label', type: 'string', label: 'Label' },
+                    { name: 'column_name', type: 'string', label: 'Column Name' },
                     { name: 'name', type: 'string', label: 'Field Key' },
                     { name: 'placeholder', type: 'string', label: 'Placeholder' },
                     { name: 'error_message', type: 'string', label: 'Custom Error Message' },
@@ -282,6 +283,7 @@
                 ],
                 email: [
                     { name: 'label', type: 'string', label: 'Label' },
+                    { name: 'column_name', type: 'string', label: 'Column Name' },
                     { name: 'name', type: 'string', label: 'Field Key' },
                     { name: 'placeholder', type: 'string', label: 'Placeholder' },
                     { name: 'error_message', type: 'string', label: 'Custom Error Message' },
@@ -289,6 +291,7 @@
                 ],
                 phone: [
                     { name: 'label', type: 'string', label: 'Label' },
+                    { name: 'column_name', type: 'string', label: 'Column Name' },
                     { name: 'name', type: 'string', label: 'Field Key' },
                     { name: 'placeholder', type: 'string', label: 'Placeholder' },
                     { name: 'error_message', type: 'string', label: 'Custom Error Message' },
@@ -296,6 +299,7 @@
                 ],
                 number: [
                     { name: 'label', type: 'string', label: 'Label' },
+                    { name: 'column_name', type: 'string', label: 'Column Name' },
                     { name: 'name', type: 'string', label: 'Field Key' },
                     { name: 'placeholder', type: 'string', label: 'Placeholder' },
                     { name: 'error_message', type: 'string', label: 'Custom Error Message' },
@@ -303,6 +307,7 @@
                 ],
                 textarea: [
                     { name: 'label', type: 'string', label: 'Label' },
+                    { name: 'column_name', type: 'string', label: 'Column Name' },
                     { name: 'name', type: 'string', label: 'Field Key' },
                     { name: 'placeholder', type: 'string', label: 'Placeholder' },
                     { name: 'error_message', type: 'string', label: 'Custom Error Message' },
@@ -310,6 +315,7 @@
                 ],
                 select: [
                     { name: 'label', type: 'string', label: 'Label' },
+                    { name: 'column_name', type: 'string', label: 'Column Name' },
                     { name: 'name', type: 'string', label: 'Field Key' },
                     { name: 'options', type: 'tags', label: 'Options' },
                     { name: 'error_message', type: 'string', label: 'Custom Error Message' },
@@ -317,6 +323,7 @@
                 ],
                 checkbox: [
                     { name: 'label', type: 'string', label: 'Label' },
+                    { name: 'column_name', type: 'string', label: 'Column Name' },
                     { name: 'name', type: 'string', label: 'Field Key' },
                     { name: 'options', type: 'tags', label: 'Options' },
                     { name: 'error_message', type: 'string', label: 'Custom Error Message' },
@@ -324,6 +331,7 @@
                 ],
                 radio: [
                     { name: 'label', type: 'string', label: 'Label' },
+                    { name: 'column_name', type: 'string', label: 'Column Name' },
                     { name: 'name', type: 'string', label: 'Field Key' },
                     { name: 'options', type: 'tags', label: 'Options' },
                     { name: 'error_message', type: 'string', label: 'Custom Error Message' },
@@ -331,6 +339,7 @@
                 ],
                 date: [
                     { name: 'label', type: 'string', label: 'Label' },
+                    { name: 'column_name', type: 'string', label: 'Column Name' },
                     { name: 'name', type: 'string', label: 'Field Key' },
                     { name: 'placeholder', type: 'string', label: 'Placeholder' },
                     { name: 'error_message', type: 'string', label: 'Custom Error Message' },
@@ -338,6 +347,7 @@
                 ],
                 file: [
                     { name: 'label', type: 'string', label: 'Label' },
+                    { name: 'column_name', type: 'string', label: 'Column Name' },
                     { name: 'name', type: 'string', label: 'Field Key' },
                     { name: 'error_message', type: 'string', label: 'Custom Error Message' },
                     { name: 'required', type: 'boolean', label: 'Required' },
@@ -347,7 +357,9 @@
             init(fields) {
                 this.fields = (fields || []).map(f => ({
                     ...f,
+                    column_name: f.column_name || f.label || '',
                     _nameEdited: true,
+                    _columnEdited: true,
                     _placeholderEdited: true,
                     _errorEdited: true,
                 }));
@@ -398,11 +410,13 @@
                     _key: crypto.randomUUID ? crypto.randomUUID() : Date.now().toString(36) + Math.random().toString(36).slice(2),
                     type: def.type,
                     label: def.label,
+                    column_name: def.label,
                     name: def.type + '_' + Math.random().toString(36).slice(2, 6),
                     placeholder: def.placeholder || '',
                     error_message: '',
                     required: false,
                     _nameEdited: false,
+                    _columnEdited: false,
                     _placeholderEdited: false,
                     _errorEdited: false,
                 };
@@ -451,6 +465,8 @@
 
                 if (name === 'name') {
                     field._nameEdited = true;
+                } else if (name === 'column_name') {
+                    field._columnEdited = true;
                 } else if (name === 'placeholder') {
                     field._placeholderEdited = true;
                 } else if (name === 'error_message') {
@@ -458,6 +474,11 @@
                 } else if (name === 'label') {
                     const cleanLabel = (value || '').trim();
                     const lower = cleanLabel.toLowerCase();
+
+                    // Smart auto-generation of Column Name if not manually locked
+                    if (!field._columnEdited) {
+                        field.column_name = cleanLabel;
+                    }
 
                     // Smart auto-generation of Field Key (name) if not manually locked
                     if (!field._nameEdited) {

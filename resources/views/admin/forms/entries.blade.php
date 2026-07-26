@@ -134,7 +134,7 @@
 </div>
 
 {{-- Entry detail modal --}}
-<div x-data="{ entry: null, open: false }"
+<div x-data="{ entry: null, open: false, fieldLabels: {{ json_encode(collect($fields)->pluck('label', 'name')) }} }"
     @open-entry-detail.window="open = true; entry = await (await fetch('{{ route('admin.forms.entries', $form) }}/' + $event.detail.id)).json()"
     x-show="open"
     x-cloak
@@ -159,7 +159,7 @@
                     </div>
                     <template x-for="(value, key) in entry.data" :key="key">
                         <div class="mb-3">
-                            <span class="text-xs text-text-muted block" x-text="key"></span>
+                            <span class="text-xs text-text-muted block" x-text="fieldLabels[key] || key"></span>
                             <p class="text-sm font-medium text-text-primary mt-0.5 break-words" x-text="value || '(empty)'"></p>
                         </div>
                     </template>

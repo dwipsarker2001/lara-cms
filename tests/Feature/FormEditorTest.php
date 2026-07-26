@@ -85,6 +85,7 @@ it('saves field key and custom error message', function () {
             '_key' => 'key-custom-1',
             'type' => 'text',
             'label' => 'Customer Name',
+            'column_name' => 'Full Customer Name',
             'name' => 'cust_name',
             'placeholder' => 'Enter your full name',
             'error_message' => 'Customer Name is required!',
@@ -98,6 +99,7 @@ it('saves field key and custom error message', function () {
 
     $form->refresh();
     expect($form->fields[0]['name'])->toBe('cust_name');
+    expect($form->fields[0]['column_name'])->toBe('Full Customer Name');
     expect($form->fields[0]['error_message'])->toBe('Customer Name is required!');
 });
 

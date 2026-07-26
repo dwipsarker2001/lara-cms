@@ -93,7 +93,16 @@ class FormController extends Controller
 
         $entries = $form->entries()->latest()->get();
 
-        $fields = collect($form->fields ?? [])->pluck('label', 'name');
+        $fields = collect($form->fields ?? [])->mapWithKeys(function ($field) {
+            $name = $field['name'] ?? null;
+            if (! $name) {
+                return [];
+            }
+
+            $column = ! empty($field['column_name']) ? $field['column_name'] : (! empty($field['label']) ? $field['label'] : $name);
+
+            return [$name => $column];
+        });
 
         $csv = fopen('php://temp', 'r+');
         fputcsv($csv, ['ID', 'Submitted', ...$fields->values()->toArray()]);
