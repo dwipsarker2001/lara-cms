@@ -63,6 +63,8 @@
         childPrice: {{ $childPrice }},
         extraService: {{ $extraService }},
         currency: @js($currencySymbol),
+        showSuccessModal: false,
+        successMsg: '',
         get adultTotal() { return this.adults * this.adultPrice; },
         get childTotal() { return this.children * this.childPrice; },
         get total() { return this.adultTotal + this.childTotal + this.extraService; },

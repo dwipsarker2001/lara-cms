@@ -7,6 +7,7 @@ use App\Models\Form;
 use App\Widgets\WidgetRegistry;
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\Facades\URL;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\ServiceProvider;
 
@@ -19,6 +20,10 @@ class AppServiceProvider extends ServiceProvider
 
     public function boot(): void
     {
+        if ($this->app->environment('production') || config('app.env') === 'production' || str_contains(config('app.url'), 'https://')) {
+            URL::forceScheme('https');
+        }
+
         Blade::anonymousComponentNamespace('admin.components', 'admin');
 
         View::composer('admin.layout', function ($view) {
