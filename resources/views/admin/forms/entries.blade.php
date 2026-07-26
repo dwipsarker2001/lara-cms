@@ -228,7 +228,7 @@
                             x-show="matchesSearch({{ json_encode($entry->data) }}, {{ $entry->id }}, {{ json_encode($entry->created_at->format('M j, Y g:i A')) }})"
                             class="border-b border-content-border last:border-0 hover:bg-body-bg/50 transition-colors"
                         >
-                            <td x-show="visibleColumns['id'] !== false" class="px-4 py-3 text-text-muted text-xs">#{{ $entry->id }}</td>
+                            <td x-show="visibleColumns['id'] !== false" class="px-4 py-3 text-text-muted text-xs whitespace-nowrap">#{{ $entry->id }}</td>
                             
                             @foreach ($fields as $field)
                                 @php
@@ -238,13 +238,16 @@
                                     } elseif (is_bool($value)) {
                                         $value = $value ? 'Yes' : 'No';
                                     }
+                                    if (is_string($value)) {
+                                        $value = str_replace(["\r\n", "\r", "\n"], ' ', $value);
+                                    }
                                 @endphp
-                                <td x-show="visibleColumns['{{ $field['name'] }}'] !== false" class="px-4 py-3 text-text-primary max-w-[220px] truncate" title="{{ is_scalar($value) ? $value : '' }}">
+                                <td x-show="visibleColumns['{{ $field['name'] }}'] !== false" class="px-4 py-3 text-text-primary max-w-[220px] truncate whitespace-nowrap" title="{{ is_scalar($value) ? $value : '' }}">
                                     {{ filled($value) || $value === 0 || $value === '0' ? $value : '—' }}
                                 </td>
                             @endforeach
 
-                            <td x-show="visibleColumns['created'] !== false" class="px-4 py-3 text-text-primary">
+                            <td x-show="visibleColumns['created'] !== false" class="px-4 py-3 text-text-primary whitespace-nowrap">
                                 <span class="font-medium">{{ $entry->created_at->format('M j, Y g:i A') }}</span>
                             </td>
                             <td x-show="visibleColumns['actions'] !== false" class="px-4 py-3 text-right whitespace-nowrap">
