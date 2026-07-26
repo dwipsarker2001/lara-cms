@@ -7,7 +7,7 @@
 
 <div class="rounded-xl ring-1 ring-content-border bg-content-bg shadow-sm overflow-hidden">
     <div class="overflow-x-auto table-scrollbar"
-        x-data="{ isScrolled: false, checkScroll() { this.isScrolled = $el.scrollLeft > 5; } }"
+        x-data="{ isScrolled: false, checkScroll() { const maxScroll = $el.scrollWidth - $el.clientWidth; const hasOverflow = maxScroll > 5; const isAtRightEnd = $el.scrollLeft >= maxScroll - 5; this.isScrolled = hasOverflow && !isAtRightEnd; } }"
         x-init="checkScroll()"
         @scroll.passive="checkScroll()"
         @resize.window.debounce.100ms="checkScroll()"
