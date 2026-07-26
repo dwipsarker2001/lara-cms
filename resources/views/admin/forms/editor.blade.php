@@ -275,51 +275,71 @@
             fieldSchemas: {
                 text: [
                     { name: 'label', type: 'string', label: 'Label' },
+                    { name: 'name', type: 'string', label: 'Field Key' },
                     { name: 'placeholder', type: 'string', label: 'Placeholder' },
+                    { name: 'error_message', type: 'string', label: 'Custom Error Message' },
                     { name: 'required', type: 'boolean', label: 'Required' },
                 ],
                 email: [
                     { name: 'label', type: 'string', label: 'Label' },
+                    { name: 'name', type: 'string', label: 'Field Key' },
                     { name: 'placeholder', type: 'string', label: 'Placeholder' },
+                    { name: 'error_message', type: 'string', label: 'Custom Error Message' },
                     { name: 'required', type: 'boolean', label: 'Required' },
                 ],
                 phone: [
                     { name: 'label', type: 'string', label: 'Label' },
+                    { name: 'name', type: 'string', label: 'Field Key' },
                     { name: 'placeholder', type: 'string', label: 'Placeholder' },
+                    { name: 'error_message', type: 'string', label: 'Custom Error Message' },
                     { name: 'required', type: 'boolean', label: 'Required' },
                 ],
                 number: [
                     { name: 'label', type: 'string', label: 'Label' },
+                    { name: 'name', type: 'string', label: 'Field Key' },
                     { name: 'placeholder', type: 'string', label: 'Placeholder' },
+                    { name: 'error_message', type: 'string', label: 'Custom Error Message' },
                     { name: 'required', type: 'boolean', label: 'Required' },
                 ],
                 textarea: [
                     { name: 'label', type: 'string', label: 'Label' },
+                    { name: 'name', type: 'string', label: 'Field Key' },
                     { name: 'placeholder', type: 'string', label: 'Placeholder' },
+                    { name: 'error_message', type: 'string', label: 'Custom Error Message' },
                     { name: 'required', type: 'boolean', label: 'Required' },
                 ],
                 select: [
                     { name: 'label', type: 'string', label: 'Label' },
+                    { name: 'name', type: 'string', label: 'Field Key' },
                     { name: 'options', type: 'tags', label: 'Options' },
+                    { name: 'error_message', type: 'string', label: 'Custom Error Message' },
                     { name: 'required', type: 'boolean', label: 'Required' },
                 ],
                 checkbox: [
                     { name: 'label', type: 'string', label: 'Label' },
+                    { name: 'name', type: 'string', label: 'Field Key' },
                     { name: 'options', type: 'tags', label: 'Options' },
+                    { name: 'error_message', type: 'string', label: 'Custom Error Message' },
                     { name: 'required', type: 'boolean', label: 'Required' },
                 ],
                 radio: [
                     { name: 'label', type: 'string', label: 'Label' },
+                    { name: 'name', type: 'string', label: 'Field Key' },
                     { name: 'options', type: 'tags', label: 'Options' },
+                    { name: 'error_message', type: 'string', label: 'Custom Error Message' },
                     { name: 'required', type: 'boolean', label: 'Required' },
                 ],
                 date: [
                     { name: 'label', type: 'string', label: 'Label' },
+                    { name: 'name', type: 'string', label: 'Field Key' },
                     { name: 'placeholder', type: 'string', label: 'Placeholder' },
+                    { name: 'error_message', type: 'string', label: 'Custom Error Message' },
                     { name: 'required', type: 'boolean', label: 'Required' },
                 ],
                 file: [
                     { name: 'label', type: 'string', label: 'Label' },
+                    { name: 'name', type: 'string', label: 'Field Key' },
+                    { name: 'error_message', type: 'string', label: 'Custom Error Message' },
                     { name: 'required', type: 'boolean', label: 'Required' },
                 ],
             },
@@ -346,7 +366,7 @@
                         if (evt.oldIndex === evt.newIndex) return;
 
                         const item = this.fields.splice(evt.oldIndex, 1)[0];
-                        this.fields.splice(newIdx, 0, item);
+                        this.fields.splice(evt.newIndex, 0, item);
                         this.dirty = true;
                     },
                 });
@@ -375,6 +395,7 @@
                     label: def.label,
                     name: def.type + '_' + Math.random().toString(36).slice(2, 6),
                     placeholder: def.placeholder || '',
+                    error_message: '',
                     required: false,
                 };
 

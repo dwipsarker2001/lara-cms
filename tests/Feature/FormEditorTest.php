@@ -77,6 +77,30 @@ it('updates form fields', function () {
     expect($form->fields)->toBe($fields);
 });
 
+it('saves field key and custom error message', function () {
+    $form = Form::factory()->create();
+
+    $fields = [
+        [
+            '_key' => 'key-custom-1',
+            'type' => 'text',
+            'label' => 'Customer Name',
+            'name' => 'cust_name',
+            'placeholder' => 'Enter your full name',
+            'error_message' => 'Customer Name is required!',
+            'required' => true,
+        ],
+    ];
+
+    patch(route('admin.forms.update-fields', $form), [
+        'fields' => $fields,
+    ])->assertSuccessful()->assertJson(['message' => 'Form fields saved.']);
+
+    $form->refresh();
+    expect($form->fields[0]['name'])->toBe('cust_name');
+    expect($form->fields[0]['error_message'])->toBe('Customer Name is required!');
+});
+
 it('validates fields structure', function () {
     $form = Form::factory()->create();
 
