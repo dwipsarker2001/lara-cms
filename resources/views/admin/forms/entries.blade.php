@@ -248,39 +248,44 @@
                                 <span class="font-medium">{{ $entry->created_at->format('M j, Y g:i A') }}</span>
                             </td>
                             <td x-show="visibleColumns['actions'] !== false" class="px-4 py-3 text-right whitespace-nowrap">
-                                <div class="flex items-center justify-end gap-2.5">
+                                <div class="flex items-center justify-end gap-1.5">
+                                    {{-- View Icon Button --}}
                                     <a href="#" @click.prevent="$dispatch('open-entry-detail', { id: {{ $entry->id }} })"
-                                        class="inline-flex items-center gap-1 text-xs font-medium text-primary hover:text-primary/80 transition-colors"
+                                        class="size-8 inline-flex items-center justify-center rounded-lg border border-content-border bg-white text-text-muted hover:text-primary hover:border-primary/30 hover:bg-primary/5 transition-colors shadow-sm"
                                         title="View Entry"
+                                        aria-label="View Entry"
                                     >
-                                        <svg viewBox="0 0 20 20" fill="currentColor" class="size-3.5">
+                                        <svg viewBox="0 0 20 20" fill="currentColor" class="size-4">
                                             <path d="M10 12.5a2.5 2.5 0 100-5 2.5 2.5 0 000 5z" />
                                             <path fill-rule="evenodd" d="M.664 10.59a1.651 1.651 0 010-1.186A10.004 10.004 0 0110 3c4.257 0 7.893 2.66 9.336 6.41.147.381.146.804 0 1.186A10.004 10.004 0 0110 17c-4.257 0-7.893-2.66-9.336-6.41zM14 10a4 4 0 11-8 0 4 4 0 018 0z" clip-rule="evenodd" />
                                         </svg>
-                                        View
                                     </a>
+
+                                    {{-- Edit Icon Button --}}
                                     <a href="#" @click.prevent="$dispatch('open-entry-edit', { id: {{ $entry->id }} })"
-                                        class="inline-flex items-center gap-1 text-xs font-medium text-text-muted hover:text-text-heading transition-colors"
+                                        class="size-8 inline-flex items-center justify-center rounded-lg border border-content-border bg-white text-text-muted hover:text-text-heading hover:bg-body-bg transition-colors shadow-sm"
                                         title="Edit Entry"
+                                        aria-label="Edit Entry"
                                     >
-                                        <svg viewBox="0 0 20 20" fill="currentColor" class="size-3.5">
+                                        <svg viewBox="0 0 20 20" fill="currentColor" class="size-4">
                                             <path d="M5.433 13.917l1.262-3.155A4 4 0 017.58 9.42l6.92-6.918a2.121 2.121 0 013 3l-6.92 6.918c-.383.383-.84.685-1.343.886l-3.154 1.262a.5.5 0 01-.65-.65z" />
                                             <path d="M3.5 5.75c0-.69.56-1.25 1.25-1.25H10A.75.75 0 0010 3H4.75A2.75 2.75 0 002 5.75v9.5A2.75 2.75 0 004.75 18h9.5A2.75 2.75 0 0017 15.25V10a.75.75 0 00-1.5 0v5.25c0 .69-.56 1.25-1.25 1.25h-9.5c-.69 0-1.25-.56-1.25-1.25v-9.5z" />
                                         </svg>
-                                        Edit
                                     </a>
+
+                                    {{-- Delete Icon Button --}}
                                     <form method="POST" action="{{ route('admin.forms.entries.destroy', [$form, $entry]) }}" class="inline mb-0">
                                         @csrf
                                         @method('DELETE')
                                         <button type="submit" 
                                             onclick="return confirm('Are you sure you want to delete this submission?')"
-                                            class="inline-flex items-center gap-1 text-xs font-medium text-red-600 hover:text-red-700 transition-colors cursor-pointer"
+                                            class="size-8 inline-flex items-center justify-center rounded-lg border border-content-border bg-white text-text-muted hover:text-red-600 hover:border-red-200 hover:bg-red-50 transition-colors shadow-sm cursor-pointer"
                                             title="Delete Entry"
+                                            aria-label="Delete Entry"
                                         >
-                                            <svg viewBox="0 0 20 20" fill="currentColor" class="size-3.5">
+                                            <svg viewBox="0 0 20 20" fill="currentColor" class="size-4">
                                                 <path fill-rule="evenodd" d="M8.75 1A2.75 2.75 0 006 3.75v.443c-.795.077-1.584.176-2.365.298a.75.75 0 10.23 1.482l.149-.022.841 10.518A2.75 2.75 0 007.596 19h4.807a2.75 2.75 0 002.742-2.53l.841-10.52.149.023a.75.75 0 00.23-1.482A41.03 41.03 0 0014 4.193V3.75A2.75 2.75 0 0011.25 1h-2.5zM10 4c.84 0 1.673.025 2.5.075V3.75c0-.69-.56-1.25-1.25-1.25h-2.5c-.69 0-1.25.56-1.25 1.25v.325C8.327 4.025 9.16 4 10 4zM8.58 7.72a.75.75 0 01.75.72v5.25a.75.75 0 01-1.5 0V8.44a.75.75 0 01.75-.72zm3.34 0a.75.75 0 01.75.72v5.25a.75.75 0 01-1.5 0V8.44a.75.75 0 01.75-.72z" clip-rule="evenodd" />
                                             </svg>
-                                            Delete
                                         </button>
                                     </form>
                                 </div>
