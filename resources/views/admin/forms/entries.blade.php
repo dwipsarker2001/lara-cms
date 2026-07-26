@@ -66,9 +66,6 @@
                 </svg>
                 <span>Export</span>
             </a>
-            @if($entries->total() > 0)
-                <span class="text-sm text-text-muted">{{ $entries->total() }} entries</span>
-            @endif
         </div>
     </header>
 
