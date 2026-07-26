@@ -27,12 +27,14 @@
         ];
     });
 
-    $headers = ['#'];
+    $headers = [
+        ['key' => 'id', 'label' => '#'],
+    ];
     foreach ($fields as $field) {
-        $headers[] = $field['label'];
+        $headers[] = ['key' => $field['name'], 'label' => $field['label']];
     }
-    $headers[] = 'Submitted';
-    $headers[] = 'Actions';
+    $headers[] = ['key' => 'created', 'label' => 'Submitted'];
+    $headers[] = ['key' => 'actions', 'label' => 'Actions'];
 @endphp
 
 <div class="max-w-5xl mx-auto px-2 sm:px-0" x-data="formEntriesPage()">
@@ -166,6 +168,44 @@
                             </button>
                         </div>
                     </div>
+
+                    {{-- Column Settings Dropdown --}}
+                    <div class="relative shrink-0" x-data="{ open: false }" @click.outside="open = false" @keydown.escape.window="open = false">
+                        <button type="button"
+                            @click="open = !open"
+                            title="Column Settings"
+                            class="flex size-8 items-center justify-center rounded-lg border border-content-border bg-white text-text-muted hover:text-text-heading hover:bg-body-bg shadow-sm transition-colors cursor-pointer">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-settings">
+                                <path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.72l-.15.1a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.38a2 2 0 0 0-.73-2.73l-.15-.1a2 2 0 0 1-1-1.72v-.51a2 2 0 0 1 1-1.72l.15-.1a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/>
+                                <circle cx="12" cy="12" r="3"/>
+                            </svg>
+                        </button>
+                        <div x-show="open" x-cloak
+                            class="absolute right-0 top-full mt-2 min-w-[15rem] rounded-xl border border-content-border bg-content-bg shadow-xl p-2 space-y-1 z-[100]">
+                            <div class="px-2 py-1 text-[11px] font-semibold text-text-muted uppercase tracking-wider">
+                                Display Columns
+                            </div>
+                            <div class="my-1 border-t border-content-border"></div>
+                            <label class="flex items-center gap-2 px-2 py-1.5 rounded-lg hover:bg-body-bg text-xs text-text-primary cursor-pointer select-none">
+                                <input type="checkbox" x-model="visibleColumns['id']" class="rounded border-content-border text-primary focus:ring-primary/20">
+                                <span># (ID)</span>
+                            </label>
+                            @foreach ($fields as $field)
+                                <label class="flex items-center gap-2 px-2 py-1.5 rounded-lg hover:bg-body-bg text-xs text-text-primary cursor-pointer select-none">
+                                    <input type="checkbox" x-model="visibleColumns['{{ $field['name'] }}']" class="rounded border-content-border text-primary focus:ring-primary/20">
+                                    <span>{{ $field['label'] }}</span>
+                                </label>
+                            @endforeach
+                            <label class="flex items-center gap-2 px-2 py-1.5 rounded-lg hover:bg-body-bg text-xs text-text-primary cursor-pointer select-none">
+                                <input type="checkbox" x-model="visibleColumns['created']" class="rounded border-content-border text-primary focus:ring-primary/20">
+                                <span>Submitted Date</span>
+                            </label>
+                            <label class="flex items-center gap-2 px-2 py-1.5 rounded-lg hover:bg-body-bg text-xs text-text-primary cursor-pointer select-none">
+                                <input type="checkbox" x-model="visibleColumns['actions']" class="rounded border-content-border text-primary focus:ring-primary/20">
+                                <span>Actions</span>
+                            </label>
+                        </div>
+                    </div>
                 </div>
             @endif
         </div>
@@ -188,7 +228,7 @@
                             x-show="matchesSearch({{ json_encode($entry->data) }}, {{ $entry->id }}, {{ json_encode($entry->created_at->format('M j, Y g:i A')) }})"
                             class="border-b border-content-border last:border-0 hover:bg-body-bg/50 transition-colors"
                         >
-                            <td class="px-4 py-3 text-text-muted text-xs">#{{ $entry->id }}</td>
+                            <td x-show="visibleColumns['id'] !== false" class="px-4 py-3 text-text-muted text-xs">#{{ $entry->id }}</td>
                             
                             @foreach ($fields as $field)
                                 @php
@@ -199,15 +239,15 @@
                                         $value = $value ? 'Yes' : 'No';
                                     }
                                 @endphp
-                                <td class="px-4 py-3 text-text-primary max-w-[220px] truncate" title="{{ is_scalar($value) ? $value : '' }}">
+                                <td x-show="visibleColumns['{{ $field['name'] }}'] !== false" class="px-4 py-3 text-text-primary max-w-[220px] truncate" title="{{ is_scalar($value) ? $value : '' }}">
                                     {{ filled($value) || $value === 0 || $value === '0' ? $value : '—' }}
                                 </td>
                             @endforeach
 
-                            <td class="px-4 py-3 text-text-primary">
+                            <td x-show="visibleColumns['created'] !== false" class="px-4 py-3 text-text-primary">
                                 <span class="font-medium">{{ $entry->created_at->format('M j, Y g:i A') }}</span>
                             </td>
-                            <td class="px-4 py-3 text-right">
+                            <td x-show="visibleColumns['actions'] !== false" class="px-4 py-3 text-right">
                                 <a href="#" @click.prevent="$dispatch('open-entry-detail', { id: {{ $entry->id }} })"
                                     class="inline-flex items-center gap-1.5 text-sm font-medium text-primary hover:text-primary/80 transition-colors"
                                 >
@@ -284,11 +324,21 @@
 @push('scripts')
 <script>
     function formEntriesPage() {
+        const defaultVisibility = {
+            id: true,
+            created: true,
+            actions: true,
+        };
+        @foreach ($fields as $field)
+            defaultVisibility['{{ $field['name'] }}'] = true;
+        @endforeach
+
         return {
             search: '',
             filterColumn: 'all',
             sortColumn: 'created',
             sortDirection: 'desc',
+            visibleColumns: defaultVisibility,
             fields: @js($fields->pluck('name')->toArray()),
             fieldLabels: @js($fields->pluck('label', 'name')->toArray()),
 

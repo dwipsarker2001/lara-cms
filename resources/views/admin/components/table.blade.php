@@ -8,13 +8,26 @@
 <div class="overflow-x-auto rounded-xl ring-1 ring-content-border bg-content-bg shadow-sm">
     <table class="w-full border-separate border-spacing-y-0 text-left text-[13px]">
         <thead>
-            <tr class="bg-[#f9fafb]">
-                @foreach ($headers as $index => $header)
-                    <th class="whitespace-nowrap px-4 py-3 font-medium text-text-muted text-[12px] {{ $loop->first ? 'rounded-tl-xl' : '' }} {{ $loop->last ? 'rounded-tr-xl text-right' : '' }}">
-                        {{ $header }}
-                    </th>
-                @endforeach
-            </tr>
+            @if (isset($thead))
+                {{ $thead }}
+            @else
+                <tr class="bg-[#f9fafb]">
+                    @foreach ($headers as $index => $header)
+                        @php
+                            $key = is_array($header) ? ($header['key'] ?? $header['label']) : $header;
+                            $label = is_array($header) ? $header['label'] : $header;
+                        @endphp
+                        <th 
+                            @if(is_array($header) && isset($header['key']))
+                                x-show="visibleColumns['{{ $header['key'] }}'] !== false"
+                            @endif
+                            class="whitespace-nowrap px-4 py-3 font-medium text-text-muted text-[12px] {{ $loop->first ? 'rounded-tl-xl' : '' }} {{ $loop->last ? 'rounded-tr-xl text-right' : '' }}"
+                        >
+                            {{ $label }}
+                        </th>
+                    @endforeach
+                </tr>
+            @endif
         </thead>
         <tbody>
             @if ($items->isEmpty())
