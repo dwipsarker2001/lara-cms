@@ -242,8 +242,10 @@
                                         $value = str_replace(["\r\n", "\r", "\n"], ' ', $value);
                                     }
                                 @endphp
-                                <td x-show="visibleColumns['{{ $field['name'] }}'] !== false" class="px-4 py-3 text-text-primary min-w-[150px] max-w-[260px] truncate whitespace-nowrap" title="{{ is_scalar($value) ? $value : '' }}">
-                                    {{ filled($value) || $value === 0 || $value === '0' ? $value : '—' }}
+                                <td x-show="visibleColumns['{{ $field['name'] }}'] !== false" class="px-4 py-3 text-text-primary max-w-[200px] whitespace-nowrap overflow-hidden">
+                                    <span class="block max-w-[200px] truncate" title="{{ is_scalar($value) ? $value : '' }}">
+                                        {{ filled($value) || $value === 0 || $value === '0' ? $value : '—' }}
+                                    </span>
                                 </td>
                             @endforeach
 

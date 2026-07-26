@@ -22,10 +22,10 @@
                             @if(is_array($header) && isset($header['key']))
                                 x-show="visibleColumns['{{ $header['key'] }}'] !== false"
                             @endif
-                            class="whitespace-nowrap px-4 py-3 font-medium text-text-muted text-[12px] {{ $loop->first ? 'rounded-tl-xl' : '' }} {{ $isLast ? 'sticky right-0 bg-[#f9fafb] z-20 text-right rounded-tr-xl shadow-[-4px_0_8px_-2px_rgba(0,0,0,0.06)]' : '' }}"
+                            class="whitespace-nowrap px-4 py-3 font-medium text-text-muted text-[12px] max-w-[200px] truncate {{ $loop->first ? 'rounded-tl-xl' : '' }} {{ $isLast ? 'sticky right-0 bg-[#f9fafb] z-20 text-right rounded-tr-xl shadow-[-4px_0_8px_-2px_rgba(0,0,0,0.06)]' : '' }}"
                             title="{{ $label }}"
                         >
-                            {{ $label }}
+                            <span class="block max-w-[200px] truncate">{{ $label }}</span>
                         </th>
                     @endforeach
                 </tr>
