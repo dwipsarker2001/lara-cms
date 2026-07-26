@@ -13,10 +13,10 @@
 
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
-<body class="font-['Inter',sans-serif] bg-[#f4f4f6] text-gray-900 min-h-full flex items-center justify-center p-4 antialiased selection:bg-[#5538ee] selection:text-white">
-    <div class="w-full max-w-[420px] mx-auto">
+<body class="font-['Inter',sans-serif] bg-[#f4f4f6] text-gray-900 min-h-full flex items-center justify-center p-4 sm:p-6 antialiased selection:bg-[#5538ee] selection:text-white">
+    <div class="w-full max-w-md sm:max-w-lg mx-auto">
         <!-- Main Card -->
-        <div class="bg-white rounded-[20px] border border-gray-200/80 shadow-[0_12px_32px_-4px_rgba(0,0,0,0.06),0_2px_6px_-1px_rgba(0,0,0,0.04)] p-8">
+        <div class="bg-white rounded-[20px] border border-gray-200/80 shadow-[0_12px_32px_-4px_rgba(0,0,0,0.06),0_2px_6px_-1px_rgba(0,0,0,0.04)] p-6 sm:p-8">
             <!-- Icon Badge -->
             <div class="flex justify-center mb-5">
                 <div class="w-12 h-12 rounded-[14px] border border-gray-200/90 bg-white shadow-[0_1px_2px_rgba(0,0,0,0.04)] flex items-center justify-center text-gray-800">
