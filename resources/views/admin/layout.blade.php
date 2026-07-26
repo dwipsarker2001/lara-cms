@@ -10,6 +10,7 @@
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer" />
     <script>
+        window.FA_ICONS = {{ \Illuminate\Support\Js::from(file_exists(public_path('fa-icons.json')) ? json_decode(file_get_contents(public_path('fa-icons.json'))) : []) }};
         window.categoryPicker = function(initialSelected, termsList) {
             return {
                 selected: Array.isArray(initialSelected) ? initialSelected : (initialSelected ? [initialSelected] : []),
@@ -378,11 +379,15 @@
                                     class="flex items-center gap-2.5 px-2.5 py-1.5 rounded-md text-sm no-underline transition-colors @if(request()->routeIs('admin.forms.entries') && request()->route('form')?->id === $sidebarForm->id) text-text-heading bg-gray-200 font-semibold @else text-text-primary hover:bg-gray-100 hover:text-text-heading font-medium @endif"
                                 >
                                     <span class="flex w-4 shrink-0 items-center justify-center">
-                                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" class="size-4">
-                                            <rect x="3" y="3" width="18" height="18" rx="2" ry="2" />
-                                            <line x1="3" y1="9" x2="21" y2="9" />
-                                            <line x1="9" y1="21" x2="9" y2="9" />
-                                        </svg>
+                                        @if($sidebarForm->icon)
+                                            <i class="{{ $sidebarForm->icon }} text-xs"></i>
+                                        @else
+                                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" class="size-4">
+                                                <rect x="3" y="3" width="18" height="18" rx="2" ry="2" />
+                                                <line x1="3" y1="9" x2="21" y2="9" />
+                                                <line x1="9" y1="21" x2="9" y2="9" />
+                                            </svg>
+                                        @endif
                                     </span>
                                     {{ $sidebarForm->title }}
                                     @if(($sidebarForm->entries_count ?? 0) > 0)

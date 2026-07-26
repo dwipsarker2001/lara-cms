@@ -12,6 +12,13 @@ beforeEach(function () {
     actingAs($this->admin, 'admin');
 });
 
+it('renders icon selector on form create page', function () {
+    \Pest\Laravel\get(route('admin.forms.create'))
+        ->assertStatus(200)
+        ->assertSee('window.FA_ICONS =', false)
+        ->assertSee('Choose icon');
+});
+
 it('creates a form with a selected icon', function () {
     post(route('admin.forms.store'), [
         'title' => 'Feedback Form',
@@ -42,4 +49,15 @@ it('updates a form icon', function () {
 
     $form->refresh();
     expect($form->icon)->toBe('fa-solid fa-paper-plane');
+});
+
+it('renders the selected form icon in the admin sidebar', function () {
+    Form::factory()->create([
+        'title' => 'Survey Form',
+        'icon' => 'fa-solid fa-poll',
+    ]);
+
+    \Pest\Laravel\get(route('admin.dashboard'))
+        ->assertStatus(200)
+        ->assertSee('fa-solid fa-poll');
 });

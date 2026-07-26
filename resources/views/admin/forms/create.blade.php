@@ -54,7 +54,7 @@
                             <div class="flex items-center gap-2">
                                 <div class="flex-1 flex items-center gap-2">
                                     <input type="hidden" name="icon" x-model="selectedIcon">
-                                    <div class="relative flex-1">
+                                    <div class="relative flex-1" @click.outside="iconPickerOpen = false">
                                         <button type="button"
                                             @click="iconPickerOpen = !iconPickerOpen; if(iconPickerOpen) { iconLoading = true; iconSearch = ''; $nextTick(() => iconLoading = false); }"
                                             class="flex items-center gap-2 w-full rounded-lg border px-3 py-2 text-sm transition-colors bg-white h-9"
@@ -75,7 +75,7 @@
                                         </button>
                                         <template x-if="iconPickerOpen">
                                             <div
-                                                class="absolute z-50 mt-1 w-full rounded-lg border border-gray-200 bg-white shadow-lg" @click.outside="iconPickerOpen = false">
+                                                class="absolute z-50 mt-1 w-full rounded-lg border border-gray-200 bg-white shadow-lg">
                                                 <div class="p-2 border-b border-gray-100">
                                                     <input type="text" x-model="iconSearch"
                                                         placeholder="Search icons..."
