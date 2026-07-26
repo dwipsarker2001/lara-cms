@@ -11,14 +11,16 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('terms', function (Blueprint $table) {
-            $table->id();
-            $table->foreignId('taxonomy_id')->constrained('taxonomies')->cascadeOnDelete();
-            $table->string('title');
-            $table->string('slug');
-            $table->integer('position')->default(0);
-            $table->timestamps();
-        });
+        if (! Schema::hasTable('terms')) {
+            Schema::create('terms', function (Blueprint $table) {
+                $table->id();
+                $table->foreignId('taxonomy_id')->constrained('taxonomies')->cascadeOnDelete();
+                $table->string('title');
+                $table->string('slug');
+                $table->integer('position')->default(0);
+                $table->timestamps();
+            });
+        }
     }
 
     /**

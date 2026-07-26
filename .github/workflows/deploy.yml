@@ -17,10 +17,12 @@ jobs:
           key: ${{ secrets.SSH_KEY }}
           script: |
             cd /var/www/travel.eapply.site
+            docker run --rm -v $(pwd):/app alpine chown -R $(id -u):$(id -g) /app || true
             git fetch origin deploy
             git reset --hard origin/deploy
             npm ci
             npm run build
+            docker compose exec -T app git config --global --add safe.directory /app || true
             docker compose exec -T app composer install --no-dev --prefer-dist --optimize-autoloader --no-interaction
             docker compose exec -T app php artisan migrate --force
             docker compose exec -T app php artisan optimize
