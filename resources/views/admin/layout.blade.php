@@ -258,18 +258,6 @@
                                 All Collections
                             </a>
                         </li>
-                        <li>
-                            <a href="{{ route('admin.collections.create') }}"
-                                class="flex items-center gap-2.5 px-2.5 py-1.5 rounded-md text-sm no-underline transition-colors @if(request()->routeIs('admin.collections.create') || request()->routeIs('admin.collections.edit')) text-text-heading bg-gray-200 font-semibold @else text-text-primary hover:bg-gray-100 hover:text-text-heading font-medium @endif"
-                            >
-                                <span class="flex w-4 shrink-0 items-center justify-center">
-                                    <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="size-4">
-                                        <path d="M8 3v10M3 8h10" />
-                                    </svg>
-                                </span>
-                                Create
-                            </a>
-                        </li>
                         @foreach($sidebarCollections ?? [] as $sidebarCollection)
                             <li>
                                 <a href="{{ route('admin.collections.entries.index', $sidebarCollection) }}"
@@ -382,18 +370,6 @@
                                     </svg>
                                 </span>
                                 All Forms
-                            </a>
-                        </li>
-                        <li>
-                            <a href="{{ route('admin.forms.create') }}"
-                                class="flex items-center gap-2.5 px-2.5 py-1.5 rounded-md text-sm no-underline transition-colors @if(request()->routeIs('admin.forms.create') || request()->routeIs('admin.forms.editor')) text-text-heading bg-gray-200 font-semibold @else text-text-primary hover:bg-gray-100 hover:text-text-heading font-medium @endif"
-                            >
-                                <span class="flex w-4 shrink-0 items-center justify-center">
-                                    <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="size-4">
-                                        <path d="M8 3v10M3 8h10" />
-                                    </svg>
-                                </span>
-                                Create
                             </a>
                         </li>
                         @foreach($sidebarForms ?? [] as $sidebarForm)
