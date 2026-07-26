@@ -74,6 +74,10 @@ class FormController extends Controller
 
     public function entries(Form $form)
     {
+        if (Schema::hasTable('form_entries')) {
+            $form->entries()->where('status', 1)->update(['status' => 0]);
+        }
+
         $entries = Schema::hasTable('form_entries')
             ? $form->entries()->latest()->paginate(15)
             : new LengthAwarePaginator([], 0, 15);

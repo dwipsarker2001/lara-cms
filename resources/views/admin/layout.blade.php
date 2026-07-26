@@ -389,9 +389,14 @@
                                             </svg>
                                         @endif
                                     </span>
-                                    {{ $sidebarForm->title }}
-                                    @if(($sidebarForm->entries_count ?? 0) > 0)
-                                        <span class="ml-auto text-[11px] font-semibold bg-primary/10 text-primary px-1.5 py-0.5 rounded-full">{{ $sidebarForm->entries_count }}</span>
+                                    <span class="truncate">{{ $sidebarForm->title }}</span>
+                                    @php
+                                        $isCurrentFormOpen = request()->routeIs('admin.forms.entries') && (
+                                            (is_object(request()->route('form')) ? request()->route('form')->id : request()->route('form')) == $sidebarForm->id
+                                        );
+                                    @endphp
+                                    @if(($sidebarForm->entries_count ?? 0) > 0 && ! $isCurrentFormOpen)
+                                        <span class="ml-auto flex size-5 shrink-0 items-center justify-center rounded-full bg-red-500 text-[11px] font-semibold leading-none text-white">{{ $sidebarForm->entries_count }}</span>
                                     @endif
                                 </a>
                             </li>

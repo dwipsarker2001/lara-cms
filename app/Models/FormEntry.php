@@ -12,11 +12,14 @@ class FormEntry extends Model
     /** @use HasFactory<FormEntryFactory> */
     use HasFactory;
 
-    protected $fillable = ['form_id', 'data', 'ip_address', 'user_agent'];
+    protected $fillable = ['form_id', 'data', 'ip_address', 'user_agent', 'status'];
 
     protected function casts(): array
     {
-        return ['data' => 'array'];
+        return [
+            'data' => 'array',
+            'status' => 'integer',
+        ];
     }
 
     public function form(): BelongsTo
