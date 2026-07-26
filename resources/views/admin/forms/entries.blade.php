@@ -249,10 +249,7 @@
                             <td x-show="visibleColumns['created'] !== false" class="px-4 py-3 text-text-primary whitespace-nowrap min-w-[160px]">
                                 <span class="font-medium">{{ $entry->created_at->format('M j, Y g:i A') }}</span>
                             </td>
-                            <td x-show="visibleColumns['actions'] !== false"
-                                class="sticky right-0 bg-white group-hover:bg-[#f9fafb] group-last:rounded-br-xl z-10 px-4 py-3 text-right whitespace-nowrap transition-all"
-                                :class="{ 'shadow-[-4px_0_8px_-2px_rgba(0,0,0,0.06)]': isScrolled }"
-                            >
+                            <td x-show="visibleColumns['actions'] !== false" class="sticky right-0 bg-white group-hover:bg-[#f9fafb] group-last:rounded-br-xl z-10 px-4 py-3 text-right whitespace-nowrap transition-colors">
                                 <div class="flex items-center justify-end gap-1.5">
                                     {{-- View Icon Button --}}
                                     <a href="#" @click.prevent="$dispatch('open-entry-detail', { id: {{ $entry->id }} })"

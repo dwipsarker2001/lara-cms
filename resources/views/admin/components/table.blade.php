@@ -6,12 +6,7 @@
 ])
 
 <div class="rounded-xl ring-1 ring-content-border bg-content-bg shadow-sm overflow-hidden">
-    <div class="overflow-x-auto table-scrollbar"
-        x-data="{ isScrolled: false, checkScroll() { const maxScroll = $el.scrollWidth - $el.clientWidth; const hasOverflow = maxScroll > 5; const isAtRightEnd = $el.scrollLeft >= maxScroll - 5; this.isScrolled = hasOverflow && !isAtRightEnd; } }"
-        x-init="checkScroll()"
-        @scroll.passive="checkScroll()"
-        @resize.window.debounce.100ms="checkScroll()"
-    >
+    <div class="overflow-x-auto table-scrollbar">
     <table class="w-full min-w-full border-separate border-spacing-y-0 text-left text-[13px]">
         <thead>
             @if (isset($thead))
@@ -28,8 +23,7 @@
                             @if(is_array($header) && isset($header['key']))
                                 x-show="visibleColumns['{{ $header['key'] }}'] !== false"
                             @endif
-                            class="whitespace-nowrap px-4 py-3 font-medium text-text-muted text-[12px] max-w-[200px] truncate {{ $loop->first ? 'rounded-tl-xl' : '' }} {{ $isLast ? 'sticky right-0 bg-[#f9fafb] z-20 text-right rounded-tr-xl transition-shadow' : '' }}"
-                            :class="{ 'shadow-[-4px_0_8px_-2px_rgba(0,0,0,0.06)]': {{ $isLast ? 'isScrolled' : 'false' }} }"
+                            class="whitespace-nowrap px-4 py-3 font-medium text-text-muted text-[12px] max-w-[200px] truncate {{ $loop->first ? 'rounded-tl-xl' : '' }} {{ $isLast ? 'sticky right-0 bg-[#f9fafb] z-20 text-right rounded-tr-xl' : '' }}"
                             title="{{ $label }}"
                         >
                             <span class="block max-w-[200px] truncate">{{ $label }}</span>
