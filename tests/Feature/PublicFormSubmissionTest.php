@@ -63,13 +63,14 @@ it('submits standard built-in checkout form and shows submission in admin entrie
     $adminResponse->assertSee('Window seat please');
 });
 
-it('preserves booking form UI when connected to a dynamic form', function () {
+it('renders dynamic form fields from selected form in checkout-form and submits correctly with custom error message', function () {
     $form = Form::factory()->create([
         'title' => 'Custom Tour Form',
         'submit_text' => 'Book Tour Now',
         'fields' => [
-            ['_key' => '1', 'type' => 'text', 'label' => 'Full Name', 'name' => 'full_name', 'required' => true],
-            ['_key' => '2', 'type' => 'email', 'label' => 'Email', 'name' => 'email', 'required' => true],
+            ['_key' => '1', 'type' => 'text', 'label' => 'Full Name', 'name' => 'full_name', 'error_message' => 'Name is required', 'required' => true],
+            ['_key' => '2', 'type' => 'email', 'label' => 'Email', 'name' => 'email', 'error_message' => 'Email is required', 'required' => true],
+            ['_key' => '3', 'type' => 'text', 'label' => 'Custom Notes', 'name' => 'custom_notes', 'required' => false],
         ],
     ]);
 
@@ -83,12 +84,30 @@ it('preserves booking form UI when connected to a dynamic form', function () {
 
     $view->assertSee('name="full_name"', false);
     $view->assertSee('name="email"', false);
-    $view->assertSee('name="phone"', false);
-    $view->assertSee('name="travel_date"', false);
-    $view->assertSee('name="preferred_time"', false);
+    $view->assertSee('name="custom_notes"', false);
     $view->assertSee('name="adults"', false);
     $view->assertSee('name="children"', false);
-    $view->assertSee('name="additional_message"', false);
     $view->assertSee(route('forms.public-submit', $form));
     $view->assertSee('Book Tour Now');
+
+    // Test submission validation with custom error message
+    $failResponse = $this->post(route('forms.public-submit', $form), []);
+    $failResponse->assertSessionHasErrors([
+        'full_name' => 'Name is required',
+        'email' => 'Email is required',
+    ]);
+
+    // Test successful submission
+    $successResponse = $this->post(route('forms.public-submit', $form), [
+        'full_name' => 'Jane Doe',
+        'email' => 'jane@example.com',
+        'custom_notes' => 'Vegetarian meal please',
+    ]);
+
+    $successResponse->assertRedirect();
+    $entry = FormEntry::where('form_id', $form->id)->first();
+    expect($entry)->not->toBeNull();
+    expect($entry->data['full_name'])->toBe('Jane Doe');
+    expect($entry->data['email'])->toBe('jane@example.com');
+    expect($entry->data['custom_notes'])->toBe('Vegetarian meal please');
 });

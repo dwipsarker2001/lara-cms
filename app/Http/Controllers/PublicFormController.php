@@ -28,66 +28,42 @@ class PublicFormController extends Controller
         $submittedKeys = array_keys($request->except(['_token', '_method', 'package_id']));
 
         if (! empty($form->fields)) {
-            $schemaFieldNames = array_column(
-                array_filter($form->fields, fn ($f) => is_array($f) && ! empty($f['name'])),
-                'name'
-            );
+            $rules = [];
+            $customMessages = [];
 
-            // Only apply schema validation if submitted keys actually match schema field names.
-            // The checkout form always submits full_name/email/phone regardless of the connected
-            // form schema (which may have auto-generated names like text_78ie).
-            $keysMatchSchema = ! empty(array_intersect($submittedKeys, $schemaFieldNames));
+            foreach ($form->fields as $field) {
+                if (! is_array($field) || empty($field['name'])) {
+                    continue;
+                }
 
-            if ($keysMatchSchema) {
-                $rules = [];
-                $customMessages = [];
+                $fieldName = $field['name'];
+                $fieldRules = [];
 
-                foreach ($form->fields as $field) {
-                    if (! is_array($field) || empty($field['name'])) {
-                        continue;
-                    }
+                if (! empty($field['required'])) {
+                    $fieldRules[] = 'required';
+                } else {
+                    $fieldRules[] = 'nullable';
+                }
 
-                    $fieldName = $field['name'];
-                    $fieldRules = [];
-
-                    if (! empty($field['required'])) {
-                        $fieldRules[] = 'required';
-                    } else {
-                        $fieldRules[] = 'nullable';
-                    }
-
-                    if (! empty($field['validation'])) {
-                        $customRules = array_filter(explode('|', $field['validation']));
-                        foreach ($customRules as $cr) {
-                            $fieldRules[] = trim($cr);
-                        }
-                    }
-
-                    if (! empty($fieldRules)) {
-                        $rules[$fieldName] = implode('|', array_unique($fieldRules));
-                    }
-
-                    if (! empty($field['error_message'])) {
-                        $customMessages["{$fieldName}.*"] = $field['error_message'];
-                        $customMessages[$fieldName] = $field['error_message'];
+                if (! empty($field['validation'])) {
+                    $customRules = array_filter(explode('|', $field['validation']));
+                    foreach ($customRules as $cr) {
+                        $fieldRules[] = trim($cr);
                     }
                 }
 
-                if (! empty($rules)) {
-                    $request->validate($rules, $customMessages);
+                if (! empty($fieldRules)) {
+                    $rules[$fieldName] = implode('|', array_unique($fieldRules));
                 }
-            } else {
-                // Schema field names don't match submitted keys — use default checkout validation
-                $request->validate([
-                    'full_name' => 'nullable|string|max:255',
-                    'email' => 'nullable|email|max:255',
-                    'phone' => 'nullable|string|max:50',
-                    'travel_date' => 'nullable|string',
-                    'preferred_time' => 'nullable|string',
-                    'adults' => 'nullable',
-                    'children' => 'nullable',
-                    'additional_message' => 'nullable|string',
-                ]);
+
+                if (! empty($field['error_message'])) {
+                    $customMessages["{$fieldName}.*"] = $field['error_message'];
+                    $customMessages[$fieldName] = $field['error_message'];
+                }
+            }
+
+            if (! empty($rules)) {
+                $request->validate($rules, $customMessages);
             }
         } else {
             // No schema — use default checkout form validation
