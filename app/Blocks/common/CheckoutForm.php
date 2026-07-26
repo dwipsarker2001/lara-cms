@@ -4,6 +4,8 @@ namespace App\Blocks\common;
 
 use App\Blocks\Block;
 use App\Blocks\Field;
+use App\Models\Form;
+use Illuminate\Support\Facades\Schema;
 
 class CheckoutForm extends Block
 {
@@ -16,6 +18,7 @@ class CheckoutForm extends Block
     public function fields(): array
     {
         return [
+            Field::select('formId', 'Select Form', self::formOptions(), default: ''),
             Field::string('formTitle', 'Booking Details Title', default: 'Traveler Details'),
             Field::string('summaryTitle', 'Order Summary Title', default: 'Order Summary'),
             Field::string('productName', 'Package Name', default: 'Gourmet Coffee Beans'),
@@ -26,5 +29,29 @@ class CheckoutForm extends Block
             Field::number('extraService', 'Extra Service ($)', default: 0.00),
             Field::string('buttonText', 'Button Text', default: 'Confirm Booking'),
         ];
+    }
+
+    /** Helper to build form select options */
+    protected static function formOptions(): array
+    {
+        $options = [
+            ['value' => '', 'label' => 'Default Form'],
+        ];
+
+        try {
+            if (Schema::hasTable('forms')) {
+                $forms = Form::select('id', 'title')->orderBy('position')->get();
+                foreach ($forms as $f) {
+                    $options[] = [
+                        'value' => (string) $f->id,
+                        'label' => $f->title,
+                    ];
+                }
+            }
+        } catch (\Throwable $e) {
+            // fallback
+        }
+
+        return $options;
     }
 }
