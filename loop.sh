@@ -5,6 +5,7 @@ set -e
 PROJECT_ID="b320a599-4d99-417f-a9c4-7bda958443d9"
 MAX_ITERATIONS=10
 ITERATION=1
+CUSTOM_COMMIT_MSG="$1"
 
 echo "========================================="
 echo " Starting Loop Engineering System "
@@ -40,7 +41,8 @@ while [ $ITERATION -le $MAX_ITERATIONS ]; do
         echo " SUCCESS! All tests passed."
         echo "========================================="
         git add .
-        git commit -m "feat(loop): verified passing changes on iteration $ITERATION" || true
+        COMMIT_MSG="${CUSTOM_COMMIT_MSG:-feat(loop): verified passing changes on iteration $ITERATION}"
+        git commit -m "$COMMIT_MSG" || true
         break
     else
         echo "[3/3] Verification failed on iteration $ITERATION."
