@@ -54,11 +54,11 @@
                         id="email"
                         type="email"
                         name="email"
-                        value="{{ old('email', 'david.hasselhoff@example.com') }}"
+                        value="{{ old('email', 'admin@example.com') }}"
                         required
                         autofocus
                         autocomplete="username"
-                        placeholder="david.hasselhoff@example.com"
+                        placeholder="admin@example.com"
                         class="w-full h-11 px-3.5 rounded-[10px] border border-gray-200 bg-white text-[14px] text-gray-900 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-[#5538ee]/20 focus:border-[#5538ee] shadow-[0_1px_2px_rgba(0,0,0,0.03)] transition-all duration-150"
                     >
                 </div>
