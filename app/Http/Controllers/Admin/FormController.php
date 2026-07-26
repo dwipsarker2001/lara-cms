@@ -27,6 +27,7 @@ class FormController extends Controller
     {
         $data = $request->validate([
             'title' => 'required|string|max:255',
+            'icon' => 'nullable|string|max:255',
             'description' => 'nullable|string',
             'submit_text' => 'required|string|max:255',
             'success_message' => 'required|string|max:255',
@@ -46,6 +47,7 @@ class FormController extends Controller
     {
         $form->update($request->validate([
             'title' => 'required|string|max:255',
+            'icon' => 'nullable|string|max:255',
             'description' => 'nullable|string',
             'submit_text' => 'required|string|max:255',
             'success_message' => 'required|string|max:255',

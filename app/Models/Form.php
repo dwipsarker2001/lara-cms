@@ -12,7 +12,7 @@ class Form extends Model
     /** @use HasFactory<FormFactory> */
     use HasFactory;
 
-    protected $fillable = ['title', 'description', 'submit_text', 'success_message', 'position', 'fields'];
+    protected $fillable = ['title', 'icon', 'description', 'submit_text', 'success_message', 'position', 'fields'];
 
     protected function casts(): array
     {
