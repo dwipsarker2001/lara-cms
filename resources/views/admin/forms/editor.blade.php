@@ -345,8 +345,13 @@
             },
 
             init(fields) {
-                this.fields = JSON.parse(JSON.stringify(fields || []));
-                this.originalFields = JSON.parse(JSON.stringify(fields || []));
+                this.fields = (fields || []).map(f => ({
+                    ...f,
+                    _nameEdited: true,
+                    _placeholderEdited: true,
+                    _errorEdited: true,
+                }));
+                this.originalFields = JSON.parse(JSON.stringify(this.fields));
                 this.$nextTick(() => this.initFieldSortable());
             },
 
@@ -397,6 +402,9 @@
                     placeholder: def.placeholder || '',
                     error_message: '',
                     required: false,
+                    _nameEdited: false,
+                    _placeholderEdited: false,
+                    _errorEdited: false,
                 };
 
                 if (def.options) {
@@ -440,6 +448,55 @@
                 if (!field) return;
                 field[name] = value;
                 this.dirty = true;
+
+                if (name === 'name') {
+                    field._nameEdited = true;
+                } else if (name === 'placeholder') {
+                    field._placeholderEdited = true;
+                } else if (name === 'error_message') {
+                    field._errorEdited = true;
+                } else if (name === 'label') {
+                    const cleanLabel = (value || '').trim();
+                    const lower = cleanLabel.toLowerCase();
+
+                    // Smart auto-generation of Field Key (name) if not manually locked
+                    if (!field._nameEdited) {
+                        const generatedKey = lower
+                            .replace(/[^a-z0-9]+/g, '_')
+                            .replace(/^_+|_+$/g, '');
+                        if (generatedKey) {
+                            field.name = generatedKey;
+                        }
+                    }
+
+                    // Smart auto-generation of Placeholder if not manually locked
+                    if (!field._placeholderEdited) {
+                        if (field.type === 'email' || lower.includes('email')) {
+                            field.placeholder = 'you@example.com';
+                        } else if (field.type === 'phone' || lower.includes('phone') || lower.includes('tel') || lower.includes('mobile')) {
+                            field.placeholder = '+1 (555) 000-0000';
+                        } else if (field.type === 'date' || lower.includes('date') || lower.includes('dob') || lower.includes('birthday')) {
+                            field.placeholder = 'YYYY-MM-DD';
+                        } else if (field.type === 'number' || lower.includes('quantity') || lower.includes('amount') || lower.includes('age')) {
+                            field.placeholder = '0';
+                        } else if (cleanLabel) {
+                            field.placeholder = 'Enter ' + lower + '…';
+                        }
+                    }
+
+                    // Smart auto-generation of Custom Error Message if not manually locked
+                    if (!field._errorEdited) {
+                        if (cleanLabel) {
+                            if (field.type === 'email' || lower.includes('email')) {
+                                field.error_message = 'Please enter a valid email address';
+                            } else if (field.type === 'phone' || lower.includes('phone') || lower.includes('tel')) {
+                                field.error_message = 'Please enter a valid phone number';
+                            } else {
+                                field.error_message = 'Please enter ' + lower;
+                            }
+                        }
+                    }
+                }
             },
 
             addTag(name, value) {
