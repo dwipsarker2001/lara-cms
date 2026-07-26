@@ -152,6 +152,26 @@ class FormController extends Controller
         return response()->json(['message' => 'Form fields saved.']);
     }
 
+    public function updateEntry(Request $request, Form $form, FormEntry $entry)
+    {
+        abort_if($entry->form_id !== $form->id, 404);
+
+        $entry->update([
+            'data' => $request->input('data', []),
+        ]);
+
+        return redirect()->route('admin.forms.entries', $form)->with('success', 'Submission updated successfully.');
+    }
+
+    public function destroyEntry(Form $form, FormEntry $entry)
+    {
+        abort_if($entry->form_id !== $form->id, 404);
+
+        $entry->delete();
+
+        return redirect()->route('admin.forms.entries', $form)->with('success', 'Submission deleted successfully.');
+    }
+
     public function saveColumns(Request $request, Form $form)
     {
         $validated = $request->validate([
