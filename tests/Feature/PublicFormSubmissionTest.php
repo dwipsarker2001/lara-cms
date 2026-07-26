@@ -85,8 +85,8 @@ it('renders dynamic form fields from selected form in checkout-form and submits 
     $view->assertSee('name="full_name"', false);
     $view->assertSee('name="email"', false);
     $view->assertSee('name="custom_notes"', false);
-    $view->assertSee('name="adults"', false);
-    $view->assertSee('name="children"', false);
+    $view->assertDontSee('name="adults"', false);
+    $view->assertDontSee('name="children"', false);
     $view->assertSee(route('forms.public-submit', $form));
     $view->assertSee('Book Tour Now');
 

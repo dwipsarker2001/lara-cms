@@ -115,9 +115,11 @@
 
                     <form action="{{ $selectedForm ? route('forms.public-submit', $selectedForm) : route('forms.public-submit-default') }}" method="POST" class="space-y-4">
                         @csrf
-                        <input type="hidden" name="package_id" value="{{ request('package_id') }}">
-                        <input type="hidden" name="adults" :value="adults" />
-                        <input type="hidden" name="children" :value="children" />
+                        @if(!$selectedForm || empty($selectedForm->fields))
+                            <input type="hidden" name="package_id" value="{{ request('package_id') }}">
+                            <input type="hidden" name="adults" :value="adults" />
+                            <input type="hidden" name="children" :value="children" />
+                        @endif
 
                         @if($selectedForm && !empty($selectedForm->fields))
                             @foreach($selectedForm->fields as $field)
