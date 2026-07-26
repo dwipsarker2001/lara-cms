@@ -5,7 +5,8 @@
     'emptySubtext' => 'Submissions will appear here once the form is submitted.',
 ])
 
-<div class="overflow-x-auto table-scrollbar rounded-xl ring-1 ring-content-border bg-content-bg shadow-sm">
+<div class="rounded-xl ring-1 ring-content-border bg-content-bg shadow-sm overflow-hidden">
+    <div class="overflow-x-auto table-scrollbar">
     <table class="w-full min-w-full border-separate border-spacing-y-0 text-left text-[13px]">
         <thead>
             @if (isset($thead))
@@ -49,4 +50,5 @@
             @endif
         </tbody>
     </table>
+    </div>
 </div>

@@ -225,7 +225,7 @@
                             x-show="matchesSearch({{ json_encode($entry->data) }}, {{ $entry->id }}, {{ json_encode($entry->created_at->format('M j, Y g:i A')) }})"
                             class="group border-b border-content-border last:border-0 hover:bg-[#f9fafb] transition-colors"
                         >
-                            <td x-show="visibleColumns['id'] !== false" class="px-4 py-3 text-text-muted text-xs whitespace-nowrap min-w-[70px]">#{{ $entry->id }}</td>
+                            <td x-show="visibleColumns['id'] !== false" class="px-4 py-3 text-text-muted text-xs whitespace-nowrap min-w-[70px] group-last:rounded-bl-xl">#{{ $entry->id }}</td>
                             
                             @foreach ($fields as $field)
                                 @php
@@ -249,7 +249,7 @@
                             <td x-show="visibleColumns['created'] !== false" class="px-4 py-3 text-text-primary whitespace-nowrap min-w-[160px]">
                                 <span class="font-medium">{{ $entry->created_at->format('M j, Y g:i A') }}</span>
                             </td>
-                            <td x-show="visibleColumns['actions'] !== false" class="sticky right-0 bg-white group-hover:bg-[#f9fafb] z-10 px-4 py-3 text-right whitespace-nowrap shadow-[-4px_0_8px_-2px_rgba(0,0,0,0.06)] transition-colors">
+                            <td x-show="visibleColumns['actions'] !== false" class="sticky right-0 bg-white group-hover:bg-[#f9fafb] group-last:rounded-br-xl z-10 px-4 py-3 text-right whitespace-nowrap shadow-[-4px_0_8px_-2px_rgba(0,0,0,0.06)] transition-colors">
                                 <div class="flex items-center justify-end gap-1.5">
                                     {{-- View Icon Button --}}
                                     <a href="#" @click.prevent="$dispatch('open-entry-detail', { id: {{ $entry->id }} })"
