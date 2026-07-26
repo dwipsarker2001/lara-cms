@@ -19,6 +19,8 @@ jobs:
             cd /var/www/travel.eapply.site
             git fetch origin deploy
             git reset --hard origin/deploy
+            npm ci
+            npm run build
             docker compose exec -T app composer install --no-dev --prefer-dist --optimize-autoloader --no-interaction
             docker compose exec -T app php artisan migrate --force
             docker compose exec -T app php artisan optimize
