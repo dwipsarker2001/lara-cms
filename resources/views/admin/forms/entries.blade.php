@@ -35,7 +35,7 @@
     $headers[] = 'Actions';
 @endphp
 
-<div class="max-w-5xl mx-auto px-2 sm:px-0">
+<div class="max-w-5xl mx-auto px-2 sm:px-0" x-data="formEntriesPage()">
     <header class="relative flex flex-wrap items-center justify-between gap-4 py-6 md:py-8">
         <h1 class="flex items-center gap-2.5 text-[25px] leading-[1.25] font-medium text-text-heading">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" class="size-6 shrink-0 text-text-muted">
@@ -71,7 +71,105 @@
     </header>
 
     <div class="bg-panel-bg rounded-2xl p-[7px] mb-8">
-        <div class="px-[18px] py-3 text-sm font-medium text-text-heading">All Submissions</div>
+        <div class="flex flex-wrap items-center justify-between gap-3 px-2 pb-2.5 pt-1">
+            <span class="flex items-center gap-2 text-[14px] font-medium text-text-heading">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" class="size-4 shrink-0 text-text-muted">
+                    <rect x="3" y="3" width="18" height="18" rx="2" ry="2" />
+                    <line x1="3" y1="9" x2="21" y2="9" />
+                    <line x1="9" y1="21" x2="9" y2="9" />
+                </svg>
+                All Submissions
+            </span>
+            @if(!$entries->isEmpty())
+                <div class="flex items-center gap-2 flex-nowrap shrink-0">
+                    {{-- Search Input --}}
+                    <div class="relative shrink-0">
+                        <svg viewBox="0 0 20 20" fill="currentColor" class="size-3.5 absolute left-2.5 top-1/2 -translate-y-1/2 text-text-muted">
+                            <path fill-rule="evenodd" d="M9 3.5a5.5 5.5 0 100 11 5.5 5.5 0 000-11zM2 9a7 7 0 1112.452 4.391l3.328 3.329a.75.75 0 11-1.06 1.06l-3.329-3.328A7 7 0 012 9z" clip-rule="evenodd" />
+                        </svg>
+                        <input
+                            type="text"
+                            x-model="search"
+                            placeholder="Search submissions..."
+                            aria-label="Search submissions"
+                            class="h-8 w-44 sm:w-56 rounded-lg border border-content-border bg-content-bg pl-8 pr-3 text-[12px] text-text-heading placeholder:text-text-muted focus:outline-none focus:ring-2 focus:ring-primary/10 shadow-sm"
+                        >
+                    </div>
+
+                    {{-- Filter Dropdown --}}
+                    <div class="relative shrink-0" x-data="{ open: false }" @click.outside="open = false" @keydown.escape.window="open = false">
+                        <button type="button"
+                            @click="open = !open"
+                            class="flex h-8 items-center gap-1.5 whitespace-nowrap rounded-lg border border-content-border bg-white px-3 text-[12px] font-medium text-text-heading hover:bg-body-bg shadow-sm transition-colors cursor-pointer">
+                            <svg viewBox="0 0 20 20" fill="currentColor" class="size-3.5 text-text-muted shrink-0">
+                                <path fill-rule="evenodd" d="M2.628 1.601C5.028 1.206 7.49 1 10 1s4.973.206 7.372.601a.75.75 0 01.628.74v2.288a2.25 2.25 0 01-.659 1.59l-4.682 4.683a2.25 2.25 0 00-.659 1.59v3.037c0 .684-.31 1.33-.844 1.757l-1.937 1.55A.75.75 0 018 18.25v-5.757a2.25 2.25 0 00-.659-1.591L2.659 6.22A2.25 2.25 0 012 4.629V2.34a.75.75 0 01.628-.74z" clip-rule="evenodd" />
+                            </svg>
+                            <span x-text="filterColumnLabel" class="whitespace-nowrap">Filter: All</span>
+                            <svg class="size-3 text-text-muted shrink-0 transition-transform ml-0.5" :class="open ? 'rotate-180' : ''" viewBox="0 0 20 20" fill="currentColor">
+                                <path fill-rule="evenodd" d="M5.22 8.22a.75.75 0 0 1 1.06 0L10 11.94l3.72-3.72a.75.75 0 1 1 1.06 1.06l-4.25 4.25a.75.75 0 0 1-1.06 0L5.22 9.28a.75.75 0 0 1 0-1.06Z" clip-rule="evenodd" />
+                            </svg>
+                        </button>
+                        <div x-show="open" x-cloak
+                            class="absolute right-0 top-full mt-2 min-w-[14rem] rounded-xl border border-content-border bg-content-bg shadow-xl p-1.5 space-y-0.5 z-[100]">
+                            <button type="button" @click="filterColumn = 'all'; open = false" class="flex w-full items-center justify-between gap-2 whitespace-nowrap px-3 py-1.5 rounded-lg text-xs transition-colors cursor-pointer" :class="filterColumn === 'all' ? 'bg-primary/10 text-primary font-medium' : 'text-text-primary hover:bg-body-bg'">
+                                <span>All Columns</span>
+                                <span x-show="filterColumn === 'all'" class="font-bold">✓</span>
+                            </button>
+                            @foreach ($fields as $field)
+                                <button type="button" @click="filterColumn = '{{ $field['name'] }}'; open = false" class="flex w-full items-center justify-between gap-2 whitespace-nowrap px-3 py-1.5 rounded-lg text-xs transition-colors cursor-pointer" :class="filterColumn === '{{ $field['name'] }}' ? 'bg-primary/10 text-primary font-medium' : 'text-text-primary hover:bg-body-bg'">
+                                    <span>{{ $field['label'] }}</span>
+                                    <span x-show="filterColumn === '{{ $field['name'] }}'" class="font-bold">✓</span>
+                                </button>
+                            @endforeach
+                        </div>
+                    </div>
+
+                    {{-- Sort Dropdown --}}
+                    <div class="relative shrink-0" x-data="{ open: false }" @click.outside="open = false" @keydown.escape.window="open = false">
+                        <button type="button"
+                            @click="open = !open"
+                            title="Sort Table"
+                            class="flex size-8 items-center justify-center rounded-lg border border-content-border bg-white text-text-muted hover:text-text-heading hover:bg-body-bg shadow-sm transition-colors cursor-pointer">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" class="size-4 shrink-0">
+                                <path d="m3 16 4 4 4-4" />
+                                <path d="M7 20V4" />
+                                <path d="m21 8-4-4-4 4" />
+                                <path d="M17 4v16" />
+                            </svg>
+                        </button>
+                        <div x-show="open" x-cloak
+                            class="absolute right-0 top-full mt-2 min-w-[14rem] rounded-xl border border-content-border bg-content-bg shadow-xl p-1.5 space-y-0.5 z-[100]">
+                            <button type="button" @click="sortColumn = 'created'; sortRows(); open = false" class="flex w-full items-center justify-between gap-2 whitespace-nowrap px-3 py-1.5 rounded-lg text-xs transition-colors cursor-pointer" :class="sortColumn === 'created' ? 'bg-primary/10 text-primary font-medium' : 'text-text-primary hover:bg-body-bg'">
+                                <span>Submitted Date</span>
+                                <span x-show="sortColumn === 'created'" class="font-bold">✓</span>
+                            </button>
+                            <button type="button" @click="sortColumn = 'id'; sortRows(); open = false" class="flex w-full items-center justify-between gap-2 whitespace-nowrap px-3 py-1.5 rounded-lg text-xs transition-colors cursor-pointer" :class="sortColumn === 'id' ? 'bg-primary/10 text-primary font-medium' : 'text-text-primary hover:bg-body-bg'">
+                                <span>ID (#)</span>
+                                <span x-show="sortColumn === 'id'" class="font-bold">✓</span>
+                            </button>
+                            @foreach ($fields as $field)
+                                <button type="button" @click="sortColumn = '{{ $field['name'] }}'; sortRows(); open = false" class="flex w-full items-center justify-between gap-2 whitespace-nowrap px-3 py-1.5 rounded-lg text-xs transition-colors cursor-pointer" :class="sortColumn === '{{ $field['name'] }}' ? 'bg-primary/10 text-primary font-medium' : 'text-text-primary hover:bg-body-bg'">
+                                    <span>{{ $field['label'] }}</span>
+                                    <span x-show="sortColumn === '{{ $field['name'] }}'" class="font-bold">✓</span>
+                                </button>
+                            @endforeach
+
+                            <div class="my-1 border-t border-content-border"></div>
+
+                            <button type="button" @click="sortDirection = 'asc'; sortRows(); open = false" class="flex w-full items-center justify-between gap-2 whitespace-nowrap px-3 py-1.5 rounded-lg text-xs transition-colors cursor-pointer" :class="sortDirection === 'asc' ? 'bg-primary/10 text-primary font-medium' : 'text-text-primary hover:bg-body-bg'">
+                                <span>Ascending (A-Z / Oldest)</span>
+                                <span x-show="sortDirection === 'asc'" class="font-bold">✓</span>
+                            </button>
+                            <button type="button" @click="sortDirection = 'desc'; sortRows(); open = false" class="flex w-full items-center justify-between gap-2 whitespace-nowrap px-3 py-1.5 rounded-lg text-xs transition-colors cursor-pointer" :class="sortDirection === 'desc' ? 'bg-primary/10 text-primary font-medium' : 'text-text-primary hover:bg-body-bg'">
+                                <span>Descending (Z-A / Newest)</span>
+                                <span x-show="sortDirection === 'desc'" class="font-bold">✓</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            @endif
+        </div>
+
         <div class="px-1.5 pb-2">
             <x-admin::table
                 :headers="$headers"
@@ -79,40 +177,50 @@
                 emptyText="No entries yet."
                 emptySubtext="Submissions for “{{ $form->title }}” will appear here."
             >
-                @foreach($entries as $entry)
-                    <tr class="border-b border-content-border last:border-0 hover:bg-body-bg/50 transition-colors">
-                        <td class="px-4 py-3 text-text-muted text-xs">#{{ $entry->id }}</td>
-                        
-                        @foreach ($fields as $field)
-                            @php
-                                $value = $entry->data[$field['name']] ?? null;
-                                if (is_array($value)) {
-                                    $value = implode(', ', $value);
-                                } elseif (is_bool($value)) {
-                                    $value = $value ? 'Yes' : 'No';
-                                }
-                            @endphp
-                            <td class="px-4 py-3 text-text-primary max-w-[220px] truncate" title="{{ is_scalar($value) ? $value : '' }}">
-                                {{ filled($value) || $value === 0 || $value === '0' ? $value : '—' }}
-                            </td>
-                        @endforeach
+                <tbody x-ref="tbody">
+                    @foreach($entries as $entry)
+                        <tr data-sortable
+                            data-id="{{ $entry->id }}"
+                            data-created="{{ $entry->created_at->timestamp }}"
+                            @foreach($fields as $f)
+                                data-field-{{ $f['name'] }}="{{ strtolower(is_array($entry->data[$f['name']] ?? null) ? implode(' ', $entry->data[$f['name']]) : (string)($entry->data[$f['name']] ?? '')) }}"
+                            @endforeach
+                            x-show="matchesSearch({{ json_encode($entry->data) }}, {{ $entry->id }}, {{ json_encode($entry->created_at->format('M j, Y g:i A')) }})"
+                            class="border-b border-content-border last:border-0 hover:bg-body-bg/50 transition-colors"
+                        >
+                            <td class="px-4 py-3 text-text-muted text-xs">#{{ $entry->id }}</td>
+                            
+                            @foreach ($fields as $field)
+                                @php
+                                    $value = $entry->data[$field['name']] ?? null;
+                                    if (is_array($value)) {
+                                        $value = implode(', ', $value);
+                                    } elseif (is_bool($value)) {
+                                        $value = $value ? 'Yes' : 'No';
+                                    }
+                                @endphp
+                                <td class="px-4 py-3 text-text-primary max-w-[220px] truncate" title="{{ is_scalar($value) ? $value : '' }}">
+                                    {{ filled($value) || $value === 0 || $value === '0' ? $value : '—' }}
+                                </td>
+                            @endforeach
 
-                        <td class="px-4 py-3 text-text-primary">
-                            <span class="font-medium">{{ $entry->created_at->format('M j, Y g:i A') }}</span>
-                        </td>
-                        <td class="px-4 py-3 text-right">
-                            <a href="#" @click.prevent="$dispatch('open-entry-detail', { id: {{ $entry->id }} })"
-                                class="inline-flex items-center gap-1.5 text-sm font-medium text-primary hover:text-primary/80 transition-colors"
-                            >
-                                View
-                                <svg viewBox="0 0 20 20" fill="currentColor" class="size-4">
-                                    <path d="M10 12.5a2.5 2.5 0 100-5 2.5 2.5 0 000 5z" />
-                                    <path fill-rule="evenodd" d="M.664 10.59a1.651 1.651 0 010-1.186A10.004 10.004 0 0110 3c4.257 0 7.893 2.66 9.336 6.41.147.381.146.804 0 1.186A10.004 10.004 0 0110 17c-4.257 0-7.893-2.66-9.336-6.41zM14 10a4 4 0 11-8 0 4 4 0 018 0z" clip-rule="evenodd" />
-                                </svg>
-                            </a>
-                        </td>
-                    </tr>
-                @endforeach
+                            <td class="px-4 py-3 text-text-primary">
+                                <span class="font-medium">{{ $entry->created_at->format('M j, Y g:i A') }}</span>
+                            </td>
+                            <td class="px-4 py-3 text-right">
+                                <a href="#" @click.prevent="$dispatch('open-entry-detail', { id: {{ $entry->id }} })"
+                                    class="inline-flex items-center gap-1.5 text-sm font-medium text-primary hover:text-primary/80 transition-colors"
+                                >
+                                    View
+                                    <svg viewBox="0 0 20 20" fill="currentColor" class="size-4">
+                                        <path d="M10 12.5a2.5 2.5 0 100-5 2.5 2.5 0 000 5z" />
+                                        <path fill-rule="evenodd" d="M.664 10.59a1.651 1.651 0 010-1.186A10.004 10.004 0 0110 3c4.257 0 7.893 2.66 9.336 6.41.147.381.146.804 0 1.186A10.004 10.004 0 0110 17c-4.257 0-7.893-2.66-9.336-6.41zM14 10a4 4 0 11-8 0 4 4 0 018 0z" clip-rule="evenodd" />
+                                    </svg>
+                                </a>
+                            </td>
+                        </tr>
+                    @endforeach
+                </tbody>
             </x-admin::table>
 
             @if($entries->hasPages())
@@ -172,3 +280,69 @@
     </div>
 </div>
 @endsection
+
+@push('scripts')
+<script>
+    function formEntriesPage() {
+        return {
+            search: '',
+            filterColumn: 'all',
+            sortColumn: 'created',
+            sortDirection: 'desc',
+            fields: @js($fields->pluck('name')->toArray()),
+            fieldLabels: @js($fields->pluck('label', 'name')->toArray()),
+
+            get filterColumnLabel() {
+                if (this.filterColumn === 'all') return 'Filter: All';
+                const label = this.fieldLabels[this.filterColumn];
+                return 'Filter: ' + (label || this.filterColumn);
+            },
+
+            matchesSearch(entryData, entryId, createdAt) {
+                if (!this.search.trim()) return true;
+                const q = this.search.toLowerCase().trim();
+
+                if (this.filterColumn === 'all') {
+                    if (String(entryId).includes(q)) return true;
+                    if (String(createdAt).toLowerCase().includes(q)) return true;
+                    return Object.values(entryData || {}).some(val => {
+                        if (val === null || val === undefined) return false;
+                        if (Array.isArray(val)) return val.join(' ').toLowerCase().includes(q);
+                        return String(val).toLowerCase().includes(q);
+                    });
+                }
+
+                const targetVal = entryData ? entryData[this.filterColumn] : null;
+                if (targetVal === null || targetVal === undefined) return false;
+                if (Array.isArray(targetVal)) return targetVal.join(' ').toLowerCase().includes(q);
+                return String(targetVal).toLowerCase().includes(q);
+            },
+
+            sortRows() {
+                const tbody = this.$refs.tbody;
+                if (!tbody) return;
+                const rows = Array.from(tbody.querySelectorAll('tr[data-sortable]'));
+                const dir = this.sortDirection === 'asc' ? 1 : -1;
+
+                rows.sort((a, b) => {
+                    let aVal, bVal;
+                    if (this.sortColumn === 'id') {
+                        aVal = parseInt(a.dataset.id || '0', 10);
+                        bVal = parseInt(b.dataset.id || '0', 10);
+                    } else if (this.sortColumn === 'created') {
+                        aVal = parseInt(a.dataset.created || '0', 10);
+                        bVal = parseInt(b.dataset.created || '0', 10);
+                    } else {
+                        aVal = (a.dataset['field' + this.sortColumn.charAt(0).toUpperCase() + this.sortColumn.slice(1)] || a.dataset['field_' + this.sortColumn] || '').toLowerCase();
+                        bVal = (b.dataset['field' + this.sortColumn.charAt(0).toUpperCase() + this.sortColumn.slice(1)] || b.dataset['field_' + this.sortColumn] || '').toLowerCase();
+                    }
+                    return aVal < bVal ? -dir : aVal > bVal ? dir : 0;
+                });
+
+                rows.forEach(row => tbody.appendChild(row));
+            }
+        };
+    }
+</script>
+@endpush
+
