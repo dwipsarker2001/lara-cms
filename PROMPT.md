@@ -1,16 +1,18 @@
 # Task Backlog for Loop Engineering
 
-## Active Task
-Define the task or feature you want the AI agent to implement autonomously.
+## Active Goal
+Build and verify feature changes autonomously using the iterative loop.
 
-- [ ] Task 1: Specify feature description here
-- [ ] Task 2: Specify acceptance criteria / tests
+### Task Checklist
+- [ ] **Task 1**: Create a new API status endpoint at `GET /api/status` that returns JSON `{"status": "ok", "version": "1.0.0"}`.
+- [ ] **Task 2**: Add a Pest feature test in `tests/Feature/ApiStatusTest.php` asserting that `GET /api/status` returns HTTP 200 and the correct JSON structure.
+- [ ] **Task 3**: Run `./loop.sh` to ensure all Pest PHP tests and TestSprite verification tests pass 100% green.
 
 ---
 
 ## Instructions for AI Loop
-1. Read the active task in `PROMPT.md`.
-2. Implement the required code changes in the codebase.
-3. Write or update tests in `tests/Feature/` or `testsprite-tests/`.
-4. Execute `./loop.sh` to verify that both Pest PHP tests and TestSprite cloud tests pass.
-5. If any test fails, analyze the error output and iteratively fix the code until `./loop.sh` reports `SUCCESS!`.
+1. Read the active task checklist in `PROMPT.md`.
+2. Implement the requested code changes in the codebase.
+3. Add or update unit & feature tests.
+4. Execute `./loop.sh` to verify changes.
+5. Fix any failures iteratively until `./loop.sh` succeeds and auto-commits the work.

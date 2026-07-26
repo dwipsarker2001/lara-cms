@@ -74,7 +74,7 @@ class FormController extends Controller
 
     public function entries(Form $form)
     {
-        if (Schema::hasTable('form_entries')) {
+        if (Schema::hasTable('form_entries') && Schema::hasColumn('form_entries', 'status')) {
             $form->entries()->where('status', 1)->update(['status' => 0]);
         }
 
