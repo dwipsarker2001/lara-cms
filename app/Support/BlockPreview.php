@@ -6,7 +6,7 @@ use App\Blocks\BlockRegistry;
 
 class BlockPreview
 {
-    public static function render(array $sections, bool $withGlobals = true, mixed $page = null): string
+    public static function render(array $sections, bool $withGlobals = true, mixed $page = null, bool $isEditor = false): string
     {
         $resolved = $withGlobals ? Sections::withGlobals($sections) : $sections;
         $registry = app(BlockRegistry::class);
@@ -26,7 +26,8 @@ class BlockPreview
                 page: $page,
             );
 
-            $html .= '<div data-section-index="'.$i.'" class="p-0.5">'.$inner.'</div>';
+            $class = $isEditor ? ' class="p-0.5"' : '';
+            $html .= '<div data-section-index="'.$i.'"'.$class.'>'.$inner.'</div>';
         }
 
         return $html;

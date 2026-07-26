@@ -26,7 +26,7 @@ class PreviewController extends Controller
             $page->data = $data['entry_data'];
         }
 
-        $html = BlockPreview::render($data['sections'], withGlobals: false, page: $page);
+        $html = BlockPreview::render($data['sections'], withGlobals: false, page: $page, isEditor: true);
 
         return response()->json(['html' => $html]);
     }
