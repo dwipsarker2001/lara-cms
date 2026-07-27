@@ -8,6 +8,7 @@
     $bgImg = $bg['image'] ?? '';
     $bgColor = $bg['color'] ?? '';
     $bgOpacity = $bg['opacity'] ?? 100;
+    $currencySymbol = \App\Models\Setting::getCurrencySymbol();
 @endphp
 <section data-block="travelDeals" class="py-20 relative overflow-hidden">
     @if($bgColor)
@@ -57,10 +58,10 @@
                                             @endif
                                             <div class="flex items-baseline gap-1.5">
                                                 @if($card['originalPrice'] ?? false)
-                                                    <span data-edit="originalPrice" class="text-sm text-gray-400 line-through">${{ number_format($card['originalPrice']) }}</span>
+                                                    <span data-edit="originalPrice" class="text-sm text-gray-400 line-through">{{ $currencySymbol }}{{ number_format($card['originalPrice']) }}</span>
                                                 @endif
                                                 @if($card['price'] ?? false)
-                                                    <span data-edit="price" class="text-2xl font-bold text-gray-900">${{ number_format($card['price']) }}</span>
+                                                    <span data-edit="price" class="text-2xl font-bold text-gray-900">{{ $currencySymbol }}{{ number_format($card['price']) }}</span>
                                                 @endif
                                             </div>
                                         </div>

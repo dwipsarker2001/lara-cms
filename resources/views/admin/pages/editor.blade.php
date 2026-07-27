@@ -610,37 +610,9 @@
                                                             <span class="text-sm font-semibold text-text-primary" x-text="field.label"></span>
                                                             <button type="button" @click="addListItem(field.name)" class="text-xs text-primary hover:text-primary/80 font-medium">+ Add <span x-text="field.label.toLowerCase()"></span></button>
                                                 </div>
-                                                <template x-if="getList(field.name).length > 0"                                                     <div class="space-y-0.5" data-sortable-list :data-field-name="field.name"
-                                                         x-init="$nextTick(() => {
-                                                             const el = $el;
-                                                             el._sortable = new Sortable(el, {
-                                                                 handle: '.cursor-grab',
-                                                                 animation: 200,
-                                                                 easing: 'cubic-bezier(0.25, 0.1, 0.25, 1)',
-                                                                 onEnd: (evt) => {
-                                                                     if (evt.oldIndex === evt.newIndex) return;
-                                                                     const name = el.dataset.fieldName;
-                                                                     if (!name) return;
-
-                                                                      try { el._sortable.destroy(); } catch (e) {}
-
-                                                                      const list = getList(name);
-                                                                      const item = list.splice(evt.oldIndex, 1)[0];
-                                                                      list.splice(evt.newIndex, 0, item);
-
-                                                                      // Re-assign list array reference to force Alpine reactivity update
-                                                                      let d = this.sections[this.active].data;
-                                                                      for (const crumb of this.crumbs) {
-                                                                          d = d[crumb.key];
-                                                                          if (crumb.index !== undefined) d = d[crumb.index];
-                                                                      }
-                                                                      d[name] = [...list];
-
-                                                                      this.dirty = true;
-                                                                      this.schedulePreview();
-                                                                 },
-                                                             });
-                                                         })"
+                                                <template x-if="getList(field.name).length > 0">
+                                                    <div class="space-y-0.5" data-sortable-list :data-field-name="field.name"
+                                                         x-init="$nextTick(() => initListSortable($el))"
                                                     >
                                                         <template x-for="(item, ci) in getList(field.name)" :key="item._key">
                                                             <div class="flex rounded-lg shadow-sm bg-content-bg mb-0.5 group overflow-hidden">
@@ -859,9 +831,28 @@
             },
 
             ensureSectionKeys() {
+                const addKeys = (obj) => {
+                    if (!obj || typeof obj !== 'object') return;
+                    if (Array.isArray(obj)) {
+                        obj.forEach(item => {
+                            if (item && typeof item === 'object') {
+                                if (!item._key) {
+                                    item._key = crypto.randomUUID ? crypto.randomUUID() : Date.now().toString(36) + Math.random().toString(36).slice(2);
+                                }
+                                addKeys(item);
+                            }
+                        });
+                    } else {
+                        Object.values(obj).forEach(val => addKeys(val));
+                    }
+                };
+
                 for (const section of this.sections) {
                     if (!section._key) {
                         section._key = crypto.randomUUID ? crypto.randomUUID() : Date.now().toString(36) + Math.random().toString(36).slice(2);
+                    }
+                    if (section.data) {
+                        addKeys(section.data);
                     }
                 }
             },
@@ -878,22 +869,141 @@
                     animation: 200,
                     easing: 'cubic-bezier(0.25, 0.1, 0.25, 1)',
                     ghostClass: 'sortable-ghost',
+                    onStart: (evt) => {
+                        evt.item._prevSibling = evt.item.previousElementSibling;
+                    },
                     onEnd: (evt) => {
-                        if (evt.oldIndex === evt.newIndex) return;
+                        const cleanup = () => {
+                            delete evt.item._prevSibling;
+                            setTimeout(() => this.initSectionSortable(), 0);
+                        };
 
-                        if (this._sectionSortable) {
-                            try { this._sectionSortable.destroy(); } catch (e) {}
-                            this._sectionSortable = null;
+                        if (evt.oldIndex === evt.newIndex || evt.oldIndex === undefined || evt.newIndex === undefined) {
+                            cleanup();
+                            return;
                         }
 
-                        const item = this.sections.splice(evt.oldIndex, 1)[0];
-                        this.sections.splice(evt.newIndex, 0, item);
-                        this.sections = [...this.sections];
-                        this.dirty = true;
-                        this.schedulePreview();
-                        this.$nextTick(() => this.initSectionSortable());
+                        // Revert Sortable DOM changes so Alpine can handle the DOM update
+                        const itemEl = evt.item;
+                        if (itemEl._prevSibling && itemEl._prevSibling.parentElement === evt.from) {
+                            itemEl._prevSibling.after(itemEl);
+                        } else if (evt.from) {
+                            evt.from.prepend(itemEl);
+                        }
+
+                        let oldIdx = evt.oldDraggableIndex;
+                        let newIdx = evt.newDraggableIndex;
+                        if (oldIdx === undefined || newIdx === undefined) {
+                            const offset = (evt.from.children[0] && evt.from.children[0].tagName === 'TEMPLATE') ? 1 : 0;
+                            oldIdx = evt.oldIndex - offset;
+                            newIdx = evt.newIndex - offset;
+                        }
+
+                        if (oldIdx >= 0 && oldIdx < this.sections.length && newIdx >= 0 && newIdx < this.sections.length) {
+                            const item = this.sections.splice(oldIdx, 1)[0];
+                            if (item !== undefined) {
+                                this.sections.splice(newIdx, 0, item);
+                                this.sections = [...this.sections];
+                                this.dirty = true;
+                                this.schedulePreview();
+                            }
+                        }
+                        cleanup();
                     },
                 });
+            },
+
+            initListSortable(el) {
+                if (!el) return;
+                if (el._sortable) {
+                    try { el._sortable.destroy(); } catch (e) {}
+                    delete el._sortable;
+                }
+                el._sortable = new Sortable(el, {
+                    handle: '.cursor-grab',
+                    animation: 200,
+                    easing: 'cubic-bezier(0.25, 0.1, 0.25, 1)',
+                    ghostClass: 'sortable-ghost',
+                    onStart: (evt) => {
+                        evt.item._prevSibling = evt.item.previousElementSibling;
+                    },
+                    onEnd: (evt) => {
+                        const cleanup = () => {
+                            delete evt.item._prevSibling;
+                            setTimeout(() => this.initListSortable(el), 0);
+                        };
+
+                        if (evt.oldIndex === evt.newIndex || evt.oldIndex === undefined || evt.newIndex === undefined) {
+                            cleanup();
+                            return;
+                        }
+
+                        // Revert Sortable DOM changes so Alpine can handle the DOM update
+                        const itemEl = evt.item;
+                        if (itemEl._prevSibling && itemEl._prevSibling.parentElement === evt.from) {
+                            itemEl._prevSibling.after(itemEl);
+                        } else if (evt.from) {
+                            evt.from.prepend(itemEl);
+                        }
+
+                        const name = el.dataset.fieldName;
+                        if (!name) {
+                            cleanup();
+                            return;
+                        }
+
+                        let oldIdx = evt.oldDraggableIndex;
+                        let newIdx = evt.newDraggableIndex;
+                        if (oldIdx === undefined || newIdx === undefined) {
+                            const offset = (evt.from.children[0] && evt.from.children[0].tagName === 'TEMPLATE') ? 1 : 0;
+                            oldIdx = evt.oldIndex - offset;
+                            newIdx = evt.newIndex - offset;
+                        }
+
+                        const list = this.getList(name);
+                        if (oldIdx < 0 || oldIdx >= list.length || newIdx < 0 || newIdx >= list.length) {
+                            cleanup();
+                            return;
+                        }
+
+                        const item = list.splice(oldIdx, 1)[0];
+                        if (item === undefined) {
+                            cleanup();
+                            return;
+                        }
+                        list.splice(newIdx, 0, item);
+
+                        // Re-assign list array reference to force Alpine reactivity update
+                        if (this.active !== null && this.sections[this.active] && this.sections[this.active].data) {
+                            let d = this.sections[this.active].data;
+                            let valid = true;
+                            for (const crumb of this.crumbs) {
+                                if (!d || !crumb || !crumb.key) { valid = false; break; }
+                                d = d[crumb.key];
+                                if (!d) { valid = false; break; }
+                                if (crumb.index !== undefined) {
+                                    d = d[crumb.index];
+                                    if (!d) { valid = false; break; }
+                                }
+                            }
+                            if (valid && d) {
+                                d[name] = [...list];
+                            }
+                        }
+
+                        this.dirty = true;
+                        this.schedulePreview();
+                        cleanup();
+                    },
+                });
+            },
+
+            initListSortables() {
+                setTimeout(() => {
+                    document.querySelectorAll('[data-sortable-list]').forEach(el => {
+                        this.initListSortable(el);
+                    });
+                }, 0);
             },
 
             moveSection(from, to) {
@@ -1071,10 +1181,16 @@
 
             setNested(name, value) {
                 if (this.active === null) return;
-                let d = this.sections[this.active].data;
+                let d = this.sections[this.active]?.data;
+                if (!d) return;
                 for (const crumb of this.crumbs) {
+                    if (!d || !crumb || !crumb.key) return;
                     d = d[crumb.key];
-                    if (crumb.index !== undefined) d = d[crumb.index];
+                    if (!d) return;
+                    if (crumb.index !== undefined) {
+                        d = d[crumb.index];
+                        if (!d) return;
+                    }
                 }
                 d[name] = value;
             },
@@ -1095,6 +1211,7 @@
                     } catch (e) {}
                 }
                 this.crumbs.push({ key, index: index ?? undefined });
+                this.initListSortables();
             },
 
             currentSection() {
@@ -1283,6 +1400,7 @@
                 d[name] = [...d[name]];
                 this.dirty = true;
                 this.schedulePreview();
+                this.initListSortables();
             },
 
             removeListItem(name, index) {
@@ -1296,6 +1414,7 @@
                     d[name] = d[name].filter((_, idx) => idx !== index);
                     this.dirty = true;
                     this.schedulePreview();
+                    this.initListSortables();
                 }
             },
 

@@ -382,9 +382,22 @@
                     onEnd: (evt) => {
                         if (evt.oldIndex === evt.newIndex) return;
 
-                        const item = this.fields.splice(evt.oldIndex, 1)[0];
-                        this.fields.splice(evt.newIndex, 0, item);
-                        this.dirty = true;
+                        // Revert Sortable DOM changes so Alpine can handle the DOM update
+                        const itemEl = evt.item;
+                        const nextSibling = evt.from.children[evt.oldIndex > evt.newIndex ? evt.oldIndex + 1 : evt.oldIndex];
+                        evt.from.insertBefore(itemEl, nextSibling);
+
+                        const offset = (evt.from.children[0] && evt.from.children[0].tagName === 'TEMPLATE') ? 1 : 0;
+                        const oldIdx = evt.oldIndex - offset;
+                        const newIdx = evt.newIndex - offset;
+
+                        if (oldIdx >= 0 && oldIdx < this.fields.length && newIdx >= 0 && newIdx < this.fields.length) {
+                            const item = this.fields.splice(oldIdx, 1)[0];
+                            if (item !== undefined) {
+                                this.fields.splice(newIdx, 0, item);
+                                this.dirty = true;
+                            }
+                        }
                     },
                 });
             },

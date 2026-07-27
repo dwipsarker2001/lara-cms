@@ -396,61 +396,66 @@
                     this.fields = [...this.fields]; // Force Alpine reactivity update
                 } else {
                     this.fields.push({ ...this.fieldForm, _key: crypto.randomUUID() });
-                    this.$nextTick(() => {
-                        const el = document.getElementById('sortable-fields');
-                        if (!el || el._sortable) return;
-                        el._sortable = new Sortable(el, {
-                            handle: '[data-drag-handle]',
-                            animation: 200,
-                            easing: 'cubic-bezier(0.25, 0.1, 0.25, 1)',
-                             onEnd: (evt) => {
-                                 if (evt.oldIndex === evt.newIndex) return;
-
-                                  // Revert Sortable DOM manipulation physically so Alpine stays in control
-                                  const parent = evt.from;
-                                  const siblings = Array.from(parent.children).filter(child => child !== evt.item);
-                                  const refNode = siblings[evt.oldIndex] || null;
-                                  parent.insertBefore(evt.item, refNode);
-
-                                 // Adjust index for TEMPLATE element at index 0
-                                 const offset = (parent.children[0] && parent.children[0].tagName === 'TEMPLATE') ? 1 : 0;
-                                 const oldIdx = evt.oldIndex - offset;
-                                 const newIdx = evt.newIndex - offset;
-
-                                 const item = this.fields.splice(oldIdx, 1)[0];
-                                 this.fields.splice(newIdx, 0, item);
-                             },
-                        });
-                    });
+                    this.$nextTick(() => this.initFieldsSortable());
                 }
                 this.showFieldModal = false;
             },
 
-            init() {
+            initFieldsSortable() {
                 const el = document.getElementById('sortable-fields');
-                if (!el || el._sortable) return;
+                if (!el) return;
+                if (el._sortable) {
+                    try { el._sortable.destroy(); } catch (e) {}
+                    delete el._sortable;
+                }
                 el._sortable = new Sortable(el, {
                     handle: '[data-drag-handle]',
                     animation: 200,
                     easing: 'cubic-bezier(0.25, 0.1, 0.25, 1)',
+                    onStart: (evt) => {
+                        evt.item._prevSibling = evt.item.previousElementSibling;
+                    },
                     onEnd: (evt) => {
-                        if (evt.oldIndex === evt.newIndex) return;
+                        const cleanup = () => {
+                            delete evt.item._prevSibling;
+                            setTimeout(() => this.initFieldsSortable(), 0);
+                        };
 
-                        // Revert Sortable DOM manipulation physically so Alpine stays in control
-                        const parent = evt.from;
-                        const siblings = Array.from(parent.children).filter(child => child !== evt.item);
-                        const refNode = siblings[evt.oldIndex] || null;
-                        parent.insertBefore(evt.item, refNode);
+                        if (evt.oldIndex === evt.newIndex || evt.oldIndex === undefined || evt.newIndex === undefined) {
+                            cleanup();
+                            return;
+                        }
 
-                        // Adjust index for TEMPLATE element at index 0
-                        const offset = (parent.children[0] && parent.children[0].tagName === 'TEMPLATE') ? 1 : 0;
-                        const oldIdx = evt.oldIndex - offset;
-                        const newIdx = evt.newIndex - offset;
+                        // Revert Sortable DOM changes so Alpine can handle the DOM update
+                        const itemEl = evt.item;
+                        if (itemEl._prevSibling && itemEl._prevSibling.parentElement === evt.from) {
+                            itemEl._prevSibling.after(itemEl);
+                        } else if (evt.from) {
+                            evt.from.prepend(itemEl);
+                        }
 
-                        const item = this.fields.splice(oldIdx, 1)[0];
-                        this.fields.splice(newIdx, 0, item);
+                        let oldIdx = evt.oldDraggableIndex;
+                        let newIdx = evt.newDraggableIndex;
+                        if (oldIdx === undefined || newIdx === undefined) {
+                            const offset = (evt.from.children[0] && evt.from.children[0].tagName === 'TEMPLATE') ? 1 : 0;
+                            oldIdx = evt.oldIndex - offset;
+                            newIdx = evt.newIndex - offset;
+                        }
+
+                        if (oldIdx >= 0 && oldIdx < this.fields.length && newIdx >= 0 && newIdx < this.fields.length) {
+                            const item = this.fields.splice(oldIdx, 1)[0];
+                            if (item !== undefined) {
+                                this.fields.splice(newIdx, 0, item);
+                                this.fields = [...this.fields];
+                            }
+                        }
+                        cleanup();
                     },
                 });
+            },
+
+            init() {
+                this.$nextTick(() => this.initFieldsSortable());
             },
         };
     }
