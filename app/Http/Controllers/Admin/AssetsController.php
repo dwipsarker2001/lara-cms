@@ -79,7 +79,7 @@ class AssetsController extends Controller
             if ($name && $name !== $asset->name) {
                 $oldPath = $asset->path;
                 $ext = pathinfo($oldPath, PATHINFO_EXTENSION);
-                $newPath = ($asset->directory ? $asset->directory.'/' : 'assets/').$name;
+                $newPath = ($asset->directory ? 'assets/'.$asset->directory.'/' : 'assets/').$name;
                 if ($ext && ! str_ends_with($newPath, '.'.$ext)) {
                     $newPath .= '.'.$ext;
                 }
@@ -91,7 +91,22 @@ class AssetsController extends Controller
         }
 
         if ($request->has('directory')) {
-            $asset->update(['directory' => $request->directory]);
+            $newDir = $request->directory ?? '';
+            $oldPath = $asset->path;
+            if ($asset->is_directory) {
+                $newPath = $newDir ? 'assets/'.$newDir.'/'.$asset->name : 'assets/'.$asset->name;
+                if ($oldPath !== $newPath && Storage::disk('public')->exists($oldPath)) {
+                    Storage::disk('public')->move($oldPath, $newPath);
+                }
+                $asset->update(['directory' => $newDir, 'path' => $newPath]);
+            } else {
+                $fileName = basename($oldPath);
+                $newPath = $newDir ? 'assets/'.$newDir.'/'.$fileName : 'assets/'.$fileName;
+                if ($oldPath !== $newPath && Storage::disk('public')->exists($oldPath)) {
+                    Storage::disk('public')->move($oldPath, $newPath);
+                }
+                $asset->update(['directory' => $newDir, 'path' => $newPath]);
+            }
         }
 
         return response()->json($asset);
@@ -141,13 +156,29 @@ class AssetsController extends Controller
         $dir->delete();
     }
 
-    public function file(Asset $asset)
+    public function file(Request $request, Asset $asset)
     {
         if ($asset->is_directory) {
             abort(404);
         }
 
-        return response()->file(Storage::disk('public')->path($asset->path));
+        $fullPath = Storage::disk('public')->path($asset->path);
+
+        if (! file_exists($fullPath)) {
+            abort(404);
+        }
+
+        if ($request->query('download') || $request->has('download')) {
+            $name = $asset->name;
+            $ext = pathinfo($asset->path, PATHINFO_EXTENSION);
+            if ($ext && ! str_ends_with(strtolower($name), '.'.strtolower($ext))) {
+                $name .= '.'.$ext;
+            }
+
+            return response()->download($fullPath, $name);
+        }
+
+        return response()->file($fullPath);
     }
 
     public function directory(Request $request)

@@ -26,8 +26,13 @@
                         <span class="flex items-center gap-1.5">
                             <button
                                 @click="navigateTo('')"
-                                class="transition-colors hover:text-primary"
+                                @dragenter.prevent="crumbDragEnter('')"
+                                @dragleave="crumbDragLeave()"
+                                @dragover.prevent
+                                @drop.prevent="crumbDrop($event, '')"
+                                class="transition-colors"
                                 :class="currentDirectory ? 'hover:text-primary' : 'text-text-heading font-medium'"
+                                :style="dragOverCrumb === '' ? 'background: var(--color-primary); border-radius: 4px; padding: 0 4px; color: white;' : ''"
                             >Assets</button>
                         </span>
                         <template x-for="(part, idx) in directoryParts" :key="idx">
@@ -55,11 +60,12 @@
                 <button
                     type="button"
                     @click="showCreateDir = true"
-                    class="inline-flex items-center justify-center whitespace-nowrap shrink-0 font-medium text-sm px-4 py-2 rounded-lg border border-content-border bg-gradient-to-b from-white to-gray-50 hover:to-gray-100 text-text-heading shadow-sm cursor-pointer transition-colors"
+                    class="inline-flex items-center justify-center whitespace-nowrap shrink-0 font-medium text-sm px-4 py-2 rounded-lg border border-content-border bg-white hover:bg-gray-50 text-text-heading shadow-sm cursor-pointer transition-colors"
                 >
-                    <svg viewBox="0 0 20 20" fill="#F59E0B" class="size-[18px] mr-1.5 shrink-0">
-                        <path d="M3.5 4.5A1.5 1.5 0 015 3h3.086a1.5 1.5 0 011.06.44l1.415 1.414A1.5 1.5 0 0011.586 5H14.5A1.5 1.5 0 0116 6.5v.378a.5.5 0 01-.5.5H4a.5.5 0 01-.5-.5V4.5z" />
-                        <path d="M3.5 7.878V14.5A1.5 1.5 0 005 16h10a1.5 1.5 0 001.5-1.5V7.878a.5.5 0 00-.5-.5H4a.5.5 0 00-.5.5z" />
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-folder-plus size-[18px] mr-1.5 shrink-0 text-text-muted">
+                        <path d="M12 10v6"/>
+                        <path d="M9 13h6"/>
+                        <path d="M20 20a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-7.9a2 2 0 0 1-1.69-.9L8.6 3.3A2 2 0 0 0 7.1 3H4a2 2 0 0 0-2 2v13a2 2 0 0 0 2 2z"/>
                     </svg>
                     Create Directory
                 </button>
@@ -85,8 +91,8 @@
         </header>
 
         {{-- DataTable --}}
-        <div class="bg-panel-bg rounded-2xl mb-8 p-2">
-            <div class="flex items-center justify-between px-2 pb-2.5">
+        <div class="bg-panel-bg rounded-2xl p-[7px] mb-8">
+            <div class="flex flex-wrap items-center justify-between gap-3 px-2 pb-2.5 pt-1">
                 <span class="flex items-center gap-2 text-[14px] font-medium text-text-heading">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="size-4 shrink-0 text-text-muted" stroke-linecap="round" stroke-linejoin="round">
                         <path d="M14.5 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V7.5L14.5 2z" />
@@ -94,8 +100,9 @@
                     </svg>
                     All Assets
                 </span>
-                <div class="flex items-center gap-2">
-                    <div class="relative">
+                <div class="flex items-center gap-2 flex-nowrap shrink-0">
+                    {{-- Search Input --}}
+                    <div class="relative shrink-0">
                         <svg viewBox="0 0 20 20" fill="currentColor" class="size-3.5 absolute left-2.5 top-1/2 -translate-y-1/2 text-text-muted">
                             <path fill-rule="evenodd" d="M9 3.5a5.5 5.5 0 100 11 5.5 5.5 0 000-11zM2 9a7 7 0 1112.452 4.391l3.328 3.329a.75.75 0 11-1.06 1.06l-3.329-3.328A7 7 0 012 9z" clip-rule="evenodd" />
                         </svg>
@@ -103,32 +110,153 @@
                             type="text"
                             x-model="search"
                             placeholder="Search assets..."
-                            class="h-8 w-40 rounded-lg border border-content-border bg-content-bg pl-8 pr-3 text-[12px] text-text-heading placeholder:text-text-muted focus:outline-none focus:ring-2 focus:ring-primary/10 shadow-sm"
+                            aria-label="Search assets"
+                            class="h-8 w-44 sm:w-56 rounded-lg border border-content-border bg-content-bg pl-8 pr-3 text-[12px] text-text-heading placeholder:text-text-muted focus:outline-none focus:ring-2 focus:ring-primary/10 shadow-sm"
                         >
                     </div>
-                    <button
-                        type="button"
-                        class="flex h-8 items-center gap-1.5 rounded-lg border border-content-border bg-content-bg px-3 text-[12px] font-medium text-text-heading hover:bg-body-bg shadow-sm transition-colors cursor-pointer"
-                    >
-                        <svg viewBox="0 0 20 20" fill="currentColor" class="size-3.5 text-text-muted">
-                            <path fill-rule="evenodd" d="M2.628 1.601C5.028 1.206 7.49 1 10 1s4.973.206 7.372.601a.75.75 0 01.628.74v2.288a2.25 2.25 0 01-.659 1.59l-4.682 4.683a2.25 2.25 0 00-.659 1.59v3.037c0 .684-.31 1.33-.844 1.757l-1.937 1.55A.75.75 0 018 18.25v-5.757a2.25 2.25 0 00-.659-1.591L2.659 6.22A2.25 2.25 0 012 4.629V2.34a.75.75 0 01.628-.74z" clip-rule="evenodd" />
-                        </svg>
-                        Filter
-                    </button>
-                    <button
-                        type="button"
-                        class="flex size-8 items-center justify-center rounded-lg border border-content-border bg-content-bg text-text-muted hover:bg-body-bg shadow-sm transition-colors cursor-pointer"
-                    >
-                        <svg viewBox="0 0 16 3" class="size-4" fill="currentColor" aria-hidden="true">
-                            <circle cx="2" cy="1.5" r="1.5" />
-                            <circle cx="8" cy="1.5" r="1.5" />
-                            <circle cx="14" cy="1.5" r="1.5" />
-                        </svg>
-                    </button>
+
+                    {{-- Filter Dropdown --}}
+                    <div class="relative shrink-0" x-data="{ open: false }" @click.outside="open = false" @keydown.escape.window="open = false">
+                        <button type="button"
+                            @click="open = !open"
+                            class="flex h-8 items-center gap-1.5 whitespace-nowrap rounded-lg border border-content-border bg-white px-3 text-[12px] font-medium text-text-heading hover:bg-body-bg shadow-sm transition-colors cursor-pointer">
+                            <svg viewBox="0 0 20 20" fill="currentColor" class="size-3.5 text-text-muted shrink-0">
+                                <path fill-rule="evenodd" d="M2.628 1.601C5.028 1.206 7.49 1 10 1s4.973.206 7.372.601a.75.75 0 01.628.74v2.288a2.25 2.25 0 01-.659 1.59l-4.682 4.683a2.25 2.25 0 00-.659 1.59v3.037c0 .684-.31 1.33-.844 1.757l-1.937 1.55A.75.75 0 018 18.25v-5.757a2.25 2.25 0 00-.659-1.591L2.659 6.22A2.25 2.25 0 012 4.629V2.34a.75.75 0 01.628-.74z" clip-rule="evenodd" />
+                            </svg>
+                            <span x-text="filterColumnLabel" class="whitespace-nowrap">Filter: All</span>
+                            <svg class="size-3 text-text-muted shrink-0 transition-transform ml-0.5" :class="open ? 'rotate-180' : ''" viewBox="0 0 20 20" fill="currentColor">
+                                <path fill-rule="evenodd" d="M5.22 8.22a.75.75 0 0 1 1.06 0L10 11.94l3.72-3.72a.75.75 0 1 1 1.06 1.06l-4.25 4.25a.75.75 0 0 1-1.06 0L5.22 9.28a.75.75 0 0 1 0-1.06Z" clip-rule="evenodd" />
+                            </svg>
+                        </button>
+                        <div x-show="open" x-cloak
+                            class="absolute right-0 top-full mt-2 min-w-[14rem] rounded-xl border border-content-border bg-content-bg shadow-xl p-1.5 space-y-0.5 z-[100]">
+                            <button type="button" @click="filterColumn = 'all'; open = false" class="flex w-full items-center justify-between gap-2 whitespace-nowrap px-3 py-1.5 rounded-lg text-xs transition-colors cursor-pointer" :class="filterColumn === 'all' ? 'bg-primary/10 text-primary font-medium' : 'text-text-primary hover:bg-body-bg'">
+                                <span>All Columns</span>
+                                <span x-show="filterColumn === 'all'" class="font-bold">✓</span>
+                            </button>
+                            <button type="button" @click="filterColumn = 'name'; open = false" class="flex w-full items-center justify-between gap-2 whitespace-nowrap px-3 py-1.5 rounded-lg text-xs transition-colors cursor-pointer" :class="filterColumn === 'name' ? 'bg-primary/10 text-primary font-medium' : 'text-text-primary hover:bg-body-bg'">
+                                <span>File Name</span>
+                                <span x-show="filterColumn === 'name'" class="font-bold">✓</span>
+                            </button>
+                            <button type="button" @click="filterColumn = 'size'; open = false" class="flex w-full items-center justify-between gap-2 whitespace-nowrap px-3 py-1.5 rounded-lg text-xs transition-colors cursor-pointer" :class="filterColumn === 'size' ? 'bg-primary/10 text-primary font-medium' : 'text-text-primary hover:bg-body-bg'">
+                                <span>Size</span>
+                                <span x-show="filterColumn === 'size'" class="font-bold">✓</span>
+                            </button>
+                            <button type="button" @click="filterColumn = 'created_at'; open = false" class="flex w-full items-center justify-between gap-2 whitespace-nowrap px-3 py-1.5 rounded-lg text-xs transition-colors cursor-pointer" :class="filterColumn === 'created_at' ? 'bg-primary/10 text-primary font-medium' : 'text-text-primary hover:bg-body-bg'">
+                                <span>Last Modified</span>
+                                <span x-show="filterColumn === 'created_at'" class="font-bold">✓</span>
+                            </button>
+                            <button type="button" @click="filterColumn = 'width'; open = false" class="flex w-full items-center justify-between gap-2 whitespace-nowrap px-3 py-1.5 rounded-lg text-xs transition-colors cursor-pointer" :class="filterColumn === 'width' ? 'bg-primary/10 text-primary font-medium' : 'text-text-primary hover:bg-body-bg'">
+                                <span>Width</span>
+                                <span x-show="filterColumn === 'width'" class="font-bold">✓</span>
+                            </button>
+                            <button type="button" @click="filterColumn = 'height'; open = false" class="flex w-full items-center justify-between gap-2 whitespace-nowrap px-3 py-1.5 rounded-lg text-xs transition-colors cursor-pointer" :class="filterColumn === 'height' ? 'bg-primary/10 text-primary font-medium' : 'text-text-primary hover:bg-body-bg'">
+                                <span>Height</span>
+                                <span x-show="filterColumn === 'height'" class="font-bold">✓</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    {{-- Sort Dropdown --}}
+                    <div class="relative shrink-0" x-data="{ open: false }" @click.outside="open = false" @keydown.escape.window="open = false">
+                        <button type="button"
+                            @click="open = !open"
+                            title="Sort Table"
+                            class="flex size-8 items-center justify-center rounded-lg border border-content-border bg-white text-text-muted hover:text-text-heading hover:bg-body-bg shadow-sm transition-colors cursor-pointer">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" class="size-4 shrink-0">
+                                <path d="m3 16 4 4 4-4" />
+                                <path d="M7 20V4" />
+                                <path d="m21 8-4-4-4 4" />
+                                <path d="M17 4v16" />
+                            </svg>
+                        </button>
+                        <div x-show="open" x-cloak
+                            class="absolute right-0 top-full mt-2 min-w-[14rem] rounded-xl border border-content-border bg-content-bg shadow-xl p-1.5 space-y-0.5 z-[100]">
+                            <button type="button" @click="sortField = 'name'; open = false" class="flex w-full items-center justify-between gap-2 whitespace-nowrap px-3 py-1.5 rounded-lg text-xs transition-colors cursor-pointer" :class="sortField === 'name' ? 'bg-primary/10 text-primary font-medium' : 'text-text-primary hover:bg-body-bg'">
+                                <span>File Name</span>
+                                <span x-show="sortField === 'name'" class="font-bold">✓</span>
+                            </button>
+                            <button type="button" @click="sortField = 'size'; open = false" class="flex w-full items-center justify-between gap-2 whitespace-nowrap px-3 py-1.5 rounded-lg text-xs transition-colors cursor-pointer" :class="sortField === 'size' ? 'bg-primary/10 text-primary font-medium' : 'text-text-primary hover:bg-body-bg'">
+                                <span>Size</span>
+                                <span x-show="sortField === 'size'" class="font-bold">✓</span>
+                            </button>
+                            <button type="button" @click="sortField = 'created_at'; open = false" class="flex w-full items-center justify-between gap-2 whitespace-nowrap px-3 py-1.5 rounded-lg text-xs transition-colors cursor-pointer" :class="sortField === 'created_at' ? 'bg-primary/10 text-primary font-medium' : 'text-text-primary hover:bg-body-bg'">
+                                <span>Last Modified</span>
+                                <span x-show="sortField === 'created_at'" class="font-bold">✓</span>
+                            </button>
+                            <button type="button" @click="sortField = 'width'; open = false" class="flex w-full items-center justify-between gap-2 whitespace-nowrap px-3 py-1.5 rounded-lg text-xs transition-colors cursor-pointer" :class="sortField === 'width' ? 'bg-primary/10 text-primary font-medium' : 'text-text-primary hover:bg-body-bg'">
+                                <span>Width</span>
+                                <span x-show="sortField === 'width'" class="font-bold">✓</span>
+                            </button>
+                            <button type="button" @click="sortField = 'height'; open = false" class="flex w-full items-center justify-between gap-2 whitespace-nowrap px-3 py-1.5 rounded-lg text-xs transition-colors cursor-pointer" :class="sortField === 'height' ? 'bg-primary/10 text-primary font-medium' : 'text-text-primary hover:bg-body-bg'">
+                                <span>Height</span>
+                                <span x-show="sortField === 'height'" class="font-bold">✓</span>
+                            </button>
+
+                            <div class="my-1 border-t border-content-border"></div>
+
+                            <button type="button" @click="sortDir = 'asc'; open = false" class="flex w-full items-center justify-between gap-2 whitespace-nowrap px-3 py-1.5 rounded-lg text-xs transition-colors cursor-pointer" :class="sortDir === 'asc' ? 'bg-primary/10 text-primary font-medium' : 'text-text-primary hover:bg-body-bg'">
+                                <span>Ascending (A-Z)</span>
+                                <span x-show="sortDir === 'asc'" class="font-bold">✓</span>
+                            </button>
+                            <button type="button" @click="sortDir = 'desc'; open = false" class="flex w-full items-center justify-between gap-2 whitespace-nowrap px-3 py-1.5 rounded-lg text-xs transition-colors cursor-pointer" :class="sortDir === 'desc' ? 'bg-primary/10 text-primary font-medium' : 'text-text-primary hover:bg-body-bg'">
+                                <span>Descending (Z-A)</span>
+                                <span x-show="sortDir === 'desc'" class="font-bold">✓</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    {{-- Column Settings Dropdown --}}
+                    <div class="relative shrink-0" x-data="{ open: false }" @click.outside="open = false" @keydown.escape.window="open = false">
+                        <button type="button"
+                            @click="open = !open"
+                            title="Column Settings"
+                            class="flex size-8 items-center justify-center rounded-lg border border-content-border bg-white text-text-muted hover:text-text-heading hover:bg-body-bg shadow-sm transition-colors cursor-pointer">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-settings">
+                                <path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.72l-.15.1a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.38a2 2 0 0 0-.73-2.73l-.15-.1a2 2 0 0 1-1-1.72v-.51a2 2 0 0 1 1-1.72l.15-.1a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/>
+                                <circle cx="12" cy="12" r="3"/>
+                            </svg>
+                        </button>
+                        <div x-show="open" x-cloak
+                            class="absolute right-0 top-full mt-2 min-w-[15rem] rounded-xl border border-content-border bg-content-bg shadow-xl p-2 space-y-1 z-[100]">
+                            <div class="px-2 py-1 text-[11px] font-semibold text-text-muted uppercase tracking-wider">
+                                Display Columns
+                            </div>
+                            <div class="my-1 border-t border-content-border"></div>
+                            <label class="flex items-center gap-2 px-2 py-1.5 rounded-lg hover:bg-body-bg text-xs text-text-primary cursor-pointer select-none">
+                                <input type="checkbox" x-model="visibleColumns['checkbox']" class="rounded border-content-border text-primary focus:ring-primary/20">
+                                <span>Selection Box</span>
+                            </label>
+                            <label class="flex items-center gap-2 px-2 py-1.5 rounded-lg hover:bg-body-bg text-xs text-text-primary cursor-pointer select-none">
+                                <input type="checkbox" x-model="visibleColumns['name']" class="rounded border-content-border text-primary focus:ring-primary/20">
+                                <span>File Name</span>
+                            </label>
+                            <label class="flex items-center gap-2 px-2 py-1.5 rounded-lg hover:bg-body-bg text-xs text-text-primary cursor-pointer select-none">
+                                <input type="checkbox" x-model="visibleColumns['size']" class="rounded border-content-border text-primary focus:ring-primary/20">
+                                <span>Size</span>
+                            </label>
+                            <label class="flex items-center gap-2 px-2 py-1.5 rounded-lg hover:bg-body-bg text-xs text-text-primary cursor-pointer select-none">
+                                <input type="checkbox" x-model="visibleColumns['created_at']" class="rounded border-content-border text-primary focus:ring-primary/20">
+                                <span>Last Modified</span>
+                            </label>
+                            <label class="flex items-center gap-2 px-2 py-1.5 rounded-lg hover:bg-body-bg text-xs text-text-primary cursor-pointer select-none">
+                                <input type="checkbox" x-model="visibleColumns['width']" class="rounded border-content-border text-primary focus:ring-primary/20">
+                                <span>Width</span>
+                            </label>
+                            <label class="flex items-center gap-2 px-2 py-1.5 rounded-lg hover:bg-body-bg text-xs text-text-primary cursor-pointer select-none">
+                                <input type="checkbox" x-model="visibleColumns['height']" class="rounded border-content-border text-primary focus:ring-primary/20">
+                                <span>Height</span>
+                            </label>
+                            <label class="flex items-center gap-2 px-2 py-1.5 rounded-lg hover:bg-body-bg text-xs text-text-primary cursor-pointer select-none">
+                                <input type="checkbox" x-model="visibleColumns['actions']" class="rounded border-content-border text-primary focus:ring-primary/20">
+                                <span>Actions</span>
+                            </label>
+                        </div>
+                    </div>
                 </div>
             </div>
 
-            <div class="bg-content-bg rounded-xl ring-1 ring-content-border shadow-sm p-[5px]">
+            <div class="px-1.5 pb-2">
                 <template x-if="loading">
                     <div class="flex items-center justify-center py-20">
                         <div class="text-sm text-text-muted">Loading assets...</div>
@@ -136,163 +264,153 @@
                 </template>
 
                 <template x-if="!loading && filteredAssets.length === 0">
-                    <div class="flex flex-col items-center justify-center py-16">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" class="size-12 text-text-muted/40 mb-3">
-                            <rect x="3" y="3" width="18" height="18" rx="2" ry="2" />
-                            <circle cx="8.5" cy="8.5" r="1.5" />
-                            <polyline points="21 15 16 10 5 21" />
-                        </svg>
+                    <div class="flex flex-col items-center justify-center py-10 text-center px-6">
+                        <img src="/empty-collection.svg" alt="No items" class="size-28 mb-3 opacity-60">
                         <p class="text-sm font-medium text-text-heading">No assets yet</p>
-                        <p class="text-sm text-text-muted mt-1">Upload a file or create a directory to get started.</p>
+                        <p class="text-xs text-text-muted mt-1">Upload a file or create a directory to get started.</p>
                     </div>
                 </template>
 
                 <template x-if="!loading && filteredAssets.length > 0">
-                    <div class="overflow-x-auto">
-                        <table class="w-full border-separate border-spacing-y-0 text-left text-[13px]">
-                            <thead>
-                                <tr class="bg-[#f9fafb]">
-                                    <th class="w-12 rounded-l-xl px-5 py-3">
-                                        <input type="checkbox" class="size-4 rounded border-gray-300 accent-zinc-900 focus:ring-0 cursor-pointer">
-                                    </th>
-                                    <th class="px-4 py-3 font-medium text-text-muted text-[12px] rounded-none">
-                                        <button @click="toggleSort('name')" class="inline-flex items-center gap-1 cursor-pointer hover:text-text-heading">
-                                            File
-                                            <svg viewBox="0 0 14 14" fill="none" class="size-3 text-gray-300">
-                                                <path d="M7 0.75 7 13.25" stroke="currentColor" stroke-width="1" stroke-linecap="round" />
-                                                <path d="M11.086 4.836C10.269 3.202 8.635 1.567 7 0.75 5.366 1.567 3.731 3.202 2.914 4.836" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" />
-                                            </svg>
-                                        </button>
-                                    </th>
-                                    <th class="px-4 py-3 font-medium text-text-muted text-[12px]">
-                                        <button @click="toggleSort('size')" class="inline-flex items-center gap-1 cursor-pointer hover:text-text-heading">
-                                            Size
-                                            <svg viewBox="0 0 14 14" fill="none" class="size-3 text-gray-300">
-                                                <path d="M7 0.75 7 13.25" stroke="currentColor" stroke-width="1" stroke-linecap="round" />
-                                                <path d="M11.086 4.836C10.269 3.202 8.635 1.567 7 0.75 5.366 1.567 3.731 3.202 2.914 4.836" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" />
-                                            </svg>
-                                        </button>
-                                    </th>
-                                    <th class="px-4 py-3 font-medium text-text-muted text-[12px]">
-                                        <button @click="toggleSort('created_at')" class="inline-flex items-center gap-1 cursor-pointer hover:text-text-heading">
-                                            Last Modified
-                                            <svg viewBox="0 0 14 14" fill="none" class="size-3 text-gray-300">
-                                                <path d="M7 0.75 7 13.25" stroke="currentColor" stroke-width="1" stroke-linecap="round" />
-                                                <path d="M11.086 4.836C10.269 3.202 8.635 1.567 7 0.75 5.366 1.567 3.731 3.202 2.914 4.836" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" />
-                                            </svg>
-                                        </button>
-                                    </th>
-                                    <th class="px-4 py-3 font-medium text-text-muted text-[12px]">
-                                        <button @click="toggleSort('width')" class="inline-flex items-center gap-1 cursor-pointer hover:text-text-heading">
-                                            Width
-                                            <svg viewBox="0 0 14 14" fill="none" class="size-3 text-gray-300">
-                                                <path d="M7 0.75 7 13.25" stroke="currentColor" stroke-width="1" stroke-linecap="round" />
-                                                <path d="M11.086 4.836C10.269 3.202 8.635 1.567 7 0.75 5.366 1.567 3.731 3.202 2.914 4.836" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" />
-                                            </svg>
-                                        </button>
-                                    </th>
-                                    <th class="px-4 py-3 font-medium text-text-muted text-[12px]">
-                                        <button @click="toggleSort('height')" class="inline-flex items-center gap-1 cursor-pointer hover:text-text-heading">
-                                            Height
-                                            <svg viewBox="0 0 14 14" fill="none" class="size-3 text-gray-300">
-                                                <path d="M7 0.75 7 13.25" stroke="currentColor" stroke-width="1" stroke-linecap="round" />
-                                                <path d="M11.086 4.836C10.269 3.202 8.635 1.567 7 0.75 5.366 1.567 3.731 3.202 2.914 4.836" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" />
-                                            </svg>
-                                        </button>
-                                    </th>
-                                    <th class="rounded-r-xl pr-2"></th>
-                                </tr>
-                                <tr class="h-2">
-                                    <td colspan="8"></td>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <template x-for="(asset, rowIndex) in filteredAssets" :key="asset.id">
-                                    <tr
-                                        class="group transition-colors hover:bg-gray-50/50"
-                                        draggable="true"
-                                        @dragstart="onDragStart($event, asset)"
-                                        @dragenter="onDragEnter($event, asset, rowIndex)"
-                                        @dragleave="onDragLeave($event, asset)"
-                                        @dragover="onDragOver($event, asset)"
-                                        @drop="onDrop($event, asset)"
-                                        :class="dragOverFolderId === asset.id ? 'bg-primary/5 ring-2 ring-primary/30' : ''"
-                                    >
-                                        <td class="border-b border-gray-100 bg-content-bg px-5 py-3"
-                                            :class="{'rounded-tl-xl': rowIndex === 0, 'rounded-bl-xl': rowIndex === filteredAssets.length - 1}"
-                                        >
-                                            <input type="checkbox" class="size-4 rounded border-gray-300 accent-zinc-900 focus:ring-0 cursor-pointer"
-                                                x-init="if (rowIndex === 0) $el.checked = true">
-                                        </td>
-                                        <td class="border-b border-gray-100 bg-content-bg whitespace-nowrap px-4 py-3">
-                                            <div class="flex items-center gap-3">
-                                                <template x-if="asset.is_directory">
-                                                    <svg viewBox="0 0 20 20" fill="#F59E0B" class="size-8 shrink-0">
-                                                        <path d="M3.5 4.5A1.5 1.5 0 015 3h3.086a1.5 1.5 0 011.06.44l1.415 1.414A1.5 1.5 0 0011.586 5H14.5A1.5 1.5 0 0116 6.5v.378a.5.5 0 01-.5.5H4a.5.5 0 01-.5-.5V4.5z" />
-                                                        <path d="M3.5 7.878V14.5A1.5 1.5 0 005 16h10a1.5 1.5 0 001.5-1.5V7.878a.5.5 0 00-.5-.5H4a.5.5 0 00-.5.5z" />
-                                                    </svg>
-                                                </template>
-                                                <template x-if="!asset.is_directory && asset.mime_type?.startsWith('image/')">
-                                                    <div class="size-8 rounded overflow-hidden bg-gray-100 shrink-0">
-                                                        <img
-                                                            :src="`/storage/${asset.path}`"
-                                                            :alt="asset.name"
-                                                            class="size-full object-cover"
-                                                            x-on:error='$el.style.display="none";$el.parentElement.innerHTML=`<div class="size-full flex items-center justify-center text-xs text-blue-600 font-medium bg-gradient-to-br from-blue-100 to-blue-200">IMG</div>`'
-                                                        >
-                                                    </div>
-                                                </template>
-                                                <template x-if="!asset.is_directory && !asset.mime_type?.startsWith('image/')">
-                                                    <div class="size-8 rounded bg-gradient-to-br from-blue-100 to-blue-200 flex items-center justify-center text-xs text-blue-600 font-medium shrink-0">
-                                                        <svg viewBox="0 0 20 20" fill="currentColor" class="size-4">
-                                                            <path fill-rule="evenodd" d="M5.5 2a3 3 0 00-3 3v10a3 3 0 003 3h9a3 3 0 003-3V5a3 3 0 00-3-3h-9zM4 5a1.5 1.5 0 011.5-1.5h9A1.5 1.5 0 0116 5v10a1.5 1.5 0 01-1.5 1.5h-9A1.5 1.5 0 014 15V5z" clip-rule="evenodd" />
-                                                        </svg>
-                                                    </div>
-                                                </template>
-                                                <button
-                                                    @click="asset.is_directory ? navigateTo(asset.path) : openPreview(asset, rowIndex)"
-                                                    class="text-text-heading cursor-pointer normal-nums select-none hover:text-primary text-start"
-                                                    x-text="asset.name"
-                                                ></button>
-                                            </div>
-                                        </td>
-                                        <td class="border-b border-gray-100 bg-content-bg whitespace-nowrap px-4 py-3 text-text-heading" x-text="asset.is_directory ? '\u2014' : (asset.size ?? '\u2014')"></td>
-                                        <td class="border-b border-gray-100 bg-content-bg whitespace-nowrap px-4 py-3 text-text-heading" x-text="relativeDate(asset.created_at)"></td>
-                                        <td class="border-b border-gray-100 bg-content-bg whitespace-nowrap px-4 py-3 text-text-heading" x-text="asset.is_directory ? '\u2014' : (asset.width ?? '\u2014')"></td>
-                                        <td class="border-b border-gray-100 bg-content-bg whitespace-nowrap px-4 py-3 text-text-heading" x-text="asset.is_directory ? '\u2014' : (asset.height ?? '\u2014')"></td>
-                                        <td class="border-b border-gray-100 bg-content-bg whitespace-nowrap px-4 py-3 text-right"
-                                            :class="{'rounded-tr-xl': rowIndex === 0, 'rounded-br-xl': rowIndex === filteredAssets.length - 1}"
-                                        >
-                                            <button
-                                                @click="openActionMenu($event, asset)"
-                                                class="inline-flex size-7 items-center justify-center rounded-md text-text-muted hover:text-text-heading hover:bg-body-bg transition-colors cursor-pointer"
-                                            >
-                                                <svg viewBox="0 0 16 3" class="size-4" fill="currentColor" aria-hidden="true">
-                                                    <circle cx="2" cy="1.5" r="1.5" />
-                                                    <circle cx="8" cy="1.5" r="1.5" />
-                                                    <circle cx="14" cy="1.5" r="1.5" />
+                    <div class="rounded-xl ring-1 ring-content-border bg-content-bg shadow-sm overflow-hidden">
+                        <div class="overflow-x-auto table-scrollbar">
+                            <table class="w-full min-w-full border-separate border-spacing-y-0 text-left text-[13px]">
+                                <thead>
+                                    <tr class="bg-[#f9fafb]">
+                                        <th x-show="visibleColumns['checkbox'] !== false" class="whitespace-nowrap px-4 py-3 font-medium text-text-muted text-[12px] border-b border-content-border rounded-tl-xl w-12 text-center">
+                                            <input type="checkbox" class="size-4 rounded border-gray-300 accent-zinc-900 focus:ring-0 cursor-pointer">
+                                        </th>
+                                        <th x-show="visibleColumns['name'] !== false" class="whitespace-nowrap px-4 py-3 font-medium text-text-muted text-[12px] border-b border-content-border">
+                                            <button @click="toggleSort('name')" class="inline-flex items-center gap-1 cursor-pointer hover:text-text-heading">
+                                                File
+                                                <svg viewBox="0 0 14 14" fill="none" class="size-3 text-gray-300">
+                                                    <path d="M7 0.75 7 13.25" stroke="currentColor" stroke-width="1" stroke-linecap="round" />
+                                                    <path d="M11.086 4.836C10.269 3.202 8.635 1.567 7 0.75 5.366 1.567 3.731 3.202 2.914 4.836" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" />
                                                 </svg>
                                             </button>
-                                        </td>
+                                        </th>
+                                        <th x-show="visibleColumns['size'] !== false" class="whitespace-nowrap px-4 py-3 font-medium text-text-muted text-[12px] border-b border-content-border">
+                                            <button @click="toggleSort('size')" class="inline-flex items-center gap-1 cursor-pointer hover:text-text-heading">
+                                                Size
+                                                <svg viewBox="0 0 14 14" fill="none" class="size-3 text-gray-300">
+                                                    <path d="M7 0.75 7 13.25" stroke="currentColor" stroke-width="1" stroke-linecap="round" />
+                                                    <path d="M11.086 4.836C10.269 3.202 8.635 1.567 7 0.75 5.366 1.567 3.731 3.202 2.914 4.836" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" />
+                                                </svg>
+                                            </button>
+                                        </th>
+                                        <th x-show="visibleColumns['created_at'] !== false" class="whitespace-nowrap px-4 py-3 font-medium text-text-muted text-[12px] border-b border-content-border">
+                                            <button @click="toggleSort('created_at')" class="inline-flex items-center gap-1 cursor-pointer hover:text-text-heading">
+                                                Last Modified
+                                                <svg viewBox="0 0 14 14" fill="none" class="size-3 text-gray-300">
+                                                    <path d="M7 0.75 7 13.25" stroke="currentColor" stroke-width="1" stroke-linecap="round" />
+                                                    <path d="M11.086 4.836C10.269 3.202 8.635 1.567 7 0.75 5.366 1.567 3.731 3.202 2.914 4.836" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" />
+                                                </svg>
+                                            </button>
+                                        </th>
+                                        <th x-show="visibleColumns['width'] !== false" class="whitespace-nowrap px-4 py-3 font-medium text-text-muted text-[12px] border-b border-content-border">
+                                            <button @click="toggleSort('width')" class="inline-flex items-center gap-1 cursor-pointer hover:text-text-heading">
+                                                Width
+                                                <svg viewBox="0 0 14 14" fill="none" class="size-3 text-gray-300">
+                                                    <path d="M7 0.75 7 13.25" stroke="currentColor" stroke-width="1" stroke-linecap="round" />
+                                                    <path d="M11.086 4.836C10.269 3.202 8.635 1.567 7 0.75 5.366 1.567 3.731 3.202 2.914 4.836" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" />
+                                                </svg>
+                                            </button>
+                                        </th>
+                                        <th x-show="visibleColumns['height'] !== false" class="whitespace-nowrap px-4 py-3 font-medium text-text-muted text-[12px] border-b border-content-border">
+                                            <button @click="toggleSort('height')" class="inline-flex items-center gap-1 cursor-pointer hover:text-text-heading">
+                                                Height
+                                                <svg viewBox="0 0 14 14" fill="none" class="size-3 text-gray-300">
+                                                    <path d="M7 0.75 7 13.25" stroke="currentColor" stroke-width="1" stroke-linecap="round" />
+                                                    <path d="M11.086 4.836C10.269 3.202 8.635 1.567 7 0.75 5.366 1.567 3.731 3.202 2.914 4.836" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" />
+                                                </svg>
+                                            </button>
+                                        </th>
+                                        <th x-show="visibleColumns['actions'] !== false" class="whitespace-nowrap px-4 py-3 font-medium text-text-muted text-[12px] border-b border-content-border sticky right-0 bg-[#f9fafb] z-20 text-right rounded-tr-xl">Actions</th>
                                     </tr>
-                                </template>
-                            </tbody>
-                        </table>
+                                </thead>
+                                <tbody>
+                                    <template x-for="(asset, rowIndex) in paginatedAssets" :key="asset.id">
+                                        <tr
+                                            class="group hover:bg-[#f9fafb] transition-colors"
+                                            draggable="true"
+                                            @dragstart="onDragStart($event, asset)"
+                                            @dragenter="onDragEnter($event, asset, rowIndex)"
+                                            @dragleave="onDragLeave($event, asset)"
+                                            @dragover="onDragOver($event, asset)"
+                                            @drop="onDrop($event, asset)"
+                                            :class="dragOverFolderId === asset.id ? 'bg-primary/5 ring-2 ring-primary/30' : ''"
+                                        >
+                                            <td x-show="visibleColumns['checkbox'] !== false" class="px-4 py-3 text-text-muted text-xs whitespace-nowrap min-w-[50px] border-b border-content-border group-last:border-b-0 group-last:rounded-bl-xl">
+                                                <input type="checkbox" class="size-4 rounded border-gray-300 accent-zinc-900 focus:ring-0 cursor-pointer">
+                                            </td>
+                                            <td x-show="visibleColumns['name'] !== false" class="px-4 py-3 text-text-primary whitespace-nowrap border-b border-content-border group-last:border-b-0">
+                                                <div class="flex items-center gap-3">
+                                                    <template x-if="asset.is_directory">
+                                                        <svg viewBox="0 0 20 20" fill="#F59E0B" class="size-8 shrink-0">
+                                                            <path d="M3.5 4.5A1.5 1.5 0 015 3h3.086a1.5 1.5 0 011.06.44l1.415 1.414A1.5 1.5 0 0011.586 5H14.5A1.5 1.5 0 0116 6.5v.378a.5.5 0 01-.5.5H4a.5.5 0 01-.5-.5V4.5z" />
+                                                            <path d="M3.5 7.878V14.5A1.5 1.5 0 005 16h10a1.5 1.5 0 001.5-1.5V7.878a.5.5 0 00-.5-.5H4a.5.5 0 00-.5.5z" />
+                                                        </svg>
+                                                    </template>
+                                                    <template x-if="!asset.is_directory && asset.mime_type?.startsWith('image/')">
+                                                        <div class="size-8 rounded overflow-hidden bg-gray-100 shrink-0">
+                                                            <img
+                                                                :src="`/storage/${asset.path}`"
+                                                                :alt="asset.name"
+                                                                class="size-full object-cover"
+                                                                x-on:error='$el.style.display="none";$el.parentElement.innerHTML=`<div class="size-full flex items-center justify-center text-xs text-blue-600 font-medium bg-gradient-to-br from-blue-100 to-blue-200">IMG</div>`'
+                                                            >
+                                                        </div>
+                                                    </template>
+                                                    <template x-if="!asset.is_directory && !asset.mime_type?.startsWith('image/')">
+                                                        <div class="size-8 rounded bg-gradient-to-br from-blue-100 to-blue-200 flex items-center justify-center text-xs text-blue-600 font-medium shrink-0">
+                                                            <svg viewBox="0 0 20 20" fill="currentColor" class="size-4">
+                                                                <path fill-rule="evenodd" d="M5.5 2a3 3 0 00-3 3v10a3 3 0 003 3h9a3 3 0 003-3V5a3 3 0 00-3-3h-9zM4 5a1.5 1.5 0 011.5-1.5h9A1.5 1.5 0 0116 5v10a1.5 1.5 0 01-1.5 1.5h-9A1.5 1.5 0 014 15V5z" clip-rule="evenodd" />
+                                                            </svg>
+                                                        </div>
+                                                    </template>
+                                                    <button
+                                                        @click="asset.is_directory ? navigateTo(asset.path) : openPreview(asset, rowIndex)"
+                                                        class="text-text-heading font-medium cursor-pointer normal-nums select-none hover:text-primary text-start"
+                                                        x-text="asset.name"
+                                                    ></button>
+                                                </div>
+                                            </td>
+                                            <td x-show="visibleColumns['size'] !== false" class="px-4 py-3 text-text-primary whitespace-nowrap border-b border-content-border group-last:border-b-0" x-text="asset.is_directory ? '—' : (asset.size ?? '—')"></td>
+                                            <td x-show="visibleColumns['created_at'] !== false" class="px-4 py-3 text-text-primary whitespace-nowrap border-b border-content-border group-last:border-b-0" x-text="relativeDate(asset.created_at)"></td>
+                                            <td x-show="visibleColumns['width'] !== false" class="px-4 py-3 text-text-primary whitespace-nowrap border-b border-content-border group-last:border-b-0" x-text="asset.is_directory ? '—' : (asset.width ?? '—')"></td>
+                                            <td x-show="visibleColumns['height'] !== false" class="px-4 py-3 text-text-primary whitespace-nowrap border-b border-content-border group-last:border-b-0" x-text="asset.is_directory ? '—' : (asset.height ?? '—')"></td>
+                                            <td x-show="visibleColumns['actions'] !== false" class="sticky right-0 bg-white group-hover:bg-[#f9fafb] group-last:rounded-br-xl z-10 px-4 py-3 text-right whitespace-nowrap transition-colors border-b border-content-border group-last:border-b-0">
+                                                <button
+                                                    @click="openActionMenu($event, asset)"
+                                                    class="inline-flex size-7 items-center justify-center rounded-md text-text-muted hover:text-text-heading hover:bg-body-bg transition-colors cursor-pointer"
+                                                >
+                                                    <svg viewBox="0 0 16 3" class="size-4" fill="currentColor" aria-hidden="true">
+                                                        <circle cx="2" cy="1.5" r="1.5" />
+                                                        <circle cx="8" cy="1.5" r="1.5" />
+                                                        <circle cx="14" cy="1.5" r="1.5" />
+                                                    </svg>
+                                                </button>
+                                            </td>
+                                        </tr>
+                                    </template>
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
                 </template>
             </div>
 
-            {{-- Footer --}}
-            <footer class="flex justify-between flex-wrap items-center px-[18px] pt-2.5 md:pt-3 pb-2.5 antialiased">
+            {{-- Footer (Only shown if total assets > 10) --}}
+            <footer class="flex justify-between flex-wrap items-center px-[18px] pt-2.5 md:pt-3 pb-2.5 antialiased" x-show="filteredAssets.length > 10">
                 <div class="text-sm text-text-muted">
-                    <span x-text="filteredAssets.length > 0 ? `1\u2013${Math.min(filteredAssets.length, 10)} of ${filteredAssets.length}` : 'No assets'"></span>
+                    <span x-text="filteredAssets.length > 0 ? `${(page - 1) * perPage + 1}\u2013${Math.min(page * perPage, filteredAssets.length)} of ${filteredAssets.length}` : 'No assets'"></span>
                 </div>
                 <div class="flex items-center gap-1">
-                    <button class="inline-flex items-center justify-center w-8 h-8 rounded-full hover:bg-gray-400/10 text-text-heading disabled:opacity-50 transition-colors cursor-pointer" disabled>
+                    <button type="button" @click="if (page > 1) page--" :disabled="page <= 1" class="inline-flex items-center justify-center w-8 h-8 rounded-full hover:bg-gray-400/10 text-text-heading disabled:opacity-50 transition-colors cursor-pointer">
                         <svg viewBox="0 0 15 15" fill="currentColor" class="size-3.5"><path fill-rule="evenodd" d="M8.842 3.135a.5.5 0 01.023.707L5.435 7.5l3.43 3.658a.5.5 0 01-.73.684l-3.75-4a.5.5 0 010-.684l3.75-4a.5.5 0 01.707-.023" clip-rule="evenodd" /></svg>
                     </button>
-                    <button class="inline-flex items-center justify-center px-3 h-8 rounded-full bg-gray-400/10 text-text-heading text-sm font-medium transition-colors cursor-pointer">1</button>
-                    <button class="inline-flex items-center justify-center w-8 h-8 rounded-full hover:bg-gray-400/10 text-text-heading transition-colors cursor-pointer">
+                    <span class="inline-flex items-center justify-center px-3 h-8 rounded-full bg-gray-400/10 text-text-heading text-sm font-medium" x-text="page">1</span>
+                    <button type="button" @click="if (page < totalPages) page++" :disabled="page >= totalPages" class="inline-flex items-center justify-center w-8 h-8 rounded-full hover:bg-gray-400/10 text-text-heading disabled:opacity-50 transition-colors cursor-pointer">
                         <svg viewBox="0 0 15 15" fill="currentColor" class="size-3.5"><path fill-rule="evenodd" d="M6.158 3.135a.5.5 0 01-.023.707L9.565 7.5l-3.43 3.658a.5.5 0 00.73.684l3.75-4a.5.5 0 000-.684l-3.75-4a.5.5 0 00-.707-.023" clip-rule="evenodd" /></svg>
                     </button>
                 </div>
@@ -301,11 +419,6 @@
                     <span class="px-2 py-1 border border-content-border rounded text-text-heading">10</span>
                 </div>
             </footer>
-        </div>
-
-        {{-- Learn about Assets --}}
-        <div class="mt-12 mb-10 flex justify-center">
-            <a href="#" class="inline-flex items-center justify-center border border-content-border font-normal text-sm px-4 py-2 rounded-lg text-text-muted hover:bg-body-bg no-underline transition-colors">Learn about Assets</a>
         </div>
 
     </div>
@@ -324,7 +437,7 @@
             @click.stop
         >
             <template x-if="actionAsset?.is_directory">
-                <button type="button" role="menuitem" @click="actionAsset = null; navigateTo(actionAsset.path)"
+                <button type="button" role="menuitem" @click="executeAction('open')"
                     class="flex w-full items-center justify-start gap-2.5 px-3 py-2 rounded-lg text-sm transition-colors text-text-primary hover:bg-body-bg cursor-pointer"
                 >
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" class="size-4 shrink-0 text-text-muted"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" /><circle cx="12" cy="12" r="3" /></svg>
@@ -332,7 +445,7 @@
                 </button>
             </template>
             <template x-if="!actionAsset?.is_directory">
-                <button type="button" role="menuitem" @click="actionAsset = null; openPreview(actionAsset, previewIndex)"
+                <button type="button" role="menuitem" @click="executeAction('preview')"
                     class="flex w-full items-center justify-start gap-2.5 px-3 py-2 rounded-lg text-sm transition-colors text-text-primary hover:bg-body-bg cursor-pointer"
                 >
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" class="size-4 shrink-0 text-text-muted"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" /><circle cx="12" cy="12" r="3" /></svg>
@@ -340,30 +453,30 @@
                 </button>
             </template>
             <template x-if="!actionAsset?.is_directory">
-                <button type="button" role="menuitem" @click="actionAsset = null; copyUrl(actionAsset)"
+                <button type="button" role="menuitem" @click="executeAction('copy')"
                     class="flex w-full items-center justify-start gap-2.5 px-3 py-2 rounded-lg text-sm transition-colors text-text-primary hover:bg-body-bg cursor-pointer"
                 >
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" class="size-4 shrink-0 text-text-muted"><path d="M10 13a5 5 0 007.54.54l3-3a5 5 0 00-7.07-7.07l-1.72 1.71" /><path d="M14 11a5 5 0 00-7.54-.54l-3 3a5 5 0 007.07 7.07l1.71-1.71" /></svg>
                     <span>Copy URL</span>
                 </button>
             </template>
-            <button type="button" role="menuitem" @click="actionAsset = null; startRename(actionAsset)"
+            <button type="button" role="menuitem" @click="executeAction('rename')"
                 class="flex w-full items-center justify-start gap-2.5 px-3 py-2 rounded-lg text-sm transition-colors text-text-primary hover:bg-body-bg cursor-pointer"
             >
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" class="size-4 shrink-0 text-text-muted"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7" /><path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z" /></svg>
                 <span>Rename</span>
             </button>
             <template x-if="!actionAsset?.is_directory">
-                <a :href="`/admin/assets/${actionAsset?.id}/file`" target="_blank" rel="noreferrer" role="menuitem"
-                    class="flex w-full items-center justify-start gap-2.5 px-3 py-2 rounded-lg text-sm no-underline transition-colors text-text-primary hover:bg-body-bg"
+                <button type="button" role="menuitem" @click="executeAction('download')"
+                    class="flex w-full items-center justify-start gap-2.5 px-3 py-2 rounded-lg text-sm transition-colors text-text-primary hover:bg-body-bg cursor-pointer"
                 >
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" class="size-4 shrink-0 text-text-muted"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6" /><polyline points="15 3 21 3 21 9" /><line x1="10" y1="14" x2="21" y2="3" /></svg>
                     <span>Download</span>
-                </a>
+                </button>
             </template>
             <hr class="my-1 border-content-border">
             <button type="button" role="menuitem"
-                @click="actionAsset = null; deletingAsset = actionAsset"
+                @click="executeAction('delete')"
                 class="flex w-full items-center justify-start gap-2.5 px-3 py-2 rounded-lg text-sm transition-colors text-red-600 hover:bg-red-50 cursor-pointer"
             >
                 <svg viewBox="0 0 20 20" fill="currentColor" class="size-4 shrink-0 text-red-500"><path fill-rule="evenodd" d="M8.75 1A2.75 2.75 0 006 3.75v.443c-.795.077-1.584.176-2.365.298a.75.75 0 10.23 1.482l.149-.022.841 10.518A2.75 2.75 0 007.596 19h4.807a2.75 2.75 0 002.742-2.53l.841-10.52.149.023a.75.75 0 00.23-1.482A41.03 41.03 0 0014 4.193V3.75A2.75 2.75 0 0011.25 1h-2.5zM10 4c-.84 0-1.673.025-2.5.075V3.75c0-.69.56-1.25 1.25-1.25h2.5c.69 0 1.25.56 1.25 1.25v.325C11.673 4.025 10.84 4 10 4zM8.58 7.72a.75.75 0 00-1.5.06l.3 7.5a.75.75 0 101.5-.06l-.3-7.5zm4.34.06a.75.75 0 10-1.5-.06l-.3 7.5a.75.75 0 101.5.06l.3-7.5z" clip-rule="evenodd" /></svg>
@@ -376,43 +489,67 @@
     <div
         x-show="showCreateDir"
         x-cloak
-        x-transition:enter="transition ease-out duration-100"
-        x-transition:enter-start="opacity-0"
-        x-transition:enter-end="opacity-100"
-        x-transition:leave="transition ease-in duration-75"
-        x-transition:leave-start="opacity-100"
-        x-transition:leave-end="opacity-0"
-        class="fixed inset-0 z-[100] flex items-center justify-center bg-black/60 backdrop-blur-sm"
+        class="fixed inset-0 z-[100] flex items-center justify-center p-4"
         @keydown.escape.window="showCreateDir = false"
     >
         <div
-            class="relative w-full max-w-md bg-content-bg rounded-2xl shadow-2xl p-6"
-            @click.outside="showCreateDir = false"
+            x-show="showCreateDir"
+            x-transition:enter="transition-opacity ease-linear duration-150"
+            x-transition:enter-start="opacity-0"
+            x-transition:enter-end="opacity-100"
+            x-transition:leave="transition-opacity ease-linear duration-100"
+            x-transition:leave-start="opacity-100"
+            x-transition:leave-end="opacity-0"
+            class="fixed inset-0 bg-black/40"
+            @click="showCreateDir = false"
+        ></div>
+
+        <div
+            x-show="showCreateDir"
+            x-transition:enter="transition ease-out duration-150"
+            x-transition:enter-start="opacity-0 scale-95"
+            x-transition:enter-end="opacity-100 scale-100"
+            x-transition:leave="transition ease-in duration-100"
+            x-transition:leave-start="opacity-100 scale-100"
+            x-transition:leave-end="opacity-0 scale-95"
+            class="relative w-full max-w-md bg-content-bg rounded-2xl border border-content-border shadow-2xl p-6 z-10"
         >
-            <button
-                @click="showCreateDir = false"
-                class="absolute top-3 right-3 size-7 flex items-center justify-center rounded-md bg-gray-200 text-text-muted hover:bg-gray-300 transition-colors"
-            >
-                <svg viewBox="0 0 20 20" fill="currentColor" class="size-4">
-                    <path d="M6.28 5.22a.75.75 0 00-1.06 1.06L8.94 10l-3.72 3.72a.75.75 0 101.06 1.06L10 11.06l3.72 3.72a.75.75 0 101.06-1.06L11.06 10l3.72-3.72a.75.75 0 00-1.06-1.06L10 8.94 6.28 5.22z" />
-                </svg>
-            </button>
-            <h2 class="text-lg font-medium text-text-heading mb-4">Create Directory</h2>
-            <input
-                type="text"
-                x-model="newDirName"
-                @keydown.enter="createDirectory()"
-                x-ref="dirInput"
-                placeholder="Directory name"
-                class="w-full border border-content-border rounded-lg px-3 py-2 text-sm text-text-heading placeholder:text-text-muted focus:outline-none focus:ring-2 focus:ring-primary/40 focus:border-primary mb-4"
-            >
-            <div class="flex justify-end gap-2">
+            <div class="flex items-start justify-between gap-4 mb-4">
+                <div>
+                    <h3 class="text-lg font-semibold text-text-heading">Create Directory</h3>
+                    <p class="text-xs text-text-muted mt-0.5">Enter a name for your new directory.</p>
+                </div>
+                <button
+                    type="button"
+                    @click="showCreateDir = false"
+                    class="size-8 flex items-center justify-center rounded-lg text-text-muted hover:text-text-heading hover:bg-body-bg transition-colors cursor-pointer"
+                    title="Close"
+                >
+                    <svg viewBox="0 0 20 20" fill="currentColor" class="size-4">
+                        <path d="M6.28 5.22a.75.75 0 00-1.06 1.06L8.94 10l-3.72 3.72a.75.75 0 101.06 1.06L10 11.06l3.72 3.72a.75.75 0 101.06-1.06L11.06 10l3.72-3.72a.75.75 0 00-1.06-1.06L10 8.94 6.28 5.22z" />
+                    </svg>
+                </button>
+            </div>
+
+            <div class="mb-6">
+                <label class="block text-xs font-medium text-text-heading mb-1.5">Directory Name</label>
+                <input
+                    type="text"
+                    x-model="newDirName"
+                    @keydown.enter="createDirectory()"
+                    x-ref="dirInput"
+                    placeholder="e.g. documents"
+                    class="w-full rounded-xl border border-content-border bg-content-bg px-3.5 py-2.5 text-sm text-text-heading placeholder:text-text-muted focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all shadow-sm"
+                >
+            </div>
+
+            <div class="flex items-center justify-end gap-3 pt-2">
                 <button type="button" @click="showCreateDir = false"
-                    class="inline-flex items-center justify-center font-medium text-sm px-4 py-2 rounded-lg border border-content-border bg-content-bg text-text-primary hover:bg-body-bg transition-colors cursor-pointer"
+                    class="h-9 px-4 rounded-xl border border-content-border bg-content-bg text-sm font-medium text-text-heading hover:bg-body-bg transition-colors cursor-pointer"
                 >Cancel</button>
                 <button type="button" @click="createDirectory()"
-                    class="inline-flex items-center justify-center font-medium text-sm px-4 py-2 rounded-lg bg-primary text-white hover:opacity-90 disabled:opacity-60 disabled:cursor-not-allowed transition-opacity cursor-pointer"
-                >Create</button>
+                    class="h-9 px-4 rounded-xl bg-primary text-sm font-medium text-white hover:opacity-90 disabled:opacity-60 disabled:cursor-not-allowed transition-opacity shadow-sm cursor-pointer"
+                >Create Directory</button>
             </div>
         </div>
     </div>
@@ -421,42 +558,66 @@
     <div
         x-show="renamingAsset"
         x-cloak
-        x-transition:enter="transition ease-out duration-100"
-        x-transition:enter-start="opacity-0"
-        x-transition:enter-end="opacity-100"
-        x-transition:leave="transition ease-in duration-75"
-        x-transition:leave-start="opacity-100"
-        x-transition:leave-end="opacity-0"
-        class="fixed inset-0 z-[100] flex items-center justify-center bg-black/60 backdrop-blur-sm"
+        class="fixed inset-0 z-[100] flex items-center justify-center p-4"
         @keydown.escape.window="renamingAsset = null"
     >
         <div
-            class="relative w-full max-w-md bg-content-bg rounded-2xl shadow-2xl p-6"
-            @click.outside="renamingAsset = null"
+            x-show="renamingAsset"
+            x-transition:enter="transition-opacity ease-linear duration-150"
+            x-transition:enter-start="opacity-0"
+            x-transition:enter-end="opacity-100"
+            x-transition:leave="transition-opacity ease-linear duration-100"
+            x-transition:leave-start="opacity-100"
+            x-transition:leave-end="opacity-0"
+            class="fixed inset-0 bg-black/40"
+            @click="renamingAsset = null"
+        ></div>
+
+        <div
+            x-show="renamingAsset"
+            x-transition:enter="transition ease-out duration-150"
+            x-transition:enter-start="opacity-0 scale-95"
+            x-transition:enter-end="opacity-100 scale-100"
+            x-transition:leave="transition ease-in duration-100"
+            x-transition:leave-start="opacity-100 scale-100"
+            x-transition:leave-end="opacity-0 scale-95"
+            class="relative w-full max-w-md bg-content-bg rounded-2xl border border-content-border shadow-2xl p-6 z-10"
         >
-            <button
-                @click="renamingAsset = null"
-                class="absolute top-3 right-3 size-7 flex items-center justify-center rounded-md bg-gray-200 text-text-muted hover:bg-gray-300 transition-colors"
-            >
-                <svg viewBox="0 0 20 20" fill="currentColor" class="size-4">
-                    <path d="M6.28 5.22a.75.75 0 00-1.06 1.06L8.94 10l-3.72 3.72a.75.75 0 101.06 1.06L10 11.06l3.72 3.72a.75.75 0 101.06-1.06L11.06 10l3.72-3.72a.75.75 0 00-1.06-1.06L10 8.94 6.28 5.22z" />
-                </svg>
-            </button>
-            <h2 class="text-lg font-medium text-text-heading mb-4">Rename</h2>
-            <input
-                type="text"
-                x-model="renameValue"
-                @keydown.enter="doRename()"
-                placeholder="New name"
-                class="w-full border border-content-border rounded-lg px-3 py-2 text-sm text-text-heading placeholder:text-text-muted focus:outline-none focus:ring-2 focus:ring-primary/40 focus:border-primary mb-4"
-            >
-            <div class="flex justify-end gap-2">
+            <div class="flex items-start justify-between gap-4 mb-4">
+                <div>
+                    <h3 class="text-lg font-semibold text-text-heading">Rename Asset</h3>
+                    <p class="text-xs text-text-muted mt-0.5">Enter a new name for this asset.</p>
+                </div>
+                <button
+                    type="button"
+                    @click="renamingAsset = null"
+                    class="size-8 flex items-center justify-center rounded-lg text-text-muted hover:text-text-heading hover:bg-body-bg transition-colors cursor-pointer"
+                    title="Close"
+                >
+                    <svg viewBox="0 0 20 20" fill="currentColor" class="size-4">
+                        <path d="M6.28 5.22a.75.75 0 00-1.06 1.06L8.94 10l-3.72 3.72a.75.75 0 101.06 1.06L10 11.06l3.72 3.72a.75.75 0 101.06-1.06L11.06 10l3.72-3.72a.75.75 0 00-1.06-1.06L10 8.94 6.28 5.22z" />
+                    </svg>
+                </button>
+            </div>
+
+            <div class="mb-6">
+                <label class="block text-xs font-medium text-text-heading mb-1.5">New Name</label>
+                <input
+                    type="text"
+                    x-model="renameValue"
+                    @keydown.enter="doRename()"
+                    placeholder="Enter new name..."
+                    class="w-full rounded-xl border border-content-border bg-content-bg px-3.5 py-2.5 text-sm text-text-heading placeholder:text-text-muted focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all shadow-sm"
+                >
+            </div>
+
+            <div class="flex items-center justify-end gap-3 pt-2">
                 <button type="button" @click="renamingAsset = null"
-                    class="inline-flex items-center justify-center font-medium text-sm px-4 py-2 rounded-lg border border-content-border bg-content-bg text-text-primary hover:bg-body-bg transition-colors cursor-pointer"
+                    class="h-9 px-4 rounded-xl border border-content-border bg-content-bg text-sm font-medium text-text-heading hover:bg-body-bg transition-colors cursor-pointer"
                 >Cancel</button>
                 <button type="button" @click="doRename()"
-                    class="inline-flex items-center justify-center font-medium text-sm px-4 py-2 rounded-lg bg-primary text-white hover:opacity-90 disabled:opacity-60 disabled:cursor-not-allowed transition-opacity cursor-pointer"
-                >Save</button>
+                    class="h-9 px-4 rounded-xl bg-primary text-sm font-medium text-white hover:opacity-90 disabled:opacity-60 disabled:cursor-not-allowed transition-opacity shadow-sm cursor-pointer"
+                >Save Changes</button>
             </div>
         </div>
     </div>
@@ -465,42 +626,64 @@
     <div
         x-show="deletingAsset"
         x-cloak
-        x-transition:enter="transition ease-out duration-100"
-        x-transition:enter-start="opacity-0"
-        x-transition:enter-end="opacity-100"
-        x-transition:leave="transition ease-in duration-75"
-        x-transition:leave-start="opacity-100"
-        x-transition:leave-end="opacity-0"
-        class="fixed inset-0 z-[100] flex items-center justify-center bg-black/60 backdrop-blur-sm"
+        class="fixed inset-0 z-[100] flex items-center justify-center p-4"
         @keydown.escape.window="deletingAsset = null"
     >
         <div
-            class="relative w-full max-w-md bg-content-bg rounded-2xl shadow-2xl p-6"
-            @click.outside="deletingAsset = null"
+            x-show="deletingAsset"
+            x-transition:enter="transition-opacity ease-linear duration-150"
+            x-transition:enter-start="opacity-0"
+            x-transition:enter-end="opacity-100"
+            x-transition:leave="transition-opacity ease-linear duration-100"
+            x-transition:leave-start="opacity-100"
+            x-transition:leave-end="opacity-0"
+            class="fixed inset-0 bg-black/40"
+            @click="deletingAsset = null"
+        ></div>
+
+        <div
+            x-show="deletingAsset"
+            x-transition:enter="transition ease-out duration-150"
+            x-transition:enter-start="opacity-0 scale-95"
+            x-transition:enter-end="opacity-100 scale-100"
+            x-transition:leave="transition ease-in duration-100"
+            x-transition:leave-start="opacity-100 scale-100"
+            x-transition:leave-end="opacity-0 scale-95"
+            class="relative w-full max-w-md bg-content-bg rounded-2xl border border-content-border shadow-2xl p-6 z-10"
         >
-            <button
-                @click="deletingAsset = null"
-                class="absolute top-3 right-3 size-7 flex items-center justify-center rounded-md bg-gray-200 text-text-muted hover:bg-gray-300 transition-colors"
-            >
-                <svg viewBox="0 0 20 20" fill="currentColor" class="size-4">
-                    <path d="M6.28 5.22a.75.75 0 00-1.06 1.06L8.94 10l-3.72 3.72a.75.75 0 101.06 1.06L10 11.06l3.72 3.72a.75.75 0 101.06-1.06L11.06 10l3.72-3.72a.75.75 0 00-1.06-1.06L10 8.94 6.28 5.22z" />
-                </svg>
-            </button>
-            <h2 class="text-lg font-medium text-text-heading mb-2">Delete Asset</h2>
-            <p class="text-sm text-text-primary mb-4">
-                Are you sure you want to delete <strong class="text-text-heading" x-text="deletingAsset?.name"></strong>?
-                <template x-if="deletingAsset?.is_directory">
-                    <span>This will also delete all files inside this directory.</span>
-                </template>
-                This action cannot be undone.
-            </p>
-            <div class="flex justify-end gap-2">
+            <div class="flex items-start justify-between gap-4 mb-3">
+                <div>
+                    <h3 class="text-lg font-semibold text-text-heading">Delete Asset</h3>
+                    <p class="text-xs text-text-muted mt-0.5">Are you sure you want to delete this asset?</p>
+                </div>
+                <button
+                    type="button"
+                    @click="deletingAsset = null"
+                    class="size-8 flex items-center justify-center rounded-lg text-text-muted hover:text-text-heading hover:bg-body-bg transition-colors cursor-pointer"
+                    title="Close"
+                >
+                    <svg viewBox="0 0 20 20" fill="currentColor" class="size-4">
+                        <path d="M6.28 5.22a.75.75 0 00-1.06 1.06L8.94 10l-3.72 3.72a.75.75 0 101.06 1.06L10 11.06l3.72 3.72a.75.75 0 101.06-1.06L11.06 10l3.72-3.72a.75.75 0 00-1.06-1.06L10 8.94 6.28 5.22z" />
+                    </svg>
+                </button>
+            </div>
+
+            <div class="mb-6 py-2">
+                <p class="text-sm text-text-primary">
+                    Deleting <strong class="text-text-heading font-semibold" x-text="deletingAsset?.name"></strong> cannot be undone.
+                    <template x-if="deletingAsset?.is_directory">
+                        <span class="block text-xs text-danger mt-1">This will permanently delete all files inside this directory.</span>
+                    </template>
+                </p>
+            </div>
+
+            <div class="flex items-center justify-end gap-3 pt-2">
                 <button type="button" @click="deletingAsset = null"
-                    class="inline-flex items-center justify-center font-medium text-sm px-4 py-2 rounded-lg border border-content-border bg-content-bg text-text-primary hover:bg-body-bg transition-colors cursor-pointer"
+                    class="h-9 px-4 rounded-xl border border-content-border bg-content-bg text-sm font-medium text-text-heading hover:bg-body-bg transition-colors cursor-pointer"
                 >Cancel</button>
                 <button type="button" @click="confirmDelete()"
-                    class="inline-flex items-center justify-center font-medium text-sm px-4 py-2 rounded-lg bg-danger text-white hover:opacity-90 transition-opacity cursor-pointer"
-                >Delete</button>
+                    class="h-9 px-4 rounded-xl bg-danger text-sm font-medium text-white hover:opacity-90 transition-opacity shadow-sm cursor-pointer"
+                >Delete Asset</button>
             </div>
         </div>
     </div>
@@ -614,21 +797,70 @@
             sortField: 'name',
             sortDir: 'asc',
             search: '',
+            filterColumn: 'all',
+            page: 1,
+            perPage: 10,
+            visibleColumns: {
+                checkbox: true,
+                name: true,
+                size: true,
+                created_at: true,
+                width: true,
+                height: true,
+                actions: true,
+            },
             loading: true,
             dragOverFolderId: null,
             dragOverCrumb: null,
             fileAssets: [],
+
+            get filterColumnLabel() {
+                if (this.filterColumn === 'all') return 'Filter: All';
+                const labels = {
+                    name: 'File Name',
+                    size: 'Size',
+                    created_at: 'Last Modified',
+                    width: 'Width',
+                    height: 'Height',
+                };
+                return 'Filter: ' + (labels[this.filterColumn] || this.filterColumn);
+            },
 
             get directoryParts() {
                 if (!this.currentDirectory) return [];
                 return this.currentDirectory.split('/');
             },
 
+            get totalPages() {
+                return Math.ceil(this.filteredAssets.length / this.perPage) || 1;
+            },
+
+            get paginatedAssets() {
+                if (this.filteredAssets.length <= this.perPage) {
+                    return this.filteredAssets;
+                }
+                const start = (this.page - 1) * this.perPage;
+                return this.filteredAssets.slice(start, start + this.perPage);
+            },
+
             get filteredAssets() {
                 let arr = [...this.assets];
                 if (this.search.trim()) {
-                    const q = this.search.toLowerCase();
-                    arr = arr.filter(a => a.name.toLowerCase().includes(q));
+                    const q = this.search.toLowerCase().trim();
+                    if (this.filterColumn === 'all') {
+                        arr = arr.filter(a =>
+                            (a.name && String(a.name).toLowerCase().includes(q)) ||
+                            (a.size && String(a.size).toLowerCase().includes(q)) ||
+                            (a.created_at && String(a.created_at).toLowerCase().includes(q)) ||
+                            (a.width && String(a.width).toLowerCase().includes(q)) ||
+                            (a.height && String(a.height).toLowerCase().includes(q))
+                        );
+                    } else {
+                        arr = arr.filter(a => {
+                            const val = a[this.filterColumn];
+                            return val !== null && val !== undefined && String(val).toLowerCase().includes(q);
+                        });
+                    }
                 }
                 const dir = this.sortDir === 'asc' ? 1 : -1;
                 arr.sort((a, b) => {
@@ -677,11 +909,21 @@
                 const formData = new FormData();
                 formData.append('file', file);
                 formData.append('directory', this.currentDirectory);
-                await fetch('{{ route("admin.assets.store") }}', {
+                const res = await fetch('{{ route("admin.assets.store") }}', {
                     method: 'POST',
                     headers: { 'X-CSRF-TOKEN': '{{ csrf_token() }}' },
                     body: formData,
                 });
+                if (res.ok) {
+                    window.dispatchEvent(new CustomEvent('toast', {
+                        detail: { message: `File "${file.name}" uploaded successfully.`, type: 'success' }
+                    }));
+                } else {
+                    const data = await res.json().catch(() => ({}));
+                    window.dispatchEvent(new CustomEvent('toast', {
+                        detail: { message: data.message || 'Failed to upload file.', type: 'error' }
+                    }));
+                }
                 event.target.value = '';
                 await this.loadAssets();
             },
@@ -696,11 +938,16 @@
                 });
                 if (!res.ok) {
                     const data = await res.json().catch(() => ({}));
-                    alert(data.message || 'Failed to create directory');
+                    window.dispatchEvent(new CustomEvent('toast', {
+                        detail: { message: data.message || 'Failed to create directory.', type: 'error' }
+                    }));
                     return;
                 }
                 this.showCreateDir = false;
                 this.newDirName = '';
+                window.dispatchEvent(new CustomEvent('toast', {
+                    detail: { message: `Directory "${name}" created successfully.`, type: 'success' }
+                }));
                 await this.loadAssets();
             },
 
@@ -730,8 +977,37 @@
                 this.actionAsset = asset;
             },
 
+            executeAction(type) {
+                const asset = this.actionAsset;
+                this.actionAsset = null;
+                if (!asset) return;
+
+                if (type === 'open') {
+                    this.navigateTo(asset.path);
+                } else if (type === 'preview') {
+                    this.openPreview(asset);
+                } else if (type === 'download') {
+                    const link = document.createElement('a');
+                    link.href = `/admin/assets/${asset.id}/file?download=1`;
+                    link.download = asset.name || 'download';
+                    document.body.appendChild(link);
+                    link.click();
+                    document.body.removeChild(link);
+                } else if (type === 'copy') {
+                    this.copyUrl(asset);
+                } else if (type === 'rename') {
+                    this.startRename(asset);
+                } else if (type === 'delete') {
+                    this.deletingAsset = asset;
+                }
+            },
+
             copyUrl(asset) {
-                navigator.clipboard?.writeText(`${window.location.origin}/admin/assets/${asset.id}/file`).catch(() => {});
+                navigator.clipboard?.writeText(`${window.location.origin}/admin/assets/${asset.id}/file`).then(() => {
+                    window.dispatchEvent(new CustomEvent('toast', {
+                        detail: { message: 'Link copied to clipboard.', type: 'success' }
+                    }));
+                }).catch(() => {});
             },
 
             startRename(asset) {
@@ -742,11 +1018,16 @@
             async doRename() {
                 const name = this.renameValue.trim();
                 if (!name || !this.renamingAsset) return;
-                await fetch(`/admin/assets/${this.renamingAsset.id}`, {
+                const res = await fetch(`/admin/assets/${this.renamingAsset.id}`, {
                     method: 'PUT',
                     headers: { 'Content-Type': 'application/json', 'X-CSRF-TOKEN': '{{ csrf_token() }}' },
                     body: JSON.stringify({ name }),
                 });
+                if (res.ok) {
+                    window.dispatchEvent(new CustomEvent('toast', {
+                        detail: { message: `Renamed to "${name}" successfully.`, type: 'success' }
+                    }));
+                }
                 this.renamingAsset = null;
                 this.renameValue = '';
                 await this.loadAssets();
@@ -754,10 +1035,16 @@
 
             async confirmDelete() {
                 if (!this.deletingAsset) return;
-                await fetch(`/admin/assets/${this.deletingAsset.id}`, {
+                const assetName = this.deletingAsset.name;
+                const res = await fetch(`/admin/assets/${this.deletingAsset.id}`, {
                     method: 'DELETE',
                     headers: { 'X-CSRF-TOKEN': '{{ csrf_token() }}' },
                 });
+                if (res.ok) {
+                    window.dispatchEvent(new CustomEvent('toast', {
+                        detail: { message: `"${assetName}" deleted successfully.`, type: 'success' }
+                    }));
+                }
                 this.deletingAsset = null;
                 await this.loadAssets();
             },
@@ -793,15 +1080,28 @@
                 const raw = event.dataTransfer.getData('text/plain');
                 try {
                     const d = JSON.parse(raw);
-                    if (d.assetId) {
-                        await fetch(`/admin/assets/${d.assetId}`, {
+                    if (d.assetId && d.assetId !== asset.id) {
+                        const targetDir = asset.path.startsWith('assets/') ? asset.path.slice(7) : asset.path;
+                        const res = await fetch(`/admin/assets/${d.assetId}`, {
                             method: 'PUT',
                             headers: { 'Content-Type': 'application/json', 'X-CSRF-TOKEN': '{{ csrf_token() }}' },
-                            body: JSON.stringify({ directory: asset.path }),
+                            body: JSON.stringify({ directory: targetDir }),
                         });
+                        if (res.ok) {
+                            window.dispatchEvent(new CustomEvent('toast', {
+                                detail: { message: `Moved to "${asset.name}" successfully.`, type: 'success' }
+                            }));
+                        } else {
+                            const data = await res.json().catch(() => ({}));
+                            window.dispatchEvent(new CustomEvent('toast', {
+                                detail: { message: data.message || 'Failed to move asset.', type: 'error' }
+                            }));
+                        }
                         await this.loadAssets();
                     }
-                } catch {}
+                } catch (e) {
+                    console.error('Drop error:', e);
+                }
             },
 
             crumbDragEnter(path) {
@@ -813,19 +1113,32 @@
             },
 
             async crumbDrop(event, path) {
+                event.preventDefault();
                 this.dragOverCrumb = null;
                 const raw = event.dataTransfer.getData('text/plain');
                 try {
                     const d = JSON.parse(raw);
                     if (d.assetId) {
-                        await fetch(`/admin/assets/${d.assetId}`, {
+                        const res = await fetch(`/admin/assets/${d.assetId}`, {
                             method: 'PUT',
                             headers: { 'Content-Type': 'application/json', 'X-CSRF-TOKEN': '{{ csrf_token() }}' },
                             body: JSON.stringify({ directory: path }),
                         });
+                        if (res.ok) {
+                            window.dispatchEvent(new CustomEvent('toast', {
+                                detail: { message: 'Asset moved successfully.', type: 'success' }
+                            }));
+                        } else {
+                            const data = await res.json().catch(() => ({}));
+                            window.dispatchEvent(new CustomEvent('toast', {
+                                detail: { message: data.message || 'Failed to move asset.', type: 'error' }
+                            }));
+                        }
                         await this.loadAssets();
                     }
-                } catch {}
+                } catch (e) {
+                    console.error('Crumb drop error:', e);
+                }
             },
 
             formatDate(iso) {
