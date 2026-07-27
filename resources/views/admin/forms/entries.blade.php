@@ -40,11 +40,17 @@
 <div class="max-w-5xl mx-auto px-2 sm:px-0" x-data="formEntriesPage()">
     <header class="relative flex flex-wrap items-center justify-between gap-4 py-6 md:py-8">
         <h1 class="flex items-center gap-2.5 text-[25px] leading-[1.25] font-medium text-text-heading">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" class="size-6 shrink-0 text-text-muted">
-                <rect x="3" y="3" width="18" height="18" rx="2" ry="2" />
-                <line x1="3" y1="9" x2="21" y2="9" />
-                <line x1="9" y1="21" x2="9" y2="9" />
-            </svg>
+            <span class="flex size-6 shrink-0 items-center justify-center text-text-muted">
+                @if($form->icon)
+                    <i class="{{ $form->icon }} text-lg"></i>
+                @else
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" class="size-6">
+                        <rect x="3" y="3" width="18" height="18" rx="2" ry="2" />
+                        <line x1="3" y1="9" x2="21" y2="9" />
+                        <line x1="9" y1="21" x2="9" y2="9" />
+                    </svg>
+                @endif
+            </span>
             {{ $form->title }}
         </h1>
         <div class="flex flex-wrap items-center gap-2 sm:gap-3">
@@ -221,24 +227,15 @@
                             <thead>
                                 <tr class="bg-[#f9fafb]">
                                     <th x-show="visibleColumns['id'] !== false" class="whitespace-nowrap px-4 py-3 font-medium text-text-muted text-[12px] border-b border-content-border rounded-tl-xl">
-                                        <button @click="sortColumn = 'id'; sortRows()" class="inline-flex items-center gap-1 cursor-pointer hover:text-text-heading">
-                                            #
-                                            <svg viewBox="0 0 14 14" fill="none" class="size-3 text-gray-300"><path d="M7 0.75 7 13.25" stroke="currentColor" stroke-width="1" stroke-linecap="round" /><path d="M11.086 4.836C10.269 3.202 8.635 1.567 7 0.75 5.366 1.567 3.731 3.202 2.914 4.836" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" /></svg>
-                                        </button>
+                                        <button @click="sortColumn = 'id'; sortRows()" class="cursor-pointer hover:text-text-heading">#</button>
                                     </th>
                                     @foreach ($fields as $field)
                                         <th x-show="visibleColumns['{{ $field['name'] }}'] !== false" class="whitespace-nowrap px-4 py-3 font-medium text-text-muted text-[12px] border-b border-content-border">
-                                            <button @click="sortColumn = '{{ $field['name'] }}'; sortRows()" class="inline-flex items-center gap-1 cursor-pointer hover:text-text-heading">
-                                                {{ $field['label'] }}
-                                                <svg viewBox="0 0 14 14" fill="none" class="size-3 text-gray-300"><path d="M7 0.75 7 13.25" stroke="currentColor" stroke-width="1" stroke-linecap="round" /><path d="M11.086 4.836C10.269 3.202 8.635 1.567 7 0.75 5.366 1.567 3.731 3.202 2.914 4.836" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" /></svg>
-                                            </button>
+                                            <button @click="sortColumn = '{{ $field['name'] }}'; sortRows()" class="cursor-pointer hover:text-text-heading">{{ $field['label'] }}</button>
                                         </th>
                                     @endforeach
                                     <th x-show="visibleColumns['created'] !== false" class="whitespace-nowrap px-4 py-3 font-medium text-text-muted text-[12px] border-b border-content-border">
-                                        <button @click="sortColumn = 'created'; sortRows()" class="inline-flex items-center gap-1 cursor-pointer hover:text-text-heading">
-                                            Submitted
-                                            <svg viewBox="0 0 14 14" fill="none" class="size-3 text-gray-300"><path d="M7 0.75 7 13.25" stroke="currentColor" stroke-width="1" stroke-linecap="round" /><path d="M11.086 4.836C10.269 3.202 8.635 1.567 7 0.75 5.366 1.567 3.731 3.202 2.914 4.836" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" /></svg>
-                                        </button>
+                                        <button @click="sortColumn = 'created'; sortRows()" class="cursor-pointer hover:text-text-heading">Submitted</button>
                                     </th>
                                     <th x-show="visibleColumns['actions'] !== false" class="whitespace-nowrap px-4 py-3 font-medium text-text-muted text-[12px] border-b border-content-border sticky right-0 bg-[#f9fafb] z-20 text-right rounded-tr-xl">Actions</th>
                                 </tr>
