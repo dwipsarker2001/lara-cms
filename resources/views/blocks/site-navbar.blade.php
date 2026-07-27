@@ -19,7 +19,7 @@
                                 <div data-list="nav" class="relative"
                                     @mouseenter="openDropdown = {{ $index }}"
                                     @mouseleave="openDropdown = null">
-                                    <a href="{{ $item['href'] ?? '#' }}" data-edit="label" class="text-xs font-medium flex items-center gap-1 transition-colors text-black hover:text-brand">
+                                    <a href="{{ $item['href'] ?? '#' }}" data-edit="label" class="text-[13.5px] font-medium flex items-center gap-1 transition-colors text-black hover:text-brand">
                                         {{ $item['label'] ?? '' }}
                                         @if(count($dropdown) > 0)
                                             <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden>
@@ -31,7 +31,7 @@
                                         <div x-show="openDropdown === {{ $index }}" x-cloak class="absolute top-full left-0 z-50 mt-2 w-48 bg-white border border-gray-100 rounded-lg shadow-lg py-2">
                                             @foreach($dropdown as $dropIndex => $dropItem)
                                                 @if($dropItem)
-                                                    <a href="{{ $dropItem['href'] ?? '#' }}" data-list="dropdown" data-edit="label" class="block px-4 py-2 text-xs text-gray-700 hover:bg-gray-50 hover:text-brand">{{ $dropItem['label'] ?? '' }}</a>
+                                                    <a href="{{ $dropItem['href'] ?? '#' }}" data-list="dropdown" data-edit="label" class="block px-4 py-2 text-[13.5px] text-gray-700 hover:bg-gray-50 hover:text-brand">{{ $dropItem['label'] ?? '' }}</a>
                                                 @endif
                                             @endforeach
                                         </div>
@@ -45,7 +45,7 @@
                         @if($d['contactIcon'] ?? false)
                             <img src="{{ $d['contactIcon'] }}" alt="" data-edit="contactIcon" class="w-9 h-9 object-contain" />
                         @endif
-                        <div class="flex flex-col text-xs leading-tight">
+                        <div class="flex flex-col text-[13.5px] leading-tight">
                             @if($d['contactLabel'] ?? false)
                                 <span data-edit="contactLabel" class="text-gray-500">{{ $d['contactLabel'] }}</span>
                             @endif
@@ -69,13 +69,13 @@
                             @if($item)
                                 @php $dropdown = $item['dropdown'] ?? []; @endphp
                                 <li data-list="nav">
-                                    <a href="{{ $item['href'] ?? '#' }}" class="block text-xs font-medium transition-colors text-black hover:text-brand" data-edit="label">{{ $item['label'] ?? '' }}</a>
+                                    <a href="{{ $item['href'] ?? '#' }}" class="block text-[13.5px] font-medium transition-colors text-black hover:text-brand" data-edit="label">{{ $item['label'] ?? '' }}</a>
                                     @if(count($dropdown) > 0)
                                         <ul class="ml-4 mt-2 space-y-2">
                                             @foreach($dropdown as $dropIndex => $dropItem)
                                                 @if($dropItem)
                                                     <li data-list="dropdown">
-                                                        <a href="{{ $dropItem['href'] ?? '#' }}" class="block text-xs text-gray-600" data-edit="label">{{ $dropItem['label'] ?? '' }}</a>
+                                                        <a href="{{ $dropItem['href'] ?? '#' }}" class="block text-[13.5px] text-gray-600" data-edit="label">{{ $dropItem['label'] ?? '' }}</a>
                                                     </li>
                                                 @endif
                                             @endforeach
