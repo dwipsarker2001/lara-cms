@@ -63,11 +63,25 @@
                                                 <span data-edit="priceLabel" class="text-xs text-gray-400">{{ $card['priceLabel'] }}</span>
                                             @endif
                                             <div class="flex items-baseline gap-1.5">
-                                                @if($card['originalPrice'] ?? false)
-                                                    <span data-edit="originalPrice" class="text-sm text-gray-400 line-through">{{ $currencySymbol }}{{ number_format($card['originalPrice']) }}</span>
+                                                @if(isset($card['originalPrice']) && (string)$card['originalPrice'] !== '')
+                                                    @php
+                                                        $origVal = $card['originalPrice'];
+                                                        $origFormatted = is_numeric($origVal) ? number_format((float) $origVal) : $origVal;
+                                                        if ($currencySymbol && !str_starts_with((string)$origFormatted, $currencySymbol)) {
+                                                            $origFormatted = $currencySymbol . $origFormatted;
+                                                        }
+                                                    @endphp
+                                                    <span data-edit="originalPrice" data-currency="{{ $currencySymbol }}" class="text-sm text-gray-400 line-through">{{ $origFormatted }}</span>
                                                 @endif
-                                                @if($card['price'] ?? false)
-                                                    <span data-edit="price" class="text-2xl font-bold text-gray-900">{{ $currencySymbol }}{{ number_format($card['price']) }}</span>
+                                                @if(isset($card['price']) && (string)$card['price'] !== '')
+                                                    @php
+                                                        $priceVal = $card['price'];
+                                                        $priceFormatted = is_numeric($priceVal) ? number_format((float) $priceVal) : $priceVal;
+                                                        if ($currencySymbol && !str_starts_with((string)$priceFormatted, $currencySymbol)) {
+                                                            $priceFormatted = $currencySymbol . $priceFormatted;
+                                                        }
+                                                    @endphp
+                                                    <span data-edit="price" data-currency="{{ $currencySymbol }}" class="text-2xl font-bold text-gray-900">{{ $priceFormatted }}</span>
                                                 @endif
                                             </div>
                                         </div>

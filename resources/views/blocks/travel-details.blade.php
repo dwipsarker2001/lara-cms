@@ -1,5 +1,6 @@
 @php
     $d = $data;
+    $currencySymbol = \App\Models\Setting::getCurrencySymbol();
 @endphp
 
 
@@ -421,14 +422,28 @@
 
                         {{-- Price Row --}}
                         <div class="flex items-baseline gap-2 mt-1 mb-5">
-                            @if($d['originalPrice'] ?? false)
-                            <span class="text-sm text-gray-400 line-through" data-edit="originalPrice">{{ $d['originalPrice'] }}</span>
+                            @if(isset($d['originalPrice']) && (string)$d['originalPrice'] !== '')
+                                @php
+                                    $origVal = $d['originalPrice'];
+                                    $origFormatted = is_numeric($origVal) ? number_format((float) $origVal) : $origVal;
+                                    if ($currencySymbol && !str_starts_with((string)$origFormatted, $currencySymbol)) {
+                                        $origFormatted = $currencySymbol . $origFormatted;
+                                    }
+                                @endphp
+                                <span data-edit="originalPrice" data-currency="{{ $currencySymbol }}" class="text-sm text-gray-400 line-through">{{ $origFormatted }}</span>
                             @endif
-                            @if($d['price'] ?? false)
-                            <span class="text-2xl font-bold text-gray-900" data-edit="price">{{ $d['price'] }}</span>
+                            @if(isset($d['price']) && (string)$d['price'] !== '')
+                                @php
+                                    $priceVal = $d['price'];
+                                    $priceFormatted = is_numeric($priceVal) ? number_format((float) $priceVal) : $priceVal;
+                                    if ($currencySymbol && !str_starts_with((string)$priceFormatted, $currencySymbol)) {
+                                        $priceFormatted = $currencySymbol . $priceFormatted;
+                                    }
+                                @endphp
+                                <span data-edit="price" data-currency="{{ $currencySymbol }}" class="text-2xl font-bold text-gray-900">{{ $priceFormatted }}</span>
                             @endif
                             @if($d['priceSuffix'] ?? false)
-                            <span class="text-sm text-gray-400" data-edit="priceSuffix">/{{ $d['priceSuffix'] }}</span>
+                                <span class="text-sm text-gray-400" data-edit="priceSuffix">/{{ $d['priceSuffix'] }}</span>
                             @endif
                         </div>
 
