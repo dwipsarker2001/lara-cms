@@ -115,45 +115,54 @@ class AssetsController extends Controller
     public function destroy(Asset $asset)
     {
         if ($asset->is_directory) {
-            $prefix = $asset->path;
-            $children = Asset::where('path', 'like', $prefix.'/%')
-                ->orWhere('path', $prefix)
-                ->where('id', '!=', $asset->id)
-                ->get();
-            foreach ($children as $child) {
-                if ($child->is_directory) {
-                    $this->destroyDirectory($child);
-                } else {
-                    Storage::disk('public')->delete($child->path);
-                    $child->delete();
-                }
+            $dirPath = $asset->directory ? $asset->directory.'/'.$asset->name : $asset->name;
+            $storageDirPath = str_starts_with($asset->path, 'assets/') ? $asset->path : 'assets/'.$dirPath;
+
+            $this->destroyDirectoryChildren($dirPath);
+
+            if (Storage::disk('public')->exists($storageDirPath)) {
+                Storage::disk('public')->deleteDirectory($storageDirPath);
             }
-            Storage::disk('public')->deleteDirectory($prefix);
+            if (Storage::disk('public')->exists('assets/'.$dirPath)) {
+                Storage::disk('public')->deleteDirectory('assets/'.$dirPath);
+            }
+
             $asset->delete();
         } else {
-            Storage::disk('public')->delete($asset->path);
+            $this->deletePhysicalFile($asset->path);
             $asset->delete();
         }
 
-        return response()->json(['message' => 'Deleted.']);
+        return response()->json(['message' => 'Deleted successfully.']);
     }
 
-    private function destroyDirectory(Asset $dir)
+    private function destroyDirectoryChildren(string $dirPath)
     {
-        $children = Asset::where('path', 'like', $dir->path.'/%')
-            ->orWhere('path', $dir->path)
-            ->where('id', '!=', $dir->id)
+        $children = Asset::where('directory', $dirPath)
+            ->orWhere('directory', 'like', $dirPath.'/%')
             ->get();
+
         foreach ($children as $child) {
-            if ($child->is_directory) {
-                $this->destroyDirectory($child);
-            } else {
-                Storage::disk('public')->delete($child->path);
-                $child->delete();
+            if (! $child->is_directory) {
+                $this->deletePhysicalFile($child->path);
             }
+            $child->delete();
         }
-        Storage::disk('public')->deleteDirectory($dir->path);
-        $dir->delete();
+    }
+
+    private function deletePhysicalFile(?string $path)
+    {
+        if (! $path) {
+            return;
+        }
+
+        if (Storage::disk('public')->exists($path)) {
+            Storage::disk('public')->delete($path);
+        }
+
+        if (! str_starts_with($path, 'assets/') && Storage::disk('public')->exists('assets/'.$path)) {
+            Storage::disk('public')->delete('assets/'.$path);
+        }
     }
 
     public function file(Request $request, Asset $asset)

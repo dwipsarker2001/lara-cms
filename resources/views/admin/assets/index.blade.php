@@ -21,40 +21,6 @@
                     </svg>
                     Assets
                 </h1>
-                <template x-if="currentDirectory">
-                    <nav class="flex items-center gap-1.5 text-sm text-text-muted mt-1">
-                        <span class="flex items-center gap-1.5">
-                            <button
-                                @click="navigateTo('')"
-                                @dragenter.prevent="crumbDragEnter('')"
-                                @dragleave="crumbDragLeave()"
-                                @dragover.prevent
-                                @drop.prevent="crumbDrop($event, '')"
-                                class="transition-colors"
-                                :class="currentDirectory ? 'hover:text-primary' : 'text-text-heading font-medium'"
-                                :style="dragOverCrumb === '' ? 'background: var(--color-primary); border-radius: 4px; padding: 0 4px; color: white;' : ''"
-                            >Assets</button>
-                        </span>
-                        <template x-for="(part, idx) in directoryParts" :key="idx">
-                            <span class="flex items-center gap-1.5">
-                                <svg viewBox="0 0 20 20" fill="currentColor" class="size-3.5 text-gray-300">
-                                    <path fill-rule="evenodd" d="M7.21 14.77a.75.75 0 01.02-1.06L11.168 10 7.23 6.29a.75.75 0 111.04-1.08l4.5 4.25a.75.75 0 010 1.08l-4.5 4.25a.75.75 0 01-1.06-.02z" clip-rule="evenodd" />
-                                </svg>
-                                <button
-                                    @click="navigateTo(directoryParts.slice(0, idx + 1).join('/'))"
-                                    @dragenter.prevent="crumbDragEnter(directoryParts.slice(0, idx + 1).join('/'))"
-                                    @dragleave="crumbDragLeave()"
-                                    @dragover.prevent
-                                    @drop.prevent="crumbDrop($event, directoryParts.slice(0, idx + 1).join('/'))"
-                                    class="transition-colors"
-                                    :class="idx < directoryParts.length - 1 ? 'hover:text-primary' : 'text-text-heading font-medium'"
-                                    :style="dragOverCrumb === directoryParts.slice(0, idx + 1).join('/') ? 'background: var(--color-primary); border-radius: 4px; padding: 0 4px;' : ''"
-                                    x-text="part"
-                                ></button>
-                            </span>
-                        </template>
-                    </nav>
-                </template>
             </div>
             <div class="flex flex-wrap items-center gap-2 sm:gap-3">
                 <button
@@ -71,20 +37,30 @@
                 </button>
                 <label
                     for="asset-upload-input"
-                    class="inline-flex items-center justify-center whitespace-nowrap shrink-0 font-medium text-sm px-4 py-2 rounded-lg bg-primary text-white hover:opacity-90 shadow-sm cursor-pointer transition-opacity"
+                    class="inline-flex items-center justify-center whitespace-nowrap shrink-0 font-medium text-sm px-4 py-2 rounded-lg bg-primary text-white hover:opacity-90 shadow-sm transition-all cursor-pointer select-none"
+                    :class="uploading ? 'opacity-75 pointer-events-none cursor-wait' : ''"
                 >
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="size-[18px] mr-1.5 shrink-0" stroke-linecap="round" stroke-linejoin="round">
-                        <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4" />
-                        <polyline points="17 8 12 3 7 8" />
-                        <line x1="12" y1="3" x2="12" y2="15" />
-                    </svg>
-                    Upload
+                    <template x-if="!uploading">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="size-[18px] mr-1.5 shrink-0" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4" />
+                            <polyline points="17 8 12 3 7 8" />
+                            <line x1="12" y1="3" x2="12" y2="15" />
+                        </svg>
+                    </template>
+                    <template x-if="uploading">
+                        <svg class="animate-spin size-[18px] mr-1.5 shrink-0 text-white" viewBox="0 0 24 24" fill="none">
+                            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                        </svg>
+                    </template>
+                    <span x-text="uploading ? 'Uploading...' : 'Upload'"></span>
                 </label>
                 <input
                     id="asset-upload-input"
                     type="file"
                     accept="image/*,.pdf,.doc,.docx,.zip"
                     class="hidden"
+                    :disabled="uploading"
                     @change="uploadFile($event)"
                 >
             </div>
@@ -93,13 +69,78 @@
         {{-- DataTable --}}
         <div class="bg-panel-bg rounded-2xl p-[7px] mb-8">
             <div class="flex flex-wrap items-center justify-between gap-3 px-2 pb-2.5 pt-1">
-                <span class="flex items-center gap-2 text-[14px] font-medium text-text-heading">
+                <div class="flex items-center gap-2 text-[14px] font-medium text-text-heading">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="size-4 shrink-0 text-text-muted" stroke-linecap="round" stroke-linejoin="round">
                         <path d="M14.5 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V7.5L14.5 2z" />
                         <polyline points="14 2 14 8 20 8" />
                     </svg>
-                    All Assets
-                </span>
+                    <nav class="flex items-center gap-1.5 flex-wrap">
+                        <button
+                            @click="navigateTo('')"
+                            @dragenter.prevent="crumbDragEnter('')"
+                            @dragleave="crumbDragLeave()"
+                            @dragover.prevent
+                            @drop.prevent="crumbDrop($event, '')"
+                            class="transition-colors cursor-pointer"
+                            :class="currentDirectory ? 'text-text-muted hover:text-primary font-medium' : 'text-text-heading font-semibold'"
+                            :style="dragOverCrumb === '' ? 'background: var(--color-primary); border-radius: 4px; padding: 0 4px; color: white;' : ''"
+                        >All Assets</button>
+
+                        <template x-for="(crumb, idx) in breadcrumbs" :key="idx">
+                            <span class="flex items-center gap-1.5">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" class="size-3 text-text-muted shrink-0">
+                                    <path d="m9 18 6-6-6-6"/>
+                                </svg>
+
+                                <template x-if="!crumb.isEllipsis">
+                                    <button
+                                        @click="navigateTo(crumb.path)"
+                                        @dragenter.prevent="crumbDragEnter(crumb.path)"
+                                        @dragleave="crumbDragLeave()"
+                                        @dragover.prevent
+                                        @drop.prevent="crumbDrop($event, crumb.path)"
+                                        class="transition-colors cursor-pointer"
+                                        :class="idx < breadcrumbs.length - 1 ? 'text-text-muted hover:text-primary font-medium' : 'text-text-heading font-semibold'"
+                                        :style="dragOverCrumb === crumb.path ? 'background: var(--color-primary); border-radius: 4px; padding: 0 4px; color: white;' : ''"
+                                        x-text="crumb.name"
+                                    ></button>
+                                </template>
+
+                                <template x-if="crumb.isEllipsis">
+                                    <div class="relative shrink-0" x-data="{ open: false }" @click.outside="open = false" @keydown.escape.window="open = false">
+                                        <button
+                                            type="button"
+                                            @click="open = !open"
+                                            class="inline-flex items-center justify-center px-1.5 py-0.5 rounded border border-content-border bg-content-bg hover:bg-body-bg hover:text-primary text-text-muted text-xs font-bold transition-colors cursor-pointer"
+                                            title="Click to view hidden directories"
+                                        >
+                                            ...
+                                        </button>
+                                        <div
+                                            x-show="open"
+                                            x-cloak
+                                            class="absolute left-0 top-full mt-1 min-w-[13rem] rounded-xl border border-content-border bg-content-bg shadow-xl p-1.5 space-y-0.5 z-[100]"
+                                        >
+                                            <template x-for="item in crumb.hiddenParts" :key="item.path">
+                                                <button
+                                                    type="button"
+                                                    @click="navigateTo(item.path); open = false"
+                                                    class="flex w-full items-center gap-2 px-2.5 py-1.5 rounded-lg text-xs text-text-primary hover:bg-body-bg hover:text-primary transition-colors cursor-pointer text-left"
+                                                >
+                                                    <svg viewBox="0 0 20 20" fill="#F59E0B" class="size-4 shrink-0">
+                                                        <path d="M3.5 4.5A1.5 1.5 0 015 3h3.086a1.5 1.5 0 011.06.44l1.415 1.414A1.5 1.5 0 0011.586 5H14.5A1.5 1.5 0 0116 6.5v.378a.5.5 0 01-.5.5H4a.5.5 0 01-.5-.5V4.5z" />
+                                                        <path d="M3.5 7.878V14.5A1.5 1.5 0 005 16h10a1.5 1.5 0 001.5-1.5V7.878a.5.5 0 00-.5-.5H4a.5.5 0 00-.5.5z" />
+                                                    </svg>
+                                                    <span class="truncate font-medium text-text-heading" x-text="item.name"></span>
+                                                </button>
+                                            </template>
+                                        </div>
+                                    </div>
+                                </template>
+                            </span>
+                        </template>
+                    </nav>
+                </div>
                 <div class="flex items-center gap-2 flex-nowrap shrink-0">
                     {{-- Search Input --}}
                     <div class="relative shrink-0">
@@ -329,6 +370,46 @@
                                     </tr>
                                 </thead>
                                 <tbody>
+                                    <template x-if="uploading">
+                                        <tr class="animate-pulse bg-primary/5">
+                                            <td x-show="visibleColumns['checkbox'] !== false" class="px-4 py-3 border-b border-content-border">
+                                                <div class="size-4 rounded bg-gray-200"></div>
+                                            </td>
+                                            <td x-show="visibleColumns['name'] !== false" class="px-4 py-3 border-b border-content-border">
+                                                <div class="flex items-center gap-3">
+                                                    <div class="size-8 rounded bg-primary/10 flex items-center justify-center shrink-0">
+                                                        <svg class="animate-spin size-4 text-primary" viewBox="0 0 24 24" fill="none">
+                                                            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                                                            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                                                        </svg>
+                                                    </div>
+                                                    <div class="space-y-1">
+                                                        <div class="flex items-center gap-2">
+                                                            <span class="text-xs font-semibold text-primary" x-text="uploadingFileName ? `Uploading ${uploadingFileName}...` : 'Uploading file...'"></span>
+                                                        </div>
+                                                        <div class="h-1.5 w-40 rounded-full bg-gray-200 overflow-hidden">
+                                                            <div class="h-full bg-primary animate-pulse w-3/4 rounded-full"></div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                            <td x-show="visibleColumns['size'] !== false" class="px-4 py-3 border-b border-content-border">
+                                                <div class="h-3 w-12 rounded bg-gray-200"></div>
+                                            </td>
+                                            <td x-show="visibleColumns['created_at'] !== false" class="px-4 py-3 border-b border-content-border">
+                                                <div class="h-3 w-20 rounded bg-gray-200"></div>
+                                            </td>
+                                            <td x-show="visibleColumns['width'] !== false" class="px-4 py-3 border-b border-content-border">
+                                                <div class="h-3 w-8 rounded bg-gray-200"></div>
+                                            </td>
+                                            <td x-show="visibleColumns['height'] !== false" class="px-4 py-3 border-b border-content-border">
+                                                <div class="h-3 w-8 rounded bg-gray-200"></div>
+                                            </td>
+                                            <td x-show="visibleColumns['actions'] !== false" class="px-4 py-3 border-b border-content-border text-right sticky right-0 bg-white">
+                                                <div class="h-3 w-6 rounded bg-gray-200 ml-auto"></div>
+                                            </td>
+                                        </tr>
+                                    </template>
                                     <template x-for="(asset, rowIndex) in paginatedAssets" :key="asset.id">
                                         <tr
                                             class="group hover:bg-[#f9fafb] transition-colors"
@@ -860,6 +941,8 @@
                 actions: true,
             },
             loading: true,
+            uploading: false,
+            uploadingFileName: '',
             dragOverFolderId: null,
             dragOverCrumb: null,
             fileAssets: [],
@@ -879,6 +962,47 @@
             get directoryParts() {
                 if (!this.currentDirectory) return [];
                 return this.currentDirectory.split('/');
+            },
+
+            get breadcrumbs() {
+                if (!this.currentDirectory) return [];
+                const parts = this.currentDirectory.split('/');
+                if (parts.length <= 3) {
+                    return parts.map((part, idx) => ({
+                        name: part,
+                        path: parts.slice(0, idx + 1).join('/'),
+                        isEllipsis: false,
+                    }));
+                }
+                const firstPart = parts[0];
+                const lastTwoParts = parts.slice(-2);
+                const hiddenParts = parts.slice(1, -2).map((part, idx) => ({
+                    name: part,
+                    path: parts.slice(0, idx + 2).join('/'),
+                }));
+
+                return [
+                    {
+                        name: firstPart,
+                        path: firstPart,
+                        isEllipsis: false,
+                    },
+                    {
+                        name: '...',
+                        isEllipsis: true,
+                        hiddenParts: hiddenParts,
+                    },
+                    {
+                        name: lastTwoParts[0],
+                        path: parts.slice(0, -1).join('/'),
+                        isEllipsis: false,
+                    },
+                    {
+                        name: lastTwoParts[1],
+                        path: parts.join('/'),
+                        isEllipsis: false,
+                    },
+                ];
             },
 
             get totalPages() {
@@ -956,26 +1080,38 @@
             async uploadFile(event) {
                 const file = event.target.files?.[0];
                 if (!file) return;
+                this.uploading = true;
+                this.uploadingFileName = file.name;
                 const formData = new FormData();
                 formData.append('file', file);
                 formData.append('directory', this.currentDirectory);
-                const res = await fetch('{{ route("admin.assets.store") }}', {
-                    method: 'POST',
-                    headers: { 'X-CSRF-TOKEN': '{{ csrf_token() }}' },
-                    body: formData,
-                });
-                if (res.ok) {
+                try {
+                    const res = await fetch('{{ route("admin.assets.store") }}', {
+                        method: 'POST',
+                        headers: { 'X-CSRF-TOKEN': '{{ csrf_token() }}' },
+                        body: formData,
+                    });
+                    if (res.ok) {
+                        window.dispatchEvent(new CustomEvent('toast', {
+                            detail: { message: `File "${file.name}" uploaded successfully.`, type: 'success' }
+                        }));
+                    } else {
+                        const data = await res.json().catch(() => ({}));
+                        window.dispatchEvent(new CustomEvent('toast', {
+                            detail: { message: data.message || 'Failed to upload file.', type: 'error' }
+                        }));
+                    }
+                } catch (e) {
+                    console.error('Upload error:', e);
                     window.dispatchEvent(new CustomEvent('toast', {
-                        detail: { message: `File "${file.name}" uploaded successfully.`, type: 'success' }
+                        detail: { message: 'Failed to upload file.', type: 'error' }
                     }));
-                } else {
-                    const data = await res.json().catch(() => ({}));
-                    window.dispatchEvent(new CustomEvent('toast', {
-                        detail: { message: data.message || 'Failed to upload file.', type: 'error' }
-                    }));
+                } finally {
+                    this.uploading = false;
+                    this.uploadingFileName = '';
+                    event.target.value = '';
+                    await this.loadAssets();
                 }
-                event.target.value = '';
-                await this.loadAssets();
             },
 
             async createDirectory() {
