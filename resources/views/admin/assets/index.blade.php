@@ -512,44 +512,77 @@
             x-transition:leave="transition ease-in duration-100"
             x-transition:leave-start="opacity-100 scale-100"
             x-transition:leave-end="opacity-0 scale-95"
-            class="relative w-full max-w-md bg-content-bg rounded-2xl border border-content-border shadow-2xl p-6 z-10"
+            class="relative w-full max-w-[400px] bg-content-bg rounded-2xl border border-content-border shadow-2xl p-6 z-10"
         >
-            <div class="flex items-start justify-between gap-4 mb-4">
-                <div>
-                    <h3 class="text-lg font-semibold text-text-heading">Create Directory</h3>
-                    <p class="text-xs text-text-muted mt-0.5">Enter a name for your new directory.</p>
-                </div>
-                <button
-                    type="button"
-                    @click="showCreateDir = false"
-                    class="size-8 flex items-center justify-center rounded-lg text-text-muted hover:text-text-heading hover:bg-body-bg transition-colors cursor-pointer"
-                    title="Close"
-                >
-                    <svg viewBox="0 0 20 20" fill="currentColor" class="size-4">
-                        <path d="M6.28 5.22a.75.75 0 00-1.06 1.06L8.94 10l-3.72 3.72a.75.75 0 101.06 1.06L10 11.06l3.72 3.72a.75.75 0 101.06-1.06L11.06 10l3.72-3.72a.75.75 0 00-1.06-1.06L10 8.94 6.28 5.22z" />
-                    </svg>
-                </button>
+            {{-- Close Button --}}
+            <button
+                type="button"
+                @click="showCreateDir = false"
+                class="absolute top-5 right-5 size-7 flex items-center justify-center rounded-lg text-text-muted hover:text-text-heading hover:bg-body-bg transition-colors cursor-pointer"
+                title="Close"
+            >
+                <svg viewBox="0 0 20 20" fill="currentColor" class="size-4">
+                    <path d="M6.28 5.22a.75.75 0 00-1.06 1.06L8.94 10l-3.72 3.72a.75.75 0 101.06 1.06L10 11.06l3.72 3.72a.75.75 0 101.06-1.06L11.06 10l3.72-3.72a.75.75 0 00-1.06-1.06L10 8.94 6.28 5.22z" />
+                </svg>
+            </button>
+
+            {{-- SVG Icon --}}
+            <div class="mb-4">
+                <svg width="48" height="48" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg" class="size-12 shrink-0">
+                    <mask id="path-1-inside-1_7585_9241" fill="white">
+                        <path fill-rule="evenodd" clip-rule="evenodd" d="M8 3C3.58172 3 0 6.58172 0 11V19.8V19.954V32.2C0 36.6804 0 38.9206 0.871948 40.6319C1.63893 42.1372 2.86278 43.3611 4.36808 44.1281C6.07937 45 8.31958 45 12.8 45H35.2C39.6804 45 41.9206 45 43.6319 44.1281C45.1372 43.3611 46.3611 42.1372 47.1281 40.6319C48 38.9206 48 36.6804 48 32.2V19.8C48 15.3196 48 13.0794 47.1281 11.3681C46.3611 9.86278 45.1372 8.63893 43.6319 7.87195C41.9206 7 39.6804 7 35.2 7H26.5719C22.7981 7 19.2047 3 15.431 3H8Z"/>
+                    </mask>
+                    <path fill-rule="evenodd" clip-rule="evenodd" d="M8 3C3.58172 3 0 6.58172 0 11V19.8V19.954V32.2C0 36.6804 0 38.9206 0.871948 40.6319C1.63893 42.1372 2.86278 43.3611 4.36808 44.1281C6.07937 45 8.31958 45 12.8 45H35.2C39.6804 45 41.9206 45 43.6319 44.1281C45.1372 43.3611 46.3611 42.1372 47.1281 40.6319C48 38.9206 48 36.6804 48 32.2V19.8C48 15.3196 48 13.0794 47.1281 11.3681C46.3611 9.86278 45.1372 8.63893 43.6319 7.87195C41.9206 7 39.6804 7 35.2 7H26.5719C22.7981 7 19.2047 3 15.431 3H8Z" fill="#6D28D9"/>
+                    <path d="M0.871948 40.6319L1.76295 40.1779H1.76295L0.871948 40.6319ZM4.36808 44.1281L4.82207 43.237L4.36808 44.1281ZM43.6319 44.1281L43.1779 43.237L43.6319 44.1281ZM47.1281 40.6319L46.237 40.1779L47.1281 40.6319ZM47.1281 11.3681L46.237 11.8221V11.8221L47.1281 11.3681ZM43.6319 7.87195L43.1779 8.76295V8.76295L43.6319 7.87195ZM1 11C1 7.13401 4.13401 4 8 4V2C3.02944 2 -1 6.02944 -1 11H1ZM1 19.8V11H-1V19.8H1ZM1 19.954V19.8H-1V19.954H1ZM1 32.2V19.954H-1V32.2H1ZM1.76295 40.1779C1.41078 39.4868 1.20961 38.6451 1.10567 37.373C1.00078 36.0891 1 34.4567 1 32.2H-1C-1 34.4237 -1.00078 36.1516 -0.887685 37.5358C-0.773639 38.9317 -0.538833 40.0658 -0.0190584 41.0859L1.76295 40.1779ZM4.82207 43.237C3.50493 42.5659 2.43407 41.4951 1.76295 40.1779L-0.0190589 41.0859C0.843802 42.7794 2.22063 44.1562 3.91409 45.0191L4.82207 43.237ZM12.8 44C10.5433 44 8.9109 43.9992 7.62705 43.8943C6.35487 43.7904 5.51325 43.5892 4.82207 43.237L3.91409 45.0191C4.9342 45.5388 6.06833 45.7736 7.46418 45.8877C8.84837 46.0008 10.5763 46 12.8 46V44ZM35.2 44H12.8V46H35.2V44ZM43.1779 43.237C42.4868 43.5892 41.6451 43.7904 40.373 43.8943C39.0891 43.9992 37.4567 44 35.2 44V46C37.4237 46 39.1516 46.0008 40.5358 45.8877C41.9317 45.7736 43.0658 45.5388 44.0859 45.0191L43.1779 43.237ZM46.237 40.1779C45.5659 41.4951 44.4951 42.5659 43.1779 43.237L44.0859 45.0191C45.7794 44.1562 47.1562 42.7794 48.0191 41.0859L46.237 40.1779ZM47 32.2C47 34.4567 46.9992 36.0891 46.8943 37.373C46.7904 38.6451 46.5892 39.4868 46.237 40.1779L48.0191 41.0859C48.5388 40.0658 48.7736 38.9317 48.8877 37.5358C49.0008 36.1516 49 34.4237 49 32.2H47ZM47 19.8V32.2H49V19.8H47ZM46.237 11.8221C46.5892 12.5132 46.7904 13.3549 46.8943 14.627C46.9992 15.9109 47 17.5433 47 19.8H49C49 17.5763 49.0008 15.8484 48.8877 14.4642C48.7736 13.0683 48.5388 11.9342 48.0191 10.9141L46.237 11.8221ZM43.1779 8.76295C44.4951 9.43407 45.5659 10.5049 46.237 11.8221L48.0191 10.9141C47.1562 9.22063 45.7794 7.8438 44.0859 6.98094L43.1779 8.76295ZM35.2 8C37.4567 8 39.0891 8.00078 40.373 8.10567C41.6451 8.20961 42.4868 8.41078 43.1779 8.76295L44.0859 6.98094C43.0658 6.46117 41.9317 6.22636 40.5358 6.11231C39.1516 5.99922 37.4237 6 35.2 6V8ZM26.5719 8H35.2V6H26.5719V8ZM8 4H15.431V2H8V4ZM26.5719 6C24.9881 6 23.3815 5.15439 21.4786 4.12118C19.698 3.15439 17.6209 2 15.431 2V4C17.0148 4 18.6213 4.84561 20.5243 5.87882C22.3049 6.84561 24.3819 8 26.5719 8V6Z" fill="url(#path-1-inside-1_7585_9241)" mask="url(#path-1-inside-1_7585_9241)"/>
+                    <path d="M3 14C3 11.7909 4.79086 10 7 10H41C43.2091 10 45 11.7909 45 14V38C45 40.2091 43.2091 42 41 42H7C4.79086 42 3 40.2091 3 38V14Z" fill="white"/>
+                    <rect x="0.5" y="13.5" width="47" height="31" rx="7.5" fill="#8B5CF6" stroke="url(#paint1_linear_7585_9241)"/>
+                    <rect opacity="0.2" y="13" width="48" height="32" rx="8" fill="url(#paint2_linear_7585_9241)"/>
+                    <defs>
+                        <linearGradient id="paint0_linear_7585_9241" x1="24" y1="3" x2="24" y2="45" gradientUnits="userSpaceOnUse">
+                            <stop stop-color="white" stop-opacity="0.12"/>
+                            <stop offset="1" stop-color="white" stop-opacity="0"/>
+                        </linearGradient>
+                        <linearGradient id="paint1_linear_7585_9241" x1="24" y1="13" x2="24" y2="45" gradientUnits="userSpaceOnUse">
+                            <stop stop-color="white" stop-opacity="0.12"/>
+                            <stop offset="1" stop-color="white" stop-opacity="0"/>
+                        </linearGradient>
+                        <linearGradient id="paint2_linear_7585_9241" x1="0" y1="13" x2="33.0094" y2="43.9225" gradientUnits="userSpaceOnUse">
+                            <stop stop-color="white"/>
+                            <stop offset="1" stop-color="white" stop-opacity="0"/>
+                        </linearGradient>
+                    </defs>
             </div>
 
+            {{-- Title & Description --}}
+            <div class="mb-5">
+                <h3 class="text-lg font-bold text-text-heading leading-tight">Create directory</h3>
+                <p class="text-sm text-text-muted mt-1">Please enter a name for this directory.</p>
+            </div>
+
+            {{-- Form Input --}}
             <div class="mb-6">
-                <label class="block text-xs font-medium text-text-heading mb-1.5">Directory Name</label>
                 <input
                     type="text"
                     x-model="newDirName"
                     @keydown.enter="createDirectory()"
                     x-ref="dirInput"
-                    placeholder="e.g. documents"
-                    class="w-full rounded-xl border border-content-border bg-content-bg px-3.5 py-2.5 text-sm text-text-heading placeholder:text-text-muted focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all shadow-sm"
+                    placeholder="e.g. Website design"
+                    class="w-full rounded-xl border border-content-border bg-content-bg px-4 py-3 text-sm text-text-heading placeholder:text-text-muted focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all shadow-xs"
                 >
             </div>
 
-            <div class="flex items-center justify-end gap-3 pt-2">
-                <button type="button" @click="showCreateDir = false"
-                    class="h-9 px-4 rounded-xl border border-content-border bg-content-bg text-sm font-medium text-text-heading hover:bg-body-bg transition-colors cursor-pointer"
+            {{-- Footer Side-by-Side Action Buttons --}}
+            <div class="flex items-center gap-3">
+                <button
+                    type="button"
+                    @click="showCreateDir = false"
+                    class="flex-1 py-3 rounded-xl border border-content-border bg-content-bg text-sm font-semibold text-text-heading hover:bg-body-bg transition-colors cursor-pointer text-center"
                 >Cancel</button>
-                <button type="button" @click="createDirectory()"
-                    class="h-9 px-4 rounded-xl bg-primary text-sm font-medium text-white hover:opacity-90 disabled:opacity-60 disabled:cursor-not-allowed transition-opacity shadow-sm cursor-pointer"
-                >Create Directory</button>
+                <button
+                    type="button"
+                    @click="createDirectory()"
+                    class="flex-1 py-3 rounded-xl bg-primary text-sm font-semibold text-white hover:opacity-90 active:scale-[0.98] disabled:opacity-60 disabled:cursor-not-allowed shadow-sm shadow-primary/20 transition-all cursor-pointer text-center"
+                >Confirm</button>
             </div>
         </div>
     </div>
@@ -581,23 +614,30 @@
             x-transition:leave="transition ease-in duration-100"
             x-transition:leave-start="opacity-100 scale-100"
             x-transition:leave-end="opacity-0 scale-95"
-            class="relative w-full max-w-md bg-content-bg rounded-2xl border border-content-border shadow-2xl p-6 z-10"
+            class="relative w-full max-w-[420px] bg-content-bg rounded-2xl border border-content-border shadow-2xl p-6 z-10"
         >
-            <div class="flex items-start justify-between gap-4 mb-4">
+            <button
+                type="button"
+                @click="renamingAsset = null"
+                class="absolute top-5 right-5 size-7 flex items-center justify-center rounded-lg text-text-muted hover:text-text-heading hover:bg-body-bg transition-colors cursor-pointer"
+                title="Close"
+            >
+                <svg viewBox="0 0 20 20" fill="currentColor" class="size-4">
+                    <path d="M6.28 5.22a.75.75 0 00-1.06 1.06L8.94 10l-3.72 3.72a.75.75 0 101.06 1.06L10 11.06l3.72 3.72a.75.75 0 101.06-1.06L11.06 10l3.72-3.72a.75.75 0 00-1.06-1.06L10 8.94 6.28 5.22z" />
+                </svg>
+            </button>
+
+            <div class="flex items-center gap-3 mb-5">
+                <div class="size-10 rounded-xl bg-blue-500/10 border border-blue-500/20 flex items-center justify-center text-blue-600 shrink-0">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-edit-3">
+                        <path d="M12 20h9"/>
+                        <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/>
+                    </svg>
+                </div>
                 <div>
-                    <h3 class="text-lg font-semibold text-text-heading">Rename Asset</h3>
+                    <h3 class="text-base font-semibold text-text-heading leading-snug">Rename Asset</h3>
                     <p class="text-xs text-text-muted mt-0.5">Enter a new name for this asset.</p>
                 </div>
-                <button
-                    type="button"
-                    @click="renamingAsset = null"
-                    class="size-8 flex items-center justify-center rounded-lg text-text-muted hover:text-text-heading hover:bg-body-bg transition-colors cursor-pointer"
-                    title="Close"
-                >
-                    <svg viewBox="0 0 20 20" fill="currentColor" class="size-4">
-                        <path d="M6.28 5.22a.75.75 0 00-1.06 1.06L8.94 10l-3.72 3.72a.75.75 0 101.06 1.06L10 11.06l3.72 3.72a.75.75 0 101.06-1.06L11.06 10l3.72-3.72a.75.75 0 00-1.06-1.06L10 8.94 6.28 5.22z" />
-                    </svg>
-                </button>
             </div>
 
             <div class="mb-6">
@@ -607,16 +647,16 @@
                     x-model="renameValue"
                     @keydown.enter="doRename()"
                     placeholder="Enter new name..."
-                    class="w-full rounded-xl border border-content-border bg-content-bg px-3.5 py-2.5 text-sm text-text-heading placeholder:text-text-muted focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all shadow-sm"
+                    class="w-full rounded-xl border border-content-border bg-content-bg px-3.5 py-2.5 text-sm text-text-heading placeholder:text-text-muted focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all shadow-xs"
                 >
             </div>
 
-            <div class="flex items-center justify-end gap-3 pt-2">
+            <div class="flex items-center justify-end gap-2.5">
                 <button type="button" @click="renamingAsset = null"
-                    class="h-9 px-4 rounded-xl border border-content-border bg-content-bg text-sm font-medium text-text-heading hover:bg-body-bg transition-colors cursor-pointer"
+                    class="px-4 py-2 text-xs font-semibold rounded-xl text-text-muted hover:text-text-heading hover:bg-body-bg transition-colors cursor-pointer"
                 >Cancel</button>
                 <button type="button" @click="doRename()"
-                    class="h-9 px-4 rounded-xl bg-primary text-sm font-medium text-white hover:opacity-90 disabled:opacity-60 disabled:cursor-not-allowed transition-opacity shadow-sm cursor-pointer"
+                    class="px-5 py-2 text-xs font-semibold rounded-xl bg-primary text-white hover:opacity-90 active:scale-[0.98] disabled:opacity-60 disabled:cursor-not-allowed shadow-sm shadow-primary/20 transition-all cursor-pointer"
                 >Save Changes</button>
             </div>
         </div>
@@ -649,41 +689,51 @@
             x-transition:leave="transition ease-in duration-100"
             x-transition:leave-start="opacity-100 scale-100"
             x-transition:leave-end="opacity-0 scale-95"
-            class="relative w-full max-w-md bg-content-bg rounded-2xl border border-content-border shadow-2xl p-6 z-10"
+            class="relative w-full max-w-[400px] bg-content-bg rounded-2xl border border-content-border shadow-2xl p-6 z-10"
         >
-            <div class="flex items-start justify-between gap-4 mb-3">
-                <div>
-                    <h3 class="text-lg font-semibold text-text-heading">Delete Asset</h3>
-                    <p class="text-xs text-text-muted mt-0.5">Are you sure you want to delete this asset?</p>
+            {{-- Close Button --}}
+            <button
+                type="button"
+                @click="deletingAsset = null"
+                class="absolute top-5 right-5 size-7 flex items-center justify-center rounded-lg text-text-muted hover:text-text-heading hover:bg-body-bg transition-colors cursor-pointer"
+                title="Close"
+            >
+                <svg viewBox="0 0 20 20" fill="currentColor" class="size-4">
+                    <path d="M6.28 5.22a.75.75 0 00-1.06 1.06L8.94 10l-3.72 3.72a.75.75 0 101.06 1.06L10 11.06l3.72 3.72a.75.75 0 101.06-1.06L11.06 10l3.72-3.72a.75.75 0 00-1.06-1.06L10 8.94 6.28 5.22z" />
+                </svg>
+            </button>
+
+            {{-- Top Red Icon Badge --}}
+            <div class="mb-4">
+                <div class="size-12 rounded-2xl bg-red-500/10 border border-red-500/20 flex items-center justify-center text-red-600 shrink-0">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-trash-2">
+                        <path d="M3 6h18"/>
+                        <path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/>
+                        <path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/>
+                        <line x1="10" y1="11" x2="10" y2="17"/>
+                        <line x1="14" y1="11" x2="14" y2="17"/>
+                    </svg>
                 </div>
+            </div>
+
+            {{-- Title & Description --}}
+            <div class="mb-6">
+                <h3 class="text-lg font-bold text-text-heading leading-tight">Delete asset</h3>
+                <p class="text-sm text-text-muted mt-1">Are you sure you want to delete this asset?</p>
+            </div>
+
+            {{-- Footer Side-by-Side Action Buttons --}}
+            <div class="flex items-center gap-3">
                 <button
                     type="button"
                     @click="deletingAsset = null"
-                    class="size-8 flex items-center justify-center rounded-lg text-text-muted hover:text-text-heading hover:bg-body-bg transition-colors cursor-pointer"
-                    title="Close"
-                >
-                    <svg viewBox="0 0 20 20" fill="currentColor" class="size-4">
-                        <path d="M6.28 5.22a.75.75 0 00-1.06 1.06L8.94 10l-3.72 3.72a.75.75 0 101.06 1.06L10 11.06l3.72 3.72a.75.75 0 101.06-1.06L11.06 10l3.72-3.72a.75.75 0 00-1.06-1.06L10 8.94 6.28 5.22z" />
-                    </svg>
-                </button>
-            </div>
-
-            <div class="mb-6 py-2">
-                <p class="text-sm text-text-primary">
-                    Deleting <strong class="text-text-heading font-semibold" x-text="deletingAsset?.name"></strong> cannot be undone.
-                    <template x-if="deletingAsset?.is_directory">
-                        <span class="block text-xs text-danger mt-1">This will permanently delete all files inside this directory.</span>
-                    </template>
-                </p>
-            </div>
-
-            <div class="flex items-center justify-end gap-3 pt-2">
-                <button type="button" @click="deletingAsset = null"
-                    class="h-9 px-4 rounded-xl border border-content-border bg-content-bg text-sm font-medium text-text-heading hover:bg-body-bg transition-colors cursor-pointer"
+                    class="flex-1 py-3 rounded-xl border border-content-border bg-content-bg text-sm font-semibold text-text-heading hover:bg-body-bg transition-colors cursor-pointer text-center"
                 >Cancel</button>
-                <button type="button" @click="confirmDelete()"
-                    class="h-9 px-4 rounded-xl bg-danger text-sm font-medium text-white hover:opacity-90 transition-opacity shadow-sm cursor-pointer"
-                >Delete Asset</button>
+                <button
+                    type="button"
+                    @click="confirmDelete()"
+                    class="flex-1 py-3 rounded-xl bg-red-600 text-sm font-semibold text-white hover:bg-red-700 active:scale-[0.98] shadow-sm shadow-red-500/20 transition-all cursor-pointer text-center"
+                >Delete</button>
             </div>
         </div>
     </div>
