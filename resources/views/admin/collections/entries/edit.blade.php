@@ -522,7 +522,7 @@
                                                             </template>
                                                             <template x-if="meta.socialImage">
                                                                 <button type="button" @click.stop="updateMeta('socialImage', '')"
-                                                                    class="absolute top-1 right-1 text-[11px] font-medium text-white bg-danger/80 hover:bg-danger rounded px-2 py-0.5 transition-colors"
+                                                                     class="absolute top-1 right-1 text-[11px] font-medium text-white rounded px-2 py-0.5 transition-colors" style="background: rgba(220,38,38,0.8);" onmouseover="this.style.background='rgb(220,38,38)'" onmouseout="this.style.background='rgba(220,38,38,0.8)'"
                                                                 >Remove</button>
                                                             </template>
                                                         </div>
