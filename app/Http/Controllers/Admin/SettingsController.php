@@ -31,8 +31,6 @@ class SettingsController extends Controller
             'logo_dark' => 'nullable|string|max:255',
             'contact_number' => 'nullable|string|max:50',
             'admin_theme' => 'string|in:dark,light',
-            'sendgrid_api_key' => 'nullable|string|max:500',
-            'sendgrid_from_email' => 'nullable|email|max:255',
         ]);
 
         $settings = Setting::firstOrCreate(['id' => 1]);

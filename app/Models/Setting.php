@@ -25,23 +25,7 @@ class Setting extends Model
         'seo',
         'payment',
         'cms_version',
-        'sendgrid_api_key',
-        'sendgrid_from_email',
     ];
-
-    public static function getSendGridApiKey(): ?string
-    {
-        $dbKey = static::first()?->sendgrid_api_key;
-
-        return ! empty($dbKey) ? $dbKey : env('SENDGRID_APIKEY');
-    }
-
-    public static function getSendGridFromEmail(): ?string
-    {
-        $dbEmail = static::first()?->sendgrid_from_email;
-
-        return ! empty($dbEmail) ? $dbEmail : env('SENDGRID_FROM_EMAIL');
-    }
 
     public static function getCurrencySymbol(): string
     {

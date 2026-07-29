@@ -5,7 +5,6 @@ use App\Http\Controllers\Admin\AssetsController;
 use App\Http\Controllers\Admin\CollectionController;
 use App\Http\Controllers\Admin\CollectionEntryController;
 use App\Http\Controllers\Admin\CommandSearchController;
-use App\Http\Controllers\Admin\EmailTemplateController;
 use App\Http\Controllers\Admin\FormController;
 use App\Http\Controllers\Admin\PreviewController;
 use App\Http\Controllers\Admin\ProfileController;
@@ -208,12 +207,4 @@ Route::middleware(['web', 'auth:admin', TrackPageViews::class])->prefix('admin')
         ->except(['show'])
         ->parameters(['administrators' => 'admin']);
 
-    Route::get('email-templates', [EmailTemplateController::class, 'index'])->name('email-templates.index');
-    Route::get('email-templates/create', [EmailTemplateController::class, 'create'])->name('email-templates.create');
-    Route::post('email-templates', [EmailTemplateController::class, 'store'])->name('email-templates.store');
-    Route::get('email-templates/{email_template}/edit', [EmailTemplateController::class, 'edit'])->name('email-templates.edit');
-    Route::get('email-templates/{email_template}/editor', [EmailTemplateController::class, 'editor'])->name('email-templates.editor');
-    Route::post('email-templates/{email_template}/content', [EmailTemplateController::class, 'saveContent'])->name('email-templates.save-content');
-    Route::put('email-templates/{email_template}', [EmailTemplateController::class, 'update'])->name('email-templates.update');
-    Route::delete('email-templates/{email_template}', [EmailTemplateController::class, 'destroy'])->name('email-templates.destroy');
 });

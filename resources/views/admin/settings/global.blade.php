@@ -1,6 +1,6 @@
 @extends('admin.layout')
 
-@section('title', 'My Preferences')
+@section('title', 'Settings')
 @section('breadcrumb', 'Settings')
 
 @section('content')
@@ -88,16 +88,6 @@
                 </div>
             </header>
 
-            {{-- Tabs Header --}}
-            <div class="mb-6 flex gap-4 border-b border-content-border pb-px">
-                <button type="button" @click="activeTab = 'general'" :class="{'border-primary text-primary font-medium active': activeTab === 'general', 'border-transparent text-text-muted hover:text-text-heading': activeTab !== 'general'}" class="pb-3 px-1 border-b-2 text-sm transition-colors cursor-pointer" data-tab-btn="general">
-                    General Settings
-                </button>
-                <button type="button" @click="activeTab = 'sendgrid'" :class="{'border-primary text-primary font-medium active': activeTab === 'sendgrid', 'border-transparent text-text-muted hover:text-text-heading': activeTab !== 'sendgrid'}" class="pb-3 px-1 border-b-2 text-sm transition-colors cursor-pointer" data-tab-btn="sendgrid">
-                    SendGrid Settings
-                </button>
-            </div>
-
             {{-- General Settings Tab Content --}}
             <div x-show="activeTab === 'general'" class="space-y-6">
                 <div class="bg-panel-bg rounded-2xl mb-8 p-[7px]">
@@ -160,49 +150,6 @@
                                             @endforeach
                                         </select>
                                         @error('currency') <p class="text-xs text-danger mt-1">{{ $message }}</p> @enderror
-                                    </div>
-                                </div>
-
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            {{-- SendGrid Settings Tab Content --}}
-            <div x-show="activeTab === 'sendgrid'" x-transition class="space-y-6">
-                <div class="bg-panel-bg rounded-2xl mb-8 p-[7px]">
-                    <div class="px-[18px] pt-3 pb-1 text-sm font-medium text-text-heading">SendGrid Integration</div>
-                    <p class="px-[18px] pb-3 text-sm text-text-muted">Configure your SendGrid API key and default sender email address.</p>
-                    <div class="px-1.5 pb-2">
-                        <div class="bg-content-bg rounded-xl ring-1 ring-content-border shadow-sm px-3 py-3">
-                            <div class="divide-y divide-content-border">
-
-                                {{-- SendGrid API Key --}}
-                                <div class="grid md:grid-cols-2 items-start px-[18px] py-4 gap-y-3 md:gap-y-0 md:gap-x-5">
-                                    <div class="flex flex-col gap-1.5">
-                                        <label class="text-sm font-medium text-text-heading" for="field-sendgrid-api-key">SendGrid API Key</label>
-                                        <div class="text-sm text-text-muted">API key used for sending marketing emails and domain white-labeling.</div>
-                                    </div>
-                                    <div>
-                                        <input id="field-sendgrid-api-key" type="password" name="sendgrid_api_key" value="{{ old('sendgrid_api_key', $settings->sendgrid_api_key) }}"
-                                            placeholder="SG.xxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
-                                            class="w-full block bg-content-bg border border-content-border text-text-primary placeholder:text-text-muted shadow-sm text-sm rounded-lg px-3 py-2 h-9 transition-all duration-150 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary font-mono text-xs" />
-                                        @error('sendgrid_api_key') <p class="text-xs text-danger mt-1">{{ $message }}</p> @enderror
-                                    </div>
-                                </div>
-
-                                {{-- SendGrid From Email --}}
-                                <div class="grid md:grid-cols-2 items-start px-[18px] py-4 gap-y-3 md:gap-y-0 md:gap-x-5">
-                                    <div class="flex flex-col gap-1.5">
-                                        <label class="text-sm font-medium text-text-heading" for="field-sendgrid-from-email">Default From Email</label>
-                                        <div class="text-sm text-text-muted">The authenticated email address used to dispatch campaign emails.</div>
-                                    </div>
-                                    <div>
-                                        <input id="field-sendgrid-from-email" type="email" name="sendgrid_from_email" value="{{ old('sendgrid_from_email', $settings->sendgrid_from_email) }}"
-                                            placeholder="info@yourdomain.com"
-                                            class="w-full block bg-content-bg border border-content-border text-text-primary placeholder:text-text-muted shadow-sm text-sm rounded-lg px-3 py-2 h-9 transition-all duration-150 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary" />
-                                        @error('sendgrid_from_email') <p class="text-xs text-danger mt-1">{{ $message }}</p> @enderror
                                     </div>
                                 </div>
 
