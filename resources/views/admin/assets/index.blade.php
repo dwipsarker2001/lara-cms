@@ -450,7 +450,7 @@
                                                         </div>
                                                     </template>
                                                     <button
-                                                        @click="asset.is_directory ? navigateTo(asset.path) : openPreview(asset, rowIndex)"
+                                                        @click="asset.is_directory ? navigateTo(asset.directory_path) : openPreview(asset, rowIndex)"
                                                         class="text-text-heading font-medium cursor-pointer normal-nums select-none hover:text-primary text-start"
                                                         x-text="asset.name"
                                                     ></button>
@@ -1169,7 +1169,7 @@
                 if (!asset) return;
 
                 if (type === 'open') {
-                    this.navigateTo(asset.path);
+                    this.navigateTo(asset.directory_path);
                 } else if (type === 'preview') {
                     this.openPreview(asset);
                 } else if (type === 'download') {
@@ -1267,7 +1267,7 @@
                 try {
                     const d = JSON.parse(raw);
                     if (d.assetId && d.assetId !== asset.id) {
-                        const targetDir = asset.path.startsWith('assets/') ? asset.path.slice(7) : asset.path;
+                        const targetDir = asset.directory_path;
                         const res = await fetch(`/admin/assets/${d.assetId}`, {
                             method: 'PUT',
                             headers: { 'Content-Type': 'application/json', 'X-CSRF-TOKEN': '{{ csrf_token() }}' },

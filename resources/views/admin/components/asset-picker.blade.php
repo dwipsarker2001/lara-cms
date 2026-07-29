@@ -137,7 +137,9 @@
                                             <path d="M4 10C4 7.79086 5.79086 6 8 6H18.7242C19.9045 6 21.011 6.52552 21.7505 7.43906L25.3218 11.8594C25.6915 12.3162 26.2448 12.5789 26.8323 12.5789H40C42.2091 12.5789 44 14.3681 44 16.5772V38C44 40.2091 42.2091 42 40 42H8C5.79086 42 4 40.2091 4 38V10Z" fill="#F59E0B" />
                                             <path opacity="0.25" d="M4 16.5771C4 14.368 5.79086 12.5789 8 12.5789H40C42.2091 12.5789 44 14.3681 44 16.5772V38C44 40.2091 42.2091 42 40 42H8C5.79086 42 4 40.2091 4 38V16.5771Z" fill="white" />
                                         </svg>
-                                        <img x-show="!item.is_directory" :src="`/storage/${item.path}`" :alt="item.name" class="size-full object-cover" x-on:error="$el.style.display='none'">
+                                        <template x-if="!item.is_directory">
+                                            <img :src="`/storage/${item.path}`" :alt="item.name" class="size-full object-cover" x-on:error="$el.style.display='none'">
+                                        </template>
                                     </button>
                                 </div>
 
@@ -286,7 +288,7 @@
 
             selectItem(item) {
                 if (item.is_directory) {
-                    this.setDirectory(item.path);
+                    this.setDirectory(item.directory_path);
                 } else if (this.callback) {
                     this.callback(`/storage/${item.path}`);
                     this.close();
@@ -427,7 +429,7 @@
                         await fetch(`/admin/assets/${d.assetId}`, {
                             method: 'PUT',
                             headers: { 'Content-Type': 'application/json', 'X-CSRF-TOKEN': '{{ csrf_token() }}' },
-                            body: JSON.stringify({ directory: item.path }),
+                            body: JSON.stringify({ directory: item.directory_path }),
                         });
                         this.fetchAssets();
                         return;
@@ -437,7 +439,7 @@
                 const uploadPromises = files.map(file => {
                     const formData = new FormData();
                     formData.append('file', file);
-                    formData.append('directory', item.path);
+                    formData.append('directory', item.directory_path);
                     return fetch('{{ route("admin.assets.store") }}', {
                         method: 'POST',
                         headers: { 'X-CSRF-TOKEN': '{{ csrf_token() }}' },

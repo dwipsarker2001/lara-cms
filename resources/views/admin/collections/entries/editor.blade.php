@@ -1142,6 +1142,124 @@
                     context = container.children[this.active];
                 }
 
+                // ── Background group special handling ──────────────────────────────
+                // When we are editing inside the 'background' group (crumbs contain
+                // {key:'background'} with no index), the block templates render the
+                // background as inline CSS styles on plain divs — NOT as data-edit
+                // attributes. So we must update CSS directly instead of hunting for
+                // [data-edit="image"] which would land on the first list-item image.
+                const isInsideBackgroundGroup = this.crumbs.length > 0 &&
+                    this.crumbs[this.crumbs.length - 1].key === 'background' &&
+                    this.crumbs[this.crumbs.length - 1].index === undefined;
+
+                if (isInsideBackgroundGroup) {
+                    // context = the outer [data-section-index] wrapper div.
+                    // We need the actual block element ([data-block]) inside it.
+                    const sectionWrapper = (context !== doc) ? context : null;
+                    const blockEl = sectionWrapper
+                        ? (sectionWrapper.querySelector('[data-block]') || sectionWrapper)
+                        : null;
+
+                    if (blockEl) {
+                        // Read the current full background data from Alpine state
+                        const bgData = this.currentData();
+                        const currentImage = name === 'image' ? value : (bgData['image'] ?? '');
+                        const currentColor = name === 'color' ? value : (bgData['color'] ?? '');
+                        const currentOpacity = name === 'opacity' ? value : (bgData['opacity'] ?? 100);
+
+                        // Ensure the section is positioned so absolute children work
+                        if (getComputedStyle(blockEl).position === 'static') {
+                            blockEl.style.position = 'relative';
+                        }
+
+                        // Find or create the background image div.
+                        // Also detect the Blade-rendered background div (has background-image
+                        // in its inline style but no data attribute) and adopt it.
+                        let bgImgDiv = blockEl.querySelector('[data-bg-img-layer]');
+                        if (!bgImgDiv) {
+                            // Blade renders: <div class="absolute inset-0 bg-cover ..." style="background-image: url(...)">
+                            const candidates = Array.from(blockEl.children).filter(el =>
+                                el.style && el.style.backgroundImage && el.style.backgroundImage !== 'none'
+                            );
+                            if (candidates.length > 0) {
+                                bgImgDiv = candidates[0];
+                                bgImgDiv.setAttribute('data-bg-img-layer', '');
+                            }
+                        }
+
+                        let bgColorDiv = blockEl.querySelector('[data-bg-color-layer]');
+                        if (!bgColorDiv) {
+                            const candidates = Array.from(blockEl.children).filter(el =>
+                                el.style && el.style.backgroundColor && el.style.backgroundColor !== '' &&
+                                !el.hasAttribute('data-bg-img-layer')
+                            );
+                            if (candidates.length > 0) {
+                                bgColorDiv = candidates[0];
+                                bgColorDiv.setAttribute('data-bg-color-layer', '');
+                            }
+                        }
+
+                        if (currentImage) {
+                            if (!bgImgDiv) {
+                                bgImgDiv = doc.createElement('div');
+                                bgImgDiv.setAttribute('data-bg-img-layer', '');
+                                blockEl.insertBefore(bgImgDiv, blockEl.firstChild);
+                            }
+                            bgImgDiv.style.cssText = `
+                                position: absolute;
+                                inset: 0;
+                                background-image: url(${currentImage});
+                                background-size: cover;
+                                background-position: center;
+                                background-repeat: no-repeat;
+                                opacity: ${Number(currentOpacity) / 100};
+                                pointer-events: none;
+                                z-index: 0;
+                            `;
+                        } else {
+                            // No image — update opacity on existing layer if present,
+                            // otherwise remove the stale layer.
+                            if (bgImgDiv) {
+                                bgImgDiv.remove();
+                                bgImgDiv = null;
+                            }
+                        }
+
+                        if (currentColor) {
+                            if (!bgColorDiv) {
+                                bgColorDiv = doc.createElement('div');
+                                bgColorDiv.setAttribute('data-bg-color-layer', '');
+                                blockEl.insertBefore(bgColorDiv, blockEl.firstChild);
+                            }
+                            bgColorDiv.style.cssText = `
+                                position: absolute;
+                                inset: 0;
+                                background-color: ${currentColor};
+                                pointer-events: none;
+                                z-index: 0;
+                            `;
+                        } else if (bgColorDiv) {
+                            bgColorDiv.remove();
+                        }
+
+                        // Ensure all direct children that are NOT background layers
+                        // have position:relative and z-index:1 so they appear above
+                        Array.from(blockEl.children).forEach(child => {
+                            if (!child.hasAttribute('data-bg-img-layer') && !child.hasAttribute('data-bg-color-layer')) {
+                                if (getComputedStyle(child).position === 'static') {
+                                    child.style.position = 'relative';
+                                }
+                                if (!child.style.zIndex) {
+                                    child.style.zIndex = '1';
+                                }
+                            }
+                        });
+                    }
+                    return true;
+                }
+
+                // ──────────────────────────────────────────────────────────────────
+
                 if (this.crumbs && this.crumbs.length > 0) {
                     for (const crumb of this.crumbs) {
                         const listElements = Array.from(context.querySelectorAll(`[data-list="${crumb.key}"]`));

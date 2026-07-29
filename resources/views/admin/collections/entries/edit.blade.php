@@ -557,7 +557,7 @@
                                             {{-- X Card Title --}}
                                             <div class="grid md:grid-cols-2 items-start px-[18px] py-4 gap-y-3 md:gap-y-0 md:gap-x-5">
                                                 <div class="flex flex-col gap-1.5">
-                                                    <label for="field-xCardTitle" class="text-sm font-medium text-text-heading">X Card Title</label>
+                                                 <label for="field-xCardTitle" class="text-sm font-medium text-text-heading">X Card Title</label>
                                                     <div class="text-sm text-text-muted">Title shown on X cards. Leave blank to use the Open Graph or meta title.</div>
                                                 </div>
                                                 <div class="flex items-center gap-2">

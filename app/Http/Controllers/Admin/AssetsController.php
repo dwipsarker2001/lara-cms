@@ -17,11 +17,26 @@ class AssetsController extends Controller
             ->orderBy('is_directory', 'desc')
             ->orderBy('name')
             ->get()
+            ->filter(function ($asset) {
+                // Remove orphaned records where the physical file no longer exists on disk.
+                if ($asset->is_directory) {
+                    return true;
+                }
+
+                return Storage::disk('public')->exists($asset->path);
+            })
             ->map(function ($asset) {
                 return [
                     'id' => $asset->id,
                     'name' => $asset->name,
-                    'path' => $asset->is_directory ? ($asset->directory ? $asset->directory.'/'.$asset->name : $asset->name) : $asset->path,
+                    // Directories do not have a public storage URL; returning null prevents
+                    // the browser from firing a spurious /storage/<dirname> network request.
+                    'path' => $asset->is_directory ? null : $asset->path,
+                    // Keep the directory navigation path separate so the frontend can
+                    // use it to navigate into the directory without building a file URL.
+                    'directory_path' => $asset->is_directory
+                        ? ($asset->directory ? $asset->directory.'/'.$asset->name : $asset->name)
+                        : null,
                     'size' => $asset->is_directory ? null : $this->formatSize($asset->size),
                     'width' => $asset->width,
                     'height' => $asset->height,
@@ -30,7 +45,7 @@ class AssetsController extends Controller
                     'created_at' => $asset->created_at->toIso8601String(),
                     'updated_at' => $asset->updated_at->toIso8601String(),
                 ];
-            });
+            })->values();
 
         return response()->json(['assets' => $assets]);
     }
