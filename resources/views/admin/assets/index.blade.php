@@ -437,6 +437,7 @@
                                                             <img
                                                                 :src="`/storage/${asset.path}`"
                                                                 :alt="asset.name"
+                                                                draggable="false"
                                                                 class="size-full object-cover"
                                                                 x-on:error='$el.style.display="none";$el.parentElement.innerHTML=`<div class="size-full flex items-center justify-center text-xs text-blue-600 font-medium bg-gradient-to-br from-blue-100 to-blue-200">IMG</div>`'
                                                             >
@@ -508,7 +509,7 @@
     <div
         x-show="actionAsset"
         x-cloak
-        class="fixed inset-0 z-50"
+        class="fixed inset-0 z-[1000]"
         @click="actionAsset = null"
         @keydown.escape.window="actionAsset = null"
     >
@@ -1236,7 +1237,11 @@
             },
 
             onDragStart(event, asset) {
-                event.dataTransfer.setData('text/plain', JSON.stringify({ assetId: asset.id }));
+                event.dataTransfer.setData('text/plain', JSON.stringify({
+                    assetId: asset.id,
+                    isDir: asset.is_directory,
+                    dirPath: asset.directory_path || asset.name
+                }));
                 event.dataTransfer.effectAllowed = 'move';
             },
 
@@ -1264,10 +1269,14 @@
                 event.stopPropagation();
                 this.dragOverFolderId = null;
                 const raw = event.dataTransfer.getData('text/plain');
+                if (!raw) return;
                 try {
                     const d = JSON.parse(raw);
                     if (d.assetId && d.assetId !== asset.id) {
                         const targetDir = asset.directory_path;
+                        if (d.isDir && (targetDir === d.dirPath || targetDir?.startsWith(d.dirPath + '/'))) {
+                            return;
+                        }
                         const res = await fetch(`/admin/assets/${d.assetId}`, {
                             method: 'PUT',
                             headers: { 'Content-Type': 'application/json', 'X-CSRF-TOKEN': '{{ csrf_token() }}' },
@@ -1302,9 +1311,11 @@
                 event.preventDefault();
                 this.dragOverCrumb = null;
                 const raw = event.dataTransfer.getData('text/plain');
+                if (!raw) return;
                 try {
                     const d = JSON.parse(raw);
                     if (d.assetId) {
+                        if (d.isDir && (path === d.dirPath || path?.startsWith(d.dirPath + '/'))) return;
                         const res = await fetch(`/admin/assets/${d.assetId}`, {
                             method: 'PUT',
                             headers: { 'Content-Type': 'application/json', 'X-CSRF-TOKEN': '{{ csrf_token() }}' },

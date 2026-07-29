@@ -1333,18 +1333,27 @@
 
             setNested(name, value) {
                 if (this.active === null) return;
-                let d = this.sections[this.active]?.data;
-                if (!d) return;
+                if (!this.sections[this.active].data) {
+                    this.sections[this.active].data = {};
+                }
+                let d = this.sections[this.active].data;
                 for (const crumb of this.crumbs) {
-                    if (!d || !crumb || !crumb.key) return;
+                    if (!crumb || !crumb.key) return;
+                    if (d[crumb.key] === undefined || d[crumb.key] === null) {
+                        d[crumb.key] = (crumb.index !== undefined) ? [] : {};
+                    }
                     d = d[crumb.key];
-                    if (!d) return;
                     if (crumb.index !== undefined) {
+                        if (!Array.isArray(d)) d = [];
+                        if (d[crumb.index] === undefined || d[crumb.index] === null) {
+                            d[crumb.index] = {};
+                        }
                         d = d[crumb.index];
-                        if (!d) return;
                     }
                 }
-                d[name] = value;
+                if (d && typeof d === 'object') {
+                    d[name] = value;
+                }
             },
 
             getList(name) {

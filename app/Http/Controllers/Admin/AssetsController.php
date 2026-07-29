@@ -92,34 +92,112 @@ class AssetsController extends Controller
         if ($request->has('name')) {
             $name = trim($request->name);
             if ($name && $name !== $asset->name) {
-                $oldPath = $asset->path;
-                $ext = pathinfo($oldPath, PATHINFO_EXTENSION);
-                $newPath = ($asset->directory ? 'assets/'.$asset->directory.'/' : 'assets/').$name;
-                if ($ext && ! str_ends_with($newPath, '.'.$ext)) {
-                    $newPath .= '.'.$ext;
+                if ($asset->is_directory) {
+                    $oldDirPath = $asset->directory ? $asset->directory.'/'.$asset->name : $asset->name;
+                    $newDirPath = $asset->directory ? $asset->directory.'/'.$name : $name;
+                    $oldStoragePath = 'assets/'.$oldDirPath;
+                    $newStoragePath = 'assets/'.$newDirPath;
+
+                    if ($oldStoragePath !== $newStoragePath && Storage::disk('public')->exists($oldStoragePath)) {
+                        Storage::disk('public')->move($oldStoragePath, $newStoragePath);
+                    }
+
+                    $children = Asset::where('directory', $oldDirPath)
+                        ->orWhere('directory', 'like', $oldDirPath.'/%')
+                        ->get();
+
+                    foreach ($children as $child) {
+                        $childSubPath = substr($child->directory, strlen($oldDirPath));
+                        $updatedChildDir = $newDirPath.$childSubPath;
+
+                        if ($child->is_directory) {
+                            $child->update([
+                                'directory' => $updatedChildDir,
+                                'path' => 'assets/'.$updatedChildDir,
+                            ]);
+                        } else {
+                            $fileName = basename($child->path);
+                            $child->update([
+                                'directory' => $updatedChildDir,
+                                'path' => 'assets/'.$updatedChildDir.'/'.$fileName,
+                            ]);
+                        }
+                    }
+
+                    $asset->update([
+                        'name' => $name,
+                        'path' => 'assets/'.$newDirPath,
+                    ]);
+                } else {
+                    $oldPath = $asset->path;
+                    $ext = pathinfo($oldPath, PATHINFO_EXTENSION);
+                    $newPath = ($asset->directory ? 'assets/'.$asset->directory.'/' : 'assets/').$name;
+                    if ($ext && ! str_ends_with($newPath, '.'.$ext)) {
+                        $newPath .= '.'.$ext;
+                    }
+                    if (Storage::disk('public')->exists($oldPath)) {
+                        Storage::disk('public')->move($oldPath, $newPath);
+                    }
+                    $asset->update(['name' => $name, 'path' => $newPath]);
                 }
-                if (Storage::disk('public')->exists($oldPath)) {
-                    Storage::disk('public')->move($oldPath, $newPath);
-                }
-                $asset->update(['name' => $name, 'path' => $newPath]);
             }
         }
 
         if ($request->has('directory')) {
-            $newDir = $request->directory ?? '';
-            $oldPath = $asset->path;
+            $newDir = trim($request->directory ?? '', '/');
+
             if ($asset->is_directory) {
-                $newPath = $newDir ? 'assets/'.$newDir.'/'.$asset->name : 'assets/'.$asset->name;
-                if ($oldPath !== $newPath && Storage::disk('public')->exists($oldPath)) {
-                    Storage::disk('public')->move($oldPath, $newPath);
+                $oldDirPath = $asset->directory ? $asset->directory.'/'.$asset->name : $asset->name;
+
+                if ($newDir !== $asset->directory) {
+                    if ($newDir === $oldDirPath || str_starts_with($newDir, $oldDirPath.'/')) {
+                        return response()->json(['message' => 'Cannot move a directory into itself or its subdirectories.'], 422);
+                    }
+
+                    $newDirPath = $newDir ? $newDir.'/'.$asset->name : $asset->name;
+                    $oldStoragePath = 'assets/'.$oldDirPath;
+                    $newStoragePath = 'assets/'.$newDirPath;
+
+                    if ($oldStoragePath !== $newStoragePath && Storage::disk('public')->exists($oldStoragePath)) {
+                        Storage::disk('public')->move($oldStoragePath, $newStoragePath);
+                    }
+
+                    $children = Asset::where('directory', $oldDirPath)
+                        ->orWhere('directory', 'like', $oldDirPath.'/%')
+                        ->get();
+
+                    foreach ($children as $child) {
+                        $childSubPath = substr($child->directory, strlen($oldDirPath));
+                        $updatedChildDir = $newDirPath.$childSubPath;
+
+                        if ($child->is_directory) {
+                            $child->update([
+                                'directory' => $updatedChildDir,
+                                'path' => 'assets/'.$updatedChildDir,
+                            ]);
+                        } else {
+                            $fileName = basename($child->path);
+                            $child->update([
+                                'directory' => $updatedChildDir,
+                                'path' => 'assets/'.$updatedChildDir.'/'.$fileName,
+                            ]);
+                        }
+                    }
+
+                    $asset->update([
+                        'directory' => $newDir,
+                        'path' => 'assets/'.$newDirPath,
+                    ]);
                 }
-                $asset->update(['directory' => $newDir, 'path' => $newPath]);
             } else {
+                $oldPath = $asset->path;
                 $fileName = basename($oldPath);
                 $newPath = $newDir ? 'assets/'.$newDir.'/'.$fileName : 'assets/'.$fileName;
+
                 if ($oldPath !== $newPath && Storage::disk('public')->exists($oldPath)) {
                     Storage::disk('public')->move($oldPath, $newPath);
                 }
+
                 $asset->update(['directory' => $newDir, 'path' => $newPath]);
             }
         }
