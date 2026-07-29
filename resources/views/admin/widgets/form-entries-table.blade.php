@@ -156,33 +156,6 @@
                 {{-- Right Controls (Filter, Sort, Columns) --}}
                 <div class="flex flex-wrap items-center gap-2 shrink-0">
 
-                    {{-- Form Selector --}}
-                    <div class="relative shrink-0" x-data="{ open: false }" @click.outside="open = false" @keydown.escape.window="open = false">
-                        <button type="button"
-                            @click="open = !open"
-                            class="flex h-8 items-center gap-1.5 whitespace-nowrap rounded-lg border border-content-border bg-white px-2.5 text-[12px] font-medium text-text-heading hover:bg-body-bg shadow-sm transition-colors cursor-pointer">
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" class="size-3.5 text-text-muted shrink-0">
-                                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
-                                <polyline points="14 2 14 8 20 8" />
-                                <line x1="12" y1="18" x2="12" y2="12" />
-                                <line x1="9" y1="15" x2="15" y2="15" />
-                            </svg>
-                            <span class="max-w-[120px] truncate">{{ $form?->title ?? 'Select Form' }}</span>
-                            <svg class="size-3 text-text-muted shrink-0 transition-transform ml-0.5" :class="open ? 'rotate-180' : ''" viewBox="0 0 20 20" fill="currentColor">
-                                <path fill-rule="evenodd" d="M5.22 8.22a.75.75 0 0 1 1.06 0L10 11.94l3.72-3.72a.75.75 0 1 1 1.06 1.06l-4.25 4.25a.75.75 0 0 1-1.06 0L5.22 9.28a.75.75 0 0 1 0-1.06Z" clip-rule="evenodd" />
-                            </svg>
-                        </button>
-                        <div x-show="open" x-cloak
-                            class="absolute right-0 top-full mt-2 min-w-[13rem] rounded-xl border border-content-border bg-content-bg shadow-xl p-1.5 space-y-0.5 z-[100]">
-                            @foreach ($forms as $f)
-                                <button type="button" @click="selectForm({{ $f->id }}); open = false" class="flex w-full items-center justify-between gap-2 whitespace-nowrap px-3 py-1.5 rounded-lg text-xs transition-colors cursor-pointer" :class="selectedFormId === {{ $f->id }} ? 'bg-primary/10 text-primary font-medium' : 'text-text-primary hover:bg-body-bg'">
-                                    <span class="truncate">{{ $f->title }}</span>
-                                    <span x-show="selectedFormId === {{ $f->id }}" class="font-bold shrink-0">✓</span>
-                                </button>
-                            @endforeach
-                        </div>
-                    </div>
-
                     {{-- Filter Dropdown --}}
                     <div class="relative shrink-0" x-data="{ open: false }" @click.outside="open = false" @keydown.escape.window="open = false">
                         <button type="button"

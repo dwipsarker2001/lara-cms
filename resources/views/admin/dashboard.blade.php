@@ -171,25 +171,20 @@
                     <button type="button" @click="selected = 'This week'; open = false" class="w-full text-left px-3 py-1.5 text-sm rounded-md transition-colors" :class="selected === 'This week' ? 'bg-primary/10 text-primary font-medium' : 'text-text-primary hover:bg-content-border/30'">This week</button>
                     <button type="button" @click="selected = 'This month'; open = false" class="w-full text-left px-3 py-1.5 text-sm rounded-md transition-colors" :class="selected === 'This month' ? 'bg-primary/10 text-primary font-medium' : 'text-text-primary hover:bg-content-border/30'">This month</button>
                 </x-admin::modern-dropdown>
-                <button @click="editing = !editing"
+                <button @click="editing = !editing" x-show="!editing"
                     class="flex size-9 items-center justify-center rounded-lg border border-content-border bg-white text-text-muted shadow-sm hover:bg-gray-50 cursor-pointer"
-                    :class="editing ? 'ring-2 ring-primary/30 bg-primary/5 text-primary' : ''"
                     title="Edit layout">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="size-4"><path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/></svg>
                 </button>
                 <template x-if="editing">
                     <div class="flex items-center gap-2">
-                        <button @click="openPanel()"
-                            class="flex h-9 items-center gap-1.5 rounded-lg border border-content-border bg-white px-3 text-[12px] font-medium text-text-heading shadow-sm hover:bg-gray-50 transition-colors cursor-pointer">
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="size-3.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-                            Add Widget
-                        </button>
                         <button @click="saveLayout()"
                             class="flex h-9 items-center gap-1.5 rounded-lg border border-content-border bg-white px-3 text-[12px] font-medium text-text-heading shadow-sm hover:bg-gray-50 transition-colors cursor-pointer">
                             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="size-3.5"><path d="M19 21H5a2 2 0 01-2-2V5a2 2 0 012-2h11l5 5v11a2 2 0 01-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
                             Done
                         </button>
                     </div>
+                </template>
                 </template>
             </div>
         </header>
