@@ -10,10 +10,16 @@
     </div>
     <div class="relative mt-3">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="size-3.5 absolute left-3 top-1/2 -translate-y-1/2 text-text-muted"><circle cx="11" cy="11" r="8" /><path d="m21 21-4.3-4.3" /></svg>
-        <input placeholder="Search activities" class="w-full rounded-lg border border-content-border bg-white py-2 pl-9 pr-3 text-[13px] text-text-heading placeholder:text-text-muted focus:outline-none focus:ring-2 focus:ring-primary/20">
+        <input placeholder="Search notifications" class="w-full rounded-lg border border-content-border bg-white py-2 pl-9 pr-3 text-[13px] text-text-heading placeholder:text-text-muted focus:outline-none focus:ring-2 focus:ring-primary/20">
     </div>
     <div class="mt-3 flex gap-4 text-[12px] text-text-muted">
-        <p><span class="font-medium text-text-heading">8</span> new activities today</p>
+        <p class="flex items-center gap-1.5">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" class="size-3.5 text-text-muted shrink-0">
+                <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9" />
+                <path d="M13.73 21a2 2 0 0 1-3.46 0" />
+            </svg>
+            <span><span class="font-medium text-text-heading">8</span> new notifications today</span>
+        </p>
         <p><span class="font-medium text-text-heading">3</span> pending reviews</p>
     </div>
     <ul class="mt-2 flex-1 divide-y divide-content-border">

@@ -15,6 +15,7 @@ use App\Http\Controllers\Admin\TaxonomyController;
 use App\Http\Controllers\Admin\UpdateController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Middleware\TrackPageViews;
+use App\Models\Form;
 use App\Models\WidgetLayout;
 use App\Widgets\WidgetRegistry;
 use Illuminate\Http\Request;
@@ -72,6 +73,7 @@ Route::middleware(['web', 'auth:admin', TrackPageViews::class])->prefix('admin')
 
         return view('admin.dashboard', array_merge(
             ['allByZone' => $allByZone],
+            ['sidebarForms' => Form::orderBy('position')->get(['id', 'title'])],
             collect($zones)->flatMap(fn ($z) => [
                 "{$z}Widgets" => $zoneData[$z]['widgets'],
                 "{$z}WidgetList" => $zoneData[$z]['widgetList'],

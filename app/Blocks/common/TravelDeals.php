@@ -26,8 +26,8 @@ class TravelDeals extends Block
                 Field::string('title', 'Title', default: 'Paris Getaway'),
                 Field::text('description', 'Description', default: 'Explore the city of lights with our exclusive package'),
                 Field::string('priceLabel', 'Price Label', default: 'Per Person'),
-                Field::string('price', 'Price', default: "৳299"),
-                Field::string('originalPrice', 'Original Price', default: "৳499"),
+                Field::string('price', 'Price', default: '৳299'),
+                Field::string('originalPrice', 'Original Price', default: '৳499'),
                 Field::string('buttonLabel', 'Button Label', default: 'Book Now'),
                 Field::list('features', 'Features', [
                     Field::icon('icon', 'Icon', default: 'fa-solid fa-check'),

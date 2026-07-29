@@ -16,6 +16,7 @@
         listShow: @json(collect(range(0, count($listWidgets) - 1))->mapWithKeys(fn ($i) => [$i => !in_array($i, $listHidden)])->all()),
         listWidgets: @json($listWidgetList),
         allByZone: @json($allByZone),
+        tableForms: @json($sidebarForms->values()),
     };
     function dashboard() {
         return {
@@ -32,6 +33,8 @@
             listShow: window._dashboardData.listShow,
             listWidgets: window._dashboardData.listWidgets,
             allByZone: window._dashboardData.allByZone,
+            tableForms: window._dashboardData.tableForms,
+            selectedFormId: null,
             dragIdx: null,
             clickedSlot: null,
             panelOpen: false,
@@ -96,7 +99,13 @@
                         body: JSON.stringify(payload),
                     }).then(() => location.reload());
                 } else {
-                    payload[zone] = {order: [type], hidden: []};
+                    let savePayload = {order: [type], hidden: []};
+                    let renderPayload = {zone, type};
+                    if (zone === 'table' && this.selectedFormId) {
+                        savePayload.form_id = this.selectedFormId;
+                        renderPayload.form_id = this.selectedFormId;
+                    }
+                    payload[zone] = savePayload;
                     fetch('/admin/widgets/layout', {
                         method: 'POST',
                         headers: {'Content-Type': 'application/json', 'X-CSRF-TOKEN': document.querySelector('[name=csrf-token]')?.content || ''},
@@ -105,7 +114,7 @@
                         fetch('/admin/widgets/render', {
                             method: 'POST',
                             headers: {'Content-Type': 'application/json', 'X-CSRF-TOKEN': document.querySelector('[name=csrf-token]')?.content || ''},
-                            body: JSON.stringify({zone, type}),
+                            body: JSON.stringify(renderPayload),
                         })
                         .then(r => r.json())
                         .then(data => {
@@ -251,7 +260,13 @@
             <div class="flex flex-col gap-4">
                 <div x-show="listShow[0]" class="flex flex-col bg-gray-100 rounded-2xl p-2 flex-1 min-h-0">
                     <div class="flex items-center justify-between px-2 pb-2.5 shrink-0">
-                        <span class="text-[14px] font-medium text-text-heading" x-text="listWidgets[0]?.label"></span>
+                        <div class="flex items-center gap-2">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" class="size-4 text-text-muted shrink-0">
+                                <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9" />
+                                <path d="M13.73 21a2 2 0 0 1-3.46 0" />
+                            </svg>
+                            <span class="text-[14px] font-medium text-text-heading" x-text="listWidgets[0]?.label"></span>
+                        </div>
                         <button x-show="editing" @click="listShow[0] = false; toggleZoneWidget('list', 0, true)" class="text-text-muted/50 hover:text-red-500 transition-colors shrink-0 cursor-pointer" title="Remove widget">
                             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="size-3.5"><path d="M18 6L6 18"/><path d="M6 6l12 12"/></svg>
                         </button>
@@ -277,7 +292,7 @@
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="size-3.5"><path d="M18 6L6 18"/><path d="M6 6l12 12"/></svg>
                     </button>
                 </div>
-                <div id="table-widget-container" class="bg-white rounded-xl ring-1 ring-gray-200 shadow-sm p-4">
+                <div id="table-widget-container">
                     {!! $tableWidgets->first() ? $tableWidgets->first()->render() : '' !!}
                 </div>
             </div>
@@ -354,6 +369,34 @@
             @foreach (['chart' => 'Chart', 'table' => 'Table', 'list' => 'List'] as $zone => $label)
             <template x-if="clickedSlot === '{{ $zone }}'">
                 <div>
+                    @if ($zone === 'table')
+                    <h3 class="text-xs font-semibold uppercase tracking-wider text-text-muted px-1 mb-2 mt-1">Forms</h3>
+                    <template x-for="f in tableForms" :key="f.id">
+                        <button @click="selectedFormId = f.id; selectZoneWidget('table', 'form_entries_table')"
+                            class="flex w-full items-center justify-between px-4 py-3 rounded-xl bg-content-bg border border-content-border/60 shadow-sm mb-2 text-left group hover:bg-white/50 transition-colors"
+                        >
+                            <div class="flex items-center gap-3 min-w-0">
+                                <div class="flex size-7 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-primary">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" class="size-3.5">
+                                        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+                                        <polyline points="14 2 14 8 20 8" />
+                                        <line x1="12" y1="18" x2="12" y2="12" />
+                                        <line x1="9" y1="15" x2="15" y2="15" />
+                                    </svg>
+                                </div>
+                                <div class="min-w-0">
+                                    <div class="text-sm font-semibold text-text-heading group-hover:text-primary transition-colors" x-text="f.title"></div>
+                                </div>
+                            </div>
+                            <span class="inline-flex size-7 items-center justify-center rounded-full bg-content-border/40 text-text-muted transition-colors group-hover:bg-primary group-hover:text-white shrink-0 ml-3">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="size-[14px]"><path d="M12 5v14M5 12h14" stroke-linecap="round" /></svg>
+                            </span>
+                        </button>
+                    </template>
+                    <template x-if="tableForms.length === 0">
+                        <div class="text-center py-6 text-[13px] text-text-muted">No forms yet. <a href="{{ route('admin.forms.create') }}" class="text-primary font-medium no-underline">Create one</a>.</div>
+                    </template>
+                    @else
                     <h3 class="text-xs font-semibold uppercase tracking-wider text-text-muted px-1 mb-2 mt-1">{{ $label }} Widgets</h3>
                     <template x-for="w in (allByZone['{{ $zone }}'] || [])" :key="w.type">
                         <button @click="selectZoneWidget('{{ $zone }}', w.type)"
@@ -375,6 +418,7 @@
                     <template x-if="(allByZone['{{ $zone }}'] || []).length === 0">
                         <div class="text-center py-6 text-[13px] text-text-muted">No widgets available for this section</div>
                     </template>
+                    @endif
                 </div>
             </template>
             @endforeach

@@ -21,6 +21,6 @@ abstract class Widget
 
     public static function make(array $config): static
     {
-        return new static(...array_diff_key($config, ['type' => null]));
+        return new static;
     }
 }

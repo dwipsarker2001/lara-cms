@@ -3,7 +3,6 @@
 namespace App\Support;
 
 use App\Http\Controllers\Admin\SeoController;
-
 use App\Models\Setting;
 
 /**

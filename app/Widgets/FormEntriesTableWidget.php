@@ -42,10 +42,17 @@ class FormEntriesTableWidget extends Widget
 
         $form = $this->resolveForm($forms);
 
-        /** @var Collection<int, array{name?: string, label?: string}> $fields */
         $fields = collect($form?->fields ?? [])
             ->filter(fn ($field) => is_array($field) && filled($field['name'] ?? null))
-            ->take(4)
+            ->map(function ($field) {
+                return [
+                    'name' => $field['name'],
+                    'label' => ! empty($field['column_name'])
+                        ? $field['column_name']
+                        : (! empty($field['label']) ? $field['label'] : str($field['name'])->replace('_', ' ')->title()->toString()),
+                ];
+            })
+            ->take(6)
             ->values();
 
         $entries = $form

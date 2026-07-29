@@ -16,7 +16,7 @@ class UpdatesListWidget extends Widget
 
     public function label(): string
     {
-        return 'Latest Updates';
+        return 'Notifications';
     }
 
     public function render()
