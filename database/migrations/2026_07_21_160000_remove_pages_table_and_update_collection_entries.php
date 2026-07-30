@@ -11,7 +11,6 @@ return new class extends Migration
         if (Schema::hasTable('collection_entries')) {
             Schema::table('collection_entries', function (Blueprint $table) {
                 if (Schema::hasColumn('collection_entries', 'page_id')) {
-                    $table->dropForeign(['page_id']);
                     $table->dropColumn('page_id');
                 }
                 if (! Schema::hasColumn('collection_entries', 'slug')) {

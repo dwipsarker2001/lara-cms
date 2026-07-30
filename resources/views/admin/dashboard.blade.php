@@ -23,6 +23,7 @@
             period: 'Today',
             selected: 'Today',
             editing: false,
+            searchQuery: '',
             gridShow: window._dashboardData.gridShow,
             gridOrder: window._dashboardData.gridOrder,
             gridWidgets: window._dashboardData.gridWidgets,
@@ -39,6 +40,22 @@
             clickedSlot: null,
             panelOpen: false,
             panelClosing: false,
+            shouldShow(itemPeriod, title, sub) {
+                let matchesPeriod = false;
+                if (this.period === 'Today') {
+                    matchesPeriod = itemPeriod === 'Today';
+                } else if (this.period === 'Yesterday') {
+                    matchesPeriod = itemPeriod === 'Yesterday';
+                } else if (this.period === 'This week') {
+                    matchesPeriod = ['Today', 'Yesterday', 'This week'].includes(itemPeriod);
+                }
+
+                if (!matchesPeriod) return false;
+
+                if (!this.searchQuery) return true;
+                const query = this.searchQuery.toLowerCase();
+                return title.toLowerCase().includes(query) || sub.toLowerCase().includes(query);
+            },
             dragStart(evt, idx) {
                 this.dragIdx = idx;
                 evt.target.classList.add('opacity-40', 'ring-2', 'ring-primary/30', 'ring-inset');

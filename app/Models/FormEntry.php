@@ -22,6 +22,54 @@ class FormEntry extends Model
         ];
     }
 
+    protected static function booted(): void
+    {
+        static::created(function (FormEntry $entry) {
+            $form = $entry->form;
+            $formTitle = $form ? $form->title : 'Form';
+            $formIcon = $form && $form->icon ? $form->icon : 'comments';
+
+            // Remove fa prefixes from icon name if present to keep it simple
+            if (str_starts_with($formIcon, 'fa-solid ')) {
+                $formIcon = substr($formIcon, 9);
+            } elseif (str_starts_with($formIcon, 'fa-')) {
+                $formIcon = substr($formIcon, 3);
+            }
+
+            $sub = '';
+            if (is_array($entry->data)) {
+                $parts = [];
+                foreach (['full_name', 'name', 'email', 'phone'] as $key) {
+                    if (! empty($entry->data[$key])) {
+                        $parts[] = $entry->data[$key];
+                    }
+                }
+                if (empty($parts)) {
+                    foreach ($entry->data as $k => $v) {
+                        if (! empty($v) && is_string($v)) {
+                            $parts[] = "$k: $v";
+                            if (count($parts) >= 2) {
+                                break;
+                            }
+                        }
+                    }
+                }
+                $sub = implode(' - ', $parts);
+            }
+
+            if (empty($sub)) {
+                $sub = 'New submission received';
+            }
+
+            Notification::create([
+                'title' => "New Entry: {$formTitle}",
+                'sub' => $sub,
+                'icon' => $formIcon,
+                'tone' => 'text-text-muted',
+            ]);
+        });
+    }
+
     public function form(): BelongsTo
     {
         return $this->belongsTo(Form::class);
