@@ -34,6 +34,7 @@
             <div class="px-1.5 pb-2">
                 @if ($taxonomies->isEmpty())
                     <div class="flex flex-col items-center justify-center py-8">
+                        <img src="/empty-collection.svg" alt="No categories" class="size-32 mb-4 opacity-60">
                         <p class="text-sm font-medium text-text-heading">No categories yet.</p>
                         <p class="text-sm text-text-muted mt-1">
                             <a href="{{ route('admin.taxonomies.create') }}" class="text-primary hover:text-primary/80 no-underline font-medium">Create your first category group</a>
