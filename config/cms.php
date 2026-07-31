@@ -9,7 +9,7 @@ return [
     | than the stored cms_version in the settings table, an update is offered
     | to the administrator.
     */
-    'latest_version' => env('CMS_LATEST_VERSION', '1.1.0'),
+    'latest_version' => env('CMS_LATEST_VERSION', '1.1.1'),
 
     /*
     |--------------------------------------------------------------------------
