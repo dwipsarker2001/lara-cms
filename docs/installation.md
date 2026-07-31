@@ -22,20 +22,20 @@ cp .env.example .env
 docker compose up -d
 
 # Install dependencies
-docker exec lara-cms-app composer install
-docker exec lara-cms-app npm install
+docker compose exec app composer install
+docker compose exec app npm install
 
 # Build frontend
-docker exec lara-cms-app npm run build
+docker compose exec app npm run build
 
 # Run migrations & seed
-docker exec lara-cms-app php artisan migrate --seed
+docker compose exec app php artisan migrate --seed
 
 # Generate app key
-docker exec lara-cms-app php artisan key:generate
+docker compose exec app php artisan key:generate
 
 # Storage link
-docker exec lara-cms-app php artisan storage:link
+docker compose exec app php artisan storage:link
 ```
 
 Visit `http://localhost:8000` — admin at `http://localhost:8000/login`.
@@ -78,5 +78,5 @@ npm run dev
 Or inside Docker:
 
 ```bash
-docker exec -it lara-cms-app npm run dev
+docker compose exec app npm run dev
 ```

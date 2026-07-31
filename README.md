@@ -47,7 +47,7 @@
 
 3. **Run Database Migrations & Seed Initial Data:**
    ```bash
-   docker exec lara-cms-app php artisan migrate:fresh --seed
+   docker compose exec app php artisan migrate:fresh --seed
    ```
 
 4. **Access the Application:**
@@ -318,7 +318,7 @@ vendor/bin/pint --dirty --format agent
 
 - **Cache Directories:** The `docker-entrypoint.sh` script automatically creates `storage/framework/views`, `storage/framework/cache/data`, `storage/framework/sessions`, `storage/framework/testing`, `storage/logs`, and `bootstrap/cache` upon container startup to prevent `Please provide a valid cache path` startup loops on fresh clones.
 - **Permissions:** Automated `chmod 775` is applied to `storage` and `bootstrap/cache` during container entrypoint initialization.
-- **Missing Tables:** If you see `Base table or view not found` on first run, execute `docker exec lara-cms-app php artisan migrate --force`.
+- **Missing Tables:** If you see `Base table or view not found` on first run, execute `docker compose exec app php artisan migrate --force`.
 
 ---
 

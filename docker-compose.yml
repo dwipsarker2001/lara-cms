@@ -1,7 +1,6 @@
 services:
   app:
     build: .
-    container_name: lara-cms-app
     restart: unless-stopped
     ports:
       - "8000:8000"
@@ -18,7 +17,6 @@ services:
 
   mysql:
     image: mysql:8.0
-    container_name: lara-cms-mysql
     restart: unless-stopped
     ports:
       - "127.0.0.1:3306:3306"
@@ -35,7 +33,6 @@ services:
 
   phpmyadmin:
     image: phpmyadmin/phpmyadmin
-    container_name: lara-cms-phpmyadmin
     restart: unless-stopped
     ports:
       - "127.0.0.1:8080:80"
