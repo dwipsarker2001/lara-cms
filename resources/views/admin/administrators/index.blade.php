@@ -27,8 +27,8 @@
         </header>
 
         {{-- DataTable --}}
-        <div class="bg-panel-bg rounded-2xl mb-8 p-2">
-            <div class="flex flex-wrap sm:flex-nowrap items-center justify-between gap-3 px-2 pb-2.5">
+        <div class="bg-panel-bg rounded-2xl mb-8 p-[7px]">
+            <div class="flex flex-wrap sm:flex-nowrap items-center justify-between gap-3 px-2 pb-2.5 pt-1">
                 <span class="flex items-center gap-2 text-[14px] font-medium text-text-heading whitespace-nowrap shrink-0">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" class="size-4 shrink-0 text-text-muted">
                         <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
@@ -182,154 +182,166 @@
                 </div>
             </div>
 
-            <div class="bg-content-bg rounded-xl ring-1 ring-content-border shadow-sm p-[5px]">
+            <div class="px-1.5 pb-2">
                 @if ($admins->isEmpty())
-                    <div class="flex flex-col items-center justify-center py-16">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" class="size-12 text-text-muted/40 mb-3">
-                            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
-                        </svg>
+                    <div class="flex flex-col items-center justify-center py-10 text-center px-6">
+                        <img src="/empty-collection.svg" alt="No items" class="size-28 mb-3 opacity-60">
                         <p class="text-sm font-medium text-text-heading">No administrators yet</p>
-                        <p class="text-sm text-text-muted mt-1">
+                        <p class="text-xs text-text-muted mt-1">
                             <a href="{{ route('admin.administrators.create') }}" class="text-primary hover:text-primary/80 no-underline font-medium">Add your first administrator</a>
                         </p>
                     </div>
                 @else
                     <template x-if="search && filteredCount === 0">
-                        <div class="flex flex-col items-center justify-center py-16">
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" class="size-12 text-text-muted/40 mb-3">
-                                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
-                            </svg>
+                        <div class="flex flex-col items-center justify-center py-10 text-center px-6">
+                            <img src="/empty-collection.svg" alt="No items" class="size-28 mb-3 opacity-60">
                             <p class="text-sm font-medium text-text-heading">No administrators match your search</p>
                         </div>
                     </template>
-                    <div class="overflow-x-auto">
-                        <table class="w-full border-separate border-spacing-y-0 text-left text-[13px]">
-                            <thead>
-                                <tr class="bg-[#f9fafb]">
-                                    <th class="rounded-l-xl px-5 py-3 font-medium text-text-muted text-[12px]">Name</th>
-                                    <th class="px-4 py-3 font-medium text-text-muted text-[12px]">Email</th>
-                                    <th class="px-4 py-3 font-medium text-text-muted text-[12px]">Avatar</th>
-                                    <th class="px-4 py-3 font-medium text-text-muted text-[12px]">Status</th>
-                                    <th class="px-4 py-3 font-medium text-text-muted text-[12px]">Created</th>
-                                    <th class="rounded-r-xl pr-2"></th>
-                                </tr>
-                                <tr class="h-2">
-                                    <td colspan="6"></td>
-                                </tr>
-                            </thead>
-                            <tbody x-ref="tbody">
-                                @foreach ($admins as $index => $admin)
-                                    @php $statusStr = $admin->is_active ? 'active' : 'inactive'; @endphp
-                                    <tr data-sortable
-                                        data-name="{{ strtolower($admin->name) }}"
-                                        data-email="{{ strtolower($admin->email) }}"
-                                        data-status="{{ strtolower($statusStr) }}"
-                                        data-created="{{ $admin->created_at->timestamp }}"
-                                        x-show="matchesSearch({{ json_encode($admin->name) }}, {{ json_encode($admin->email) }}, {{ json_encode($statusStr) }})"
-                                        class="group transition-colors hover:bg-gray-50/50">
-                                        <td class="border-b border-gray-100 bg-content-bg px-5 py-3"
-                                            @class([
-                                                'rounded-tl-xl' => $index === 0,
-                                                'rounded-bl-xl' => $index === $admins->count() - 1,
-                                            ])>
-                                            <div class="flex items-center gap-3">
-                                                <div class="size-8 rounded-lg overflow-hidden bg-gray-100 shrink-0 flex items-center justify-center">
-                                                    @if ($admin->avatar)
-                                                        <img src="{{ $admin->avatar }}" alt="{{ $admin->name }}" class="size-full object-cover">
-                                                    @else
-                                                        <span class="text-xs font-medium text-primary">
-                                                            {{ strtoupper(substr($admin->name, 0, 2)) }}
-                                                        </span>
-                                                    @endif
-                                                </div>
-                                                <span class="text-text-heading font-medium">{{ $admin->name }}</span>
-                                            </div>
-                                        </td>
-                                        <td class="border-b border-gray-100 bg-content-bg px-4 py-3 text-text-heading">{{ $admin->email }}</td>
-                                        <td class="border-b border-gray-100 bg-content-bg px-4 py-3 text-text-muted text-[12px]">
-                                            {{ $admin->avatar ? 'Set' : '—' }}
-                                        </td>
-                                        <td class="border-b border-gray-100 bg-content-bg px-4 py-3">
-                                            @if ($admin->is_active)
-                                                <span class="inline-flex items-center gap-1 rounded-full bg-emerald-50 px-2.5 py-0.5 text-xs font-medium text-emerald-700 ring-1 ring-emerald-600/10">
-                                                    <span class="size-1.5 rounded-full bg-emerald-500"></span>
-                                                    Active
-                                                </span>
-                                            @else
-                                                <span class="inline-flex items-center gap-1 rounded-full bg-gray-100 px-2.5 py-0.5 text-xs font-medium text-gray-500 ring-1 ring-gray-200">
-                                                    <span class="size-1.5 rounded-full bg-gray-400"></span>
-                                                    Inactive
-                                                </span>
-                                            @endif
-                                        </td>
-                                        <td class="border-b border-gray-100 bg-content-bg px-4 py-3 text-text-heading">{{ $admin->created_at->diffForHumans() }}</td>
-                                        <td class="border-b border-gray-100 bg-content-bg px-4 py-3 text-right"
-                                            @class([
-                                                'rounded-tr-xl' => $index === 0,
-                                                'rounded-br-xl' => $index === $admins->count() - 1,
-                                            ])>
-                                            <div class="relative"
-                                                 x-data="{ open: false, top: 0, left: 0 }"
-                                                 @click.outside="open = false"
-                                                 @keydown.escape.window="open = false">
-                                                <button type="button"
-                                                    @click="open = !open; if (open) { const r = $event.currentTarget.getBoundingClientRect(); top = r.bottom + 4; left = Math.max(8, Math.min(r.right - 192, window.innerWidth - 220)); }"
-                                                    class="inline-flex size-7 items-center justify-center rounded-md text-text-muted hover:text-text-heading hover:bg-body-bg transition-colors cursor-pointer">
-                                                    <svg viewBox="0 0 16 3" class="size-4" fill="currentColor">
-                                                        <circle cx="2" cy="1.5" r="1.5" />
-                                                        <circle cx="8" cy="1.5" r="1.5" />
-                                                        <circle cx="14" cy="1.5" r="1.5" />
-                                                    </svg>
-                                                </button>
-                                                <div x-show="open"
-                                                    x-cloak
-                                                    x-transition:enter="transition ease-out duration-100"
-                                                    x-transition:enter-start="opacity-0 scale-95"
-                                                    x-transition:enter-end="opacity-100 scale-100"
-                                                    x-transition:leave="transition ease-in duration-75"
-                                                    x-transition:leave-start="opacity-100 scale-100"
-                                                    x-transition:leave-end="opacity-0 scale-95"
-                                                    :style="`position: fixed; top: ${top}px; left: ${left}px;`"
-                                                    class="min-w-[12rem] rounded-xl border border-content-border bg-content-bg shadow-xl p-1.5 z-[100]">
-                                                    <a href="{{ route('admin.administrators.edit', $admin) }}"
-                                                        class="flex w-full items-center justify-start gap-2.5 px-3 py-2 rounded-lg text-sm no-underline transition-colors text-text-primary hover:bg-body-bg cursor-pointer">
-                                                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" class="size-4 shrink-0 text-text-muted">
-                                                            <path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7" />
-                                                            <path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z" />
-                                                        </svg>
-                                                        <span>Edit</span>
-                                                    </a>
-                                                    @if ($admin->id !== auth('admin')->id())
-                                                        <form method="POST" action="{{ route('admin.administrators.destroy', $admin) }}" class="w-full">
-                                                            @csrf
-                                                            @method('DELETE')
-                                                            <button type="submit"
-                                                                onclick="return confirm('Are you sure you want to delete this administrator?')"
-                                                                class="flex w-full items-center justify-start gap-2.5 px-3 py-2 rounded-lg text-sm transition-colors text-red-600 hover:bg-red-50 cursor-pointer">
-                                                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" class="size-4 shrink-0 text-red-500">
-                                                                    <polyline points="3 6 5 6 21 6" />
-                                                                    <path d="M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2" />
-                                                                </svg>
-                                                                <span>Delete</span>
-                                                            </button>
-                                                        </form>
-                                                    @endif
-                                                </div>
-                                            </div>
-                                        </td>
+
+                    <div class="rounded-xl ring-1 ring-content-border bg-content-bg shadow-sm overflow-hidden" x-show="!search || filteredCount > 0">
+                        <div class="overflow-x-auto table-scrollbar">
+                            <table class="w-full min-w-full border-separate border-spacing-y-0 text-left text-[13px]">
+                                <thead>
+                                    <tr class="bg-[#f9fafb]">
+                                        <th class="whitespace-nowrap px-4 py-3 font-medium text-text-muted text-[12px] border-b border-content-border rounded-tl-xl">
+                                            <button @click="sortColumn = 'name'; sortRows()" class="inline-flex items-center gap-1 cursor-pointer hover:text-text-heading">
+                                                Name
+                                            </button>
+                                        </th>
+                                        <th class="whitespace-nowrap px-4 py-3 font-medium text-text-muted text-[12px] border-b border-content-border">
+                                            <button @click="sortColumn = 'email'; sortRows()" class="inline-flex items-center gap-1 cursor-pointer hover:text-text-heading">
+                                                Email
+                                            </button>
+                                        </th>
+                                        <th class="whitespace-nowrap px-4 py-3 font-medium text-text-muted text-[12px] border-b border-content-border">
+                                            <button @click="sortColumn = 'status'; sortRows()" class="inline-flex items-center gap-1 cursor-pointer hover:text-text-heading">
+                                                Status
+                                            </button>
+                                        </th>
+                                        <th class="whitespace-nowrap px-4 py-3 font-medium text-text-muted text-[12px] border-b border-content-border">
+                                            <button @click="sortColumn = 'created'; sortRows()" class="inline-flex items-center gap-1 cursor-pointer hover:text-text-heading">
+                                                Created
+                                            </button>
+                                        </th>
+                                        <th class="whitespace-nowrap px-4 py-3 font-medium text-text-muted text-[12px] border-b border-content-border sticky right-0 bg-[#f9fafb] z-20 text-right rounded-tr-xl">Actions</th>
                                     </tr>
-                                @endforeach
-                            </tbody>
-                        </table>
+                                </thead>
+                                <tbody x-ref="tbody">
+                                    @foreach ($admins as $index => $admin)
+                                        @php $statusStr = $admin->is_active ? 'active' : 'inactive'; @endphp
+                                        <tr data-sortable
+                                            data-name="{{ strtolower($admin->name) }}"
+                                            data-email="{{ strtolower($admin->email) }}"
+                                            data-status="{{ strtolower($statusStr) }}"
+                                            data-created="{{ $admin->created_at->timestamp }}"
+                                            x-show="matchesSearch({{ json_encode($admin->name) }}, {{ json_encode($admin->email) }}, {{ json_encode($statusStr) }})"
+                                            class="group hover:bg-[#f9fafb] transition-colors">
+                                            <td class="px-4 py-3 text-text-heading font-medium border-b border-content-border group-last:border-b-0 group-last:rounded-bl-xl whitespace-nowrap">
+                                                <div class="flex items-center gap-3">
+                                                    <div class="size-8 rounded-lg overflow-hidden bg-gray-100 shrink-0 flex items-center justify-center">
+                                                        @if ($admin->avatar)
+                                                            <img src="{{ $admin->avatar }}" alt="{{ $admin->name }}" class="size-full object-cover">
+                                                        @else
+                                                            <span class="text-xs font-medium text-primary">
+                                                                {{ strtoupper(substr($admin->name, 0, 2)) }}
+                                                            </span>
+                                                        @endif
+                                                    </div>
+                                                    <span class="text-text-heading font-medium">{{ $admin->name }}</span>
+                                                </div>
+                                            </td>
+                                            <td class="px-4 py-3 text-text-heading border-b border-content-border group-last:border-b-0 whitespace-nowrap">{{ $admin->email }}</td>
+                                            <td class="px-4 py-3 border-b border-content-border group-last:border-b-0 whitespace-nowrap">
+                                                @if ($admin->is_active)
+                                                    <span class="inline-flex items-center gap-1 rounded-full bg-emerald-50 px-2.5 py-0.5 text-xs font-medium text-emerald-700 ring-1 ring-emerald-600/10">
+                                                        <span class="size-1.5 rounded-full bg-emerald-500"></span>
+                                                        Active
+                                                    </span>
+                                                @else
+                                                    <span class="inline-flex items-center gap-1 rounded-full bg-gray-100 px-2.5 py-0.5 text-xs font-medium text-gray-500 ring-1 ring-gray-200">
+                                                        <span class="size-1.5 rounded-full bg-gray-400"></span>
+                                                        Inactive
+                                                    </span>
+                                                @endif
+                                            </td>
+                                            <td class="px-4 py-3 text-text-heading border-b border-content-border group-last:border-b-0 whitespace-nowrap">{{ $admin->created_at->diffForHumans() }}</td>
+                                            <td class="sticky right-0 bg-white group-hover:bg-[#f9fafb] group-last:rounded-br-xl z-10 px-4 py-3 text-right whitespace-nowrap transition-colors border-b border-content-border group-last:border-b-0">
+                                                <div x-data="{
+                                                        open: false,
+                                                        menuTop: 0,
+                                                        menuRight: 0,
+                                                        toggle(e) {
+                                                            if (this.open) {
+                                                                this.open = false;
+                                                                return;
+                                                            }
+                                                            const rect = e.currentTarget.getBoundingClientRect();
+                                                            this.menuTop = rect.bottom + 4;
+                                                            this.menuRight = window.innerWidth - rect.right;
+                                                            this.open = true;
+                                                        }
+                                                    }"
+                                                    @scroll.window="open = false"
+                                                    @resize.window="open = false">
+                                                    <button type="button"
+                                                        @click.stop="toggle($event)"
+                                                        class="inline-flex size-7 items-center justify-center rounded-md text-text-muted hover:text-text-heading hover:bg-body-bg transition-colors cursor-pointer">
+                                                        <svg viewBox="0 0 16 3" class="size-4" fill="currentColor">
+                                                            <circle cx="2" cy="1.5" r="1.5" />
+                                                            <circle cx="8" cy="1.5" r="1.5" />
+                                                            <circle cx="14" cy="1.5" r="1.5" />
+                                                        </svg>
+                                                    </button>
+
+                                                    <template x-teleport="body">
+                                                        <div x-show="open"
+                                                            x-cloak
+                                                            @click.outside="open = false"
+                                                            @keydown.escape.window="open = false"
+                                                            x-transition:enter="transition ease-out duration-100"
+                                                            x-transition:enter-start="opacity-0 scale-95"
+                                                            x-transition:enter-end="opacity-100 scale-100"
+                                                            x-transition:leave="transition ease-in duration-75"
+                                                            x-transition:leave-start="opacity-100 scale-100"
+                                                            x-transition:leave-end="opacity-0 scale-95"
+                                                            class="fixed min-w-[12rem] rounded-xl border border-content-border bg-content-bg shadow-xl p-1.5 z-[9999]"
+                                                            :style="`top: ${menuTop}px; right: ${menuRight}px;`">
+                                                            <a href="{{ route('admin.administrators.edit', $admin) }}"
+                                                                class="flex w-full items-center justify-start gap-2.5 px-3 py-2 rounded-lg text-sm no-underline transition-colors text-text-primary hover:bg-body-bg cursor-pointer">
+                                                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" class="size-4 shrink-0 text-text-muted">
+                                                                    <path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7" />
+                                                                    <path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z" />
+                                                                </svg>
+                                                                <span>Edit</span>
+                                                            </a>
+                                                            @if ($admin->id !== auth('admin')->id())
+                                                                <form method="POST" action="{{ route('admin.administrators.destroy', $admin) }}" class="w-full">
+                                                                    @csrf
+                                                                    @method('DELETE')
+                                                                    <button type="submit"
+                                                                        onclick="return confirm('Are you sure you want to delete this administrator?')"
+                                                                        class="flex w-full items-center justify-start gap-2.5 px-3 py-2 rounded-lg text-sm transition-colors text-red-600 hover:bg-red-50 cursor-pointer">
+                                                                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" class="size-4 shrink-0 text-red-500">
+                                                                            <polyline points="3 6 5 6 21 6" />
+                                                                            <path d="M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2" />
+                                                                        </svg>
+                                                                        <span>Delete</span>
+                                                                    </button>
+                                                                </form>
+                                                            @endif
+                                                        </div>
+                                                    </template>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    @endforeach
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
                 @endif
             </div>
-
-            <footer class="flex justify-between flex-wrap items-center px-[18px] pt-2.5 md:pt-3 pb-2.5 antialiased">
-                <div class="text-sm text-text-muted">
-                    <span x-text="`${filteredCount} administrator${filteredCount !== 1 ? 's' : ''}`"></span>
-                </div>
-            </footer>
         </div>
     </div>
 </div>
