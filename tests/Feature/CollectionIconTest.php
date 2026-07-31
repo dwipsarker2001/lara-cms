@@ -29,3 +29,16 @@ it('creates a collection with a selected icon', function () {
     expect($collection)->not->toBeNull();
     expect($collection->icon)->toBe('fa-solid fa-briefcase');
 });
+
+it('renders collection list without circular dots', function () {
+    Collection::create([
+        'name' => 'News Room',
+        'slug' => 'news',
+        'icon' => 'fa-solid fa-newspaper',
+    ]);
+
+    get(route('admin.collections.index'))
+        ->assertStatus(200)
+        ->assertSee('News Room')
+        ->assertDontSee('rounded-full shrink-0 bg-text-muted');
+});
