@@ -256,8 +256,8 @@
             </div>
         </header>
 
-        <div class="mb-4 grid grid-cols-1 gap-4 lg:grid-cols-4">
-            <div class="flex flex-col gap-4 lg:col-span-3">
+        <div class="mb-4 grid grid-cols-1 gap-4 lg:grid-cols-4 items-stretch">
+            <div class="flex flex-col gap-4 lg:col-span-3 min-h-0">
                 {{-- Grid zone (cards) --}}
                 <div class="grid grid-cols-1 gap-4 sm:grid-cols-3">
                     @foreach ($gridWidgets as $widget)

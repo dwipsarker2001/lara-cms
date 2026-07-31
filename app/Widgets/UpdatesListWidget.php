@@ -23,9 +23,14 @@ class UpdatesListWidget extends Widget
 
     public function render()
     {
-        $notifications = Notification::latest()->get();
+        try {
+            $notifications = Notification::latest()->get();
+        } catch (\Throwable $e) {
+            $notifications = collect();
+        }
 
         $updates = $notifications->map(fn ($n) => (object) [
+            'id' => $n->id,
             'title' => $n->title,
             'sub' => $n->sub,
             'time' => $n->formatted_time,

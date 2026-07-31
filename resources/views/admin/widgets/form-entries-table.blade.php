@@ -8,6 +8,9 @@
         sortColumn: 'created',
         sortDirection: 'desc',
         visibleColumns: {},
+        page: 1,
+        perPage: 10,
+        filteredCount: {{ count($entries) }},
 
         init() {
             let cols = { id: true, created: true, actions: true };
@@ -15,6 +18,23 @@
                 cols['{{ $f['name'] }}'] = true;
             @endforeach
             this.visibleColumns = cols;
+
+            this.$watch('search', () => { this.page = 1; this.updatePagination(); });
+            this.$watch('filterColumn', () => { this.page = 1; this.updatePagination(); });
+            this.updatePagination();
+        },
+
+        get totalPages() {
+            return Math.max(1, Math.ceil(this.filteredCount / this.perPage));
+        },
+
+        get startIndex() {
+            if (this.filteredCount === 0) return 0;
+            return (this.page - 1) * this.perPage + 1;
+        },
+
+        get endIndex() {
+            return Math.min(this.page * this.perPage, this.filteredCount);
         },
 
         get filterColumnLabel() {
@@ -68,29 +88,48 @@
             }
         },
 
-        matchesSearch(data, id, dateStr) {
+        matchesSearchRow(row) {
             if (!this.search || !this.search.trim()) return true;
             const q = this.search.toLowerCase().trim();
 
+            if (this.filterColumn === 'id') {
+                return (row.dataset.id || '').includes(q);
+            }
+            if (this.filterColumn === 'created') {
+                return (row.dataset.createdStr || '').toLowerCase().includes(q);
+            }
             if (this.filterColumn !== 'all') {
-                if (this.filterColumn === 'id') return String(id).includes(q);
-                if (this.filterColumn === 'created') return String(dateStr).toLowerCase().includes(q);
-                const val = data[this.filterColumn];
-                if (val === null || val === undefined) return false;
-                if (Array.isArray(val)) return val.join(' ').toLowerCase().includes(q);
-                return String(val).toLowerCase().includes(q);
+                const key = 'field' + this.filterColumn.replace(/_/g, '').toLowerCase();
+                const fieldVal = (row.dataset[key] || '').toLowerCase();
+                return fieldVal.includes(q);
             }
 
-            if (String(id).includes(q)) return true;
-            if (String(dateStr).toLowerCase().includes(q)) return true;
-            for (let k in data) {
-                const val = data[k];
-                if (val !== null && val !== undefined) {
-                    if (Array.isArray(val) && val.join(' ').toLowerCase().includes(q)) return true;
-                    if (String(val).toLowerCase().includes(q)) return true;
+            const searchText = (row.dataset.searchText || '').toLowerCase();
+            return searchText.includes(q);
+        },
+
+        updatePagination() {
+            this.$nextTick(() => {
+                const tbody = this.$refs.tbody;
+                if (!tbody) return;
+                const rows = Array.from(tbody.querySelectorAll('tr[data-sortable]'));
+                let matchedCount = 0;
+
+                rows.forEach(row => {
+                    if (this.matchesSearchRow(row)) {
+                        matchedCount++;
+                        const isCurrentPage = matchedCount > (this.page - 1) * this.perPage && matchedCount <= this.page * this.perPage;
+                        row.style.display = isCurrentPage ? '' : 'none';
+                    } else {
+                        row.style.display = 'none';
+                    }
+                });
+
+                this.filteredCount = matchedCount;
+                if (this.page > this.totalPages) {
+                    this.page = this.totalPages;
                 }
-            }
-            return false;
+            });
         },
 
         sortRows() {
@@ -118,6 +157,7 @@
             });
 
             rows.forEach(r => tbody.appendChild(r));
+            this.updatePagination();
         }
     }"
     class="space-y-3"
@@ -256,7 +296,14 @@
                 </div>
             </div>
 
-            <div class="relative z-10 overflow-x-auto table-scrollbar rounded-b-xl">
+            <template x-if="filteredCount === 0">
+                <div class="flex flex-col items-center justify-center py-10 text-center px-6">
+                    <img src="/empty-collection.svg" alt="No items" class="size-24 mb-3 opacity-60">
+                    <p class="text-sm font-medium text-text-heading">No submissions match your search</p>
+                </div>
+            </template>
+
+            <div class="relative z-10 overflow-x-auto table-scrollbar rounded-b-xl" x-show="filteredCount > 0">
                 <table class="w-full min-w-full border-separate border-spacing-y-0 text-left text-[13px]">
                     <thead>
                         <tr class="bg-[#f9fafb]">
@@ -276,13 +323,17 @@
                     </thead>
                     <tbody x-ref="tbody">
                         @foreach ($entries as $entry)
+                            @php
+                                $searchPayload = $entry->id . ' ' . $entry->created_at->format('M j, Y g:i A') . ' ' . (is_array($entry->data) ? implode(' ', array_map(fn($v) => is_array($v) ? implode(' ', $v) : (string)$v, $entry->data)) : '');
+                            @endphp
                             <tr data-sortable
                                 data-id="{{ $entry->id }}"
+                                data-created-str="{{ $entry->created_at->format('M j, Y g:i A') }}"
                                 data-created="{{ $entry->created_at->timestamp }}"
+                                data-search-text="{{ strtolower($searchPayload) }}"
                                 @foreach($fields as $f)
-                                    data-field-{{ $f['name'] }}="{{ strtolower(is_array($entry->data[$f['name']] ?? null) ? implode(' ', $entry->data[$f['name']]) : (string)($entry->data[$f['name']] ?? '')) }}"
+                                    data-field{{ strtolower(str_replace('_', '', $f['name'])) }}="{{ strtolower(is_array($entry->data[$f['name']] ?? null) ? implode(' ', $entry->data[$f['name']]) : (string)($entry->data[$f['name']] ?? '')) }}"
                                 @endforeach
-                                x-show="matchesSearch({{ json_encode($entry->data) }}, {{ $entry->id }}, {{ json_encode($entry->created_at->format('M j, Y g:i A')) }})"
                                 class="group hover:bg-[#f9fafb] transition-colors"
                             >
                                 <td x-show="visibleColumns['id'] !== false" class="px-4 py-3 text-text-muted text-xs whitespace-nowrap min-w-[70px] border-b border-content-border group-last:border-b-0 group-last:rounded-bl-xl">#{{ $entry->id }}</td>
@@ -343,5 +394,46 @@
                 </table>
             </div>
         </div>
+
+        {{-- Footer matching admin/forms/1/entries --}}
+        <footer class="flex justify-between flex-wrap items-center antialiased mt-1 pt-3" x-show="filteredCount > 0">
+            <div class="text-sm text-text-muted">
+                Showing <span x-text="startIndex"></span>–<span x-text="endIndex"></span> of <span x-text="filteredCount"></span>
+            </div>
+            <div class="flex items-center gap-1">
+                {{-- Previous Page Button --}}
+                <button type="button"
+                    @click="if (page > 1) { page--; updatePagination(); }"
+                    :disabled="page <= 1"
+                    class="inline-flex items-center justify-center size-8 rounded-full hover:bg-gray-400/10 text-text-heading disabled:opacity-40 disabled:cursor-not-allowed transition-colors cursor-pointer"
+                    title="Previous Page"
+                    aria-label="Previous Page">
+                    <svg viewBox="0 0 15 15" fill="currentColor" class="size-3.5"><path fill-rule="evenodd" d="M8.842 3.135a.5.5 0 01.023.707L5.435 7.5l3.43 3.658a.5.5 0 01-.73.684l-3.75-4a.5.5 0 010-.684l3.75-4a.5.5 0 01.707-.023" clip-rule="evenodd" /></svg>
+                </button>
+
+                {{-- Circular Page Buttons --}}
+                <template x-for="p in totalPages" :key="p">
+                    <template x-if="p === 1 || p === totalPages || (p >= page - 1 && p <= page + 1)">
+                        <button type="button"
+                            @click="page = p; updatePagination()"
+                            :class="page === p ? 'bg-gray-300 text-gray-900 font-bold shadow-xs' : 'text-gray-500 hover:bg-gray-200/60 hover:text-gray-900 font-semibold'"
+                            class="inline-flex items-center justify-center size-8 rounded-full text-xs transition-colors cursor-pointer"
+                            x-text="p">
+                        </button>
+                    </template>
+                </template>
+
+                {{-- Next Page Button --}}
+                <button type="button"
+                    @click="if (page < totalPages) { page++; updatePagination(); }"
+                    :disabled="page >= totalPages"
+                    class="inline-flex items-center justify-center size-8 rounded-full hover:bg-gray-400/10 text-text-heading disabled:opacity-40 disabled:cursor-not-allowed transition-colors cursor-pointer"
+                    title="Next Page"
+                    aria-label="Next Page">
+                    <svg viewBox="0 0 15 15" fill="currentColor" class="size-3.5"><path fill-rule="evenodd" d="M6.158 3.135a.5.5 0 01-.023.707L9.565 7.5l-3.43 3.658a.5.5 0 00.73.684l3.75-4a.5.5 0 000-.684l-3.75-4a.5.5 0 00-.707-.023" clip-rule="evenodd" /></svg>
+                </button>
+            </div>
+            <div class="text-sm text-text-muted">Per Page <span class="px-2 py-1 border border-content-border rounded text-text-heading">10</span></div>
+        </footer>
     @endif
 </div>

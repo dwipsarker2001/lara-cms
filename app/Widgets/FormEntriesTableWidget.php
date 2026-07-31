@@ -56,7 +56,7 @@ class FormEntriesTableWidget extends Widget
             ->values();
 
         $entries = $form
-            ? $form->entries()->latest()->limit(10)->get()
+            ? $form->entries()->latest()->get()
             : collect();
 
         return view('admin.widgets.form-entries-table', [

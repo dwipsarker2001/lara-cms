@@ -9,7 +9,7 @@ class NotificationSeeder extends Seeder
 {
     public function run(): void
     {
-        // Truncate table first to prevent duplicate seeds
+        // Truncate table to clear demo items
         Notification::truncate();
     }
 }
