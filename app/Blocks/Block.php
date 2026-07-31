@@ -40,10 +40,16 @@ abstract class Block
      */
     abstract public function fields(): array;
 
-    /** Blade view name. Defaults to blocks.{kebab-name}; override if needed. */
+    /** Blade view name. Defaults to blocks.custom.{kebab-name} if it exists, otherwise blocks.{kebab-name}. */
     public function view(): string
     {
-        return 'blocks.'.Str::kebab($this->name);
+        $kebab = Str::kebab($this->name);
+
+        if (view()->exists('blocks.custom.'.$kebab)) {
+            return 'blocks.custom.'.$kebab;
+        }
+
+        return 'blocks.'.$kebab;
     }
 
     /**

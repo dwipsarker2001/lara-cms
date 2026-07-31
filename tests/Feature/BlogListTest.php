@@ -16,7 +16,7 @@ test('blog list resolves featured_image from entry data', function () {
         'published' => true,
     ]);
 
-    $view = $this->view('blocks.blog-list', [
+    $view = $this->view('blocks.custom.blog-list', [
         'data' => ['postCollection' => 'blog'],
     ]);
 
@@ -37,7 +37,7 @@ test('blog list handles empty thumbnail when entry has no image', function () {
     $recent = BlogSidebarData::getRecentPosts(1, 'blog');
     expect($recent[0]['image'])->toBeNull();
 
-    $view = $this->view('blocks.blog-list', [
+    $view = $this->view('blocks.custom.blog-list', [
         'data' => ['postCollection' => 'blog'],
     ]);
 

@@ -74,7 +74,7 @@ it('renders dynamic form fields from selected form in checkout-form and submits 
         ],
     ]);
 
-    $view = $this->view('blocks.checkout-form', [
+    $view = $this->view('blocks.custom.checkout-form', [
         'data' => [
             'formId' => $form->id,
             'formTitle' => 'Traveler Details',

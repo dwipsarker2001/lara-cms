@@ -2,8 +2,8 @@
 
 use App\Blocks\Block;
 use App\Blocks\BlockRegistry;
-use App\Blocks\common\HeroBanner;
-use App\Blocks\common\TravelDeals;
+use App\Blocks\custom\HeroBanner;
+use App\Blocks\custom\TravelDeals;
 use App\Blocks\Field;
 
 test('Block::render returns a string for a block with a view', function () {

@@ -1,7 +1,7 @@
 <?php
 
 use App\Blocks\BlockRegistry;
-use App\Blocks\common\BlogDetails;
+use App\Blocks\custom\BlogDetails;
 
 it('registers and resolves the blogDetails block', function () {
     $registry = app(BlockRegistry::class);
