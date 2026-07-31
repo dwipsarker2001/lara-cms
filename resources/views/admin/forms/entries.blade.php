@@ -335,27 +335,59 @@
                 </div>
 
                 @if($entries->hasPages())
-                    <footer class="flex justify-between flex-wrap items-center px-[18px] pt-2.5 md:pt-3 pb-2.5 antialiased mt-1">
+                    <footer class="flex justify-between flex-wrap items-center antialiased mt-1 pt-3">
                         <div class="text-sm text-text-muted">
                             Showing {{ $entries->firstItem() }}–{{ $entries->lastItem() }} of {{ $entries->total() }}
                         </div>
                         <div class="flex items-center gap-1">
+                            {{-- Previous Page Link --}}
                             @if($entries->onFirstPage())
-                                <button disabled class="inline-flex items-center justify-center w-8 h-8 rounded-full text-text-heading opacity-50">
+                                <button disabled class="inline-flex items-center justify-center size-8 rounded-full text-text-heading opacity-40 cursor-not-allowed">
                                     <svg viewBox="0 0 15 15" fill="currentColor" class="size-3.5"><path fill-rule="evenodd" d="M8.842 3.135a.5.5 0 01.023.707L5.435 7.5l3.43 3.658a.5.5 0 01-.73.684l-3.75-4a.5.5 0 010-.684l3.75-4a.5.5 0 01.707-.023" clip-rule="evenodd" /></svg>
                                 </button>
                             @else
-                                <a href="{{ $entries->previousPageUrl() }}" class="inline-flex items-center justify-center w-8 h-8 rounded-full hover:bg-gray-400/10 text-text-heading transition-colors">
+                                <a href="{{ $entries->previousPageUrl() }}" class="inline-flex items-center justify-center size-8 rounded-full hover:bg-gray-400/10 text-text-heading transition-colors">
                                     <svg viewBox="0 0 15 15" fill="currentColor" class="size-3.5"><path fill-rule="evenodd" d="M8.842 3.135a.5.5 0 01.023.707L5.435 7.5l3.43 3.658a.5.5 0 01-.73.684l-3.75-4a.5.5 0 010-.684l3.75-4a.5.5 0 01.707-.023" clip-rule="evenodd" /></svg>
                                 </a>
                             @endif
-                            <span class="inline-flex items-center justify-center px-3 h-8 rounded-full bg-gray-400/10 text-text-heading text-sm font-medium">{{ $entries->currentPage() }}</span>
+
+                            {{-- Circular Page Buttons --}}
+                            @php
+                                $current = $entries->currentPage();
+                                $last = $entries->lastPage();
+                                $start = max(1, $current - 1);
+                                $end = min($last, $current + 1);
+                            @endphp
+
+                            @if($start > 1)
+                                <a href="{{ $entries->url(1) }}" class="inline-flex items-center justify-center size-8 rounded-full text-xs font-semibold text-gray-500 hover:bg-gray-200/60 hover:text-gray-900 transition-colors">1</a>
+                                @if($start > 2)
+                                    <span class="px-1 text-xs text-gray-400 select-none">...</span>
+                                @endif
+                            @endif
+
+                            @for($page = $start; $page <= $end; $page++)
+                                @if($page === $current)
+                                    <span class="inline-flex items-center justify-center size-8 rounded-full bg-gray-300 text-gray-900 text-xs font-bold shadow-xs">{{ $page }}</span>
+                                @else
+                                    <a href="{{ $entries->url($page) }}" class="inline-flex items-center justify-center size-8 rounded-full text-xs font-semibold text-gray-500 hover:bg-gray-200/60 hover:text-gray-900 transition-colors">{{ $page }}</a>
+                                @endif
+                            @endfor
+
+                            @if($end < $last)
+                                @if($end < $last - 1)
+                                    <span class="px-1 text-xs text-gray-400 select-none">...</span>
+                                @endif
+                                <a href="{{ $entries->url($last) }}" class="inline-flex items-center justify-center size-8 rounded-full text-xs font-semibold text-gray-500 hover:bg-gray-200/60 hover:text-gray-900 transition-colors">{{ $last }}</a>
+                            @endif
+
+                            {{-- Next Page Link --}}
                             @if($entries->hasMorePages())
-                                <a href="{{ $entries->nextPageUrl() }}" class="inline-flex items-center justify-center w-8 h-8 rounded-full hover:bg-gray-400/10 text-text-heading transition-colors">
+                                <a href="{{ $entries->nextPageUrl() }}" class="inline-flex items-center justify-center size-8 rounded-full hover:bg-gray-400/10 text-text-heading transition-colors">
                                     <svg viewBox="0 0 15 15" fill="currentColor" class="size-3.5"><path fill-rule="evenodd" d="M6.158 3.135a.5.5 0 01-.023.707L9.565 7.5l-3.43 3.658a.5.5 0 00.73.684l3.75-4a.5.5 0 000-.684l-3.75-4a.5.5 0 00-.707-.023" clip-rule="evenodd" /></svg>
                                 </a>
                             @else
-                                <button disabled class="inline-flex items-center justify-center w-8 h-8 rounded-full text-text-heading opacity-50">
+                                <button disabled class="inline-flex items-center justify-center size-8 rounded-full text-text-heading opacity-40 cursor-not-allowed">
                                     <svg viewBox="0 0 15 15" fill="currentColor" class="size-3.5"><path fill-rule="evenodd" d="M6.158 3.135a.5.5 0 01-.023.707L9.565 7.5l-3.43 3.658a.5.5 0 00.73.684l3.75-4a.5.5 0 000-.684l-3.75-4a.5.5 0 00-.707-.023" clip-rule="evenodd" /></svg>
                                 </button>
                             @endif

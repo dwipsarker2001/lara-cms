@@ -31,7 +31,9 @@ class FormController extends Controller
             'description' => 'nullable|string',
             'submit_text' => 'required|string|max:255',
             'success_message' => 'required|string|max:255',
+            'per_page' => 'nullable|integer|min:1|max:500',
         ]);
+        $data['per_page'] = $data['per_page'] ?? 15;
         $data['position'] = Form::max('position') + 1;
         Form::create($data);
 
@@ -51,6 +53,7 @@ class FormController extends Controller
             'description' => 'nullable|string',
             'submit_text' => 'required|string|max:255',
             'success_message' => 'required|string|max:255',
+            'per_page' => 'nullable|integer|min:1|max:500',
         ]));
 
         return redirect()->route('admin.forms.index')->with('success', 'Form updated successfully.');
@@ -78,9 +81,14 @@ class FormController extends Controller
             $form->entries()->where('status', 1)->update(['status' => 0]);
         }
 
+        $perPage = (int) ($form->per_page ?? 15);
+        if ($perPage < 1) {
+            $perPage = 15;
+        }
+
         $entries = Schema::hasTable('form_entries')
-            ? $form->entries()->latest()->paginate(15)
-            : new LengthAwarePaginator([], 0, 15);
+            ? $form->entries()->latest()->paginate($perPage)
+            : new LengthAwarePaginator([], 0, $perPage);
 
         $savedColumns = WidgetLayout::where('admin_id', auth('admin')->id())
             ->value('layout')['form_columns'][$form->id] ?? null;

@@ -12,11 +12,14 @@ class Form extends Model
     /** @use HasFactory<FormFactory> */
     use HasFactory;
 
-    protected $fillable = ['title', 'icon', 'description', 'submit_text', 'success_message', 'position', 'fields'];
+    protected $fillable = ['title', 'icon', 'description', 'submit_text', 'success_message', 'per_page', 'position', 'fields'];
 
     protected function casts(): array
     {
-        return ['fields' => 'array'];
+        return [
+            'fields' => 'array',
+            'per_page' => 'integer',
+        ];
     }
 
     public function entries(): HasMany

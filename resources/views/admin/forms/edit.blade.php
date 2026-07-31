@@ -162,6 +162,18 @@
                                 </div>
                             </div>
 
+                            <div class="grid md:grid-cols-2 items-start px-[18px] py-4 gap-y-3 md:gap-y-0 md:gap-x-5">
+                                <div class="flex flex-col gap-1.5">
+                                    <label for="field-per_page" class="text-sm font-medium text-text-heading">Total Row Per Page</label>
+                                    <div class="text-sm text-text-muted">Number of submission entries to show per page in the table.</div>
+                                </div>
+                                <div class="flex items-center gap-2">
+                                    <div class="flex-1">
+                                        <input id="field-per_page" type="number" name="per_page" min="1" max="500" value="{{ old('per_page', $form->per_page ?? 15) }}" class="w-full block bg-content-bg border border-content-border text-text-primary placeholder:text-text-muted text-sm rounded-lg px-3 py-2 h-9 transition-all duration-150 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary">
+                                    </div>
+                                </div>
+                            </div>
+
                         </div>
                     </div>
                 </div>
