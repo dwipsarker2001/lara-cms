@@ -7,6 +7,7 @@ use Illuminate\Auth\Events\Lockout;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Str;
@@ -26,6 +27,8 @@ class LoginController extends Controller
             'email' => ['required', 'email'],
             'password' => ['required'],
         ]);
+
+        $this->validateRecaptcha($request);
 
         $this->ensureIsNotRateLimited($request);
 
@@ -73,6 +76,42 @@ class LoginController extends Controller
                 'minutes' => ceil($seconds / 60),
             ]),
         ]);
+    }
+
+    /**
+     * Validate Google reCAPTCHA response.
+     *
+     * @throws ValidationException
+     */
+    protected function validateRecaptcha(Request $request): void
+    {
+        $secretKey = config('services.recaptcha.secret_key');
+
+        if (empty($secretKey) || app()->environment('testing')) {
+            return;
+        }
+
+        $recaptchaResponse = $request->input('g-recaptcha-response');
+
+        if (empty($recaptchaResponse)) {
+            throw ValidationException::withMessages([
+                'email' => ['Please complete the reCAPTCHA verification.'],
+            ]);
+        }
+
+        $response = Http::asForm()->post('https://www.google.com/recaptcha/api/siteverify', [
+            'secret' => $secretKey,
+            'response' => $recaptchaResponse,
+            'remoteip' => $request->ip(),
+        ]);
+
+        $scoreThreshold = (float) config('services.recaptcha.score_threshold', 0.5);
+
+        if (! $response->json('success') || (float) $response->json('score', 0) < $scoreThreshold) {
+            throw ValidationException::withMessages([
+                'email' => ['reCAPTCHA verification failed. Suspicious activity detected.'],
+            ]);
+        }
     }
 
     /**

@@ -12,6 +12,34 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 
     @vite(['resources/css/app.css', 'resources/js/app.js'])
+    @if(config('services.recaptcha.site_key'))
+        <script src="https://www.google.com/recaptcha/api.js?render={{ config('services.recaptcha.site_key') }}"></script>
+        <script>
+            document.addEventListener('DOMContentLoaded', function () {
+                const loginForm = document.getElementById('login-form');
+                if (!loginForm) return;
+
+                loginForm.addEventListener('submit', function (e) {
+                    const responseInput = document.getElementById('g-recaptcha-response');
+                    if (!responseInput || responseInput.value) return;
+
+                    e.preventDefault();
+                    const siteKey = "{{ config('services.recaptcha.site_key') }}";
+                    if (!siteKey || typeof grecaptcha === 'undefined') {
+                        loginForm.submit();
+                        return;
+                    }
+
+                    grecaptcha.ready(function () {
+                        grecaptcha.execute(siteKey, { action: 'login' }).then(function (token) {
+                            responseInput.value = token;
+                            loginForm.submit();
+                        });
+                    });
+                });
+            });
+        </script>
+    @endif
 </head>
 <body class="font-['Inter',sans-serif] bg-[#f4f4f6] text-gray-900 min-h-full flex items-center justify-center p-4 sm:p-6 antialiased selection:bg-[#5538ee] selection:text-white">
     <div class="w-full max-w-sm mx-auto">
@@ -44,8 +72,9 @@
             @endif
 
             <!-- Form -->
-            <form method="POST" action="{{ route('login') }}" class="space-y-4">
+            <form id="login-form" method="POST" action="{{ route('login') }}" class="space-y-4">
                 @csrf
+                <input type="hidden" name="g-recaptcha-response" id="g-recaptcha-response">
 
                 <!-- Email -->
                 <div>
