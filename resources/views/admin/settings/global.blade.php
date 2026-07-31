@@ -52,14 +52,36 @@
                 .then(r => r.json().then(data => ({ ok: r.ok, data })))
                 .then(({ ok, data }) => {
                     if (!ok || !data.success) throw new Error(data.error || data.message || 'Update failed.');
-                    let delay = 300;
-                    data.logs.forEach(log => { setTimeout(() => this.updateLogs.push(log), delay += 600); });
-                    setTimeout(() => { this.currentVersion = data.version; this.updateState = 'done'; }, delay + 700);
+                    let delay = 200;
+                    data.logs.forEach(log => {
+                        setTimeout(() => {
+                            this.updateLogs.push(log);
+                            this.$nextTick(() => {
+                                if (this.$refs.logConsole) {
+                                    this.$refs.logConsole.scrollTop = this.$refs.logConsole.scrollHeight;
+                                }
+                            });
+                        }, delay += 400);
+                    });
+                    setTimeout(() => {
+                        this.currentVersion = data.version;
+                        this.updateState = 'done';
+                        this.$nextTick(() => {
+                            if (this.$refs.logConsole) {
+                                this.$refs.logConsole.scrollTop = this.$refs.logConsole.scrollHeight;
+                            }
+                        });
+                    }, delay + 500);
                 })
                 .catch(err => {
                     this.updateLogs.push('[ERROR] ' + err.message);
                     this.updateError = err.message;
                     this.updateState = 'error';
+                    this.$nextTick(() => {
+                        if (this.$refs.logConsole) {
+                            this.$refs.logConsole.scrollTop = this.$refs.logConsole.scrollHeight;
+                        }
+                    });
                 });
             }
         }"
@@ -221,13 +243,13 @@
 
                             {{-- Terminal-style Update Console Logs --}}
                             <template x-if="updateLogs.length > 0">
-                                <div class="mt-3 bg-gray-900 text-gray-200 rounded-lg p-3 font-mono text-xs space-y-1.5 max-h-52 overflow-y-auto border border-gray-800 shadow-inner">
-                                    <div class="text-[11px] font-semibold text-gray-400 border-b border-gray-800 pb-1 flex items-center justify-between">
-                                        <span>Update Process Terminal Log</span>
-                                        <span class="size-2 rounded-full" :class="updateState === 'updating' ? 'bg-amber-400 animate-ping' : 'bg-emerald-400'"></span>
+                                <div x-ref="logConsole" class="mt-3 bg-gray-950 text-gray-100 rounded-xl p-3.5 font-mono text-xs space-y-1.5 max-h-60 overflow-y-auto border border-gray-800 shadow-inner">
+                                    <div class="text-[11px] font-semibold text-gray-400 border-b border-gray-800 pb-1.5 flex items-center justify-between sticky top-0 bg-gray-950/95 backdrop-blur-xs z-10">
+                                        <span>Update Process Log</span>
+                                        <span class="size-2.5 rounded-full" :class="updateState === 'updating' ? 'bg-amber-400 animate-ping' : 'bg-emerald-400'"></span>
                                     </div>
                                     <template x-for="(log, idx) in updateLogs" :key="idx">
-                                        <div class="leading-relaxed" :class="log.includes('[ERROR]') ? 'text-red-400 font-semibold' : (log.includes('✓') ? 'text-emerald-400 font-semibold' : 'text-gray-300')" x-text="log"></div>
+                                        <div class="leading-relaxed py-0.5" :class="log.includes('[ERROR]') ? 'text-red-400 font-bold' : (log.includes('✓') ? 'text-emerald-400 font-bold text-[13px] bg-emerald-950/40 p-1.5 rounded border border-emerald-500/30' : 'text-gray-200')" x-text="log"></div>
                                     </template>
                                 </div>
                             </template>
