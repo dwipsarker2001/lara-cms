@@ -16,7 +16,7 @@ class TrackPageViews
 
     public function terminate(Request $request, Response $response): void
     {
-        if (! $request->is('admin*') || $request->isMethod('GET') === false) {
+        if ($request->is('admin*') || $request->isMethod('GET') === false) {
             return;
         }
 

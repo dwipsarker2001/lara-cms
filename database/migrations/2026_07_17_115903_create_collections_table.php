@@ -12,6 +12,9 @@ return new class extends Migration
             $table->id();
             $table->string('name');
             $table->string('slug')->unique();
+            $table->string('icon')->nullable();
+            $table->boolean('show_in_menu')->default(false);
+            $table->boolean('enable_seo')->default(false);
             $table->text('description')->nullable();
             $table->json('fields')->nullable();
             $table->integer('position')->default(0);

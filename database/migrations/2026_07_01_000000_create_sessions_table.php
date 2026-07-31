@@ -8,19 +8,18 @@ return new class extends Migration
 {
     public function up(): void
     {
-        Schema::create('form_entries', function (Blueprint $table) {
-            $table->id();
-            $table->foreignId('form_id')->constrained()->cascadeOnDelete();
-            $table->json('data');
+        Schema::create('sessions', function (Blueprint $table) {
+            $table->string('id')->primary();
+            $table->unsignedBigInteger('user_id')->nullable()->index();
             $table->string('ip_address', 45)->nullable();
             $table->text('user_agent')->nullable();
-            $table->tinyInteger('status')->default(1);
-            $table->timestamps();
+            $table->longText('payload');
+            $table->integer('last_activity')->index();
         });
     }
 
     public function down(): void
     {
-        Schema::dropIfExists('form_entries');
+        Schema::dropIfExists('sessions');
     }
 };

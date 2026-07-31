@@ -11,7 +11,11 @@ return new class extends Migration
         Schema::create('collection_entries', function (Blueprint $table) {
             $table->id();
             $table->foreignId('collection_id')->constrained()->cascadeOnDelete();
+            $table->string('slug')->nullable()->index();
             $table->json('data')->nullable();
+            $table->json('sections')->nullable();
+            $table->json('meta')->nullable();
+            $table->boolean('published')->default(true);
             $table->integer('position')->default(0);
             $table->timestamps();
         });

@@ -11,9 +11,12 @@ return new class extends Migration
         Schema::create('forms', function (Blueprint $table) {
             $table->id();
             $table->string('title');
+            $table->string('icon')->nullable();
             $table->text('description')->nullable();
             $table->string('submit_text')->default('Submit');
             $table->string('success_message')->default('Thank you for your submission!');
+            $table->integer('position')->default(0);
+            $table->json('fields')->nullable();
             $table->timestamps();
         });
     }

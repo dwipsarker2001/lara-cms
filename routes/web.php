@@ -14,9 +14,6 @@ Route::post('logout', [LoginController::class, 'destroy'])->name('logout');
 
 Route::post('register', [RegisterController::class, 'store'])->name('register');
 
-require __DIR__.'/marketing/marketing.php';
-require __DIR__.'/marketing/tracking.php';
-
 Route::post('/forms/submit', [PublicFormController::class, 'submit'])->name('forms.public-submit-default');
 Route::post('/forms/{form}/submit', [PublicFormController::class, 'submit'])->name('forms.public-submit');
 

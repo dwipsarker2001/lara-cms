@@ -11,10 +11,11 @@ return new class extends Migration
         Schema::create('assets', function (Blueprint $table) {
             $table->id();
             $table->string('name');
-            $table->string('path');
-            $table->string('directory')->default('');
-            $table->string('mime');
-            $table->integer('size');
+            $table->string('path')->nullable();
+            $table->string('directory')->nullable();
+            $table->boolean('is_directory')->default(false);
+            $table->string('mime')->nullable();
+            $table->integer('size')->nullable();
             $table->integer('width')->nullable();
             $table->integer('height')->nullable();
             $table->timestamps();

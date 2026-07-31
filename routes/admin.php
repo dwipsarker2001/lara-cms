@@ -12,14 +12,13 @@ use App\Http\Controllers\Admin\SeoController;
 use App\Http\Controllers\Admin\SettingsController;
 use App\Http\Controllers\Admin\TaxonomyController;
 use App\Http\Controllers\Admin\UpdateController;
-use App\Http\Middleware\TrackPageViews;
 use App\Models\Form;
 use App\Models\WidgetLayout;
 use App\Widgets\WidgetRegistry;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
-Route::middleware(['web', 'auth:admin', TrackPageViews::class])->prefix('admin')->name('admin.')->group(function () {
+Route::middleware(['web', 'auth:admin'])->prefix('admin')->name('admin.')->group(function () {
     Route::get('/', function (WidgetRegistry $registry) {
         $allTypes = $registry->all();
         $saved = WidgetLayout::where('admin_id', auth('admin')->id())->first();

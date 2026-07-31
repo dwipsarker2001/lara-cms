@@ -1,8 +1,0 @@
-{
-    "name": "Email Marketing",
-    "slug": "email-marketing",
-    "version": "1.0.0",
-    "description": "Manage subscribers and send email campaigns from within the admin panel.",
-    "author": "Your Name",
-    "requires_cms": "1.0.0"
-}
