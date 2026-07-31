@@ -180,7 +180,6 @@ class WebsiteAnalyticsWidget extends Widget
         return [
             (object) ['label' => 'Visitors', 'value' => number_format($cVisitors), 'delta' => $visitorsDelta['text'], 'up' => $visitorsDelta['up']],
             (object) ['label' => 'Page Views', 'value' => number_format($cViews), 'delta' => $viewsDelta['text'], 'up' => $viewsDelta['up']],
-            (object) ['label' => 'Sessions', 'value' => number_format($cSessions), 'delta' => $sessionsDelta['text'], 'up' => $sessionsDelta['up']],
             (object) ['label' => 'Avg. Duration', 'value' => $this->formatDuration($cDurationSec), 'delta' => $durationDelta['text'], 'up' => $durationDelta['up']],
         ];
     }

@@ -1,25 +1,11 @@
 <div x-data="websiteAnalytics()" class="w-full">
-    <!-- Period Filter -->
-    <div class="flex justify-end mb-4">
-        <div class="flex items-center gap-1 rounded-lg bg-gray-100 p-1">
-            <template x-for="opt in ['Today', '7 Days', '30 Days', 'This Year']">
-                <button
-                    @click="updatePeriod(opt)"
-                    class="rounded-md px-2.5 py-1 text-[11px] font-medium transition-colors"
-                    :class="selected === opt ? 'bg-white text-text-heading shadow-sm' : 'text-text-muted hover:text-text-heading'"
-                    x-text="opt"
-                ></button>
-            </template>
-        </div>
-    </div>
-
-    <!-- Metrics Grid -->
-    <div class="grid grid-cols-4 gap-3 mb-5">
+    <!-- Metrics Grid (3 columns: Visitors, Page Views, Avg. Duration) -->
+    <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-5">
         <template x-for="metric in current.metrics">
-            <div class="rounded-xl bg-gray-50 border border-gray-100 p-3">
+            <div class="rounded-xl bg-gray-50 border border-gray-100 p-3.5">
                 <div class="text-[11px] font-medium text-text-muted" x-text="metric.label"></div>
-                <div class="mt-1 text-xl font-semibold text-text-heading" x-text="metric.value"></div>
-                <div class="mt-0.5 text-[11px]" :class="metric.up ? 'font-medium text-emerald-600' : 'font-medium text-red-500'" x-text="metric.delta"></div>
+                <div class="mt-1.5 text-2xl font-bold text-text-heading" x-text="metric.value"></div>
+                <div class="mt-1 text-[11px]" :class="metric.up ? 'font-medium text-emerald-600' : 'font-medium text-red-500'" x-text="metric.delta"></div>
             </div>
         </template>
     </div>
@@ -50,6 +36,11 @@
                 },
 
                 init() {
+                    window.addEventListener('analytics-period-change', (e) => {
+                        if (e.detail) {
+                            this.updatePeriod(e.detail);
+                        }
+                    });
                     const options = {
                         series: [{
                             name: 'Page Views',

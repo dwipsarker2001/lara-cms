@@ -387,14 +387,29 @@
 
                 {{-- Chart zone --}}
                 <div x-show="chartShow[0]" class="bg-gray-100 rounded-2xl p-2">
-                    <div class="flex items-center justify-between px-2 pb-2.5">
+                    <div class="flex items-center justify-between px-2 pb-2.5 flex-wrap gap-2">
                         <div class="flex items-center gap-2 min-w-0">
                             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" class="size-4 text-text-muted shrink-0"><path d="M3 3v18h18"/><path d="M7 16l4-4 4 4 5-5"/></svg>
-                            <span class="text-[14px] font-medium text-text-heading" x-text="chartWidgets[0]?.label"></span>
+                            <span class="text-[14px] font-medium text-text-heading" x-text="chartWidgets[0]?.label">Website Analytics</span>
                         </div>
-                        <button x-show="editing" @click="chartShow[0] = false; toggleZoneWidget('chart', 0, true)" class="text-text-muted/50 hover:text-red-500 transition-colors shrink-0 cursor-pointer" title="Remove widget">
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="size-3.5"><path d="M18 6L6 18"/><path d="M6 6l12 12"/></svg>
-                        </button>
+                        <div class="flex items-center gap-2">
+                            <template x-if="!editing && chartWidgets[0]?.type === 'website_analytics'">
+                                <div x-data="{ selectedPeriod: '7 Days' }" class="flex items-center gap-1 rounded-lg bg-gray-200/60 p-1">
+                                    <template x-for="opt in ['Today', '7 Days', '30 Days', 'This Year']">
+                                        <button
+                                            type="button"
+                                            @click="selectedPeriod = opt; window.dispatchEvent(new CustomEvent('analytics-period-change', { detail: opt }))"
+                                            class="rounded-md px-2.5 py-1 text-[11px] transition-all cursor-pointer"
+                                            :class="selectedPeriod === opt ? 'bg-white text-text-heading font-semibold shadow-sm' : 'text-text-muted hover:text-text-heading font-medium hover:bg-white/50'"
+                                            x-text="opt"
+                                        ></button>
+                                    </template>
+                                </div>
+                            </template>
+                            <button x-show="editing" @click="chartShow[0] = false; toggleZoneWidget('chart', 0, true)" class="text-text-muted/50 hover:text-red-500 transition-colors shrink-0 cursor-pointer" title="Remove widget">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="size-3.5"><path d="M18 6L6 18"/><path d="M6 6l12 12"/></svg>
+                            </button>
+                        </div>
                     </div>
                     <div id="chart-widget-container" class="bg-white rounded-xl ring-1 ring-gray-200 shadow-sm p-4">
                         {!! $chartWidgets->first() ? $chartWidgets->first()->render() : '' !!}
