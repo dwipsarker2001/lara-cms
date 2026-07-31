@@ -224,6 +224,13 @@
                                         <span x-show="editing" class="cursor-grab active:cursor-grabbing text-text-muted/40 hover:text-text-muted touch-none shrink-0">
                                             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="size-3.5"><circle cx="9" cy="12" r="1"/><circle cx="15" cy="12" r="1"/><circle cx="9" cy="5" r="1"/><circle cx="15" cy="5" r="1"/><circle cx="9" cy="19" r="1"/><circle cx="15" cy="19" r="1"/></svg>
                                         </span>
+                                        @if ($widget->type() === 'visitor')
+                                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="size-3.5 text-text-muted shrink-0"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+                                        @elseif ($widget->type() === 'stat')
+                                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="size-3.5 text-text-muted shrink-0"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg>
+                                        @elseif ($widget->type() === 'pages')
+                                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="size-3.5 text-text-muted shrink-0"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+                                        @endif
                                         <span class="text-[13px] font-medium text-text-muted truncate">{{ $widget->label() }}</span>
                                     </div>
                                     <button x-show="editing" @click="gridShow[{{ $loop->index }}] = false" class="text-text-muted/50 hover:text-red-500 transition-colors shrink-0 cursor-pointer" title="Remove widget">
@@ -252,7 +259,10 @@
                 {{-- Chart zone --}}
                 <div x-show="chartShow[0]" class="bg-gray-100 rounded-2xl p-2">
                     <div class="flex items-center justify-between px-2 pb-2.5">
-                        <span class="text-[14px] font-medium text-text-heading" x-text="chartWidgets[0]?.label"></span>
+                        <div class="flex items-center gap-2 min-w-0">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" class="size-4 text-text-muted shrink-0"><path d="M3 3v18h18"/><path d="M7 16l4-4 4 4 5-5"/></svg>
+                            <span class="text-[14px] font-medium text-text-heading" x-text="chartWidgets[0]?.label"></span>
+                        </div>
                         <button x-show="editing" @click="chartShow[0] = false; toggleZoneWidget('chart', 0, true)" class="text-text-muted/50 hover:text-red-500 transition-colors shrink-0 cursor-pointer" title="Remove widget">
                             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="size-3.5"><path d="M18 6L6 18"/><path d="M6 6l12 12"/></svg>
                         </button>
@@ -299,7 +309,10 @@
         <div class="mb-4">
             <div x-show="tableShow[0]" class="bg-gray-100 rounded-2xl p-2">
                 <div class="flex items-center justify-between px-2 pb-2.5">
-                    <span class="text-[14px] font-medium text-text-heading" x-text="tableWidgets[0]?.label"></span>
+                    <div class="flex items-center gap-2 min-w-0">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" class="size-4 text-text-muted shrink-0"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/><path d="M16 13H8"/><path d="M16 17H8"/><path d="M10 9H8"/></svg>
+                        <span class="text-[14px] font-medium text-text-heading" x-text="tableWidgets[0]?.label"></span>
+                    </div>
                     <button x-show="editing" @click="tableShow[0] = false; toggleZoneWidget('table', 0, true)" class="text-text-muted/50 hover:text-red-500 transition-colors shrink-0 cursor-pointer" title="Remove widget">
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="size-3.5"><path d="M18 6L6 18"/><path d="M6 6l12 12"/></svg>
                     </button>

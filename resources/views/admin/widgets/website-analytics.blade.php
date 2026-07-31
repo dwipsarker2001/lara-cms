@@ -1,10 +1,6 @@
 <div x-data="websiteAnalytics()" class="w-full">
-    <!-- Header & Period Filter -->
-    <div class="flex items-center justify-between mb-4">
-        <div class="flex items-center gap-2 text-[14px] font-medium text-text-heading">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" class="size-4 text-text-muted"><path d="M3 3v18h18"/><path d="M7 16l4-4 4 4 5-5"/></svg>
-            Website Analytics
-        </div>
+    <!-- Period Filter -->
+    <div class="flex justify-end mb-4">
         <div class="flex items-center gap-1 rounded-lg bg-gray-100 p-1">
             <template x-for="opt in ['Today', '7 Days', '30 Days', 'This Year']">
                 <button
