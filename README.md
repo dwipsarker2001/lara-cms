@@ -1,47 +1,159 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# LaraCMS
 
 <p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
+  <a href="https://laravel.com" target="_blank">
+    <img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="320" alt="Laravel Logo">
+  </a>
 </p>
 
-## Quick Start
+<p align="center">
+  <strong>A modern, schema-driven, visual block-based Content Management System</strong><br>
+  Built with Laravel 13, Alpine.js, Tailwind CSS, and Docker.
+</p>
 
-```bash
-docker compose up -d
-php artisan serve
-php artisan migrate:fresh --seed
+---
+
+## 🚀 Features
+
+- **Schema-Driven Block System:** Define editable content blocks as pure PHP classes with auto-discovery in `app/Blocks/`.
+- **Interactive Visual Editor:** Live preview and drag-and-drop/inline element editing using Alpine.js and HTML `data-edit` attributes.
+- **Dockerized Environment:** Pre-configured `docker-compose` setup with automated storage directory generation, permission management, MySQL 8.0, and phpMyAdmin.
+- **Dynamic Content & Collections:** Manage pages, custom entry collections, global blocks (navbars/footers), and media assets effortlessly.
+- **Extensible Field Registry:** Supports text, rich text, images, icons (Font Awesome), repeaters/lists, nested field groups, select dropdowns, and background customization out-of-the-box.
+- **Comprehensive Test Suite:** Powered by Pest 4 for reliable feature and unit testing.
+
+---
+
+## 🛠️ Quick Start Guide
+
+### Option 1: Quick Start with Docker (Recommended)
+
+#### Prerequisites
+- Docker Engine & Docker Compose installed on your host machine.
+
+#### Step-by-Step Launch
+
+1. **Clone the Repository:**
+   ```bash
+   git clone <repository-url> lara-cms
+   cd lara-cms
+   ```
+
+2. **Start the Docker Containers:**
+   ```bash
+   docker compose up -d
+   ```
+   *Note: The container startup script (`docker-entrypoint.sh`) will automatically generate `.env` if missing, install composer dependencies, set up `APP_KEY`, and ensure all necessary `storage/` and `bootstrap/cache/` directories exist with proper write permissions.*
+
+3. **Run Database Migrations & Seed Initial Data:**
+   ```bash
+   docker exec lara-cms-app php artisan migrate:fresh --seed
+   ```
+
+4. **Access the Application:**
+   - **Public Site / Editor:** [http://localhost:8000](http://localhost:8000)
+   - **Admin Login:** [http://localhost:8000/login](http://localhost:8000/login)
+     - **Email:** `admin@admin.com`
+     - **Password:** `password`
+   - **phpMyAdmin:** [http://localhost:8080](http://localhost:8080)
+     - **Username:** `root`
+     - **Password:** `secret`
+
+---
+
+### Option 2: Manual Local Setup (Without Docker)
+
+#### Prerequisites
+- PHP 8.4+ with `pdo`, `pdo_mysql`, `zip`, `curl` extensions
+- Composer 2.x
+- MySQL 8.0+ / MariaDB
+- Node.js 18+ & NPM
+
+#### Installation Steps
+
+1. **Clone the repository and install PHP dependencies:**
+   ```bash
+   git clone <repository-url> lara-cms
+   cd lara-cms
+   composer install
+   ```
+
+2. **Configure Environment:**
+   ```bash
+   cp .env.example .env
+   php artisan key:generate
+   ```
+   Edit `.env` to configure your local MySQL database credentials:
+   ```env
+   DB_CONNECTION=mysql
+   DB_HOST=127.0.0.1
+   DB_PORT=3306
+   DB_DATABASE=lara_cms
+   DB_USERNAME=root
+   DB_PASSWORD=secret
+   ```
+
+3. **Ensure Storage Directories & Permissions Exist:**
+   ```bash
+   mkdir -p storage/framework/views \
+            storage/framework/cache/data \
+            storage/framework/sessions \
+            storage/framework/testing \
+            storage/logs \
+            bootstrap/cache
+   chmod -R 775 storage bootstrap/cache
+   ```
+
+4. **Run Migrations & Seed Database:**
+   ```bash
+   php artisan migrate:fresh --seed
+   ```
+
+5. **Link Public Storage:**
+   ```bash
+   php artisan storage:link
+   ```
+
+6. **Install & Build Frontend Assets:**
+   ```bash
+   npm install
+   npm run dev   # Or npm run build for production assets
+   ```
+
+7. **Start Application Server:**
+   ```bash
+   php artisan serve
+   ```
+   Visit [http://localhost:8000](http://localhost:8000) in your web browser.
+
+---
+
+## 🏗️ Content Block System Architecture
+
+Every section on a page is represented by a **Block** — a PHP class defining schema fields, and a corresponding Blade view for HTML rendering. Blocks are auto-discovered from `app/Blocks/`.
+
+### Directory Structure
+
 ```
-
-**Admin login:** `http://localhost:8000/login` — `admin@admin.com` / `password`
-**phpMyAdmin:** `http://localhost:8080` — `root` / `secret`
-
-## Creating Content Blocks
-
-This CMS uses a schema-driven block system. Every section on a page is a **block** — a PHP class defining editable fields and a Blade view that renders the HTML. Blocks are auto-discovered; just create the files and they appear in the editor.
-
-### Architecture Overview
-
-```
-app/Blocks/                     → PHP block classes (auto-discovered)
-├── Block.php                   → Base class
-├── Field.php                   → Field definition helpers
-├── BlockRegistry.php           → Auto-discovery & lookup (singleton)
+app/Blocks/                     → PHP Block Schema Definitions (auto-discovered)
+├── Block.php                   → Abstract Base Block Class
+├── Field.php                   → Field Definition Factory Helpers
+├── BlockRegistry.php           → Auto-discovery Singleton
 └── Home/
-    ├── TravelDeals.php         → Travel Deals block (reference example)
+    ├── TravelDeals.php         → Example Block Schema Class
     ├── HeroBanner.php
     └── ...
-resources/views/blocks/         → Blade templates for each block
-└── travel-deals.blade.php
+resources/views/blocks/         → Blade Templates for Each Block
+└── travel-deals.blade.php      → Blade View (auto-mapped to travelDeals)
 ```
 
-### Creating a Block (Two Files)
+---
 
-#### 1. PHP Block Class
+### Creating a Custom Content Block
 
-Create a class in `app/Blocks` (any subdirectory). It is auto-discovered.
+#### 1. Define the PHP Block Class
+
+Create a PHP file under `app/Blocks/` (e.g., `app/Blocks/Home/TravelDeals.php`):
 
 ```php
 <?php
@@ -53,12 +165,12 @@ use App\Blocks\Field;
 
 class TravelDeals extends Block
 {
-    public string $name = 'travelDeals';       // Machine name (camelCase)
-    public string $label = 'Travel Deals';      // Human label in the picker
+    public string $name = 'travelDeals';       // Machine identifier (camelCase)
+    public string $label = 'Travel Deals';      // Display title in block picker
 
-    // Optional overrides:
-    // public bool $global = true;              // Global (shared site-wide, edited on home page)
-    // public bool $background = false;         // Set false if block has its own bg (hero, navbar)
+    // Optional settings:
+    // public bool $global = true;              // Global block (site-wide header/footer)
+    // public bool $background = false;         // Set false if block manages custom backgrounds
 
     public function fields(): array
     {
@@ -89,16 +201,15 @@ class TravelDeals extends Block
 }
 ```
 
-The view name auto-resolves to `blocks.{kebab-name}` — e.g. `travelDeals` → `blocks.travel-deals`.
+*Note: The machine name `travelDeals` automatically maps to the Blade view template `resources/views/blocks/travel-deals.blade.php`.*
 
-#### 2. Blade View
+#### 2. Create the Blade View Template
 
 Create `resources/views/blocks/travel-deals.blade.php`:
 
 ```blade
 @php $d = $data; @endphp
 @php
-    // Background handling (auto-injected by $background = true)
     $bg = is_array($d['background'] ?? null) ? $d['background'] : [];
     if (empty($bg) && isset($d['background']) && is_string($d['background'])) {
         try { $bg = json_decode($d['background'], true) ?? []; } catch (\Exception) { $bg = []; }
@@ -117,21 +228,21 @@ Create `resources/views/blocks/travel-deals.blade.php`:
     <div class="relative">
         <div class="max-w-6xl mx-auto px-6">
             @if($d['headline'] ?? false)
-                <h2 data-edit="headline" class="...">{{ $d['headline'] }}</h2>
+                <h2 data-edit="headline" class="text-3xl font-bold">{{ $d['headline'] }}</h2>
             @endif
             @if($d['description'] ?? false)
-                <p data-edit="description" class="...">{{ $d['description'] }}</p>
+                <p data-edit="description" class="mt-2 text-gray-600">{{ $d['description'] }}</p>
             @endif
-            <div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+            <div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 mt-8">
                 @foreach(($d['cards'] ?? []) as $i => $card)
                     @if($card)
-                        <div data-list="cards" class="...">
+                        <div data-list="cards" class="bg-white p-4 rounded-xl shadow">
                             <div data-edit="image" class="relative h-52 overflow-hidden rounded-xl">
                                 @if($card['image'] ?? false)
                                     <img src="{{ $card['image'] }}" alt="" class="w-full h-full object-cover" />
                                 @endif
                             </div>
-                            ...
+                            <h3 data-edit="title" class="font-semibold text-lg mt-3">{{ $card['title'] ?? '' }}</h3>
                         </div>
                     @endif
                 @endforeach
@@ -141,97 +252,76 @@ Create `resources/views/blocks/travel-deals.blade.php`:
 </section>
 ```
 
+---
+
 ### Field Types Reference
 
-| Method | Type | Editor Control |
-|--------|------|---------------|
-| `Field::string($name, $label, default: '')` | Single-line text | `<input type="text">` |
+| Method | Type | Editor UI Control |
+|--------|------|-------------------|
+| `Field::string($name, $label, default: '')` | Single-line string | `<input type="text">` |
 | `Field::text($name, $label, default: '')` | Multi-line text | `<textarea>` |
-| `Field::number($name, $label, default: '')` | Number | `<input type="number">` |
-| `Field::boolean($name, $label, default: false)` | Toggle | Switch (`true`/`false`) |
-| `Field::image($name, $label)` | Image | Asset picker, drag-and-drop |
-| `Field::icon($name, $label)` | Font Awesome icon | Icon picker with search |
-| `Field::select($name, $label, $options, default: '')` | Dropdown | Select with color swatches |
-| `Field::link($name, $label, default: '')` | URL | `<input type="text">` |
-| `Field::richText($name, $label)` | HTML | `<textarea>` (monospace) |
-| `Field::tags($name, $label)` | Tag list | Tag input (JSON array) |
-| `Field::datetime($name, $label)` | Date/time | Text input |
-| `Field::group($name, $label, $fields)` | Nested group | Drill-in object editor |
-| `Field::list($name, $label, $fields, count: 0)` | Repeatable group | Sortable list with add/remove |
+| `Field::number($name, $label, default: '')` | Numeric value | `<input type="number">` |
+| `Field::boolean($name, $label, default: false)` | Boolean flag | Toggle switch (`true`/`false`) |
+| `Field::image($name, $label)` | Image URL / Asset | Asset selector & file dropzone |
+| `Field::icon($name, $label)` | Icon class string | Font Awesome icon picker with search |
+| `Field::select($name, $label, $options)` | Choice selection | Dropdown select |
+| `Field::link($name, $label, default: '')` | Target URL | Link input field |
+| `Field::richText($name, $label)` | HTML / Markdown | Rich text area |
+| `Field::tags($name, $label)` | Tag array | Multi-tag input field |
+| `Field::datetime($name, $label)` | Date & Time | Date/time picker |
+| `Field::group($name, $label, $fields)` | Nested Field Group | Group object editor |
+| `Field::list($name, $label, $fields, count: 0)` | Repeatable Array | Re-orderable list repeater |
 
-### Editor Integration Attributes
+---
 
-Add these attributes to elements in your Blade view to make them editable in the preview:
+### Interactive Editor Attributes
 
-| Attribute | Purpose |
-|-----------|---------|
-| `data-edit="fieldName"` | Marks a field as editable. Hover shows blue dashed border. Click navigates editor to that field. |
-| `data-edit="image"` on container div (not just `<img>`) | Ensures the drop area is always hittable even without an image |
-| `data-edit-button` (as class/attribute) | Marks buttons — shows border on hover but no background tint |
-| `data-list="listName"` | Marks a repeatable list item container for nested sortable lists |
+Attach these HTML attributes to your Blade templates to connect element hover and click events directly to the visual page editor:
 
-**Important:** Always put `data-edit` on a container `<div>` for image fields, not on the `<img>` tag directly. This ensures the placeholder area is clickable when no image is set.
+| Attribute | Description & Functionality |
+|-----------|-----------------------------|
+| `data-edit="fieldName"` | Highlights field with a dashed border on hover. Clicking focuses that field in the editor panel. |
+| `data-edit="image"` on wrapper `<div>` | Recommended wrapper for images so drop zones are clickable even without an image loaded. |
+| `data-edit-button` | Special attribute for action buttons (retains border styling on hover without changing background). |
+| `data-list="listName"` | Identifies repeatable repeater item containers for drag-and-drop reordering. |
 
-### The `$background` Property
+---
 
-When `$background = true` (default), the editor automatically prepends a `background` field group with:
-- Background image
-- Background color (select with 12 preset colors)
-- Opacity (0–100%)
+## 🧪 Testing & Code Style
 
-Your view must handle the background data:
+### Running Tests
 
-```blade
-@php
-    $d = $data;
-    $bg = is_array($d['background'] ?? null) ? $d['background'] : [];
-    $bgImg = $bg['image'] ?? '';
-    $bgColor = $bg['color'] ?? '';
-    $bgOpacity = $bg['opacity'] ?? 100;
-@endphp
-<section class="py-20 relative overflow-hidden">
-    @if($bgColor)
-        <div class="absolute inset-0" style="background-color: {{ $bgColor }}"></div>
-    @endif
-    @if($bgImg)
-        <div class="absolute inset-0 bg-cover bg-center" style="background-image: url({{ $bgImg }}); opacity: {{ $bgOpacity / 100 }}"></div>
-    @endif
-    <div class="relative"><!-- content --></div>
-</section>
+This project uses **Pest 4** for unit and feature testing.
+
+```bash
+# Run all Pest tests
+php artisan test
+
+# Run tests in compact output mode
+php artisan test --compact
+
+# Filter tests by name
+php artisan test --filter=PageControllerTest
 ```
 
-Set `$background = false` for full-bleed blocks with their own background (hero banners, navbar, footer).
+### Code Formatting
 
-### Global Blocks
+Format PHP code according to project conventions with **Laravel Pint**:
 
-Set `$global = true` to make a block site-wide. Global blocks are:
-- Excluded from the page block picker (they auto-appear on all pages)
-- Edited only on the home page
-- Changes propagate to every page that includes them
+```bash
+vendor/bin/pint --dirty --format agent
+```
 
-Use for: site navbar, top bar, footer.
+---
 
-### How It Works
+## 🐋 Docker & Troubleshooting Notes
 
-1. **Discovery:** `BlockRegistry` scans `app/Blocks/` for all `Block` subclasses on every request (cached per-request as a singleton).
-2. **Editor:** `PageController@editor` passes `schemas()` and `pickerList()` to the Alpine.js editor. The editor auto-generates form controls for each field.
-3. **Default data:** When a block is added, `buildDefaultData()` walks the schema and creates default values from `default: '...'` in each field.
-4. **Preview:** `BlockPreview::render()` includes each block's Blade view with `$data` and `$preview = true`.
-5. **Public render:** `page.blade.php` iterates sections, merges globals via `Sections::withGlobals()`, and includes each block view with `$preview = false`.
-6. **Views receive:** `$data` (field values array), `$_key` (UUID of the section instance), `$preview` (boolean, true when rendered inside the editor preview).
+- **Cache Directories:** The `docker-entrypoint.sh` script automatically creates `storage/framework/views`, `storage/framework/cache/data`, `storage/framework/sessions`, `storage/framework/testing`, `storage/logs`, and `bootstrap/cache` upon container startup to prevent `Please provide a valid cache path` startup loops on fresh clones.
+- **Permissions:** Automated `chmod 775` is applied to `storage` and `bootstrap/cache` during container entrypoint initialization.
+- **Missing Tables:** If you see `Base table or view not found` on first run, execute `docker exec lara-cms-app php artisan migrate --force`.
 
-## Contributing
+---
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+## 📄 License
 
-## Code of Conduct
-
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
-
-## Security Vulnerabilities
-
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
-
-## License
-
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+LaraCMS is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
