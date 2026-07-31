@@ -64,13 +64,22 @@
                 </svg>
             </a>
             <a href="{{ route('admin.forms.export', $form) }}"
-                class="inline-flex items-center justify-center gap-2 whitespace-nowrap shrink-0 font-medium cursor-pointer no-underline rounded-lg transition-colors h-10 text-sm leading-tight px-4 bg-primary hover:opacity-90 text-white shadow-sm"
+                class="inline-flex items-center justify-center gap-2 whitespace-nowrap shrink-0 font-medium cursor-pointer no-underline rounded-lg transition-colors h-10 text-sm leading-tight px-4 bg-white hover:bg-gray-50 text-text-primary border border-content-border shadow-sm"
             >
                 <svg viewBox="0 0 20 20" fill="currentColor" class="size-4">
                     <path d="M10 1a1 1 0 011 1v9.586l2.293-2.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 111.414-1.414L9 11.586V2a1 1 0 011-1z" />
                     <path d="M2 16a1 1 0 011 1v1h12v-1a1 1 0 112 0v2a1 1 0 01-1 1H2a1 1 0 01-1-1v-2a1 1 0 011-1z" />
                 </svg>
                 <span>Export</span>
+            </a>
+            <a href="{{ route('admin.forms.entries.create', $form) }}"
+                class="inline-flex items-center justify-center gap-2 whitespace-nowrap shrink-0 font-medium cursor-pointer no-underline rounded-lg transition-colors h-10 text-sm leading-tight px-4 bg-primary hover:opacity-90 text-white shadow-sm"
+            >
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" class="size-4">
+                    <line x1="12" y1="5" x2="12" y2="19" />
+                    <line x1="5" y1="12" x2="19" y2="12" />
+                </svg>
+                <span>Add Entry</span>
             </a>
         </div>
     </header>
@@ -427,11 +436,17 @@
             <div class="p-5 space-y-4 overflow-y-auto flex-1">
                 <template x-for="field in schemaFields" :key="field.name">
                     <div>
-                        <label class="block text-xs font-medium text-text-heading mb-1.5" x-text="field.column_name || field.label || field.name"></label>
+                        <label class="block text-xs font-medium text-text-heading mb-1.5">
+                            <span x-text="field.column_name || field.label || field.name"></span>
+                            <template x-if="field.required">
+                                <span class="text-red-600">*</span>
+                            </template>
+                        </label>
                         <template x-if="field.type === 'textarea'">
                             <textarea 
                                 :name="'data[' + field.name + ']'" 
                                 x-model="formData[field.name]" 
+                                :required="field.required"
                                 rows="3"
                                 class="w-full rounded-lg border border-content-border bg-content-bg p-2.5 text-xs text-text-heading focus:outline-none focus:ring-2 focus:ring-primary/20 shadow-sm"
                             ></textarea>
@@ -441,6 +456,7 @@
                                 :type="field.type === 'number' ? 'number' : (field.type === 'email' ? 'email' : 'text')" 
                                 :name="'data[' + field.name + ']'" 
                                 x-model="formData[field.name]" 
+                                :required="field.required"
                                 class="w-full rounded-lg border border-content-border bg-content-bg px-3 py-2 text-xs text-text-heading focus:outline-none focus:ring-2 focus:ring-primary/20 shadow-sm"
                             >
                         </template>

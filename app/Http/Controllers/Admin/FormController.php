@@ -169,6 +169,24 @@ class FormController extends Controller
         return redirect()->route('admin.forms.entries', $form)->with('success', 'Submission updated successfully.');
     }
 
+    public function createEntry(Form $form)
+    {
+        return view('admin.forms.entries_create', compact('form'));
+    }
+
+    public function storeEntry(Request $request, Form $form)
+    {
+        FormEntry::create([
+            'form_id' => $form->id,
+            'data' => $request->input('data', []),
+            'ip_address' => $request->ip(),
+            'user_agent' => $request->userAgent(),
+            'status' => 0,
+        ]);
+
+        return redirect()->route('admin.forms.entries', $form)->with('success', 'Submission created successfully.');
+    }
+
     public function destroyEntry(Form $form, FormEntry $entry)
     {
         abort_if($entry->form_id !== $form->id, 404);

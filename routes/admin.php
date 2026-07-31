@@ -170,6 +170,8 @@ Route::middleware(['web', 'auth:admin', TrackPageViews::class])->prefix('admin')
     Route::patch('forms/reorder', [FormController::class, 'reorder'])->name('forms.reorder');
     Route::get('forms/{form}/editor', [FormController::class, 'editor'])->name('forms.editor');
     Route::get('forms/{form}/entries', [FormController::class, 'entries'])->name('forms.entries');
+    Route::get('forms/{form}/entries/create', [FormController::class, 'createEntry'])->name('forms.entries.create');
+    Route::post('forms/{form}/entries', [FormController::class, 'storeEntry'])->name('forms.entries.store');
     Route::get('forms/{form}/entries/export', [FormController::class, 'export'])->name('forms.export');
     Route::get('forms/{form}/entries/{entry}', [FormController::class, 'entryJson'])->name('forms.entries.json');
     Route::put('forms/{form}/entries/{entry}', [FormController::class, 'updateEntry'])->name('forms.entries.update');
