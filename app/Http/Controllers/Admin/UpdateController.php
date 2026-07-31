@@ -105,7 +105,6 @@ class UpdateController extends Controller
                 'storage/',                  // Uploaded files, logs, cache
                 '.env',                      // Environment configuration
                 'app/Blocks/custom/',        // Custom user block classes
-                'app/Blocks/global/',        // Global user block classes
                 'resources/views/blocks/custom/', // Custom user block templates
             ];
 
