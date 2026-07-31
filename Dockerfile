@@ -4,9 +4,11 @@ RUN apk add --no-cache \
     curl \
     git \
     unzip \
+    libzip-dev \
+    zip \
     linux-headers \
     mysql-client \
-    && docker-php-ext-install pdo pdo_mysql
+    && docker-php-ext-install pdo pdo_mysql zip
 
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
