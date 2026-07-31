@@ -1,9 +1,9 @@
 <?php
 
-use App\Models\User;
+use App\Models\Admin;
 
 it('previews travel details block in editor preview without exception', function () {
-    $admin = User::factory()->create();
+    $admin = Admin::factory()->create();
 
     $response = $this->actingAs($admin, 'admin')->postJson('/admin/preview', [
         'sections' => [

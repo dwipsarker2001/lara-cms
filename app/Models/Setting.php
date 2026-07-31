@@ -17,7 +17,6 @@ class Setting extends Model
         'site_title',
         'theme_color',
         'currency',
-        'default_subscription_plan_id',
         'logo_light',
         'logo_dark',
         'contact_number',

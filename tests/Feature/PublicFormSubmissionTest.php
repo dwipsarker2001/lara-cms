@@ -1,8 +1,8 @@
 <?php
 
+use App\Models\Admin;
 use App\Models\Form;
 use App\Models\FormEntry;
-use App\Models\User;
 use Illuminate\Support\ViewErrorBag;
 
 it('submits a public form entry and saves to database', function () {
@@ -32,7 +32,7 @@ it('submits a public form entry and saves to database', function () {
 });
 
 it('submits standard built-in checkout form and shows submission in admin entries table', function () {
-    $admin = User::factory()->create();
+    $admin = Admin::factory()->create();
 
     $response = $this->post(route('forms.public-submit-default'), [
         'full_name' => 'Alex Smith',

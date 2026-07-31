@@ -10,10 +10,8 @@ use App\Http\Controllers\Admin\PreviewController;
 use App\Http\Controllers\Admin\ProfileController;
 use App\Http\Controllers\Admin\SeoController;
 use App\Http\Controllers\Admin\SettingsController;
-use App\Http\Controllers\Admin\SubscriptionPlanController;
 use App\Http\Controllers\Admin\TaxonomyController;
 use App\Http\Controllers\Admin\UpdateController;
-use App\Http\Controllers\Admin\UserController;
 use App\Http\Middleware\TrackPageViews;
 use App\Models\Form;
 use App\Models\WidgetLayout;
@@ -200,12 +198,6 @@ Route::middleware(['web', 'auth:admin', TrackPageViews::class])->prefix('admin')
     Route::put('assets/{asset}', [AssetsController::class, 'update'])->name('assets.update');
     Route::delete('assets/{asset}', [AssetsController::class, 'destroy'])->name('assets.destroy');
     Route::get('assets/{asset}/file', [AssetsController::class, 'file'])->name('assets.file');
-
-    Route::resource('users', UserController::class)->except(['show']);
-
-    Route::resource('subscription-plans', SubscriptionPlanController::class)
-        ->except(['show'])
-        ->parameters(['subscription-plans' => 'subscription_plan']);
 
     Route::resource('administrators', AdminUserController::class)
         ->except(['show'])
