@@ -2,6 +2,7 @@
 
 use App\Models\Admin;
 use App\Models\Setting;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Http;
 
 use function Pest\Laravel\actingAs;
@@ -9,6 +10,8 @@ use function Pest\Laravel\get;
 use function Pest\Laravel\post;
 
 beforeEach(function () {
+    Cache::forget('cms_latest_release_info');
+    config(['cms.github_repo' => null]);
     $admin = Admin::factory()->create();
     actingAs($admin, 'admin');
 });
@@ -53,6 +56,28 @@ it('run endpoint returns already up to date when no update is needed', function 
     post(route('admin.updates.run'))
         ->assertSuccessful()
         ->assertJson(['success' => false]);
+});
+
+it('fetches latest version dynamically from github API release', function () {
+    config(['cms.github_repo' => 'dwipsarker2001/lara-cms']);
+
+    Http::fake([
+        'https://api.github.com/repos/dwipsarker2001/lara-cms/releases/latest' => Http::response([
+            'tag_name' => 'v1.2.0',
+            'zipball_url' => 'https://api.github.com/repos/dwipsarker2001/lara-cms/zipball/v1.2.0',
+        ], 200),
+    ]);
+
+    $settings = Setting::firstOrCreate(['id' => 1]);
+    $settings->update(['cms_version' => '1.0.0']);
+
+    get(route('admin.updates.check'))
+        ->assertSuccessful()
+        ->assertJson([
+            'current_version' => '1.0.0',
+            'latest_version' => '1.2.0',
+            'update_available' => true,
+        ]);
 });
 
 it('run endpoint downloads zip, extracts it, and bumps version', function () {

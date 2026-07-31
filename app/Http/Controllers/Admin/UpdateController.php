@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Setting;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Artisan;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
@@ -13,6 +14,81 @@ use ZipArchive;
 
 class UpdateController extends Controller
 {
+    /**
+     * Fetch latest release info dynamically from GitHub API (or fallback to config).
+     *
+     * @return array{version: string, download_url: string}
+     */
+    public function getLatestReleaseInfo(): array
+    {
+        return Cache::remember('cms_latest_release_info', 1800, function () {
+            $repo = config('cms.github_repo');
+            $fallbackVersion = config('cms.latest_version', '1.0.0');
+            $fallbackUrl = config('cms.update_url', "https://github.com/{$repo}/archive/refs/heads/main.zip");
+
+            if (empty($repo)) {
+                return [
+                    'version' => $fallbackVersion,
+                    'download_url' => $fallbackUrl,
+                ];
+            }
+
+            try {
+                // 1. Try GitHub Releases API first (latest official release)
+                $response = Http::timeout(5)
+                    ->withHeaders([
+                        'User-Agent' => 'LaraCMS-Updater',
+                        'Accept' => 'application/vnd.github+json',
+                    ])
+                    ->get("https://api.github.com/repos/{$repo}/releases/latest");
+
+                if ($response->successful()) {
+                    $data = $response->json();
+                    $tagName = ltrim($data['tag_name'] ?? '', 'v');
+                    $zipUrl = $data['zipball_url'] ?? "https://github.com/{$repo}/archive/refs/tags/v{$tagName}.zip";
+
+                    if (! empty($tagName)) {
+                        return [
+                            'version' => $tagName,
+                            'download_url' => $zipUrl,
+                        ];
+                    }
+                }
+
+                // 2. Fallback to GitHub Tags API if no formal Release object exists
+                $tagsResponse = Http::timeout(5)
+                    ->withHeaders([
+                        'User-Agent' => 'LaraCMS-Updater',
+                        'Accept' => 'application/vnd.github+json',
+                    ])
+                    ->get("https://api.github.com/repos/{$repo}/tags");
+
+                if ($tagsResponse->successful()) {
+                    $tags = $tagsResponse->json();
+                    if (is_array($tags) && count($tags) > 0) {
+                        $firstTag = $tags[0]['name'] ?? '';
+                        $tagName = ltrim($firstTag, 'v');
+                        $zipUrl = "https://github.com/{$repo}/archive/refs/tags/{$firstTag}.zip";
+
+                        if (! empty($tagName)) {
+                            return [
+                                'version' => $tagName,
+                                'download_url' => $zipUrl,
+                            ];
+                        }
+                    }
+                }
+            } catch (\Throwable $e) {
+                Log::warning("GitHub update check failed: {$e->getMessage()}");
+            }
+
+            return [
+                'version' => $fallbackVersion,
+                'download_url' => $fallbackUrl,
+            ];
+        });
+    }
+
     /**
      * Check for available updates and return JSON status.
      *
@@ -22,7 +98,8 @@ class UpdateController extends Controller
     {
         $settings = Setting::firstOrCreate(['id' => 1]);
         $current = $settings->cms_version ?? '1.0.0';
-        $latest = config('cms.latest_version', '1.0.0');
+        $latestInfo = $this->getLatestReleaseInfo();
+        $latest = $latestInfo['version'];
         $updateAvailable = version_compare($latest, $current, '>');
 
         return response()->json([
@@ -34,8 +111,8 @@ class UpdateController extends Controller
 
     /**
      * Execute the full update process:
-     * 1. Download the update ZIP from the configured URL
-     * 2. Extract it over the base path
+     * 1. Download the update ZIP from the configured URL or dynamic GitHub release URL
+     * 2. Extract it over the base path (stripping top-level archive prefix if present)
      * 3. Run database migrations
      * 4. Clear system caches
      * 5. Persist the new version number
@@ -46,8 +123,9 @@ class UpdateController extends Controller
     {
         $settings = Setting::firstOrCreate(['id' => 1]);
         $current = $settings->cms_version ?? '1.0.0';
-        $latest = config('cms.latest_version', '1.0.0');
-        $updateUrl = config('cms.update_url');
+        $latestInfo = $this->getLatestReleaseInfo();
+        $latest = $latestInfo['version'];
+        $updateUrl = $latestInfo['download_url'];
 
         if (! version_compare($latest, $current, '>')) {
             return response()->json([
@@ -72,10 +150,10 @@ class UpdateController extends Controller
             $logs[] = '[1/4] Environment check passed — ZipArchive available, directory writable.';
 
             // Step 2 — Download package
-            $logs[] = 'Downloading update package from remote server...';
+            $logs[] = "Downloading update package v{$latest} from remote server...";
 
             $response = Http::timeout(120)
-                ->withHeaders(['Accept' => 'application/octet-stream'])
+                ->withHeaders(['Accept' => 'application/octet-stream', 'User-Agent' => 'LaraCMS-Updater'])
                 ->get($updateUrl);
 
             if ($response->failed()) {
@@ -96,6 +174,26 @@ class UpdateController extends Controller
                 throw new \Exception("Could not open the downloaded ZIP package (ZipArchive error code: {$openResult}).");
             }
 
+            // Detect common root directory prefix in GitHub ZIPs (e.g. repo-tag/ or lara-cms-1.1.2/)
+            $rootPrefix = '';
+            if ($zip->count() > 0) {
+                $firstEntry = str_replace('\\', '/', $zip->getNameIndex(0));
+                if (str_contains($firstEntry, '/')) {
+                    $potentialRoot = explode('/', $firstEntry)[0].'/';
+                    $allHavePrefix = true;
+                    for ($i = 0; $i < $zip->count(); $i++) {
+                        $name = str_replace('\\', '/', $zip->getNameIndex($i));
+                        if ($name !== '' && ! str_starts_with($name, $potentialRoot)) {
+                            $allHavePrefix = false;
+                            break;
+                        }
+                    }
+                    if ($allHavePrefix) {
+                        $rootPrefix = $potentialRoot;
+                    }
+                }
+            }
+
             /**
              * Protected paths that must NEVER be overwritten by an update.
              * These contain user data, custom plugins, and environment config.
@@ -112,15 +210,17 @@ class UpdateController extends Controller
             $skipped = 0;
 
             for ($i = 0; $i < $zip->count(); $i++) {
-                $entryName = $zip->getNameIndex($i);
+                $entryName = str_replace('\\', '/', $zip->getNameIndex($i));
+                $relativePath = $rootPrefix !== '' ? substr($entryName, strlen($rootPrefix)) : $entryName;
 
-                // Normalise Windows paths
-                $entryName = str_replace('\\', '/', $entryName);
+                if ($relativePath === '' || str_ends_with($relativePath, '/')) {
+                    continue;
+                }
 
                 // Skip any entry that starts with a protected prefix
                 $isProtected = false;
                 foreach ($protectedPrefixes as $prefix) {
-                    if (str_starts_with($entryName, $prefix) || $entryName === ltrim($prefix, '/')) {
+                    if (str_starts_with($relativePath, $prefix) || $relativePath === ltrim($prefix, '/')) {
                         $isProtected = true;
                         break;
                     }
@@ -132,8 +232,15 @@ class UpdateController extends Controller
                     continue;
                 }
 
-                $zip->extractTo(base_path(), [$entryName]);
-                $extracted++;
+                $targetPath = base_path($relativePath);
+                File::ensureDirectoryExists(dirname($targetPath));
+
+                $stream = $zip->getStream($entryName);
+                if ($stream) {
+                    file_put_contents($targetPath, stream_get_contents($stream));
+                    fclose($stream);
+                    $extracted++;
+                }
             }
 
             $zip->close();
@@ -149,6 +256,7 @@ class UpdateController extends Controller
 
             // Step 5 — Clear caches
             Artisan::call('optimize:clear');
+            Cache::forget('cms_latest_release_info');
             $logs[] = '[4/4] System cache and config cleared.';
 
             // Persist version

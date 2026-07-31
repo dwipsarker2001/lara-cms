@@ -3,21 +3,20 @@
 return [
     /*
     |--------------------------------------------------------------------------
-    | CMS Version
+    | GitHub Repository for Automatic Updates
     |--------------------------------------------------------------------------
-    | The current latest version available for download. When this is greater
-    | than the stored cms_version in the settings table, an update is offered
-    | to the administrator.
+    | Repository in "owner/repo" format used to query GitHub Releases API
+    | for the latest release tag and download package dynamically.
+    | Set to null or empty to disable dynamic GitHub API lookups.
     */
-    'latest_version' => env('CMS_LATEST_VERSION', '1.1.2'),
+    'github_repo' => env('CMS_GITHUB_REPO', 'dwipsarker2001/lara-cms'),
 
     /*
     |--------------------------------------------------------------------------
-    | Update Package URL
+    | Fallback CMS Version & Download URL
     |--------------------------------------------------------------------------
-    | The URL from which the update ZIP archive is downloaded. This should
-    | point to a release artifact (e.g., a GitHub release ZIP). In production,
-    | replace this with your actual distribution URL.
+    | Fallback values used if GitHub API is unreachable or disabled.
     */
+    'latest_version' => env('CMS_LATEST_VERSION', '1.1.2'),
     'update_url' => env('CMS_UPDATE_URL', 'https://github.com/dwipsarker2001/lara-cms/archive/refs/heads/main.zip'),
 ];
