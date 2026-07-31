@@ -28,7 +28,11 @@ class AppServiceProvider extends ServiceProvider
 
         View::composer('admin.layout', function ($view) {
             $forms = Schema::hasTable('form_entries')
-                ? Form::withCount('entries')->orderBy('position')->get()
+                ? Form::withCount(['entries' => function ($query) {
+                    if (Schema::hasColumn('form_entries', 'status')) {
+                        $query->where('status', 1);
+                    }
+                }])->orderBy('position')->get()
                 : Form::orderBy('position')->get();
 
             $view->with('sidebarForms', $forms);

@@ -78,4 +78,9 @@ it('displays a red circular badge for forms with entries and hides it when openi
     \Pest\Laravel\get(route('admin.forms.entries', $form))
         ->assertStatus(200)
         ->assertDontSee('<span class="ml-auto flex size-5 shrink-0 items-center justify-center rounded-full bg-red-500 text-[11px] font-semibold leading-none text-white">1</span>', false);
+
+    // When navigating back to another page (like dashboard), the badge should remain gone (since entries were marked as read)
+    \Pest\Laravel\get(route('admin.dashboard'))
+        ->assertStatus(200)
+        ->assertDontSee('<span class="ml-auto flex size-5 shrink-0 items-center justify-center rounded-full bg-red-500 text-[11px] font-semibold leading-none text-white">1</span>', false);
 });
