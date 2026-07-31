@@ -101,9 +101,11 @@ class UpdateController extends Controller
              * These contain user data, custom plugins, and environment config.
              */
             $protectedPrefixes = [
-                'plugins/',   // User's custom plugin tools
-                'storage/',   // Uploaded files, logs, cache
-                '.env',       // Environment configuration
+                'plugins/',                  // User's custom plugin tools
+                'storage/',                  // Uploaded files, logs, cache
+                '.env',                      // Environment configuration
+                'app/Blocks/Custom/',         // Custom user block classes
+                'resources/views/blocks/custom/', // Custom user block templates
             ];
 
             $extracted = 0;
