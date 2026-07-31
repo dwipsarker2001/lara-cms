@@ -680,24 +680,24 @@
                                 </div>
                             </div>
 
-                            {{-- X (Twitter) Preview --}}
+                            {{-- Facebook Preview --}}
                             <div class="bg-content-bg rounded-xl ring-1 ring-content-border shadow-sm p-2.5">
-                                <h3 class="text-xs font-semibold text-text-heading uppercase tracking-wider pb-3 pt-2 px-2">X (Twitter) Preview</h3>
+                                <h3 class="text-xs font-semibold text-text-heading uppercase tracking-wider pb-3 pt-2 px-2">Facebook Preview</h3>
                                 <div class="bg-white rounded-lg overflow-hidden border border-gray-200">
                                     <template x-if="meta.socialImage">
                                         <div class="h-40 flex items-center justify-center bg-cover bg-center" :style="meta.socialImage ? 'background-image: url(' + meta.socialImage + ')' : ''"></div>
                                     </template>
                                     <template x-if="!meta.socialImage">
-                                        <div class="h-40 flex items-center justify-center bg-gray-200">
-                                            <svg viewBox="0 0 24 24" class="size-8 text-text-muted" fill="currentColor">
-                                                <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
+                                        <div class="h-40 flex items-center justify-center bg-gray-100">
+                                            <svg viewBox="0 0 24 24" class="size-9 text-[#1877f2]" fill="currentColor">
+                                                <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
                                             </svg>
                                         </div>
                                     </template>
-                                    <div class="p-3 bg-white">
-                                        <div class="text-xs text-gray-500 truncate" x-text="meta.canonicalUrl || 'example.com/' + effectiveSlug"></div>
-                                        <div class="text-sm font-medium text-gray-900 mt-0.5 truncate" x-text="meta.xCardTitle || meta.metaTitle || title || 'Page Title'"></div>
-                                        <div class="text-xs text-gray-600 mt-0.5 line-clamp-2" x-text="meta.xCardDescription || meta.metaDescription || 'Card description would appear here.'"></div>
+                                    <div class="p-3 bg-[#f2f3f5] border-t border-gray-200">
+                                        <div class="text-[11px] text-gray-500 uppercase tracking-wider truncate" x-text="(meta.canonicalUrl || 'example.com/' + effectiveSlug).replace(/^https?:\/\//, '').split('/')[0]"></div>
+                                        <div class="text-sm font-semibold text-[#1c1e21] mt-0.5 truncate leading-snug" x-text="meta.xCardTitle || meta.metaTitle || title || 'Page Title'"></div>
+                                        <div class="text-xs text-[#606770] mt-0.5 line-clamp-2" x-text="meta.xCardDescription || meta.metaDescription || 'Card description would appear here.'"></div>
                                     </div>
                                 </div>
                             </div>

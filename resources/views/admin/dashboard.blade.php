@@ -373,14 +373,11 @@
                     @endforeach
 
                     {{-- Add Widget card (only visible in edit mode) --}}
-                    <div x-show="editing" class="bg-gray-100 rounded-2xl p-2 min-h-[110px]"
+                    <div x-show="editing" class="bg-gray-100 rounded-2xl p-2 min-h-[145px] flex flex-col"
                          :style="`order: 9999`"
                          @click="openPanel('grid')">
-                        <div class="flex flex-col items-center justify-center h-full min-h-[100px] rounded-xl border-2 border-dashed border-gray-300 bg-gray-50/60 cursor-pointer hover:border-primary/50 hover:bg-primary/5 transition-colors p-4 group">
-                            <span class="inline-flex size-8 items-center justify-center rounded-full bg-primary/10 text-primary group-hover:bg-primary group-hover:text-white transition-colors mb-1">
-                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="size-4"><path d="M12 5v14M5 12h14" stroke-linecap="round" /></svg>
-                            </span>
-                            <span class="text-[12px] font-semibold text-text-heading group-hover:text-primary transition-colors">+ Add Widget</span>
+                        <div class="flex items-center justify-center flex-1 w-full min-h-[128px] rounded-xl border border-dashed border-gray-300 hover:border-gray-400 bg-gray-50/60 cursor-pointer transition-colors p-4">
+                            <span class="text-[13px] text-text-muted hover:text-text-heading transition-colors">+ Add Widget</span>
                         </div>
                     </div>
                 </div>
@@ -416,8 +413,8 @@
                     </div>
                 </div>
                 <div x-show="!chartShow[0] && editing" @click="openPanel('chart')" class="bg-gray-100 rounded-2xl p-2 cursor-pointer">
-                    <div class="flex items-center justify-center h-32 rounded-xl border-2 border-dashed border-gray-300 bg-gray-50/50 hover:border-gray-400 hover:bg-gray-100/50 transition-colors">
-                        <span class="text-[13px] text-text-muted">+ Add Chart Widget</span>
+                    <div class="flex items-center justify-center h-32 rounded-xl border border-dashed border-gray-300 hover:border-gray-400 bg-gray-50/50 transition-colors">
+                        <span class="text-[13px] text-text-muted hover:text-text-heading transition-colors">+ Add Chart Widget</span>
                     </div>
                 </div>
             </div>
@@ -441,9 +438,9 @@
                         {!! $listWidgets->first() ? $listWidgets->first()->render() : '' !!}
                     </div>
                 </div>
-                <div x-show="!listShow[0] && editing" @click="openPanel('list')" class="bg-gray-100 rounded-2xl p-2 cursor-pointer h-full">
-                    <div class="flex items-center justify-center h-32 rounded-xl border-2 border-dashed border-gray-300 bg-gray-50/50 hover:border-gray-400 hover:bg-gray-100/50 transition-colors">
-                        <span class="text-[13px] text-text-muted">+ Add List Widget</span>
+                <div x-show="!listShow[0] && editing" @click="openPanel('list')" class="flex flex-col bg-gray-100 rounded-2xl p-2 cursor-pointer flex-1 min-h-[140px]">
+                    <div class="flex items-center justify-center flex-1 w-full min-h-[120px] rounded-xl border border-dashed border-gray-300 hover:border-gray-400 bg-gray-50/50 transition-colors">
+                        <span class="text-[13px] text-text-muted hover:text-text-heading transition-colors">+ Add List Widget</span>
                     </div>
                 </div>
             </div>
@@ -466,8 +463,8 @@
                 </div>
             </div>
             <div x-show="!tableShow[0] && editing" @click="openPanel('table')" class="bg-gray-100 rounded-2xl p-2 cursor-pointer">
-                <div class="flex items-center justify-center h-24 rounded-xl border-2 border-dashed border-gray-300 bg-gray-50/50 hover:border-gray-400 hover:bg-gray-100/50 transition-colors">
-                    <span class="text-[13px] text-text-muted">+ Add Table Widget</span>
+                <div class="flex items-center justify-center h-24 rounded-xl border border-dashed border-gray-300 hover:border-gray-400 bg-gray-50/50 transition-colors">
+                    <span class="text-[13px] text-text-muted hover:text-text-heading transition-colors">+ Add Table Widget</span>
                 </div>
             </div>
         </div>
@@ -475,7 +472,7 @@
     {{-- Side panel --}}
     <div
         x-show="panelOpen || panelClosing"
-        class="fixed inset-0 z-[200] flex justify-end font-sans"
+        class="fixed top-14 left-0 right-0 bottom-0 z-40 flex justify-end font-sans"
         style="display: none;"
     >
         <div
@@ -499,156 +496,122 @@
             x-transition:leave-start="translate-x-0 opacity-100"
             x-transition:leave-end="translate-x-full opacity-0"
         >
-            <div class="flex items-center justify-between px-5 py-3 shrink-0 border-b border-gray-200">
-                <h2 class="text-lg font-bold text-text-heading">Add Widgets</h2>
-                <button @click="closePanel()" class="size-8 flex items-center justify-center rounded-lg hover:bg-gray-100 text-text-muted hover:text-text-primary transition-colors">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="size-[18px]"><path d="M18 6 6 18M6 6l12 12" stroke-linecap="round" /></svg>
+            <div class="flex items-center justify-between px-5 py-4 shrink-0 border-b border-gray-100 bg-gray-50/50">
+                <div class="flex items-center gap-2.5">
+                    <div class="flex size-8 shrink-0 items-center justify-center rounded-xl bg-primary/10 text-primary shadow-xs">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" class="size-4"><rect x="3" y="3" width="7" height="7" rx="1.5" /><rect x="14" y="3" width="7" height="7" rx="1.5" /><rect x="14" y="14" width="7" height="7" rx="1.5" /><rect x="3" y="14" width="7" height="7" rx="1.5" /></svg>
+                    </div>
+                    <div>
+                        <h2 class="text-base font-bold text-text-heading">Add Widgets</h2>
+                        <p class="text-[11px] text-text-muted">Select widgets to customize dashboard</p>
+                    </div>
+                </div>
+                <button @click="closePanel()" class="size-8 flex items-center justify-center rounded-lg hover:bg-gray-200/60 text-text-muted hover:text-text-primary transition-colors cursor-pointer">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="size-4"><path d="M18 6 6 18M6 6l12 12" stroke-linecap="round" /></svg>
                 </button>
             </div>
 
             {{-- Tabbed Navigation inside Sidepanel --}}
-            <div class="flex border-b border-gray-200 bg-gray-50/60 px-2 text-xs font-medium shrink-0">
-                <button @click="activeTab = 'grid'"
-                    class="py-2.5 px-3 border-b-2 font-semibold transition-colors cursor-pointer"
-                    :class="activeTab === 'grid' ? 'border-primary text-primary' : 'border-transparent text-text-muted hover:text-text-heading'"
-                >Grid Cards</button>
-                <button @click="activeTab = 'chart'"
-                    class="py-2.5 px-3 border-b-2 font-semibold transition-colors cursor-pointer"
-                    :class="activeTab === 'chart' ? 'border-primary text-primary' : 'border-transparent text-text-muted hover:text-text-heading'"
-                >Chart</button>
-                <button @click="activeTab = 'table'"
-                    class="py-2.5 px-3 border-b-2 font-semibold transition-colors cursor-pointer"
-                    :class="activeTab === 'table' ? 'border-primary text-primary' : 'border-transparent text-text-muted hover:text-text-heading'"
-                >Form Table</button>
-                <button @click="activeTab = 'list'"
-                    class="py-2.5 px-3 border-b-2 font-semibold transition-colors cursor-pointer"
-                    :class="activeTab === 'list' ? 'border-primary text-primary' : 'border-transparent text-text-muted hover:text-text-heading'"
-                >List</button>
+            <div class="p-2 bg-gray-50/80 border-b border-gray-100 shrink-0">
+                <div class="grid grid-cols-4 gap-1 p-1 bg-gray-200/60 rounded-xl text-xs font-medium">
+                    <button @click="activeTab = 'grid'"
+                        class="py-1.5 px-2 rounded-lg text-center transition-all cursor-pointer truncate"
+                        :class="activeTab === 'grid' ? 'bg-white text-text-heading font-semibold shadow-xs' : 'text-text-muted hover:text-text-heading font-medium'"
+                    >Cards</button>
+                    <button @click="activeTab = 'chart'"
+                        class="py-1.5 px-2 rounded-lg text-center transition-all cursor-pointer truncate"
+                        :class="activeTab === 'chart' ? 'bg-white text-text-heading font-semibold shadow-xs' : 'text-text-muted hover:text-text-heading font-medium'"
+                    >Chart</button>
+                    <button @click="activeTab = 'table'"
+                        class="py-1.5 px-2 rounded-lg text-center transition-all cursor-pointer truncate"
+                        :class="activeTab === 'table' ? 'bg-white text-text-heading font-semibold shadow-xs' : 'text-text-muted hover:text-text-heading font-medium'"
+                    >Table</button>
+                    <button @click="activeTab = 'list'"
+                        class="py-1.5 px-2 rounded-lg text-center transition-all cursor-pointer truncate"
+                        :class="activeTab === 'list' ? 'bg-white text-text-heading font-semibold shadow-xs' : 'text-text-muted hover:text-text-heading font-medium'"
+                    >List</button>
+                </div>
             </div>
 
-            <div class="flex-1 overflow-y-auto p-4 space-y-4">
+            <div class="flex-1 overflow-y-auto p-4">
                 {{-- Grid Cards Tab --}}
                 <div x-show="activeTab === 'grid'">
-                    <h3 class="text-xs font-semibold uppercase tracking-wider text-text-muted px-1 mb-3">Available Grid Widgets</h3>
-                    <template x-for="w in (allByZone['grid'] || [])" :key="w.type">
-                        <div class="mb-3 rounded-xl bg-content-bg border border-content-border/60 p-3 shadow-sm">
-                            <div class="flex items-center justify-between">
-                                <div class="flex items-center gap-2.5 min-w-0">
-                                    <template x-if="w.image">
-                                        <img :src="w.image" alt="" class="size-7 shrink-0 rounded-lg object-cover">
-                                    </template>
-                                    <div class="min-w-0">
-                                        <div class="text-sm font-semibold text-text-heading" x-text="w.label"></div>
-                                    </div>
-                                </div>
-                                <template x-if="w.type !== 'form_stat'">
-                                    <button @click="addGridWidget(w.type)"
-                                        class="inline-flex h-8 items-center gap-1 rounded-lg bg-primary px-3 text-xs font-medium text-white hover:bg-primary/90 transition-colors shadow-sm cursor-pointer"
-                                    >
-                                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="size-3.5"><path d="M12 5v14M5 12h14" stroke-linecap="round" /></svg>
-                                        Add
-                                    </button>
-                                </template>
-                            </div>
-
-                            <template x-if="w.type === 'form_stat'">
-                                <div class="mt-2.5 space-y-1.5 border-t border-content-border/40 pt-2">
-                                    <div class="flex items-center justify-between text-xs py-1">
-                                        <span class="font-medium text-text-heading">All Forms Overview</span>
-                                        <button @click="addGridWidget('form_stat', null)"
-                                            class="inline-flex h-7 items-center gap-1 rounded-md bg-primary px-2.5 text-[11px] font-medium text-white hover:bg-primary/90 transition-colors shadow-sm cursor-pointer"
-                                        >
-                                            + Add
-                                        </button>
-                                    </div>
-                                    <template x-for="f in tableForms" :key="f.id">
-                                        <div class="flex items-center justify-between text-xs py-1">
-                                            <span class="text-text-muted truncate max-w-[200px]" x-text="f.title"></span>
-                                            <button @click="addGridWidget('form_stat', f.id)"
-                                                class="inline-flex h-7 items-center gap-1 rounded-md border border-content-border bg-white px-2.5 text-[11px] font-medium text-text-heading hover:bg-gray-50 transition-colors shadow-sm cursor-pointer"
-                                            >
-                                                + Add
-                                            </button>
-                                        </div>
-                                    </template>
-                                </div>
-                            </template>
+                    {{-- Visitor Counter --}}
+                    <div @click="addGridWidget('visitor')" class="flex items-center justify-between p-3 rounded-xl bg-gray-50 border border-gray-200/80 hover:bg-gray-100/80 transition-colors cursor-pointer mb-2">
+                        <div class="flex items-center gap-2.5 min-w-0">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" class="size-4 text-gray-400 shrink-0"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+                            <span class="text-xs font-semibold text-gray-700 truncate">Daily Visitors</span>
                         </div>
-                    </template>
+                        <button type="button" class="inline-flex size-7 items-center justify-center rounded-lg bg-gray-200 text-gray-600 hover:bg-gray-300 hover:text-gray-900 transition-colors shrink-0 cursor-pointer" title="Add widget">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="size-4"><path d="M12 5v14M5 12h14" stroke-linecap="round" /></svg>
+                        </button>
+                    </div>
+
+                    {{-- Collection Count --}}
+                    <div @click="addGridWidget('collection_count')" class="flex items-center justify-between p-3 rounded-xl bg-gray-50 border border-gray-200/80 hover:bg-gray-100/80 transition-colors cursor-pointer mb-2">
+                        <div class="flex items-center gap-2.5 min-w-0">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" class="size-4 text-gray-400 shrink-0"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg>
+                            <span class="text-xs font-semibold text-gray-700 truncate">Collection Count</span>
+                        </div>
+                        <button type="button" class="inline-flex size-7 items-center justify-center rounded-lg bg-gray-200 text-gray-600 hover:bg-gray-300 hover:text-gray-900 transition-colors shrink-0 cursor-pointer" title="Add widget">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="size-4"><path d="M12 5v14M5 12h14" stroke-linecap="round" /></svg>
+                        </button>
+                    </div>
+
+                    {{-- Form Entry Statistics --}}
+                    <div @click="addGridWidget('form_stat')" class="flex items-center justify-between p-3 rounded-xl bg-gray-50 border border-gray-200/80 hover:bg-gray-100/80 transition-colors cursor-pointer mb-2">
+                        <div class="flex items-center gap-2.5 min-w-0">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" class="size-4 text-gray-400 shrink-0"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="12" y1="18" x2="12" y2="12"/><line x1="9" y1="15" x2="15" y2="15"/></svg>
+                            <span class="text-xs font-semibold text-gray-700 truncate">Form Entry Statistics</span>
+                        </div>
+                        <button type="button" class="inline-flex size-7 items-center justify-center rounded-lg bg-gray-200 text-gray-600 hover:bg-gray-300 hover:text-gray-900 transition-colors shrink-0 cursor-pointer" title="Add widget">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="size-4"><path d="M12 5v14M5 12h14" stroke-linecap="round" /></svg>
+                        </button>
+                    </div>
                 </div>
 
                 {{-- Chart Tab --}}
                 <div x-show="activeTab === 'chart'">
-                    <h3 class="text-xs font-semibold uppercase tracking-wider text-text-muted px-1 mb-3">Chart Widgets</h3>
-                    <template x-for="w in (allByZone['chart'] || [])" :key="w.type">
-                        <button @click="selectZoneWidget('chart', w.type)"
-                            class="flex w-full items-center justify-between px-4 py-3 rounded-xl bg-content-bg border border-content-border/60 shadow-sm mb-2 text-left group hover:bg-white/50 transition-colors"
-                        >
-                            <div class="flex items-center gap-3 min-w-0">
-                                <template x-if="w.image">
-                                    <img :src="w.image" alt="" class="size-7 shrink-0 rounded-lg object-cover">
-                                </template>
-                                <div class="min-w-0">
-                                    <div class="text-sm font-semibold text-text-heading group-hover:text-primary transition-colors" x-text="w.label"></div>
-                                </div>
-                            </div>
-                            <span class="inline-flex size-7 items-center justify-center rounded-full bg-content-border/40 text-text-muted transition-colors group-hover:bg-primary group-hover:text-white shrink-0 ml-3">
-                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="size-[14px]"><path d="M12 5v14M5 12h14" stroke-linecap="round" /></svg>
-                            </span>
+                    <div @click="selectZoneWidget('chart', 'website_analytics')" class="flex items-center justify-between p-3 rounded-xl bg-gray-50 border border-gray-200/80 hover:bg-gray-100/80 transition-colors cursor-pointer mb-2">
+                        <div class="flex items-center gap-2.5 min-w-0">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" class="size-4 text-gray-400 shrink-0"><path d="M3 3v18h18"/><path d="M7 16l4-4 4 4 5-5"/></svg>
+                            <span class="text-xs font-semibold text-gray-700 truncate">Website Analytics</span>
+                        </div>
+                        <button type="button" class="inline-flex size-7 items-center justify-center rounded-lg bg-gray-200 text-gray-600 hover:bg-gray-300 hover:text-gray-900 transition-colors shrink-0 cursor-pointer" title="Add widget">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="size-4"><path d="M12 5v14M5 12h14" stroke-linecap="round" /></svg>
                         </button>
-                    </template>
+                    </div>
                 </div>
 
                 {{-- Table Tab --}}
                 <div x-show="activeTab === 'table'">
-                    <h3 class="text-xs font-semibold uppercase tracking-wider text-text-muted px-1 mb-3">Form Submissions Table</h3>
                     <template x-for="f in tableForms" :key="f.id">
-                        <button @click="selectedFormId = f.id; selectZoneWidget('table', 'form_entries_table')"
-                            class="flex w-full items-center justify-between px-4 py-3 rounded-xl bg-content-bg border border-content-border/60 shadow-sm mb-2 text-left group hover:bg-white/50 transition-colors"
-                        >
-                            <div class="flex items-center gap-3 min-w-0">
-                                <div class="flex size-7 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-primary">
-                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" class="size-3.5">
-                                        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
-                                        <polyline points="14 2 14 8 20 8" />
-                                        <line x1="12" y1="18" x2="12" y2="12" />
-                                        <line x1="9" y1="15" x2="15" y2="15" />
-                                    </svg>
-                                </div>
-                                <div class="min-w-0">
-                                    <div class="text-sm font-semibold text-text-heading group-hover:text-primary transition-colors" x-text="f.title"></div>
-                                </div>
+                        <div @click="selectedFormId = f.id; selectZoneWidget('table', 'form_entries_table')" class="flex items-center justify-between p-3 rounded-xl bg-gray-50 border border-gray-200/80 hover:bg-gray-100/80 transition-colors cursor-pointer mb-2">
+                            <div class="flex items-center gap-2.5 min-w-0">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" class="size-4 text-gray-400 shrink-0"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="12" y1="18" x2="12" y2="12"/><line x1="9" y1="15" x2="15" y2="15"/></svg>
+                                <span class="text-xs font-semibold text-gray-700 truncate" x-text="f.title + ' Submissions'"></span>
                             </div>
-                            <span class="inline-flex size-7 items-center justify-center rounded-full bg-content-border/40 text-text-muted transition-colors group-hover:bg-primary group-hover:text-white shrink-0 ml-3">
-                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="size-[14px]"><path d="M12 5v14M5 12h14" stroke-linecap="round" /></svg>
-                            </span>
-                        </button>
+                            <button type="button" class="inline-flex size-7 items-center justify-center rounded-lg bg-gray-200 text-gray-600 hover:bg-gray-300 hover:text-gray-900 transition-colors shrink-0 cursor-pointer" title="Add widget">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="size-4"><path d="M12 5v14M5 12h14" stroke-linecap="round" /></svg>
+                            </button>
+                        </div>
                     </template>
                     <template x-if="tableForms.length === 0">
-                        <div class="text-center py-6 text-[13px] text-text-muted">No forms yet. <a href="{{ route('admin.forms.create') }}" class="text-primary font-medium no-underline">Create one</a>.</div>
+                        <div class="text-center py-6 text-xs text-gray-400">No forms created yet.</div>
                     </template>
                 </div>
 
                 {{-- List Tab --}}
                 <div x-show="activeTab === 'list'">
-                    <h3 class="text-xs font-semibold uppercase tracking-wider text-text-muted px-1 mb-3">List Widgets</h3>
-                    <template x-for="w in (allByZone['list'] || [])" :key="w.type">
-                        <button @click="selectZoneWidget('list', w.type)"
-                            class="flex w-full items-center justify-between px-4 py-3 rounded-xl bg-content-bg border border-content-border/60 shadow-sm mb-2 text-left group hover:bg-white/50 transition-colors"
-                        >
-                            <div class="flex items-center gap-3 min-w-0">
-                                <template x-if="w.image">
-                                    <img :src="w.image" alt="" class="size-7 shrink-0 rounded-lg object-cover">
-                                </template>
-                                <div class="min-w-0">
-                                    <div class="text-sm font-semibold text-text-heading group-hover:text-primary transition-colors" x-text="w.label"></div>
-                                </div>
-                            </div>
-                            <span class="inline-flex size-7 items-center justify-center rounded-full bg-content-border/40 text-text-muted transition-colors group-hover:bg-primary group-hover:text-white shrink-0 ml-3">
-                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="size-[14px]"><path d="M12 5v14M5 12h14" stroke-linecap="round" /></svg>
-                            </span>
+                    <div @click="selectZoneWidget('list', 'updates_list')" class="flex items-center justify-between p-3 rounded-xl bg-gray-50 border border-gray-200/80 hover:bg-gray-100/80 transition-colors cursor-pointer mb-2">
+                        <div class="flex items-center gap-2.5 min-w-0">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" class="size-4 text-gray-400 shrink-0"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+                            <span class="text-xs font-semibold text-gray-700 truncate">Activity Updates Stream</span>
+                        </div>
+                        <button type="button" class="inline-flex size-7 items-center justify-center rounded-lg bg-gray-200 text-gray-600 hover:bg-gray-300 hover:text-gray-900 transition-colors shrink-0 cursor-pointer" title="Add widget">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="size-4"><path d="M12 5v14M5 12h14" stroke-linecap="round" /></svg>
                         </button>
-                    </template>
+                    </div>
                 </div>
             </div>
         </div>
