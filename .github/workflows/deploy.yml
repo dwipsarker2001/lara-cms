@@ -2,7 +2,8 @@ name: Laravel Deploy
 
 on:
   push:
-    branches: deploy
+    branches:
+      - main
 
 jobs:
   deploy:
@@ -18,8 +19,8 @@ jobs:
           script: |
             cd /var/www/travel.eapply.site
             docker run --rm -v $(pwd):/app alpine chown -R $(id -u):$(id -g) /app || true
-            git fetch origin deploy
-            git reset --hard origin/deploy
+            git fetch origin main
+            git reset --hard origin/main
             npm ci
             npm run build
             docker compose exec -T app git config --global --add safe.directory /app || true
