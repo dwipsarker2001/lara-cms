@@ -314,7 +314,55 @@
                     </ul>
                 </div>
 
-
+                {{-- Forms --}}
+                <div class="mt-5">
+                    <div class="px-2.5 pb-1.5 text-xs font-semibold uppercase tracking-wider text-text-muted/70">Forms</div>
+                    <ul class="space-y-0.5">
+                        <li>
+                            <a href="{{ route('admin.forms.index') }}"
+                                class="flex items-center gap-2.5 px-2.5 py-1.5 rounded-md text-sm no-underline transition-colors @if(request()->routeIs('admin.forms.index')) text-text-heading bg-gray-200 font-semibold @else text-text-primary hover:bg-gray-100 hover:text-text-heading font-medium @endif"
+                            >
+                                <span class="flex w-4 shrink-0 items-center justify-center">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" class="size-4">
+                                        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+                                        <polyline points="14 2 14 8 20 8" />
+                                        <line x1="12" y1="18" x2="12" y2="12" />
+                                        <line x1="9" y1="15" x2="15" y2="15" />
+                                    </svg>
+                                </span>
+                                All Forms
+                            </a>
+                        </li>
+                        @foreach($sidebarForms ?? [] as $sidebarForm)
+                            <li>
+                                <a href="{{ route('admin.forms.entries', $sidebarForm) }}"
+                                    class="flex items-center gap-2.5 px-2.5 py-1.5 rounded-md text-sm no-underline transition-colors @if(request()->routeIs('admin.forms.entries') && request()->route('form')?->id === $sidebarForm->id) text-text-heading bg-gray-200 font-semibold @else text-text-primary hover:bg-gray-100 hover:text-text-heading font-medium @endif"
+                                >
+                                    <span class="flex w-4 shrink-0 items-center justify-center">
+                                        @if($sidebarForm->icon)
+                                            <i class="{{ $sidebarForm->icon }} text-xs"></i>
+                                        @else
+                                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" class="size-4">
+                                                <rect x="3" y="3" width="18" height="18" rx="2" ry="2" />
+                                                <line x1="3" y1="9" x2="21" y2="9" />
+                                                <line x1="9" y1="21" x2="9" y2="9" />
+                                            </svg>
+                                        @endif
+                                    </span>
+                                    <span class="truncate">{{ $sidebarForm->title }}</span>
+                                    @php
+                                        $isCurrentFormOpen = request()->routeIs('admin.forms.entries') && (
+                                            (is_object(request()->route('form')) ? request()->route('form')->id : request()->route('form')) == $sidebarForm->id
+                                        );
+                                    @endphp
+                                    @if(($sidebarForm->entries_count ?? 0) > 0 && ! $isCurrentFormOpen)
+                                        <span class="ml-auto flex size-5 shrink-0 items-center justify-center rounded-full bg-red-500 text-[11px] font-semibold leading-none text-white">{{ $sidebarForm->entries_count }}</span>
+                                    @endif
+                                </a>
+                            </li>
+                        @endforeach
+                    </ul>
+                </div>
 
                 {{-- Advance --}}
                 <div class="mt-5">
