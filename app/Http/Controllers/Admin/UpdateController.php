@@ -104,7 +104,8 @@ class UpdateController extends Controller
                 'plugins/',                  // User's custom plugin tools
                 'storage/',                  // Uploaded files, logs, cache
                 '.env',                      // Environment configuration
-                'app/Blocks/Custom/',         // Custom user block classes
+                'app/Blocks/custom/',        // Custom user block classes
+                'app/Blocks/global/',        // Global user block classes
                 'resources/views/blocks/custom/', // Custom user block templates
             ];
 
