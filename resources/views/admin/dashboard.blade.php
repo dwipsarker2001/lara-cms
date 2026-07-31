@@ -452,7 +452,7 @@
                 <div class="flex items-center justify-between px-2 pb-2.5">
                     <div class="flex items-center gap-2 min-w-0">
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" class="size-4 text-text-muted shrink-0"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/><path d="M16 13H8"/><path d="M16 17H8"/><path d="M10 9H8"/></svg>
-                        <span class="text-[14px] font-medium text-text-heading" x-text="tableWidgets[0]?.label"></span>
+                        <span class="text-[14px] font-medium text-text-heading" id="table-widget-title" x-text="tableWidgets[0]?.label"></span>
                     </div>
                     <button x-show="editing" @click="tableShow[0] = false; toggleZoneWidget('table', 0, true)" class="text-text-muted/50 hover:text-red-500 transition-colors shrink-0 cursor-pointer" title="Remove widget">
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="size-3.5"><path d="M18 6L6 18"/><path d="M6 6l12 12"/></svg>

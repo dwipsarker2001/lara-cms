@@ -30,6 +30,13 @@ class FormEntriesTableWidget extends Widget
 
     public function label(): string
     {
+        $forms = Form::query()->orderBy('position')->orderBy('title')->get(['id', 'title']);
+        $form = $this->resolveForm($forms);
+
+        if ($form) {
+            return 'Form Entries — '.$form->title;
+        }
+
         return 'Form Entries';
     }
 

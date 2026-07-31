@@ -112,7 +112,7 @@ it('renders the selected form entries via the widgets render endpoint', function
     ])
         ->assertSuccessful()
         ->assertJsonPath('type', 'form_entries_table')
-        ->assertJsonPath('label', 'Form Entries')
+        ->assertJsonPath('label', 'Form Entries — Support Form')
         ->assertSee('Support Form', false)
         ->assertSee('Need help logging in', false);
 });

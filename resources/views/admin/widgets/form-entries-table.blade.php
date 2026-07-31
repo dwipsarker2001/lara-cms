@@ -9,7 +9,7 @@
         sortDirection: 'desc',
         visibleColumns: {},
         page: 1,
-        perPage: 10,
+        perPage: 6,
         filteredCount: {{ count($entries) }},
 
         init() {
@@ -81,6 +81,10 @@
                     container.innerHTML = data.html;
                     if (window.Alpine) {
                         Alpine.initTree(container);
+                    }
+                    const titleSpan = document.getElementById('table-widget-title');
+                    if (titleSpan && data.label) {
+                        titleSpan.textContent = data.label;
                     }
                 }
             } finally {
@@ -193,8 +197,39 @@
                     >
                 </div>
 
-                {{-- Right Controls (Filter, Sort, Columns) --}}
+                {{-- Right Controls (Form Select, Filter, Sort, Columns) --}}
                 <div class="flex flex-wrap items-center gap-2 shrink-0">
+
+                    {{-- Form Selector Dropdown --}}
+                    @if ($forms->count() > 1)
+                        <div class="relative shrink-0" x-data="{ open: false }" @click.outside="open = false" @keydown.escape.window="open = false">
+                            <button type="button"
+                                @click="open = !open"
+                                class="flex h-8 items-center gap-1.5 whitespace-nowrap rounded-lg border border-primary/30 bg-primary/5 px-2.5 text-[12px] font-semibold text-primary hover:bg-primary/10 shadow-xs transition-colors cursor-pointer"
+                                title="Select Form">
+                                <svg viewBox="0 0 20 20" fill="currentColor" class="size-3.5 shrink-0">
+                                    <path fill-rule="evenodd" d="M4.5 2A2.5 2.5 0 002 4.5v11A2.5 2.5 0 004.5 18h11a2.5 2.5 0 002.5-2.5v-11A2.5 2.5 0 0015.5 2h-11zm3 3a.75.75 0 000 1.5h5a.75.75 0 000-1.5h-5zm0 3.5a.75.75 0 000 1.5h5a.75.75 0 000-1.5h-5zm0 3.5a.75.75 0 000 1.5h3a.75.75 0 000-1.5h-3z" clip-rule="evenodd" />
+                                </svg>
+                                <span>Form: {{ $form?->title ?? 'Select Form' }}</span>
+                                <svg class="size-3 text-primary shrink-0 transition-transform ml-0.5" :class="open ? 'rotate-180' : ''" viewBox="0 0 20 20" fill="currentColor">
+                                    <path fill-rule="evenodd" d="M5.22 8.22a.75.75 0 0 1 1.06 0L10 11.94l3.72-3.72a.75.75 0 1 1 1.06 1.06l-4.25 4.25a.75.75 0 0 1-1.06 0L5.22 9.28a.75.75 0 0 1 0-1.06Z" clip-rule="evenodd" />
+                                </svg>
+                            </button>
+                            <div x-show="open" x-cloak
+                                class="absolute right-0 top-full mt-2 min-w-[14rem] rounded-xl border border-content-border bg-content-bg shadow-xl p-1.5 space-y-0.5 z-[100]">
+                                <div class="px-2.5 py-1 text-[11px] font-semibold text-text-muted uppercase tracking-wider">
+                                    Select Form Table
+                                </div>
+                                <div class="my-1 border-t border-content-border"></div>
+                                @foreach ($forms as $f)
+                                    <button type="button" @click="selectForm({{ $f->id }}); open = false" class="flex w-full items-center justify-between gap-2 whitespace-nowrap px-3 py-1.5 rounded-lg text-xs transition-colors cursor-pointer" :class="selectedFormId == {{ $f->id }} ? 'bg-primary/10 text-primary font-semibold' : 'text-text-primary hover:bg-body-bg'">
+                                        <span>{{ $f->title }}</span>
+                                        <span x-show="selectedFormId == {{ $f->id }}" class="font-bold">✓</span>
+                                    </button>
+                                @endforeach
+                            </div>
+                        </div>
+                    @endif
 
                     {{-- Filter Dropdown --}}
                     <div class="relative shrink-0" x-data="{ open: false }" @click.outside="open = false" @keydown.escape.window="open = false">
@@ -396,7 +431,7 @@
         </div>
 
         {{-- Footer matching admin/forms/1/entries --}}
-        <footer class="flex justify-between flex-wrap items-center antialiased mt-1 pt-3" x-show="filteredCount > 0">
+        <footer class="flex justify-between flex-wrap items-center antialiased px-3" x-show="filteredCount > 0">
             <div class="text-sm text-text-muted">
                 Showing <span x-text="startIndex"></span>–<span x-text="endIndex"></span> of <span x-text="filteredCount"></span>
             </div>
@@ -433,7 +468,7 @@
                     <svg viewBox="0 0 15 15" fill="currentColor" class="size-3.5"><path fill-rule="evenodd" d="M6.158 3.135a.5.5 0 01-.023.707L9.565 7.5l-3.43 3.658a.5.5 0 00.73.684l3.75-4a.5.5 0 000-.684l-3.75-4a.5.5 0 00-.707-.023" clip-rule="evenodd" /></svg>
                 </button>
             </div>
-            <div class="text-sm text-text-muted">Per Page <span class="px-2 py-1 border border-content-border rounded text-text-heading">10</span></div>
+            <div class="text-sm text-text-muted">Per Page <span class="px-2 py-1 border border-content-border rounded text-text-heading">6</span></div>
         </footer>
     @endif
 </div>

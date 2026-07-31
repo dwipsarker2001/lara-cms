@@ -335,7 +335,7 @@
                 </div>
 
                 @if($entries->hasPages())
-                    <footer class="flex justify-between flex-wrap items-center antialiased mt-1 pt-3">
+                    <footer class="flex justify-between flex-wrap items-center antialiased pt-3">
                         <div class="text-sm text-text-muted">
                             Showing {{ $entries->firstItem() }}–{{ $entries->lastItem() }} of {{ $entries->total() }}
                         </div>
