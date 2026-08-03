@@ -17,6 +17,7 @@ class FormEntry extends Model
     protected function casts(): array
     {
         return [
+            'form_id' => 'integer',
             'data' => 'array',
             'status' => 'integer',
         ];

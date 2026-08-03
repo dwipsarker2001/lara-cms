@@ -85,7 +85,7 @@ class CollectionEntryController extends Controller
 
     public function edit(Collection $collection, CollectionEntry $entry)
     {
-        abort_if($entry->collection_id !== $collection->id, 404);
+        abort_if((int) $entry->collection_id !== (int) $collection->id, 404);
         $admins = Admin::orderBy('name')->get();
 
         return view('admin.collections.entries.edit', compact('collection', 'entry', 'admins'));
@@ -93,7 +93,7 @@ class CollectionEntryController extends Controller
 
     public function update(Request $request, Collection $collection, CollectionEntry $entry)
     {
-        abort_if($entry->collection_id !== $collection->id, 404);
+        abort_if((int) $entry->collection_id !== (int) $collection->id, 404);
 
         $data = $request->validate([
             'data' => 'nullable|array',
@@ -120,7 +120,7 @@ class CollectionEntryController extends Controller
 
     public function editor(Collection $collection, CollectionEntry $entry)
     {
-        abort_if($entry->collection_id !== $collection->id, 404);
+        abort_if((int) $entry->collection_id !== (int) $collection->id, 404);
 
         $registry = app(BlockRegistry::class);
 
@@ -166,7 +166,7 @@ class CollectionEntryController extends Controller
 
     public function updateSections(Request $request, Collection $collection, CollectionEntry $entry)
     {
-        abort_if($entry->collection_id !== $collection->id, 404);
+        abort_if((int) $entry->collection_id !== (int) $collection->id, 404);
 
         $request->validate([
             'sections' => 'present|array',
@@ -201,7 +201,7 @@ class CollectionEntryController extends Controller
 
     public function destroy(Collection $collection, CollectionEntry $entry)
     {
-        abort_if($entry->collection_id !== $collection->id, 404);
+        abort_if((int) $entry->collection_id !== (int) $collection->id, 404);
 
         $entry->delete();
 

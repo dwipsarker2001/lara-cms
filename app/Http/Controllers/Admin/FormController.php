@@ -98,7 +98,7 @@ class FormController extends Controller
 
     public function entryJson(Form $form, FormEntry $entry)
     {
-        abort_if($entry->form_id !== $form->id, 404);
+        abort_if((int) $entry->form_id !== (int) $form->id, 404);
 
         return response()->json($entry);
     }
@@ -168,7 +168,7 @@ class FormController extends Controller
 
     public function updateEntry(Request $request, Form $form, FormEntry $entry)
     {
-        abort_if($entry->form_id !== $form->id, 404);
+        abort_if((int) $entry->form_id !== (int) $form->id, 404);
 
         $entry->update([
             'data' => $request->input('data', []),
@@ -197,7 +197,7 @@ class FormController extends Controller
 
     public function destroyEntry(Form $form, FormEntry $entry)
     {
-        abort_if($entry->form_id !== $form->id, 404);
+        abort_if((int) $entry->form_id !== (int) $form->id, 404);
 
         $entry->delete();
 

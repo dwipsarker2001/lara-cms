@@ -10,6 +10,13 @@ class Term extends Model
 {
     protected $guarded = [];
 
+    protected function casts(): array
+    {
+        return [
+            'taxonomy_id' => 'integer',
+        ];
+    }
+
     protected static function booted(): void
     {
         static::creating(function (Term $term) {

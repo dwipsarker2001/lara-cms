@@ -43,6 +43,7 @@ class CollectionEntry extends Model
     protected function casts(): array
     {
         return [
+            'collection_id' => 'integer',
             'data' => 'array',
             'sections' => 'array',
             'meta' => 'array',
