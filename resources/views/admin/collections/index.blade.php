@@ -1,7 +1,7 @@
 @extends('admin.layout')
 
-@section('title', 'Collection Builder')
-@section('breadcrumb', 'Collection Builder')
+@section('title', 'Collections')
+@section('breadcrumb', 'Collections')
 
 @section('content')
     <div class="max-w-5xl mx-auto px-2 sm:px-0">
@@ -13,7 +13,7 @@
                     <rect x="3" y="14" width="7" height="7" rx="1" />
                     <rect x="14" y="14" width="7" height="7" rx="1" />
                 </svg>
-                Collection Builder
+                Collections
             </h1>
             <div class="flex flex-wrap items-center gap-2 sm:gap-3">
                 <a href="{{ route('admin.collections.create') }}"
