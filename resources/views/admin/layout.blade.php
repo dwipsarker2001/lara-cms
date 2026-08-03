@@ -436,5 +436,58 @@
     <x-admin::toast />
 
     @stack('scripts')
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            document.addEventListener('submit', function(e) {
+                var form = e.target;
+                if (!form || e.defaultPrevented) return;
+
+                if (typeof form.checkValidity === 'function' && !form.checkValidity()) {
+                    return;
+                }
+
+                var submitButtons = [];
+                if (form.id) {
+                    var externalButtons = document.querySelectorAll('button[form="' + form.id + '"][type="submit"], input[form="' + form.id + '"][type="submit"]');
+                    externalButtons.forEach(function(b) { submitButtons.push(b); });
+                }
+                var innerButtons = form.querySelectorAll('button[type="submit"], button:not([type="button"]):not([type="reset"]), input[type="submit"]');
+                innerButtons.forEach(function(b) { submitButtons.push(b); });
+
+                submitButtons.forEach(function(btn) {
+                    if (btn.disabled || btn.getAttribute('data-submitting') === 'true') return;
+                    btn.setAttribute('data-submitting', 'true');
+                    btn.setAttribute('data-original-html', btn.innerHTML);
+
+                    btn.disabled = true;
+                    btn.classList.add('opacity-80', 'cursor-not-allowed', 'pointer-events-none');
+
+                    if (btn.tagName === 'BUTTON') {
+                        var textNode = btn.querySelector('span') || btn;
+                        var label = textNode.textContent ? textNode.textContent.trim() : 'Processing...';
+                        if (/^(Save|Create|Update|Add)/.test(label)) {
+                            label = label.replace(/^(Save|Create|Update|Add)/, function(m) {
+                                return m === 'Add' ? 'Adding' : m + 'ing';
+                            });
+                        } else if (!label) {
+                            label = 'Saving...';
+                        }
+                        btn.innerHTML = '<svg class="animate-spin -ml-0.5 mr-2 h-4 w-4 text-current inline-block shrink-0" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg><span>' + label + '</span>';
+                    }
+                });
+
+                var topLoader = document.getElementById('global-submit-loader');
+                if (!topLoader) {
+                    topLoader = document.createElement('div');
+                    topLoader.id = 'global-submit-loader';
+                    topLoader.className = 'fixed top-0 left-0 right-0 z-[9999] h-1 bg-primary/20 overflow-hidden';
+                    topLoader.innerHTML = '<div class="h-full bg-primary animate-pulse w-full"></div>';
+                    document.body.appendChild(topLoader);
+                } else {
+                    topLoader.classList.remove('hidden');
+                }
+            });
+        });
+    </script>
 </body>
 </html>
