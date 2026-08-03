@@ -1,7 +1,7 @@
 @extends('admin.layout')
 
-@section('title', 'Edit Entry — ' . $collection->name)
-@section('breadcrumb', 'Edit Entry')
+@section('title', 'Edit ' . $collection->name)
+@section('breadcrumb', 'Edit ' . $collection->name)
 
 @section('content')
 <div class="max-w-5xl mx-auto px-2 sm:px-0"
@@ -54,7 +54,7 @@
                     <rect x="14" y="14" width="7" height="7" rx="1" />
                 </svg>
             @endif
-            Edit Entry
+            Edit {{ $collection->name }}
         </h1>
         <div class="flex flex-wrap items-center gap-2 sm:gap-3">
             <a href="{{ route('admin.collections.entries.index', $collection) }}"
