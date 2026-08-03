@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Setting;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\File;
@@ -19,8 +20,12 @@ class UpdateController extends Controller
      *
      * @return array{version: string, download_url: string}
      */
-    public function getLatestReleaseInfo(): array
+    public function getLatestReleaseInfo(bool $forceRefresh = false): array
     {
+        if ($forceRefresh) {
+            Cache::forget('cms_latest_release_info');
+        }
+
         return Cache::remember('cms_latest_release_info', 1800, function () {
             $repo = config('cms.github_repo');
             $fallbackVersion = config('cms.latest_version', '1.0.0');
@@ -94,11 +99,12 @@ class UpdateController extends Controller
      *
      * @return JsonResponse
      */
-    public function check()
+    public function check(Request $request)
     {
+        $forceRefresh = $request->boolean('force') || $request->boolean('refresh');
         $settings = Setting::firstOrCreate(['id' => 1]);
         $current = $settings->cms_version ?? '1.0.0';
-        $latestInfo = $this->getLatestReleaseInfo();
+        $latestInfo = $this->getLatestReleaseInfo($forceRefresh);
         $latest = $latestInfo['version'];
         $updateAvailable = version_compare($latest, $current, '>');
 

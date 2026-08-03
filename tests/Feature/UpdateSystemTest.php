@@ -80,6 +80,27 @@ it('fetches latest version dynamically from github API release', function () {
         ]);
 });
 
+it('invalidates release info cache when force parameter is passed to check endpoint', function () {
+    config(['cms.github_repo' => 'dwipsarker2001/lara-cms']);
+
+    Http::fake([
+        'https://api.github.com/repos/dwipsarker2001/lara-cms/releases/latest' => Http::sequence()
+            ->push(['tag_name' => 'v1.2.0', 'zipball_url' => 'https://api.github.com/repos/dwipsarker2001/lara-cms/zipball/v1.2.0'], 200)
+            ->push(['tag_name' => 'v1.2.5', 'zipball_url' => 'https://api.github.com/repos/dwipsarker2001/lara-cms/zipball/v1.2.5'], 200),
+    ]);
+
+    Setting::firstOrCreate(['id' => 1], ['cms_version' => '1.0.0']);
+
+    // First check fetches v1.2.0 and caches it
+    get(route('admin.updates.check'))->assertJson(['latest_version' => '1.2.0']);
+
+    // Second check without force still returns cached v1.2.0
+    get(route('admin.updates.check'))->assertJson(['latest_version' => '1.2.0']);
+
+    // Third check with force=1 invalidates cache and fetches v1.2.5
+    get(route('admin.updates.check', ['force' => 1]))->assertJson(['latest_version' => '1.2.5']);
+});
+
 it('run endpoint downloads zip, extracts it, and bumps version', function () {
     if (! class_exists('ZipArchive')) {
         $this->markTestSkipped('ZipArchive extension not installed.');

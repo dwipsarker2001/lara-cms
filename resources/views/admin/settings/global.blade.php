@@ -22,7 +22,7 @@
                 this.updateLogs = [];
                 this.updateError = null;
 
-                fetch('{{ route('admin.updates.check') }}', {
+                fetch('{{ route('admin.updates.check') }}?force=1', {
                     headers: { 'Accept': 'application/json', 'X-Requested-With': 'XMLHttpRequest' }
                 })
                 .then(r => r.json())
