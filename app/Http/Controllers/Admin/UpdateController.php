@@ -153,7 +153,10 @@ class UpdateController extends Controller
             $logs[] = "Downloading update package v{$latest} from remote server...";
 
             $response = Http::timeout(120)
-                ->withHeaders(['Accept' => 'application/octet-stream', 'User-Agent' => 'LaraCMS-Updater'])
+                ->withHeaders([
+                    'Accept' => '*/*',
+                    'User-Agent' => 'LaraCMS-Updater',
+                ])
                 ->get($updateUrl);
 
             if ($response->failed()) {

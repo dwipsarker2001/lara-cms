@@ -111,6 +111,10 @@ it('run endpoint downloads zip, extracts it, and bumps version', function () {
             'version' => '1.1.0',
         ]);
 
+    Http::assertSent(function ($request) {
+        return $request->hasHeader('Accept', '*/*');
+    });
+
     $settings->refresh();
     expect($settings->cms_version)->toBe('1.1.0');
 
