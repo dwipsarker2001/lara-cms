@@ -98,8 +98,12 @@ class AssetsController extends Controller
                     $oldStoragePath = 'assets/'.$oldDirPath;
                     $newStoragePath = 'assets/'.$newDirPath;
 
-                    if ($oldStoragePath !== $newStoragePath && Storage::disk('public')->exists($oldStoragePath)) {
-                        Storage::disk('public')->move($oldStoragePath, $newStoragePath);
+                    if ($oldStoragePath !== $newStoragePath) {
+                        if (Storage::disk('public')->exists($oldStoragePath)) {
+                            Storage::disk('public')->move($oldStoragePath, $newStoragePath);
+                        } else {
+                            Storage::disk('public')->makeDirectory($newStoragePath);
+                        }
                     }
 
                     $children = Asset::where('directory', $oldDirPath)
@@ -113,7 +117,7 @@ class AssetsController extends Controller
                         if ($child->is_directory) {
                             $child->update([
                                 'directory' => $updatedChildDir,
-                                'path' => 'assets/'.$updatedChildDir,
+                                'path' => 'assets/'.$updatedChildDir.'/'.$child->name,
                             ]);
                         } else {
                             $fileName = basename($child->path);
@@ -158,8 +162,12 @@ class AssetsController extends Controller
                     $oldStoragePath = 'assets/'.$oldDirPath;
                     $newStoragePath = 'assets/'.$newDirPath;
 
-                    if ($oldStoragePath !== $newStoragePath && Storage::disk('public')->exists($oldStoragePath)) {
-                        Storage::disk('public')->move($oldStoragePath, $newStoragePath);
+                    if ($oldStoragePath !== $newStoragePath) {
+                        if (Storage::disk('public')->exists($oldStoragePath)) {
+                            Storage::disk('public')->move($oldStoragePath, $newStoragePath);
+                        } else {
+                            Storage::disk('public')->makeDirectory($newStoragePath);
+                        }
                     }
 
                     $children = Asset::where('directory', $oldDirPath)
@@ -173,7 +181,7 @@ class AssetsController extends Controller
                         if ($child->is_directory) {
                             $child->update([
                                 'directory' => $updatedChildDir,
-                                'path' => 'assets/'.$updatedChildDir,
+                                'path' => 'assets/'.$updatedChildDir.'/'.$child->name,
                             ]);
                         } else {
                             $fileName = basename($child->path);
@@ -291,7 +299,7 @@ class AssetsController extends Controller
         ]);
 
         $name = trim($request->name);
-        $parentDir = $request->input('directory', '') ?? '';
+        $parentDir = trim($request->input('directory', '') ?? '', '/');
 
         $exists = Asset::where('name', $name)
             ->where('directory', $parentDir)
@@ -302,12 +310,14 @@ class AssetsController extends Controller
             return response()->json(['message' => 'A directory with that name already exists.'], 422);
         }
 
-        $dirPath = $parentDir ? $parentDir.'/'.$name : 'assets/'.$name;
-        Storage::disk('public')->makeDirectory($dirPath);
+        $relDirPath = $parentDir ? $parentDir.'/'.$name : $name;
+        $storageDirPath = 'assets/'.$relDirPath;
+
+        Storage::disk('public')->makeDirectory($storageDirPath);
 
         $asset = Asset::create([
             'name' => $name,
-            'path' => $dirPath,
+            'path' => $storageDirPath,
             'directory' => $parentDir,
             'is_directory' => true,
             'mime' => 'directory',

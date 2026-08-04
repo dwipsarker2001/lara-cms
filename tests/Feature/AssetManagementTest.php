@@ -7,6 +7,9 @@ use Illuminate\Support\Facades\Storage;
 
 use function Pest\Laravel\actingAs;
 use function Pest\Laravel\deleteJson;
+use function Pest\Laravel\getJson;
+use function Pest\Laravel\postJson;
+use function Pest\Laravel\putJson;
 
 beforeEach(function () {
     Storage::fake('public');
@@ -189,4 +192,114 @@ test('deleting a directory asset deletes all zip and video files inside it from 
     $this->assertDatabaseMissing('assets', ['id' => $videoAsset->id]);
     Storage::disk('public')->assertMissing($zipPath);
     Storage::disk('public')->assertMissing($videoPath);
+});
+
+test('sub-directory creation sets path prefixed with assets/', function () {
+    $parentDir = Asset::create([
+        'name' => 'docs',
+        'path' => 'assets/docs',
+        'directory' => '',
+        'mime' => 'directory',
+        'size' => 0,
+        'is_directory' => true,
+    ]);
+
+    $response = postJson(route('admin.assets.directory'), [
+        'name' => 'subfolder',
+        'directory' => 'docs',
+    ]);
+
+    $response->assertOk();
+    $subDir = Asset::where('name', 'subfolder')->where('directory', 'docs')->first();
+    expect($subDir)->not->toBeNull();
+    expect($subDir->path)->toBe('assets/docs/subfolder');
+    Storage::disk('public')->assertExists('assets/docs/subfolder');
+});
+
+test('uploading document inside directory and renaming directory keeps assets accessible', function () {
+    $dirAsset = Asset::create([
+        'name' => 'docs',
+        'path' => 'assets/docs',
+        'directory' => '',
+        'mime' => 'directory',
+        'size' => 0,
+        'is_directory' => true,
+    ]);
+
+    $file = UploadedFile::fake()->create('report.pdf', 500, 'application/pdf');
+    $uploadResponse = postJson(route('admin.assets.store'), [
+        'file' => $file,
+        'directory' => 'docs',
+    ]);
+    $uploadResponse->assertOk();
+
+    $docAsset = Asset::where('directory', 'docs')->where('name', 'report.pdf')->first();
+    expect($docAsset)->not->toBeNull();
+    Storage::disk('public')->assertExists($docAsset->path);
+
+    // Rename directory 'docs' to 'documents'
+    $renameResponse = putJson(route('admin.assets.update', $dirAsset), [
+        'name' => 'documents',
+    ]);
+    $renameResponse->assertOk();
+
+    $docAsset->refresh();
+    expect($docAsset->directory)->toBe('documents');
+    expect($docAsset->path)->toBe('assets/documents/'.basename($docAsset->path));
+    Storage::disk('public')->assertExists($docAsset->path);
+
+    // Assert list endpoint lists the asset inside 'documents'
+    $indexResponse = getJson(route('admin.assets.list', ['directory' => 'documents']));
+    $indexResponse->assertOk();
+    $assets = $indexResponse->json('assets');
+    expect(collect($assets)->pluck('id'))->toContain($docAsset->id);
+});
+
+test('renaming a parent directory containing nested directories and files updates child directory paths correctly', function () {
+    $parentDir = Asset::create([
+        'name' => 'parent',
+        'path' => 'assets/parent',
+        'directory' => '',
+        'mime' => 'directory',
+        'size' => 0,
+        'is_directory' => true,
+    ]);
+
+    $subDir = Asset::create([
+        'name' => 'sub',
+        'path' => 'assets/parent/sub',
+        'directory' => 'parent',
+        'mime' => 'directory',
+        'size' => 0,
+        'is_directory' => true,
+    ]);
+
+    $file = UploadedFile::fake()->create('nested.pdf', 300, 'application/pdf');
+    $filePath = $file->store('assets/parent/sub', 'public');
+
+    $fileAsset = Asset::create([
+        'name' => 'nested.pdf',
+        'path' => $filePath,
+        'directory' => 'parent/sub',
+        'mime' => 'application/pdf',
+        'size' => 300,
+        'is_directory' => false,
+    ]);
+
+    // Rename parent directory from 'parent' to 'renamed_parent'
+    $renameResponse = putJson(route('admin.assets.update', $parentDir), [
+        'name' => 'renamed_parent',
+    ]);
+    $renameResponse->assertOk();
+
+    $subDir->refresh();
+    $fileAsset->refresh();
+
+    expect($subDir->directory)->toBe('renamed_parent');
+    expect($subDir->path)->toBe('assets/renamed_parent/sub');
+
+    expect($fileAsset->directory)->toBe('renamed_parent/sub');
+    expect($fileAsset->path)->toBe('assets/renamed_parent/sub/'.basename($filePath));
+
+    Storage::disk('public')->assertExists($fileAsset->path);
 });
