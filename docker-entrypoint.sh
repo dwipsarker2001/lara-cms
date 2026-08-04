@@ -11,8 +11,8 @@ mkdir -p storage/framework/views \
 
 chmod -R 775 storage bootstrap/cache 2>/dev/null || true
 
-# 2. Install dependencies if vendor directory is missing
-if [ ! -d "vendor" ]; then
+# 2. Install dependencies if vendor/autoload.php is missing
+if [ ! -f "vendor/autoload.php" ]; then
     composer install --no-interaction --prefer-dist
 fi
 

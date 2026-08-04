@@ -17,6 +17,6 @@ return [
     |--------------------------------------------------------------------------
     | Fallback values used if GitHub API is unreachable or disabled.
     */
-    'latest_version' => env('CMS_LATEST_VERSION', '1.3.1'),
+    'latest_version' => env('CMS_LATEST_VERSION', '1.3.2'),
     'update_url' => env('CMS_UPDATE_URL', 'https://github.com/dwipsarker2001/lara-cms/archive/refs/heads/main.zip'),
 ];
