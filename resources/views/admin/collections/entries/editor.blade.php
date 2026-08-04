@@ -1255,6 +1255,9 @@
                             }
                         });
                     }
+                    // Also trigger a full preview refresh so the server-rendered
+                    // background (via Blade @@if checks) is always in sync.
+                    this.schedulePreview();
                     return true;
                 }
 
