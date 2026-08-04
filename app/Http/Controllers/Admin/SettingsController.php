@@ -12,12 +12,10 @@ class SettingsController extends Controller
     {
         $settings = Setting::firstOrCreate(['id' => 1]);
         $currentVersion = $settings->cms_version ?? '1.0.0';
-        $latestVersion = config('cms.latest_version', '1.0.0');
 
         return view('admin.settings.global', [
             'settings' => $settings,
             'currentVersion' => $currentVersion,
-            'latestVersion' => $latestVersion,
         ]);
     }
 

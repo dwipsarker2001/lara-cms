@@ -16,9 +16,22 @@ use ZipArchive;
 class UpdateController extends Controller
 {
     /**
-     * Fetch latest release info dynamically from GitHub API (or fallback to config).
+     * Fetch latest release info by reading version.json from raw.githubusercontent.com.
      *
-     * @return array{version: string, download_url: string}
+     * This uses GitHub's raw content CDN which has NO rate limits (unlike
+     * the GitHub API which caps at 60 req/hr unauthenticated). The version
+     * info is read from the version.json file in the repository root.
+     *
+     * Returns an array with 'version', 'download_url', and 'source'.
+     * The 'source' field indicates where the version came from:
+     *   - 'remote'  — fetched from raw.githubusercontent.com
+     *   - 'cache'   — served from cache
+     *   - 'failed'  — remote was unreachable (no version could be determined)
+     *
+     * CRITICAL: Failed results are NEVER cached. Only successful
+     * responses are cached, preventing stale data from masking real updates.
+     *
+     * @return array{version: string|null, download_url: string|null, source: string}
      */
     public function getLatestReleaseInfo(bool $forceRefresh = false): array
     {
@@ -26,85 +39,91 @@ class UpdateController extends Controller
             Cache::forget('cms_latest_release_info');
         }
 
-        return Cache::remember('cms_latest_release_info', 1800, function () {
-            $repo = config('cms.github_repo');
-            $fallbackVersion = config('cms.latest_version', '1.0.0');
-            $fallbackUrl = config('cms.update_url', "https://github.com/{$repo}/archive/refs/heads/main.zip");
+        // Return cached data if available (only successful results are ever cached)
+        $cached = Cache::get('cms_latest_release_info');
+        if ($cached !== null) {
+            $cached['source'] = 'cache';
 
-            if (empty($repo)) {
-                return [
-                    'version' => $fallbackVersion,
-                    'download_url' => $fallbackUrl,
-                ];
-            }
+            return $cached;
+        }
 
-            try {
-                // 1. Try GitHub Releases API first (latest official release)
-                $response = Http::timeout(5)
-                    ->withHeaders([
-                        'User-Agent' => 'LaraCMS-Updater',
-                        'Accept' => 'application/vnd.github+json',
-                    ])
-                    ->get("https://api.github.com/repos/{$repo}/releases/latest");
+        $repo = config('cms.github_repo');
 
-                if ($response->successful()) {
-                    $data = $response->json();
-                    $tagName = ltrim($data['tag_name'] ?? '', 'v');
-                    $zipUrl = $data['zipball_url'] ?? "https://github.com/{$repo}/archive/refs/tags/v{$tagName}.zip";
-
-                    if (! empty($tagName)) {
-                        return [
-                            'version' => $tagName,
-                            'download_url' => $zipUrl,
-                        ];
-                    }
-                }
-
-                // 2. Fallback to GitHub Tags API if no formal Release object exists
-                $tagsResponse = Http::timeout(5)
-                    ->withHeaders([
-                        'User-Agent' => 'LaraCMS-Updater',
-                        'Accept' => 'application/vnd.github+json',
-                    ])
-                    ->get("https://api.github.com/repos/{$repo}/tags");
-
-                if ($tagsResponse->successful()) {
-                    $tags = $tagsResponse->json();
-                    if (is_array($tags) && count($tags) > 0) {
-                        $firstTag = $tags[0]['name'] ?? '';
-                        $tagName = ltrim($firstTag, 'v');
-                        $zipUrl = "https://github.com/{$repo}/archive/refs/tags/{$firstTag}.zip";
-
-                        if (! empty($tagName)) {
-                            return [
-                                'version' => $tagName,
-                                'download_url' => $zipUrl,
-                            ];
-                        }
-                    }
-                }
-            } catch (\Throwable $e) {
-                Log::warning("GitHub update check failed: {$e->getMessage()}");
-            }
-
+        if (empty($repo)) {
             return [
-                'version' => $fallbackVersion,
-                'download_url' => $fallbackUrl,
+                'version' => null,
+                'download_url' => null,
+                'source' => 'failed',
             ];
-        });
+        }
+
+        $branch = config('cms.github_branch', 'main');
+
+        try {
+            // Fetch version.json from raw.githubusercontent.com (CDN — NO rate limits)
+            $response = Http::timeout(10)
+                ->withHeaders([
+                    'User-Agent' => 'LaraCMS-Updater',
+                    'Accept' => 'application/json',
+                ])
+                ->get("https://raw.githubusercontent.com/{$repo}/{$branch}/version.json");
+
+            if ($response->successful()) {
+                $data = $response->json();
+                $version = ltrim($data['version'] ?? '', 'v');
+                $downloadUrl = $data['download_url']
+                    ?? "https://github.com/{$repo}/archive/refs/tags/v{$version}.zip";
+
+                if (! empty($version)) {
+                    $result = [
+                        'version' => $version,
+                        'download_url' => $downloadUrl,
+                        'source' => 'remote',
+                    ];
+
+                    // Cache successful results for 30 minutes
+                    Cache::put('cms_latest_release_info', $result, 1800);
+
+                    return $result;
+                }
+            }
+        } catch (\Throwable $e) {
+            Log::warning("Update check failed: {$e->getMessage()}");
+        }
+
+        // Failed — do NOT cache this
+        return [
+            'version' => null,
+            'download_url' => null,
+            'source' => 'failed',
+        ];
     }
 
     /**
      * Check for available updates and return JSON status.
      *
-     * @return JsonResponse
+     * Possible 'status' values:
+     *   - 'update_available' — a newer version exists
+     *   - 'up_to_date'      — running the latest version
+     *   - 'check_failed'    — could not reach update server to verify
      */
-    public function check(Request $request)
+    public function check(Request $request): JsonResponse
     {
         $forceRefresh = $request->boolean('force') || $request->boolean('refresh');
         $settings = Setting::firstOrCreate(['id' => 1]);
         $current = $settings->cms_version ?? '1.0.0';
         $latestInfo = $this->getLatestReleaseInfo($forceRefresh);
+
+        if ($latestInfo['source'] === 'failed') {
+            return response()->json([
+                'current_version' => $current,
+                'latest_version' => null,
+                'update_available' => false,
+                'status' => 'check_failed',
+                'message' => 'Unable to reach the update server. Please try again later or check your internet connection.',
+            ]);
+        }
+
         $latest = $latestInfo['version'];
         $updateAvailable = version_compare($latest, $current, '>');
 
@@ -112,26 +131,33 @@ class UpdateController extends Controller
             'current_version' => $current,
             'latest_version' => $latest,
             'update_available' => $updateAvailable,
+            'status' => $updateAvailable ? 'update_available' : 'up_to_date',
         ]);
     }
 
     /**
      * Execute the full update process:
-     * 1. Download the update ZIP from the configured URL or dynamic GitHub release URL
+     * 1. Download the update ZIP from the resolved download URL
      * 2. Extract it over the base path (stripping top-level archive prefix if present)
      * 3. Run database migrations
      * 4. Clear system caches
      * 5. Persist the new version number
-     *
-     * @return JsonResponse
      */
-    public function run()
+    public function run(): JsonResponse
     {
         $settings = Setting::firstOrCreate(['id' => 1]);
         $current = $settings->cms_version ?? '1.0.0';
         $latestInfo = $this->getLatestReleaseInfo();
         $latest = $latestInfo['version'];
         $updateUrl = $latestInfo['download_url'];
+
+        // Cannot run update if we couldn't determine the latest version
+        if ($latestInfo['source'] === 'failed' || empty($latest) || empty($updateUrl)) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Unable to determine the latest version. Please check your internet connection and try again.',
+            ]);
+        }
 
         if (! version_compare($latest, $current, '>')) {
             return response()->json([
@@ -166,7 +192,7 @@ class UpdateController extends Controller
                 ->get($updateUrl);
 
             if ($response->failed()) {
-                throw new \Exception("Download failed (HTTP {$response->status()}). Please check the update URL in config/cms.php.");
+                throw new \Exception("Download failed (HTTP {$response->status()}). Please check the update URL.");
             }
 
             $tempZip = sys_get_temp_dir().DIRECTORY_SEPARATOR.'lara_cms_update_'.uniqid().'.zip';

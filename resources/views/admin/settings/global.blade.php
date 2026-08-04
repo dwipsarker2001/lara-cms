@@ -29,13 +29,20 @@
                 .then(data => {
                     this.currentVersion = data.current_version;
                     this.latestVersion = data.latest_version;
-                    this.updateState = data.update_available ? 'found' : 'up_to_date';
+
+                    if (data.status === 'check_failed') {
+                        this.updateState = 'check_failed';
+                        this.updateError = data.message || 'Unable to reach the update server.';
+                    } else {
+                        this.updateState = data.update_available ? 'found' : 'up_to_date';
+                    }
                 })
                 .catch(() => {
                     this.updateState = 'error';
                     this.updateError = 'Failed to reach the update server. Check your internet connection.';
                 });
             },
+
 
             runUpdate() {
                 this.updateState = 'updating';
@@ -218,6 +225,9 @@
                                         </template>
                                         <template x-if="updateState === 'error'">
                                             <span class="text-red-600 font-medium" x-text="updateError || 'Update encountered an error.'"></span>
+                                        </template>
+                                        <template x-if="updateState === 'check_failed'">
+                                            <span class="text-amber-600 font-medium">⚠ Could not verify the latest version. Please try again or check your connection.</span>
                                         </template>
                                     </div>
                                 </div>

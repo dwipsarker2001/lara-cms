@@ -5,18 +5,24 @@ return [
     |--------------------------------------------------------------------------
     | GitHub Repository for Automatic Updates
     |--------------------------------------------------------------------------
-    | Repository in "owner/repo" format used to query GitHub Releases API
-    | for the latest release tag and download package dynamically.
-    | Set to null or empty to disable dynamic GitHub API lookups.
+    | Repository in "owner/repo" format. Used to fetch version.json from
+    | raw.githubusercontent.com (CDN — no rate limits).
     */
     'github_repo' => env('CMS_GITHUB_REPO', 'dwipsarker2001/lara-cms'),
 
     /*
     |--------------------------------------------------------------------------
-    | Fallback CMS Version & Download URL
+    | Repository Branch
     |--------------------------------------------------------------------------
-    | Fallback values used if GitHub API is unreachable or disabled.
+    | The branch to read version.json from. Typically "main" or "master".
     */
-    'latest_version' => env('CMS_LATEST_VERSION', '1.3.2'),
+    'github_branch' => env('CMS_GITHUB_BRANCH', 'main'),
+
+    /*
+    |--------------------------------------------------------------------------
+    | Fallback Download URL
+    |--------------------------------------------------------------------------
+    | Fallback download URL used if version.json doesn't specify one.
+    */
     'update_url' => env('CMS_UPDATE_URL', 'https://github.com/dwipsarker2001/lara-cms/archive/refs/heads/main.zip'),
 ];
