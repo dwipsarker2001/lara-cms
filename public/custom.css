@@ -1,0 +1,47 @@
+/*
+ * ============================================================
+ * custom.css — Your personal website customizations
+ * ============================================================
+ *
+ * This file is SAFE from CMS updates. Edit freely.
+ *
+ * HOW TO CHANGE FONT:
+ * -------------------
+ * 1. Pick a font from https://fonts.bunny.net or https://fonts.google.com
+ * 2. Replace the @import URL below with your chosen font URL
+ * 3. Update font-family in the :root and heading rules below
+ * 4. Save — no build step needed, changes are instant
+ *
+ * POPULAR FONT EXAMPLES (from fonts.bunny.net):
+ * - instrument-sans:400,500,600,700,800
+ * - inter:400,500,600,700,800
+ * - outfit:400,500,600,700,800
+ * - plus-jakarta-sans:400,500,600,700,800
+ * - dm-sans:400,500,600,700,800
+ * - nunito:400,500,600,700,800
+ * - raleway:400,500,600,700,800
+ * - poppins:400,500,600,700,800
+ * ============================================================
+ */
+
+/* ── Step 1: Import your chosen font ── */
+@import url('https://fonts.bunny.net/css?family=inter:400,500,600,700,800&display=swap');
+
+/* ── Step 2: Apply font to body text ── */
+:root {
+    --font-body: 'Inter', ui-sans-serif, system-ui, sans-serif;
+    --font-heading: 'Inter', ui-sans-serif, system-ui, sans-serif;
+}
+
+body {
+    font-family: var(--font-body);
+    font-weight: 400;
+}
+
+/* ── Step 3: Apply font to headings ── */
+h1, h2, h3, h4, h5, h6 {
+    font-family: var(--font-heading);
+    font-weight: 700;
+}
+
+/* ── Add any other custom styles below ── */
