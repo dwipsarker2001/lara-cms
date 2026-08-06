@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+#!/bin/sh
 set -e
 
 # Read version from version.json
@@ -7,6 +7,9 @@ echo "🚀 Building release package for Lara-CMS v${VERSION}..."
 
 # 1. Build frontend assets
 echo "📦 Building production frontend assets..."
+if [ -f /etc/alpine-release ]; then
+  npm i --no-save @rolldown/binding-linux-x64-musl >/dev/null 2>&1 || true
+fi
 npm run build
 
 # 2. Install production dependencies

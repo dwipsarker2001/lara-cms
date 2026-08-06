@@ -9,6 +9,9 @@ RUN apk add --no-cache \
     linux-headers \
     mysql-client \
     gmp-dev \
+    bash \
+    nodejs \
+    npm \
     && docker-php-ext-install pdo pdo_mysql zip gmp
 
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
