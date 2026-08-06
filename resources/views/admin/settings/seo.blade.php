@@ -21,22 +21,20 @@
 
             <header class="relative flex flex-wrap items-center justify-between gap-4 px-2 sm:px-0 py-6 md:py-8">
                 <h1 class="text-[25px] leading-[1.25] font-medium flex items-center gap-2.5 md:flex-1 text-text-heading">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" class="size-6 shrink-0 text-text-muted">
-                        <polyline points="22 7 13.5 15.5 8.5 10.5 2 17" />
-                        <polyline points="16 7 22 7 22 13" />
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" class="size-6 shrink-0 text-text-muted">
+                        <circle cx="11" cy="11" r="8" />
+                        <path d="m21 21-4.3-4.3" />
+                        <path d="m8 11 2 2 4-4" />
                     </svg>
                     Site Defaults
                 </h1>
                 <div class="flex flex-wrap items-center gap-2 sm:gap-3">
-                    @if (session('success'))
-                        <span class="text-sm font-medium text-success" role="status">{{ session('success') }}</span>
-                    @endif
                     @if ($errors->any())
                         <span class="text-sm font-medium text-danger" role="alert">Please fix the errors below.</span>
                     @endif
                     <button type="submit"
                         class="inline-flex items-center justify-center gap-2 whitespace-nowrap shrink-0 font-medium cursor-pointer no-underline rounded-lg transition-colors h-10 text-sm leading-tight px-4 bg-primary hover:opacity-90 text-white shadow-sm"
-                    >Save</button>
+                    >Save Settings</button>
                 </div>
             </header>
 
@@ -65,19 +63,6 @@
                         <div class="bg-content-bg rounded-xl ring-1 ring-content-border shadow-sm px-3 py-3">
                             <div class="divide-y divide-content-border">
 
-                                {{-- Default Meta Description --}}
-                                <div class="grid md:grid-cols-2 items-start px-[18px] py-4 gap-y-3 md:gap-y-0 md:gap-x-5">
-                                    <div class="flex flex-col gap-1.5">
-                                        <label class="text-sm font-medium text-text-heading" for="field-meta-description">Default Meta Description</label>
-                                        <div class="text-sm text-text-muted">Used when a page doesn&rsquo;t set its own meta description. Leave blank to use none.</div>
-                                    </div>
-                                    <div>
-                                        <textarea id="field-meta-description" name="metaDescription" rows="3" placeholder="A short description of your site."
-                                            class="w-full block bg-content-bg border border-content-border text-text-primary placeholder:text-text-muted shadow-sm text-sm rounded-lg px-3 py-2 transition-all duration-150 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary">{{ old('metaDescription', $seo['metaDescription']) }}</textarea>
-                                        @error('metaDescription') <p class="text-xs text-danger mt-1">{{ $message }}</p> @enderror
-                                    </div>
-                                </div>
-
                                 {{-- Site Name --}}
                                 <div class="grid md:grid-cols-2 items-start px-[18px] py-4 gap-y-3 md:gap-y-0 md:gap-x-5">
                                     <div class="flex flex-col gap-1.5">
@@ -100,16 +85,19 @@
                                     <div>
                                         @php
                                             $namePositionOptions = ['Before', 'After', 'None'];
-                                            $namePositionSelected = old('namePosition', $seo['namePosition']);
+                                            $namePositionSelected = old('namePosition', $seo['namePosition'] ?? '');
+                                            if (! in_array($namePositionSelected, $namePositionOptions, true)) {
+                                                $namePositionSelected = 'After';
+                                            }
                                         @endphp
-                                        <div x-data="{ open: false, selected: '{{ $namePositionSelected }}', options: @json($namePositionOptions), get selectedLabel() { return this.selected }, select(val) { this.selected = val; this.open = false } }" @click.outside="open = false" @keydown.escape.window="open = false" class="relative">
+                                        <div x-data="{ open: false, selected: '{{ $namePositionSelected }}', options: {{ json_encode($namePositionOptions) }}, get selectedLabel() { return this.selected }, select(val) { this.selected = val; this.open = false } }" @click.outside="open = false" @keydown.escape.window="open = false" class="relative">
                                             <button type="button" @click="open = !open" class="w-full flex items-center justify-between bg-content-bg border border-content-border text-text-primary text-sm rounded-lg px-3 py-2 h-10 cursor-pointer transition-all duration-150 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary">
                                                 <span class="truncate" x-text="selectedLabel"></span>
                                                 <svg class="size-4 text-text-muted shrink-0 transition-transform duration-150" :class="open ? 'rotate-180' : ''" viewBox="0 0 20 20" fill="currentColor">
                                                     <path fill-rule="evenodd" d="M5.22 8.22a.75.75 0 0 1 1.06 0L10 11.94l3.72-3.72a.75.75 0 1 1 1.06 1.06l-4.25 4.25a.75.75 0 0 1-1.06 0L5.22 9.28a.75.75 0 0 1 0-1.06Z" clip-rule="evenodd" />
                                                 </svg>
                                             </button>
-                                            <div x-show="open" class="absolute z-50 top-full mt-1 left-0 right-0 bg-content-bg border border-content-border rounded-lg shadow-lg p-1 max-h-60 overflow-y-auto space-y-0.5" style="display: none;">
+                                            <div x-show="open" class="absolute z-50 top-full mt-1 left-0 right-0 bg-content-bg border border-content-border rounded-lg shadow-lg p-1 max-h-80 overflow-y-auto [scrollbar-width:thin] space-y-0.5" style="display: none;">
                                                 <template x-for="opt in options" :key="opt">
                                                     <button type="button" @click="select(opt)" class="w-full text-left px-3 py-1.5 text-sm rounded-md transition-colors" :class="opt === selected ? 'bg-primary/10 text-primary font-medium' : 'text-text-primary hover:bg-content-border/30'">
                                                         <span x-text="opt"></span>
@@ -132,6 +120,19 @@
                                         <input id="field-separator" type="text" name="separator" value="{{ old('separator', $seo['separator']) }}"
                                             class="w-full block bg-content-bg border border-content-border text-text-primary shadow-sm text-sm rounded-lg px-3 py-2 h-9 transition-all duration-150 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary" />
                                         @error('separator') <p class="text-xs text-danger mt-1">{{ $message }}</p> @enderror
+                                    </div>
+                                </div>
+
+                                {{-- Default Meta Description --}}
+                                <div class="grid md:grid-cols-2 items-start px-[18px] py-4 gap-y-3 md:gap-y-0 md:gap-x-5">
+                                    <div class="flex flex-col gap-1.5">
+                                        <label class="text-sm font-medium text-text-heading" for="field-meta-description">Default Meta Description</label>
+                                        <div class="text-sm text-text-muted">Used when a page doesn&rsquo;t set its own meta description. Leave blank to use none.</div>
+                                    </div>
+                                    <div>
+                                        <textarea id="field-meta-description" name="metaDescription" rows="3" placeholder="A short description of your site."
+                                            class="w-full block bg-content-bg border border-content-border text-text-primary placeholder:text-text-muted shadow-sm text-sm rounded-lg px-3 py-2 transition-all duration-150 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary">{{ old('metaDescription', $seo['metaDescription']) }}</textarea>
+                                        @error('metaDescription') <p class="text-xs text-danger mt-1">{{ $message }}</p> @enderror
                                     </div>
                                 </div>
 
@@ -257,12 +258,102 @@
                                 {{-- Default Social Image --}}
                                 <div class="grid md:grid-cols-2 items-start px-[18px] py-4 gap-y-3 md:gap-y-0 md:gap-x-5">
                                     <div class="flex flex-col gap-1.5">
-                                        <label class="text-sm font-medium text-text-heading" for="field-default-social-image">Default Social Image</label>
+                                        <label class="text-sm font-medium text-text-heading">Default Social Image</label>
                                         <div class="text-sm text-text-muted">Fallback image used for sharing when a page has none of its own.</div>
                                     </div>
-                                    <div>
-                                        <input id="field-default-social-image" type="text" name="defaultSocialImage" value="{{ old('defaultSocialImage', $seo['defaultSocialImage']) }}" placeholder="/assets/og-default.jpg"
-                                            class="w-full block bg-content-bg border border-content-border text-text-primary placeholder:text-text-muted shadow-sm text-sm rounded-lg px-3 py-2 h-9 transition-all duration-150 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary" />
+                                    <div x-data="{
+                                        socialImage: '{{ old('defaultSocialImage', $seo['defaultSocialImage']) }}',
+                                        size: null,
+                                        get imageName() {
+                                            if (!this.socialImage) return '';
+                                            try {
+                                                const path = this.socialImage.split('?')[0];
+                                                return decodeURIComponent(path.split('/').pop() || path);
+                                            } catch (e) {
+                                                return this.socialImage;
+                                            }
+                                        },
+                                        formatSize(bytes) {
+                                            if (bytes == null) return '';
+                                            if (bytes < 1024) return bytes + ' B';
+                                            if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(2) + ' KB';
+                                            return (bytes / (1024 * 1024)).toFixed(2) + ' MB';
+                                        },
+                                        openAssetPicker() {
+                                            window.dispatchEvent(new CustomEvent('open-asset-picker', {
+                                                detail: {
+                                                    callback: (url) => {
+                                                        this.socialImage = url;
+                                                        this.fetchSize(url);
+                                                    }
+                                                }
+                                            }));
+                                        },
+                                        clearImage() {
+                                            this.socialImage = '';
+                                            this.size = null;
+                                        },
+                                        fetchSize(url) {
+                                            if (!url) { this.size = null; return; }
+                                            fetch(url, { method: 'HEAD' })
+                                                .then((r) => {
+                                                    const len = r.headers.get('content-length');
+                                                    this.size = len ? parseInt(len, 10) : null;
+                                                })
+                                                .catch(() => { this.size = null; });
+                                        },
+                                        init() {
+                                            if (this.socialImage) { this.fetchSize(this.socialImage); }
+                                        }
+                                    }">
+                                        <input type="hidden" name="defaultSocialImage" :value="socialImage">
+                                        <div class="rounded-lg border border-content-border bg-content-bg overflow-hidden shadow-sm">
+                                            {{-- Toolbar --}}
+                                            <div class="flex items-center gap-3 px-2.5 py-2.5">
+                                                <button
+                                                    type="button"
+                                                    @click="openAssetPicker()"
+                                                    class="inline-flex items-center justify-center gap-2 whitespace-nowrap shrink-0 font-medium cursor-pointer no-underline rounded-lg transition-colors h-8 text-xs leading-tight px-3 bg-gradient-to-b from-content-bg to-gray-50 hover:to-gray-100 text-text-primary border border-content-border shadow-sm"
+                                                >
+                                                    <svg viewBox="0 0 24 24" fill="none" class="size-4 shrink-0">
+                                                        <path d="M3 7a2 2 0 0 1 2-2h3.5l2 2H19a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V7Z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round" />
+                                                    </svg>
+                                                    Browse Assets
+                                                </button>
+                                                <div class="flex items-center gap-1.5 text-sm text-text-muted min-w-0">
+                                                    <svg viewBox="0 0 24 24" fill="none" class="size-4 shrink-0">
+                                                        <path d="M7 18a4 4 0 0 1-.5-7.97A5 5 0 0 1 16 8.5a3.5 3.5 0 0 1 1.5 6.7" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+                                                        <path d="M12 11.5v6m0-6 2 2m-2-2-2 2" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+                                                    </svg>
+                                                    <span class="truncate">
+                                                        Drag &amp; drop here or
+                                                        <button type="button" @click="openAssetPicker()" class="underline hover:text-text-primary">choose a file</button>.
+                                                        <span x-show="socialImage" x-cloak> 1/1 selected</span>
+                                                    </span>
+                                                </div>
+                                            </div>
+
+                                            {{-- Selected file row --}}
+                                            <div class="border-t border-content-border" x-show="socialImage" x-cloak>
+                                                <div class="flex items-center gap-3 px-2.5 py-2">
+                                                    <div class="size-8 rounded-md overflow-hidden bg-panel-bg flex items-center justify-center shrink-0">
+                                                        <img :src="socialImage" :alt="imageName" class="size-full object-cover">
+                                                    </div>
+                                                    <span class="flex-1 min-w-0 truncate text-sm text-text-primary" x-text="imageName"></span>
+                                                    <span class="shrink-0 text-xs text-text-muted tabular-nums" x-show="size != null" x-text="formatSize(size)"></span>
+                                                    <button
+                                                        type="button"
+                                                        aria-label="Remove image"
+                                                        @click="clearImage()"
+                                                        class="shrink-0 flex size-6 items-center justify-center rounded-md text-text-muted hover:bg-text-primary/10 hover:text-text-primary transition-colors"
+                                                    >
+                                                        <svg viewBox="0 0 20 20" fill="currentColor" class="size-4">
+                                                            <path d="M6.28 5.22a.75.75 0 00-1.06 1.06L8.94 10l-3.72 3.72a.75.75 0 101.06 1.06L10 11.06l3.72 3.72a.75.75 0 101.06-1.06L11.06 10l3.72-3.72a.75.75 0 00-1.06-1.06L10 8.94 6.28 5.22z" />
+                                                        </svg>
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
                                         @error('defaultSocialImage') <p class="text-xs text-danger mt-1">{{ $message }}</p> @enderror
                                     </div>
                                 </div>
@@ -324,25 +415,33 @@
                                 {{-- X Card Type --}}
                                 <div class="grid md:grid-cols-2 items-start px-[18px] py-4 gap-y-3 md:gap-y-0 md:gap-x-5">
                                     <div class="flex flex-col gap-1.5">
-                                        <label class="text-sm font-medium text-text-heading">Card Type</label>
-                                        <div class="text-sm text-text-muted">The type of X card to use for shared content.</div>
+                                        <label class="text-sm font-medium text-text-heading">Twitter / X Card Type</label>
+                                        <div class="text-sm text-text-muted">Choose how preview cards look (e.g., large featured image vs. small thumbnail) when links are shared on X (Twitter).</div>
                                     </div>
                                     <div>
                                         @php
-                                            $cardOptions = ['summary', 'summary_large_image', 'app', 'player'];
-                                            $cardSelected = old('xCard', $seo['xCard']);
+                                            $cardOptionsMap = [
+                                                'summary_large_image' => 'Summary with Large Image (Recommended)',
+                                                'summary' => 'Summary (Small Thumbnail)',
+                                                'app' => 'App Download Card',
+                                                'player' => 'Media Player Card',
+                                            ];
+                                            $cardSelected = old('xCard', $seo['xCard'] ?? '');
+                                            if (! array_key_exists($cardSelected, $cardOptionsMap)) {
+                                                $cardSelected = 'summary_large_image';
+                                            }
                                         @endphp
-                                        <div x-data="{ open: false, selected: '{{ $cardSelected }}', options: @json($cardOptions), get selectedLabel() { return this.selected }, select(val) { this.selected = val; this.open = false } }" @click.outside="open = false" @keydown.escape.window="open = false" class="relative">
+                                        <div x-data="{ open: false, selected: '{{ $cardSelected }}', optionsMap: {{ json_encode($cardOptionsMap) }}, get selectedLabel() { return this.optionsMap[this.selected] || this.selected }, select(val) { this.selected = val; this.open = false } }" @click.outside="open = false" @keydown.escape.window="open = false" class="relative">
                                             <button type="button" @click="open = !open" class="w-full flex items-center justify-between bg-content-bg border border-content-border text-text-primary text-sm rounded-lg px-3 py-2 h-10 cursor-pointer transition-all duration-150 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary">
                                                 <span class="truncate" x-text="selectedLabel"></span>
                                                 <svg class="size-4 text-text-muted shrink-0 transition-transform duration-150" :class="open ? 'rotate-180' : ''" viewBox="0 0 20 20" fill="currentColor">
                                                     <path fill-rule="evenodd" d="M5.22 8.22a.75.75 0 0 1 1.06 0L10 11.94l3.72-3.72a.75.75 0 1 1 1.06 1.06l-4.25 4.25a.75.75 0 0 1-1.06 0L5.22 9.28a.75.75 0 0 1 0-1.06Z" clip-rule="evenodd" />
                                                 </svg>
                                             </button>
-                                            <div x-show="open" class="absolute z-50 top-full mt-1 left-0 right-0 bg-content-bg border border-content-border rounded-lg shadow-lg p-1 max-h-60 overflow-y-auto space-y-0.5" style="display: none;">
-                                                <template x-for="opt in options" :key="opt">
-                                                    <button type="button" @click="select(opt)" class="w-full text-left px-3 py-1.5 text-sm rounded-md transition-colors" :class="opt === selected ? 'bg-primary/10 text-primary font-medium' : 'text-text-primary hover:bg-content-border/30'">
-                                                        <span x-text="opt"></span>
+                                            <div x-show="open" class="absolute z-50 top-full mt-1 left-0 right-0 bg-content-bg border border-content-border rounded-lg shadow-lg p-1 max-h-80 overflow-y-auto [scrollbar-width:thin] space-y-0.5" style="display: none;">
+                                                <template x-for="(label, key) in optionsMap" :key="key">
+                                                    <button type="button" @click="select(key)" class="w-full text-left px-3 py-1.5 text-sm rounded-md transition-colors" :class="key === selected ? 'bg-primary/10 text-primary font-medium' : 'text-text-primary hover:bg-content-border/30'">
+                                                        <span x-text="label"></span>
                                                     </button>
                                                 </template>
                                             </div>
@@ -393,16 +492,19 @@
                                     <div>
                                         @php
                                             $freqOptions = ['Always', 'Hourly', 'Daily', 'Weekly', 'Monthly', 'Yearly', 'Never'];
-                                            $freqSelected = old('sitemapChangeFrequency', $seo['sitemapChangeFrequency']);
+                                            $freqSelected = old('sitemapChangeFrequency', $seo['sitemapChangeFrequency'] ?? '');
+                                            if (! in_array($freqSelected, $freqOptions, true)) {
+                                                $freqSelected = 'Monthly';
+                                            }
                                         @endphp
-                                        <div x-data="{ open: false, selected: '{{ $freqSelected }}', options: @json($freqOptions), get selectedLabel() { return this.selected }, select(val) { this.selected = val; this.open = false } }" @click.outside="open = false" @keydown.escape.window="open = false" class="relative">
+                                        <div x-data="{ open: false, selected: '{{ $freqSelected }}', options: {{ json_encode($freqOptions) }}, get selectedLabel() { return this.selected }, select(val) { this.selected = val; this.open = false } }" @click.outside="open = false" @keydown.escape.window="open = false" class="relative">
                                             <button type="button" @click="open = !open" class="w-full flex items-center justify-between bg-content-bg border border-content-border text-text-primary text-sm rounded-lg px-3 py-2 h-10 cursor-pointer transition-all duration-150 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary">
                                                 <span class="truncate" x-text="selectedLabel"></span>
                                                 <svg class="size-4 text-text-muted shrink-0 transition-transform duration-150" :class="open ? 'rotate-180' : ''" viewBox="0 0 20 20" fill="currentColor">
                                                     <path fill-rule="evenodd" d="M5.22 8.22a.75.75 0 0 1 1.06 0L10 11.94l3.72-3.72a.75.75 0 1 1 1.06 1.06l-4.25 4.25a.75.75 0 0 1-1.06 0L5.22 9.28a.75.75 0 0 1 0-1.06Z" clip-rule="evenodd" />
                                                 </svg>
                                             </button>
-                                            <div x-show="open" class="absolute z-50 top-full mt-1 left-0 right-0 bg-content-bg border border-content-border rounded-lg shadow-lg p-1 max-h-60 overflow-y-auto space-y-0.5" style="display: none;">
+                                            <div x-show="open" class="absolute z-50 top-full mt-1 left-0 right-0 bg-content-bg border border-content-border rounded-lg shadow-lg p-1 max-h-80 overflow-y-auto [scrollbar-width:thin] space-y-0.5" style="display: none;">
                                                 <template x-for="opt in options" :key="opt">
                                                     <button type="button" @click="select(opt)" class="w-full text-left px-3 py-1.5 text-sm rounded-md transition-colors" :class="opt === selected ? 'bg-primary/10 text-primary font-medium' : 'text-text-primary hover:bg-content-border/30'">
                                                         <span x-text="opt"></span>

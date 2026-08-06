@@ -112,7 +112,7 @@
                     <button type="submit"
                         class="inline-flex items-center justify-center gap-2 whitespace-nowrap shrink-0 font-medium cursor-pointer no-underline rounded-lg transition-colors h-10 text-sm leading-tight px-4 bg-primary hover:opacity-90 text-white shadow-sm"
                     >
-                        Save
+                        Save Settings
                     </button>
                 </div>
             </header>
@@ -149,19 +149,6 @@
                                             </div>
                                             <input type="hidden" name="language" :value="selected">
                                         </div>
-                                    </div>
-                                </div>
-
-                                {{-- Site Title --}}
-                                <div class="grid md:grid-cols-2 items-start px-[18px] py-4 gap-y-3 md:gap-y-0 md:gap-x-5">
-                                    <div class="flex flex-col gap-1.5">
-                                        <label class="text-sm font-medium text-text-heading" for="field-site-title">Site Title</label>
-                                        <div class="text-sm text-text-muted">The name of your site, shown in the browser tab and control panel.</div>
-                                    </div>
-                                    <div>
-                                        <input id="field-site-title" type="text" name="site_title" value="{{ old('site_title', $settings->site_title) }}"
-                                            class="w-full block bg-content-bg border border-content-border text-text-primary placeholder:text-text-muted shadow-sm text-sm rounded-lg px-3 py-2 h-9 transition-all duration-150 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary" />
-                                        @error('site_title') <p class="text-xs text-danger mt-1">{{ $message }}</p> @enderror
                                     </div>
                                 </div>
 

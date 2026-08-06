@@ -81,7 +81,7 @@ class SeoController extends Controller
         foreach (self::DEFAULT_SEO as $key => $default) {
             $value = $raw[$key] ?? null;
 
-            if ($value !== null) {
+            if ($value !== null && $value !== '') {
                 $result[$key] = $value;
             }
         }

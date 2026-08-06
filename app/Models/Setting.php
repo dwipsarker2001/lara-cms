@@ -14,7 +14,6 @@ class Setting extends Model
     ];
 
     protected $fillable = [
-        'site_title',
         'theme_color',
         'currency',
         'logo_light',

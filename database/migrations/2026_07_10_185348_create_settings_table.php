@@ -10,7 +10,6 @@ return new class extends Migration
     {
         Schema::create('settings', function (Blueprint $table) {
             $table->id();
-            $table->string('site_title')->default('Lara CMS');
             $table->string('theme_color')->default('#4f46e5');
             $table->string('currency', 10)->default('USD');
             $table->string('logo_light')->nullable();

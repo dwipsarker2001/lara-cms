@@ -148,7 +148,7 @@
                                                     <path fill-rule="evenodd" d="M5.22 8.22a.75.75 0 0 1 1.06 0L10 11.94l3.72-3.72a.75.75 0 1 1 1.06 1.06l-4.25 4.25a.75.75 0 0 1-1.06 0L5.22 9.28a.75.75 0 0 1 0-1.06Z" clip-rule="evenodd" />
                                                 </svg>
                                             </button>
-                                            <div x-show="open" class="absolute z-50 top-full mt-1 left-0 right-0 bg-content-bg border border-content-border rounded-lg shadow-lg p-1 max-h-60 overflow-y-auto space-y-0.5" style="display: none;">
+                                            <div x-show="open" class="absolute z-50 top-full mt-1 left-0 right-0 bg-content-bg border border-content-border rounded-lg shadow-lg p-1 max-h-80 overflow-y-auto [scrollbar-width:thin] space-y-0.5" style="display: none;">
                                                 @foreach($admins as $admin)
                                                     <button type="button" @click="updateMeta('author', '{{ $admin->name }}'); open = false" class="w-full text-left px-3 py-1.5 text-sm rounded-md transition-colors" :class="'{{ $admin->name }}' === meta.author ? 'bg-primary/10 text-primary font-medium' : 'text-text-primary hover:bg-content-border/30'">
                                                         <span>{{ $admin->name }}</span>
@@ -200,7 +200,7 @@
                                                                 <path fill-rule="evenodd" d="M5.22 8.22a.75.75 0 0 1 1.06 0L10 11.94l3.72-3.72a.75.75 0 1 1 1.06 1.06l-4.25 4.25a.75.75 0 0 1-1.06 0L5.22 9.28a.75.75 0 0 1 0-1.06Z" clip-rule="evenodd" />
                                                             </svg>
                                                         </button>
-                                                        <div x-show="open" class="absolute z-50 top-full mt-1 left-0 right-0 bg-content-bg border border-content-border rounded-lg shadow-lg p-1 max-h-60 overflow-y-auto space-y-0.5" style="display: none;">
+                                                        <div x-show="open" class="absolute z-50 top-full mt-1 left-0 right-0 bg-content-bg border border-content-border rounded-lg shadow-lg p-1 max-h-80 overflow-y-auto [scrollbar-width:thin] space-y-0.5" style="display: none;">
                                                             <button type="button" @click="selectedValue = ''; label = 'Choose entry...'; open = false" class="w-full text-left px-3 py-1.5 text-sm rounded-md transition-colors text-text-muted hover:bg-content-border/30">
                                                                 <span>None</span>
                                                             </button>
@@ -246,7 +246,7 @@
                                                                 <path fill-rule="evenodd" d="M5.22 8.22a.75.75 0 0 1 1.06 0L10 11.94l3.72-3.72a.75.75 0 1 1 1.06 1.06l-4.25 4.25a.75.75 0 0 1-1.06 0L5.22 9.28a.75.75 0 0 1 0-1.06Z" clip-rule="evenodd" />
                                                             </svg>
                                                         </button>
-                                                        <div x-show="open" class="absolute z-50 top-full mt-1 left-0 right-0 bg-content-bg border border-content-border rounded-lg shadow-lg p-1 max-h-60 overflow-y-auto space-y-0.5" style="display: none;">
+                                                        <div x-show="open" class="absolute z-50 top-full mt-1 left-0 right-0 bg-content-bg border border-content-border rounded-lg shadow-lg p-1 max-h-80 overflow-y-auto [scrollbar-width:thin] space-y-0.5" style="display: none;">
                                                             <button type="button" @click="selectedValue = ''; label = 'Select category...'; open = false" class="w-full text-left px-3 py-1.5 text-sm rounded-md transition-colors text-text-muted hover:bg-content-border/30">
                                                                 <span>None</span>
                                                             </button>
@@ -455,7 +455,7 @@
                                                                         <path fill-rule="evenodd" d="M5.22 8.22a.75.75 0 0 1 1.06 0L10 11.94l3.72-3.72a.75.75 0 1 1 1.06 1.06l-4.25 4.25a.75.75 0 0 1-1.06 0L5.22 9.28a.75.75 0 0 1 0-1.06Z" clip-rule="evenodd" />
                                                                     </svg>
                                                                 </button>
-                                                                <div x-show="open" class="absolute z-50 top-full mt-1 left-0 right-0 bg-content-bg border border-content-border rounded-lg shadow-lg p-1 max-h-60 overflow-y-auto space-y-0.5" style="display: none;">
+                                                                <div x-show="open" class="absolute z-50 top-full mt-1 left-0 right-0 bg-content-bg border border-content-border rounded-lg shadow-lg p-1 max-h-80 overflow-y-auto [scrollbar-width:thin] space-y-0.5" style="display: none;">
                                                                     @foreach ($rf['options'] as $opt)
                                                                         <button type="button" @click="updateMeta('{{ $rf['key'] }}', '{{ $opt }}'); open = false" class="w-full text-left px-3 py-1.5 text-sm rounded-md transition-colors" :class="'{{ $opt }}' === meta.{{ $rf['key'] }} ? 'bg-primary/10 text-primary font-medium' : 'text-text-primary hover:bg-content-border/30'">
                                                                             <span>{{ $opt }}</span>
@@ -496,7 +496,7 @@
                                                                     <path fill-rule="evenodd" d="M5.22 8.22a.75.75 0 0 1 1.06 0L10 11.94l3.72-3.72a.75.75 0 1 1 1.06 1.06l-4.25 4.25a.75.75 0 0 1-1.06 0L5.22 9.28a.75.75 0 0 1 0-1.06Z" clip-rule="evenodd" />
                                                                 </svg>
                                                             </button>
-                                                            <div x-show="open" class="absolute z-50 top-full mt-1 left-0 right-0 bg-content-bg border border-content-border rounded-lg shadow-lg p-1 max-h-60 overflow-y-auto space-y-0.5" style="display: none;">
+                                                            <div x-show="open" class="absolute z-50 top-full mt-1 left-0 right-0 bg-content-bg border border-content-border rounded-lg shadow-lg p-1 max-h-80 overflow-y-auto [scrollbar-width:thin] space-y-0.5" style="display: none;">
                                                                 @foreach (['Inherit', 'website', 'article', 'profile', 'book', 'music.song', 'video.movie'] as $opt)
                                                                     <button type="button" @click="updateMeta('ogType', '{{ $opt }}'); open = false" class="w-full text-left px-3 py-1.5 text-sm rounded-md transition-colors" :class="'{{ $opt }}' === meta.ogType ? 'bg-primary/10 text-primary font-medium' : 'text-text-primary hover:bg-content-border/30'">
                                                                         <span>{{ $opt }}</span>
@@ -528,44 +528,97 @@
                                                     <label for="field-socialImage" class="text-sm font-medium text-text-heading">Social Image</label>
                                                     <div class="text-sm text-text-muted">This image is used as a social network preview image.</div>
                                                 </div>
-                                                <div class="flex items-center gap-2">
-                                                    <div class="flex-1">
-                                                        <div
-                                                            @click="window.dispatchEvent(new CustomEvent('open-asset-picker', { detail: { callback: (url) => { updateMeta('socialImage', url) } } }))"
-                                                            @dragover.prevent="$event.currentTarget.classList.add('border-primary', 'bg-primary/5')"
-                                                            @dragleave.prevent="$event.currentTarget.classList.remove('border-primary', 'bg-primary/5')"
-                                                            @drop.prevent="
-                                                                $event.currentTarget.classList.remove('border-primary', 'bg-primary/5');
-                                                                const file = $event.dataTransfer.files[0];
-                                                                if (file && file.type.startsWith('image/')) {
-                                                                    const reader = new FileReader();
-                                                                    reader.onload = (e) => { updateMeta('socialImage', e.target.result); };
-                                                                    reader.readAsDataURL(file);
+                                                <div x-data="{
+                                                    size: null,
+                                                    get imageName() {
+                                                        if (!meta.socialImage) return '';
+                                                        try {
+                                                            const path = meta.socialImage.split('?')[0];
+                                                            return decodeURIComponent(path.split('/').pop() || path);
+                                                        } catch (e) {
+                                                            return meta.socialImage;
+                                                        }
+                                                    },
+                                                    formatSize(bytes) {
+                                                        if (bytes == null) return '';
+                                                        if (bytes < 1024) return bytes + ' B';
+                                                        if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(2) + ' KB';
+                                                        return (bytes / (1024 * 1024)).toFixed(2) + ' MB';
+                                                    },
+                                                    openAssetPicker() {
+                                                        window.dispatchEvent(new CustomEvent('open-asset-picker', {
+                                                            detail: {
+                                                                callback: (url) => {
+                                                                    updateMeta('socialImage', url);
+                                                                    this.fetchSize(url);
                                                                 }
-                                                            "
-                                                            class="relative w-full h-32 rounded-lg border-2 border-dashed cursor-pointer transition-colors bg-white overflow-hidden"
-                                                            :class="meta.socialImage ? 'border-gray-300 hover:border-gray-400' : 'border-gray-300 hover:border-gray-400'"
-                                                        >
-                                                            <template x-if="meta.socialImage">
-                                                                <img :src="meta.socialImage" alt="" class="w-full h-full object-cover rounded-lg">
-                                                            </template>
-                                                            <template x-if="!meta.socialImage">
-                                                                <div class="flex flex-col items-center justify-center w-full h-full text-text-muted">
-                                                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="size-8 mb-1">
-                                                                        <rect x="3" y="3" width="18" height="18" rx="2" ry="2" />
-                                                                        <circle cx="8.5" cy="8.5" r="1.5" />
-                                                                        <polyline points="21 15 16 10 5 21" />
-                                                                    </svg>
-                                                                    <span class="text-xs font-medium">Click or drag to upload</span>
-                                                                </div>
-                                                            </template>
-                                                            <template x-if="meta.socialImage">
-                                                                <button type="button" @click.stop="updateMeta('socialImage', '')"
-                                                                     class="absolute top-1 right-1 text-[11px] font-medium text-white rounded px-2 py-0.5 transition-colors" style="background: rgba(220,38,38,0.8);" onmouseover="this.style.background='rgb(220,38,38)'" onmouseout="this.style.background='rgba(220,38,38,0.8)'"
-                                                                >Remove</button>
-                                                            </template>
+                                                            }
+                                                        }));
+                                                    },
+                                                    clearImage() {
+                                                        updateMeta('socialImage', '');
+                                                        this.size = null;
+                                                    },
+                                                    fetchSize(url) {
+                                                        if (!url) { this.size = null; return; }
+                                                        fetch(url, { method: 'HEAD' })
+                                                            .then((r) => {
+                                                                const len = r.headers.get('content-length');
+                                                                this.size = len ? parseInt(len, 10) : null;
+                                                            })
+                                                            .catch(() => { this.size = null; });
+                                                    },
+                                                    init() {
+                                                        if (meta.socialImage) { this.fetchSize(meta.socialImage); }
+                                                    }
+                                                }">
+                                                    <input type="hidden" name="meta[socialImage]" :value="meta.socialImage">
+                                                    <div class="rounded-lg border border-content-border bg-content-bg overflow-hidden shadow-sm">
+                                                        {{-- Toolbar --}}
+                                                        <div class="flex items-center gap-3 px-2.5 py-2.5">
+                                                            <button
+                                                                type="button"
+                                                                @click="openAssetPicker()"
+                                                                class="inline-flex items-center justify-center gap-2 whitespace-nowrap shrink-0 font-medium cursor-pointer no-underline rounded-lg transition-colors h-8 text-xs leading-tight px-3 bg-gradient-to-b from-content-bg to-gray-50 hover:to-gray-100 text-text-primary border border-content-border shadow-sm"
+                                                            >
+                                                                <svg viewBox="0 0 24 24" fill="none" class="size-4 shrink-0">
+                                                                    <path d="M3 7a2 2 0 0 1 2-2h3.5l2 2H19a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V7Z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round" />
+                                                                </svg>
+                                                                Browse Assets
+                                                            </button>
+                                                            <div class="flex items-center gap-1.5 text-sm text-text-muted min-w-0">
+                                                                <svg viewBox="0 0 24 24" fill="none" class="size-4 shrink-0">
+                                                                    <path d="M7 18a4 4 0 0 1-.5-7.97A5 5 0 0 1 16 8.5a3.5 3.5 0 0 1 1.5 6.7" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+                                                                    <path d="M12 11.5v6m0-6 2 2m-2-2-2 2" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+                                                                </svg>
+                                                                <span class="truncate">
+                                                                    Drag &amp; drop here or
+                                                                    <button type="button" @click="openAssetPicker()" class="underline hover:text-text-primary">choose a file</button>.
+                                                                    <span x-show="meta.socialImage" x-cloak> 1/1 selected</span>
+                                                                </span>
+                                                            </div>
                                                         </div>
-                                                        <input type="hidden" name="meta[socialImage]" :value="meta.socialImage">
+
+                                                        {{-- Selected file row --}}
+                                                        <div class="border-t border-content-border" x-show="meta.socialImage" x-cloak>
+                                                            <div class="flex items-center gap-3 px-2.5 py-2">
+                                                                <div class="size-8 rounded-md overflow-hidden bg-panel-bg flex items-center justify-center shrink-0">
+                                                                    <img :src="meta.socialImage" :alt="imageName" class="size-full object-cover">
+                                                                </div>
+                                                                <span class="flex-1 min-w-0 truncate text-sm text-text-primary" x-text="imageName"></span>
+                                                                <span class="shrink-0 text-xs text-text-muted tabular-nums" x-show="size != null" x-text="formatSize(size)"></span>
+                                                                <button
+                                                                    type="button"
+                                                                    aria-label="Remove image"
+                                                                    @click="clearImage()"
+                                                                    class="shrink-0 flex size-6 items-center justify-center rounded-md text-text-muted hover:bg-text-primary/10 hover:text-text-primary transition-colors"
+                                                                >
+                                                                    <svg viewBox="0 0 20 20" fill="currentColor" class="size-4">
+                                                                        <path d="M6.28 5.22a.75.75 0 00-1.06 1.06L8.94 10l-3.72 3.72a.75.75 0 101.06 1.06L10 11.06l3.72 3.72a.75.75 0 101.06-1.06L11.06 10l3.72-3.72a.75.75 0 00-1.06-1.06L10 8.94 6.28 5.22z" />
+                                                                    </svg>
+                                                                </button>
+                                                            </div>
+                                                        </div>
                                                     </div>
                                                 </div>
                                             </div>
@@ -644,7 +697,7 @@
                                                                     <path fill-rule="evenodd" d="M5.22 8.22a.75.75 0 0 1 1.06 0L10 11.94l3.72-3.72a.75.75 0 1 1 1.06 1.06l-4.25 4.25a.75.75 0 0 1-1.06 0L5.22 9.28a.75.75 0 0 1 0-1.06Z" clip-rule="evenodd" />
                                                                 </svg>
                                                             </button>
-                                                            <div x-show="open" class="absolute z-50 top-full mt-1 left-0 right-0 bg-content-bg border border-content-border rounded-lg shadow-lg p-1 max-h-60 overflow-y-auto space-y-0.5" style="display: none;">
+                                                            <div x-show="open" class="absolute z-50 top-full mt-1 left-0 right-0 bg-content-bg border border-content-border rounded-lg shadow-lg p-1 max-h-80 overflow-y-auto [scrollbar-width:thin] space-y-0.5" style="display: none;">
                                                                 @foreach (['Inherit', 'Enabled', 'Disabled'] as $opt)
                                                                     <button type="button" @click="updateMeta('sitemap', '{{ $opt }}'); open = false" class="w-full text-left px-3 py-1.5 text-sm rounded-md transition-colors" :class="'{{ $opt }}' === meta.sitemap ? 'bg-primary/10 text-primary font-medium' : 'text-text-primary hover:bg-content-border/30'">
                                                                         <span>{{ $opt }}</span>
@@ -685,7 +738,7 @@
                                                                     <path fill-rule="evenodd" d="M5.22 8.22a.75.75 0 0 1 1.06 0L10 11.94l3.72-3.72a.75.75 0 1 1 1.06 1.06l-4.25 4.25a.75.75 0 0 1-1.06 0L5.22 9.28a.75.75 0 0 1 0-1.06Z" clip-rule="evenodd" />
                                                                 </svg>
                                                             </button>
-                                                            <div x-show="open" class="absolute z-50 top-full mt-1 left-0 right-0 bg-content-bg border border-content-border rounded-lg shadow-lg p-1 max-h-60 overflow-y-auto space-y-0.5" style="display: none;">
+                                                            <div x-show="open" class="absolute z-50 top-full mt-1 left-0 right-0 bg-content-bg border border-content-border rounded-lg shadow-lg p-1 max-h-80 overflow-y-auto [scrollbar-width:thin] space-y-0.5" style="display: none;">
                                                                 @foreach (['Inherit', 'Always', 'Hourly', 'Daily', 'Weekly', 'Monthly', 'Yearly', 'Never'] as $opt)
                                                                     <button type="button" @click="updateMeta('sitemapFrequency', '{{ $opt }}'); open = false" class="w-full text-left px-3 py-1.5 text-sm rounded-md transition-colors" :class="'{{ $opt }}' === meta.sitemapFrequency ? 'bg-primary/10 text-primary font-medium' : 'text-text-primary hover:bg-content-border/30'">
                                                                         <span>{{ $opt }}</span>
