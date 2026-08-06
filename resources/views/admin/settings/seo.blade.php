@@ -76,6 +76,109 @@
                                     </div>
                                 </div>
 
+                                {{-- Favicon --}}
+                                <div class="grid md:grid-cols-2 items-start px-[18px] py-4 gap-y-3 md:gap-y-0 md:gap-x-5">
+                                    <div class="flex flex-col gap-1.5">
+                                        <label class="text-sm font-medium text-text-heading">Favicon</label>
+                                        <div class="text-sm text-text-muted">Small icon shown in browser tabs and bookmark bars (e.g. .ico, .png, .svg).</div>
+                                    </div>
+                                    <div x-data="{
+                                        favicon: '{{ old('favicon', $seo['favicon']) }}',
+                                        size: null,
+                                        get imageName() {
+                                            if (!this.favicon) return '';
+                                            try {
+                                                const path = this.favicon.split('?')[0];
+                                                return decodeURIComponent(path.split('/').pop() || path);
+                                            } catch (e) {
+                                                return this.favicon;
+                                            }
+                                        },
+                                        formatSize(bytes) {
+                                            if (bytes == null) return '';
+                                            if (bytes < 1024) return bytes + ' B';
+                                            if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(2) + ' KB';
+                                            return (bytes / (1024 * 1024)).toFixed(2) + ' MB';
+                                        },
+                                        openAssetPicker() {
+                                            window.dispatchEvent(new CustomEvent('open-asset-picker', {
+                                                detail: {
+                                                    callback: (url) => {
+                                                        this.favicon = url;
+                                                        this.fetchSize(url);
+                                                    }
+                                                }
+                                            }));
+                                        },
+                                        clearImage() {
+                                            this.favicon = '';
+                                            this.size = null;
+                                        },
+                                        fetchSize(url) {
+                                            if (!url) { this.size = null; return; }
+                                            fetch(url, { method: 'HEAD' })
+                                                .then((r) => {
+                                                    const len = r.headers.get('content-length');
+                                                    this.size = len ? parseInt(len, 10) : null;
+                                                })
+                                                .catch(() => { this.size = null; });
+                                        },
+                                        init() {
+                                            if (this.favicon) { this.fetchSize(this.favicon); }
+                                        }
+                                    }">
+                                        <input type="hidden" name="favicon" :value="favicon">
+                                        <div class="rounded-lg border border-content-border bg-content-bg overflow-hidden shadow-sm">
+                                            {{-- Toolbar --}}
+                                            <div class="flex items-center gap-3 px-2.5 py-2.5">
+                                                <button
+                                                    type="button"
+                                                    @click="openAssetPicker()"
+                                                    class="inline-flex items-center justify-center gap-2 whitespace-nowrap shrink-0 font-medium cursor-pointer no-underline rounded-lg transition-colors h-8 text-xs leading-tight px-3 bg-gradient-to-b from-content-bg to-gray-50 hover:to-gray-100 text-text-primary border border-content-border shadow-sm"
+                                                >
+                                                    <svg viewBox="0 0 24 24" fill="none" class="size-4 shrink-0">
+                                                        <path d="M3 7a2 2 0 0 1 2-2h3.5l2 2H19a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V7Z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round" />
+                                                    </svg>
+                                                    Browse Assets
+                                                </button>
+                                                <div class="flex items-center gap-1.5 text-sm text-text-muted min-w-0">
+                                                    <svg viewBox="0 0 24 24" fill="none" class="size-4 shrink-0">
+                                                        <path d="M7 18a4 4 0 0 1-.5-7.97A5 5 0 0 1 16 8.5a3.5 3.5 0 0 1 1.5 6.7" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+                                                        <path d="M12 11.5v6m0-6 2 2m-2-2-2 2" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+                                                    </svg>
+                                                    <span class="truncate">
+                                                        Drag &amp; drop here or
+                                                        <button type="button" @click="openAssetPicker()" class="underline hover:text-text-primary">choose a file</button>.
+                                                        <span x-show="favicon" x-cloak> 1/1 selected</span>
+                                                    </span>
+                                                </div>
+                                            </div>
+
+                                            {{-- Selected file row --}}
+                                            <div class="border-t border-content-border" x-show="favicon" x-cloak>
+                                                <div class="flex items-center gap-3 px-2.5 py-2">
+                                                    <div class="size-8 rounded-md overflow-hidden bg-panel-bg flex items-center justify-center shrink-0">
+                                                        <img :src="favicon" :alt="imageName" class="size-full object-contain">
+                                                    </div>
+                                                    <span class="flex-1 min-w-0 truncate text-sm text-text-primary" x-text="imageName"></span>
+                                                    <span class="shrink-0 text-xs text-text-muted tabular-nums" x-show="size != null" x-text="formatSize(size)"></span>
+                                                    <button
+                                                        type="button"
+                                                        aria-label="Remove favicon"
+                                                        @click="clearImage()"
+                                                        class="shrink-0 flex size-6 items-center justify-center rounded-md text-text-muted hover:bg-text-primary/10 hover:text-text-primary transition-colors"
+                                                    >
+                                                        <svg viewBox="0 0 20 20" fill="currentColor" class="size-4">
+                                                            <path d="M6.28 5.22a.75.75 0 00-1.06 1.06L8.94 10l-3.72 3.72a.75.75 0 101.06 1.06L10 11.06l3.72 3.72a.75.75 0 101.06-1.06L11.06 10l3.72-3.72a.75.75 0 00-1.06-1.06L10 8.94 6.28 5.22z" />
+                                                        </svg>
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        @error('favicon') <p class="text-xs text-danger mt-1">{{ $message }}</p> @enderror
+                                    </div>
+                                </div>
+
                                 {{-- Name Position --}}
                                 <div class="grid md:grid-cols-2 items-start px-[18px] py-4 gap-y-3 md:gap-y-0 md:gap-x-5">
                                     <div class="flex flex-col gap-1.5">

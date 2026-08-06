@@ -61,6 +61,13 @@ class Seo
         }
         $html[] = '<title>'.e($titleText).'</title>';
 
+        // Favicon
+        $favicon = trim($globalSeo['favicon'] ?? '');
+        if ($favicon !== '') {
+            $html[] = '<link rel="icon" href="'.e($favicon).'">';
+            $html[] = '<link rel="shortcut icon" href="'.e($favicon).'">';
+        }
+
         // 2. Meta Description
         $metaDescription = trim($pageMeta['metaDescription'] ?? '');
         if ($metaDescription === '') {

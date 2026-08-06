@@ -100,13 +100,11 @@
 
             <header class="relative flex flex-wrap items-center justify-between gap-4 px-2 sm:px-0 py-6 md:py-8">
                 <h1 class="text-[25px] leading-[1.25] font-medium flex items-center gap-2.5 text-text-heading">
-                    <svg viewBox="0 0 17 17" class="size-5 text-text-muted shrink-0" fill="none" stroke="currentColor" stroke-width="1">
-                        <g transform="translate(1 1)" stroke-linecap="round" stroke-linejoin="round">
-                            <path d="M5.2598416,5.94378286 C7.1618416,5.94378286 8.23172732,4.87389714 8.23172732,2.97188571 C8.23172732,1.06987429 7.1618416,0 5.2598416,0 C3.35783017,0 2.28794446,1.06987429 2.28794446,2.97188571 C2.28794446,4.87389714 3.35783017,5.94378286 5.2598416,5.94378286 Z" />
-                            <path d="M6.14417303,8.21984 C5.85300732,8.18864 5.55730446,8.17264 5.25785303,8.17264 C3.57371589,8.17264 2.00779589,8.67876571 0.703875888,9.5472 C-0.749792683,10.5153943 0.23180046,12.3827429 1.97837875,12.3827429 L5.69643589,12.3827429" />
-                        </g>
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" class="size-6 shrink-0 text-text-muted">
+                        <path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.38a2 2 0 0 0-.73-2.73l-.15-.1a2 2 0 0 1-1-1.72v-.51a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z" />
+                        <circle cx="12" cy="12" r="3" />
                     </svg>
-                    My Preferences
+                    Settings
                 </h1>
                 <div class="flex flex-wrap items-center gap-2 sm:gap-3">
                     <button type="submit"

@@ -35,6 +35,7 @@ it('persists SEO settings to the settings table', function () {
     $payload = [
         'metaDescription' => 'A travel CMS for explorers.',
         'siteName' => 'Lara CMS',
+        'favicon' => '/uploads/favicon.png',
         'namePosition' => 'After',
         'separator' => '|',
         'indexing' => true,
@@ -64,6 +65,7 @@ it('persists SEO settings to the settings table', function () {
 
     expect($seo['metaDescription'])->toBe('A travel CMS for explorers.')
         ->and($seo['siteName'])->toBe('Lara CMS')
+        ->and($seo['favicon'])->toBe('/uploads/favicon.png')
         ->and($seo['namePosition'])->toBe('After')
         ->and($seo['separator'])->toBe('|')
         ->and($seo['indexing'])->toBeTrue()

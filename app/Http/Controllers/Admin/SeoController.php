@@ -17,6 +17,7 @@ class SeoController extends Controller
         // Meta
         'metaDescription' => '',
         'siteName' => '',
+        'favicon' => '',
         'namePosition' => 'After',
         'separator' => '|',
         // Robots
@@ -100,6 +101,7 @@ class SeoController extends Controller
         $data = $request->validate([
             'metaDescription' => 'nullable|string|max:1000',
             'siteName' => 'nullable|string|max:255',
+            'favicon' => 'nullable|string|max:500',
             'namePosition' => 'required|string|in:Before,After,None',
             'separator' => 'nullable|string|max:10',
 
