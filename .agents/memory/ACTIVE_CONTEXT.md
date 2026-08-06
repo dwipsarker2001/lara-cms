@@ -9,7 +9,7 @@
 
 ## Last Verified State
 - Dead code removed & committed (`64f7cf4`).
-- Version bumped to `1.3.5` and tagged (`v1.3.5`).
+- Version bumped to `1.3.6` and tagged (`v1.3.6`).
 - Single-command release packager script `scripts/build-release.sh` created & tested.
 - Zero-host-dependency Docker build environment configured (`lara-cms-app`).
 - Documentation updated in `README.md` and `docs/block-creation-guide.md`.
