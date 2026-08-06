@@ -41,7 +41,7 @@
             @foreach ($items as $item)
                 <div
                     class="flex rounded-xl shadow-sm bg-content-bg mb-px group px-3"
-                    data-{{ $dataKey }}="{{ $item->id }}"
+                    data-{{ \Illuminate\Support\Str::kebab($dataKey) }}="{{ $item->id }}"
                 >
                     <div class="w-6 shrink-0 flex items-center justify-center text-text-muted/70 cursor-grab" data-drag-handle>
                         <svg viewBox="0 0 24 24" fill="currentColor" class="size-[14px]">
