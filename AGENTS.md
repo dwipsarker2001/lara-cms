@@ -185,10 +185,9 @@ When the user triggers a `/goal` task or long-running autonomous loop:
   - `.agents/memory/MEMORY.md` (project knowledge snapshot & core rules)
 
 ### 2. Iterative Goal Loop Workflow
-- **Plan**: Deconstruct the objective into atomic, verifiable sub-tasks.
+- **Plan**: Deconstruct the objective into atomic, verifiable sub-tasks using `.agents/templates/GOAL_TEMPLATE.md`.
 - **Execute**: Implement code or schema changes step-by-step.
-- **Format**: Run `vendor/bin/pint --dirty --format agent` after any PHP modifications.
-- **Verify**: Run `php artisan test --compact` to programmatically confirm zero regressions.
+- **Format & Health Check**: Run `./scripts/loop-engine.sh` to auto-format PHP files (`pint`) and execute Pest tests (`php artisan test --compact`).
 
 ### 3. Memory Bank Synchronization
 - After completing a major milestone or task, update:
@@ -198,6 +197,7 @@ When the user triggers a `/goal` task or long-running autonomous loop:
   - `.agents/memory/LESSONS_LEARNED.md` if edge cases or fixes were discovered.
 
 ### 4. Verification & Self-Auditing
+- Execute `./scripts/loop-engine.sh` to confirm zero failing tests.
 - Do NOT declare completion until all tests pass and code changes are verified.
 - Only output `<!-- GOAL_COMPLETE -->` when the entire goal has been verified programmatically.
 
