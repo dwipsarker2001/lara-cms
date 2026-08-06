@@ -314,6 +314,33 @@ vendor/bin/pint --dirty --format agent
 
 ---
 
+## 📦 Release Packaging
+
+To build and package production releases (creates a clean, production-ready `dist/lara-cms-v<version>.zip` ready for deployment):
+
+### Option 1: Via Docker (Zero host setup required)
+Run without needing local Node.js, PHP, or Composer installed on your host machine:
+```bash
+docker run --rm -v $(pwd):/app -w /app lara-cms-app ./scripts/build-release.sh
+```
+*Or via Docker Compose:*
+```bash
+docker compose run --rm app ./scripts/build-release.sh
+```
+
+### Option 2: Via Local Terminal (Host setup)
+```bash
+npm run release
+# OR
+composer build-zip
+# OR
+./scripts/build-release.sh
+```
+
+The compiled release package will be created at `dist/lara-cms-v<version>.zip`.
+
+---
+
 ## 🐋 Docker & Troubleshooting Notes
 
 - **Cache Directories:** The `docker-entrypoint.sh` script automatically creates `storage/framework/views`, `storage/framework/cache/data`, `storage/framework/sessions`, `storage/framework/testing`, `storage/logs`, and `bootstrap/cache` upon container startup to prevent `Please provide a valid cache path` startup loops on fresh clones.
