@@ -156,7 +156,7 @@
                             <div x-show="fields.length > 0" class="px-[18px] py-4">
                                 <div id="sortable-fields" class="space-y-1">
                                     <template x-for="(field, index) in fields" :key="field._key || index">
-                                        <div class="flex rounded-lg shadow-sm bg-content-bg border border-content-border group overflow-hidden px-2">
+                                        <div class="flex rounded-lg shadow-sm bg-gray-50 border border-gray-200 group overflow-hidden px-2 hover:bg-gray-100/60 transition-colors">
                                             <div class="w-6 shrink-0 flex items-center justify-center cursor-grab active:cursor-grabbing opacity-70 hover:opacity-100 touch-none transition-opacity text-text-muted/70" data-drag-handle>
                                                 <svg viewBox="0 0 24 24" fill="currentColor" class="size-[14px]">
                                                     <circle cx="8" cy="6" r="2.5" /><circle cx="16" cy="6" r="2.5" />
@@ -164,23 +164,25 @@
                                                     <circle cx="8" cy="18" r="2.5" /><circle cx="16" cy="18" r="2.5" />
                                                 </svg>
                                             </div>
-                                            <div class="flex flex-1 min-w-0 items-center px-1.5 py-2.5 text-xs leading-normal">
-                                                <div class="flex min-w-0 flex-1 items-center gap-2">
+                                            <div class="flex flex-1 min-w-0 items-center justify-between px-1.5 py-2.5 text-xs leading-normal gap-2">
+                                                <div class="flex min-w-0 flex-1 items-center">
                                                     <span class="text-sm font-semibold text-text-heading group-hover:text-primary truncate leading-normal transition-colors" x-text="field.title"></span>
-                                                    <span x-show="field.template" class="text-[11px] font-mono text-text-muted bg-gray-100 px-1.5 py-0.5 rounded border border-gray-200" x-text="field.template"></span>
                                                 </div>
-                                                <div class="flex items-center gap-0.5 shrink-0 ml-1">
-                                                    <button type="button" @click="editField(index)" class="p-1 text-text-muted/60 hover:text-primary transition-colors rounded hover:bg-text-primary/10" title="Edit">
-                                                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" class="size-4">
-                                                            <path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7" />
-                                                            <path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z" />
-                                                        </svg>
-                                                    </button>
-                                                    <button type="button" @click="fields.splice(index, 1)" class="p-1 text-text-muted/60 hover:text-danger transition-colors rounded hover:bg-text-primary/10" title="Remove">
-                                                        <svg viewBox="0 0 20 20" fill="currentColor" class="size-4">
-                                                            <path fill-rule="evenodd" d="M8.75 1A2.75 2.75 0 006 3.75v.443c-.795.077-1.584.176-2.365.298a.75.75 0 10.23 1.482l.149-.022.841 10.518A2.75 2.75 0 007.596 19h4.807a2.75 2.75 0 002.742-2.53l.841-10.52.149.023a.75.75 0 00.23-1.482A41.03 41.03 0 0014 4.193V3.75A2.75 2.75 0 0011.25 1h-2.5zM10 4c-.84 0-1.673.025-2.5.075V3.75c0-.69.56-1.25 1.25-1.25h2.5c.69 0 1.25.56 1.25 1.25v.325C11.673 4.025 10.84 4 10 4zM8.58 7.72a.75.75 0 00-1.5.06l.3 7.5a.75.75 0 101.5-.06l-.3-7.5zm4.34.06a.75.75 0 10-1.5-.06l-.3 7.5a.75.75 0 101.5.06l.3-7.5z" clip-rule="evenodd" />
-                                                        </svg>
-                                                    </button>
+                                                <div class="flex items-center gap-2.5 shrink-0 ml-1">
+                                                    <span x-show="field.template" class="text-[11px] font-mono text-text-muted bg-white px-1.5 py-0.5 rounded border border-gray-200" x-text="field.template"></span>
+                                                    <div class="flex items-center gap-0.5">
+                                                        <button type="button" @click="editField(index)" class="p-1 text-text-muted/60 hover:text-primary transition-colors rounded hover:bg-text-primary/10" title="Edit">
+                                                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" class="size-4">
+                                                                <path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7" />
+                                                                <path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z" />
+                                                            </svg>
+                                                        </button>
+                                                        <button type="button" @click="fields.splice(index, 1)" class="p-1 text-text-muted/60 hover:text-danger transition-colors rounded hover:bg-text-primary/10" title="Remove">
+                                                            <svg viewBox="0 0 20 20" fill="currentColor" class="size-4">
+                                                                <path fill-rule="evenodd" d="M8.75 1A2.75 2.75 0 006 3.75v.443c-.795.077-1.584.176-2.365.298a.75.75 0 10.23 1.482l.149-.022.841 10.518A2.75 2.75 0 007.596 19h4.807a2.75 2.75 0 002.742-2.53l.841-10.52.149.023a.75.75 0 00.23-1.482A41.03 41.03 0 0014 4.193V3.75A2.75 2.75 0 0011.25 1h-2.5zM10 4c-.84 0-1.673.025-2.5.075V3.75c0-.69.56-1.25 1.25-1.25h2.5c.69 0 1.25.56 1.25 1.25v.325C11.673 4.025 10.84 4 10 4zM8.58 7.72a.75.75 0 00-1.5.06l.3 7.5a.75.75 0 101.5-.06l-.3-7.5zm4.34.06a.75.75 0 10-1.5-.06l-.3 7.5a.75.75 0 101.5.06l.3-7.5z" clip-rule="evenodd" />
+                                                            </svg>
+                                                        </button>
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
@@ -232,17 +234,20 @@
 
         <div x-show="showFieldModal" class="fixed inset-0 z-[9999] flex items-center justify-center bg-black/40"
             @click.self="showFieldModal = false" style="display: none;">
-            <div class="bg-white rounded-2xl shadow-xl w-full max-w-lg mx-4 overflow-hidden">
-                <div class="flex items-center justify-between px-6 pt-5 pb-3">
-                    <h3 class="text-lg font-semibold text-text-heading"
-                        x-text="editingFieldIndex !== null ? 'Edit Field' : 'Add Field'"></h3>
-                    <button type="button" @click="showFieldModal = false"
-                        class="size-8 flex items-center justify-center rounded-lg hover:bg-gray-100 text-text-muted transition-colors">
-                        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2"
-                            stroke-linecap="round" stroke-linejoin="round" class="size-4">
-                            <path d="M4 4l8 8M12 4l-8 8" />
-                        </svg>
-                    </button>
+            <div class="bg-white rounded-2xl shadow-xl w-full max-w-lg mx-4 relative">
+                <div class="px-6 pt-5 pb-3">
+                    <div class="flex items-center justify-between">
+                        <h3 class="text-lg font-semibold text-text-heading"
+                            x-text="editingFieldIndex !== null ? 'Edit Field' : 'Add Field'"></h3>
+                        <button type="button" @click="showFieldModal = false"
+                            class="size-8 flex items-center justify-center rounded-lg hover:bg-gray-100 text-text-muted transition-colors">
+                            <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2"
+                                stroke-linecap="round" stroke-linejoin="round" class="size-4">
+                                <path d="M4 4l8 8M12 4l-8 8" />
+                            </svg>
+                        </button>
+                    </div>
+                    <p class="text-sm text-text-muted mt-1">Configure custom input fields for collection entries.</p>
                 </div>
                 <div class="px-6 pb-5 space-y-4">
                     <div>
@@ -256,17 +261,70 @@
                         <input type="text" x-model="fieldForm.description" placeholder="Enter your full name"
                             class="w-full block bg-white border border-gray-300 text-text-primary placeholder:text-text-muted text-sm rounded-lg px-3 py-2 h-9 transition-all duration-150 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary">
                     </div>
-                    <div>
+                    <div class="relative z-30">
                         <label class="block text-sm font-medium text-text-heading mb-1">Input Type</label>
-                         <select x-model="fieldForm.type"
-                            class="w-full block bg-white border border-gray-300 text-text-primary text-sm rounded-lg px-3 py-2 h-9 transition-all duration-150 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary">
-                            <option value="text">Text</option>
-                            <option value="textarea">Textarea</option>
-                            <option value="number">Number</option>
-                            <option value="collection">Collection</option>
-                            <option value="taxonomies">Categories</option>
-                            <option value="tags">Tags</option>
-                        </select>
+                        <div x-data="{ open: false }" @click.outside="open = false" class="relative">
+                            <button type="button" @click="open = !open"
+                                class="flex items-center justify-between gap-2 w-full rounded-lg border border-gray-300 hover:border-gray-400 bg-white px-3 py-2 text-sm text-text-primary h-9 transition-colors focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary cursor-pointer">
+                                <span x-text="{
+                                    'text': 'Text',
+                                    'textarea': 'Textarea',
+                                    'number': 'Number',
+                                    'image': 'Image',
+                                    'collection': 'Collection',
+                                    'taxonomies': 'Categories',
+                                    'tags': 'Tags'
+                                }[fieldForm.type] || 'Select type...'"></span>
+                                <svg :class="open ? 'rotate-180' : ''" class="size-4 text-gray-400 transition-transform duration-150 shrink-0" viewBox="0 0 20 20" fill="currentColor">
+                                    <path fill-rule="evenodd" d="M5.22 8.22a.75.75 0 0 1 1.06 0L10 11.94l3.72-3.72a.75.75 0 1 1 1.06 1.06l-4.25 4.25a.75.75 0 0 1-1.06 0L5.22 9.28a.75.75 0 0 1 0-1.06Z" clip-rule="evenodd" />
+                                </svg>
+                            </button>
+                            <div x-show="open"
+                                x-transition:enter="transition ease-out duration-100"
+                                x-transition:enter-start="opacity-0 scale-95"
+                                x-transition:enter-end="opacity-100 scale-100"
+                                x-transition:leave="transition ease-in duration-75"
+                                x-transition:leave-start="opacity-100 scale-100"
+                                x-transition:leave-end="opacity-0 scale-95"
+                                class="absolute z-50 top-full mt-1 left-0 right-0 bg-white border border-gray-200 rounded-lg shadow-xl p-1 space-y-0.5 max-h-60 overflow-y-auto"
+                                style="display: none;">
+                                <button type="button" @click="fieldForm.type = 'text'; open = false"
+                                    class="flex items-center w-full px-3 py-1.5 text-sm rounded-md text-text-primary hover:bg-gray-100 transition-colors"
+                                    :class="fieldForm.type === 'text' ? 'bg-primary/10 text-primary font-medium' : ''">
+                                    Text
+                                </button>
+                                <button type="button" @click="fieldForm.type = 'textarea'; open = false"
+                                    class="flex items-center w-full px-3 py-1.5 text-sm rounded-md text-text-primary hover:bg-gray-100 transition-colors"
+                                    :class="fieldForm.type === 'textarea' ? 'bg-primary/10 text-primary font-medium' : ''">
+                                    Textarea
+                                </button>
+                                <button type="button" @click="fieldForm.type = 'number'; open = false"
+                                    class="flex items-center w-full px-3 py-1.5 text-sm rounded-md text-text-primary hover:bg-gray-100 transition-colors"
+                                    :class="fieldForm.type === 'number' ? 'bg-primary/10 text-primary font-medium' : ''">
+                                    Number
+                                </button>
+                                <button type="button" @click="fieldForm.type = 'image'; open = false"
+                                    class="flex items-center w-full px-3 py-1.5 text-sm rounded-md text-text-primary hover:bg-gray-100 transition-colors"
+                                    :class="fieldForm.type === 'image' ? 'bg-primary/10 text-primary font-medium' : ''">
+                                    Image
+                                </button>
+                                <button type="button" @click="fieldForm.type = 'collection'; open = false"
+                                    class="flex items-center w-full px-3 py-1.5 text-sm rounded-md text-text-primary hover:bg-gray-100 transition-colors"
+                                    :class="fieldForm.type === 'collection' ? 'bg-primary/10 text-primary font-medium' : ''">
+                                    Collection
+                                </button>
+                                <button type="button" @click="fieldForm.type = 'taxonomies'; open = false"
+                                    class="flex items-center w-full px-3 py-1.5 text-sm rounded-md text-text-primary hover:bg-gray-100 transition-colors"
+                                    :class="fieldForm.type === 'taxonomies' ? 'bg-primary/10 text-primary font-medium' : ''">
+                                    Categories
+                                </button>
+                                <button type="button" @click="fieldForm.type = 'tags'; open = false"
+                                    class="flex items-center w-full px-3 py-1.5 text-sm rounded-md text-text-primary hover:bg-gray-100 transition-colors"
+                                    :class="fieldForm.type === 'tags' ? 'bg-primary/10 text-primary font-medium' : ''">
+                                    Tags
+                                </button>
+                            </div>
+                        </div>
                     </div>
                     <div x-show="fieldForm.type === 'collection'" style="display: none;">
                         <label class="block text-sm font-medium text-text-heading mb-1">Target Collection</label>
@@ -289,18 +347,18 @@
                     </div>
                     <div>
                         <label class="block text-sm font-medium text-text-heading mb-1">Key</label>
-                        <input type="text" x-model="fieldForm.template" readonly
-                            class="w-full block bg-gray-50 border border-gray-200 text-text-muted text-sm rounded-lg px-3 py-2 h-9 cursor-not-allowed">
+                        <input type="text" x-model="fieldForm.template" @input="onKeyInput"
+                            class="w-full block bg-white border border-gray-300 text-text-primary text-sm rounded-lg px-3 py-2 h-9 transition-all duration-150 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary">
                     </div>
                 </div>
-                <div class="flex items-center justify-end gap-3 px-6 py-4 bg-gray-50 border-t border-gray-100">
+                <div class="flex items-center justify-end gap-3 px-6 py-4 bg-gray-50 border-t border-gray-100 rounded-b-2xl">
                     <button type="button" @click="showFieldModal = false"
                         class="inline-flex items-center justify-center gap-2 shrink-0 font-medium cursor-pointer no-underline rounded-lg transition-colors h-9 text-sm leading-tight px-4 bg-white hover:bg-gray-50 text-text-primary shadow-sm border border-gray-200">
                         Cancel
                     </button>
                     <button type="button" @click="saveField"
                         class="inline-flex items-center justify-center gap-2 shrink-0 font-medium cursor-pointer no-underline rounded-lg transition-colors h-9 text-sm leading-tight px-4 bg-primary hover:opacity-90 text-white shadow-sm">
-                        <span x-text="editingFieldIndex !== null ? 'Update' : 'Add'"></span>
+                        <span x-text="editingFieldIndex !== null ? 'Update Field' : 'Add Field'"></span>
                     </button>
                 </div>
             </div>
@@ -358,13 +416,24 @@
                 return found ? found.l : cls;
             },
 
+            isKeyManuallyEdited: false,
+
             generateTemplate() {
+                if (this.isKeyManuallyEdited) return;
                 const slug = this.fieldForm.title.replace(/[^a-zA-Z0-9]+/g, '_').replace(/^_|_$/g, '').toLowerCase();
                 this.fieldForm.template = slug;
             },
 
+            onKeyInput() {
+                this.isKeyManuallyEdited = true;
+                if (this.fieldForm.template) {
+                    this.fieldForm.template = this.fieldForm.template.replace(/[^a-zA-Z0-9_]+/g, '');
+                }
+            },
+
             openFieldModal() {
                 this.editingFieldIndex = null;
+                this.isKeyManuallyEdited = false;
                 this.fieldForm = {
                     title: '',
                     description: '',
@@ -378,6 +447,7 @@
 
             editField(index) {
                 this.editingFieldIndex = index;
+                this.isKeyManuallyEdited = true;
                 const field = { ...this.fields[index] };
                 if (field.template) {
                     field.template = field.template.replace(/[^a-zA-Z0-9_]+/g, '');
@@ -388,7 +458,9 @@
 
             saveField() {
                 if (!this.fieldForm.title.trim()) return;
-                if (this.fieldForm.template) {
+                if (!this.fieldForm.template || !this.fieldForm.template.trim()) {
+                    this.fieldForm.template = this.fieldForm.title.replace(/[^a-zA-Z0-9]+/g, '_').replace(/^_|_$/g, '').toLowerCase();
+                } else {
                     this.fieldForm.template = this.fieldForm.template.replace(/[^a-zA-Z0-9_]+/g, '').toLowerCase();
                 }
                 if (this.editingFieldIndex !== null) {

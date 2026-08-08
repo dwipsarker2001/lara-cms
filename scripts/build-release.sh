@@ -9,6 +9,8 @@ echo "🚀 Building release package for Lara-CMS v${VERSION}..."
 echo "📦 Building production frontend assets..."
 if [ -f /etc/alpine-release ]; then
   npm i --no-save @rolldown/binding-linux-x64-musl >/dev/null 2>&1 || true
+else
+  npm i --no-save @rolldown/binding-linux-x64-gnu >/dev/null 2>&1 || true
 fi
 npm run build
 

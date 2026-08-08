@@ -177,14 +177,152 @@
                                             <div class="text-sm text-text-muted">{{ $field['description'] }}</div>
                                         @endif
                                     </div>
-                                    <div class="flex items-center gap-2">
-                                        <div class="flex-1">
+                                    <div class="flex items-center gap-2 min-w-0 w-full">
+                                        <div class="flex-1 min-w-0 w-full">
                                             @switch($field['type'] ?? 'text')
                                                 @case('textarea')
                                                     <textarea id="field-{{ $loop->index }}" name="data[{{ $key }}]" rows="3" class="w-full block bg-content-bg border border-content-border text-text-primary placeholder:text-text-muted text-sm rounded-lg px-3 py-2 transition-all duration-150 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary">{{ $value }}</textarea>
                                                     @break
                                                 @case('number')
                                                     <input type="number" id="field-{{ $loop->index }}" name="data[{{ $key }}]" value="{{ $value }}" class="w-full block bg-content-bg border border-content-border text-text-primary placeholder:text-text-muted text-sm rounded-lg px-3 py-2 h-9 transition-all duration-150 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary">
+                                                    @break
+                                                @case('image')
+                                                    @php
+                                                        $imgVal = is_string($value) ? $value : '';
+                                                    @endphp
+                                                    <div
+                                                        class="w-full rounded-lg border border-content-border bg-content-bg overflow-hidden shadow-sm min-w-0"
+                                                        x-data="{
+                                                            imageUrl: '{{ addslashes($imgVal) }}',
+                                                            altOpen: false,
+                                                            alt: '',
+                                                            size: null,
+                                                            get imageName() {
+                                                                if (!this.imageUrl) return '';
+                                                                try {
+                                                                    const path = this.imageUrl.split('?')[0];
+                                                                    return decodeURIComponent(path.split('/').pop() || path);
+                                                                } catch (e) {
+                                                                    return this.imageUrl;
+                                                                }
+                                                            },
+                                                            formatSize(bytes) {
+                                                                if (bytes == null) return '';
+                                                                if (bytes < 1024) return bytes + ' B';
+                                                                if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(2) + ' KB';
+                                                                return (bytes / (1024 * 1024)).toFixed(2) + ' MB';
+                                                            },
+                                                            openAssetPicker() {
+                                                                window.dispatchEvent(new CustomEvent('open-asset-picker', {
+                                                                    detail: {
+                                                                        callback: (url) => {
+                                                                            this.imageUrl = url;
+                                                                            this.fetchSize(url);
+                                                                        }
+                                                                    }
+                                                                }));
+                                                            },
+                                                            clearImage() {
+                                                                this.imageUrl = '';
+                                                                this.alt = '';
+                                                                this.altOpen = false;
+                                                                this.size = null;
+                                                            },
+                                                            fetchSize(url) {
+                                                                if (!url) {
+                                                                    this.size = null;
+                                                                    return;
+                                                                }
+                                                                fetch(url, { method: 'HEAD' })
+                                                                    .then((r) => {
+                                                                        const len = r.headers.get('content-length');
+                                                                        this.size = len ? parseInt(len, 10) : null;
+                                                                    })
+                                                                    .catch(() => { this.size = null; });
+                                                            },
+                                                            init() {
+                                                                if (this.imageUrl) {
+                                                                    this.fetchSize(this.imageUrl);
+                                                                }
+                                                            }
+                                                        }"
+                                                        @dragover.prevent="$event.currentTarget.classList.add('border-primary', 'bg-primary/5')"
+                                                        @dragleave.prevent="$event.currentTarget.classList.remove('border-primary', 'bg-primary/5')"
+                                                        @drop.prevent="
+                                                            $event.currentTarget.classList.remove('border-primary', 'bg-primary/5');
+                                                            const file = $event.dataTransfer.files[0];
+                                                            if (file && file.type.startsWith('image/')) {
+                                                                const reader = new FileReader();
+                                                                reader.onload = (e) => { imageUrl = e.target.result; fetchSize(e.target.result); };
+                                                                reader.readAsDataURL(file);
+                                                            }
+                                                        "
+                                                    >
+                                                        <input type="hidden" id="field-{{ $loop->index }}" name="data[{{ $key }}]" :value="imageUrl">
+                                                        {{-- Toolbar --}}
+                                                        <div class="flex flex-wrap items-center gap-2 sm:gap-3 px-2.5 py-2.5 min-w-0">
+                                                            <button
+                                                                type="button"
+                                                                @click="openAssetPicker()"
+                                                                class="inline-flex items-center justify-center gap-2 whitespace-nowrap shrink-0 font-medium cursor-pointer no-underline rounded-lg transition-colors h-8 text-xs leading-tight px-3 bg-gradient-to-b from-content-bg to-gray-50 hover:to-gray-100 text-text-primary border border-content-border shadow-sm"
+                                                            >
+                                                                <svg viewBox="0 0 24 24" fill="none" class="size-4 shrink-0">
+                                                                    <path d="M3 7a2 2 0 0 1 2-2h3.5l2 2H19a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V7Z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round" />
+                                                                </svg>
+                                                                Browse Assets
+                                                            </button>
+                                                            <div class="flex items-center gap-1.5 text-xs sm:text-sm text-text-muted min-w-0 flex-1">
+                                                                <svg viewBox="0 0 24 24" fill="none" class="size-4 shrink-0">
+                                                                    <path d="M7 18a4 4 0 0 1-.5-7.97A5 5 0 0 1 16 8.5a3.5 3.5 0 0 1 1.5 6.7" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+                                                                    <path d="M12 11.5v6m0-6 2 2m-2-2-2 2" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+                                                                </svg>
+                                                                <span class="truncate">
+                                                                    Drag &amp; drop or
+                                                                    <button type="button" @click="openAssetPicker()" class="underline hover:text-text-primary">choose file</button>.
+                                                                    <span x-show="imageUrl" x-cloak class="font-medium text-text-primary"> (selected)</span>
+                                                                </span>
+                                                            </div>
+                                                        </div>
+
+                                                        {{-- Selected file row --}}
+                                                        <div class="border-t border-content-border min-w-0" x-show="imageUrl" x-cloak>
+                                                            <div class="flex items-center gap-2 sm:gap-3 px-2.5 py-2 min-w-0">
+                                                                <div class="size-8 rounded-md overflow-hidden bg-panel-bg flex items-center justify-center shrink-0">
+                                                                    <img :src="imageUrl" :alt="alt || imageName" class="size-full object-cover">
+                                                                </div>
+                                                                <span class="flex-1 min-w-0 truncate text-sm text-text-primary" x-text="imageName"></span>
+                                                                <button
+                                                                    type="button"
+                                                                    @click="altOpen = !altOpen"
+                                                                    class="shrink-0 rounded-md border px-2 py-0.5 text-xs font-medium transition-colors"
+                                                                    :class="alt
+                                                                        ? 'border-primary bg-primary/10 text-primary'
+                                                                        : 'border-content-border text-primary hover:bg-primary/10'"
+                                                                >
+                                                                    Set Alt
+                                                                </button>
+                                                                <span class="shrink-0 text-xs text-text-muted tabular-nums" x-show="size != null" x-text="formatSize(size)"></span>
+                                                                <button
+                                                                    type="button"
+                                                                    aria-label="Remove image"
+                                                                    @click="clearImage()"
+                                                                    class="shrink-0 flex size-6 items-center justify-center rounded-md text-text-muted hover:bg-text-primary/10 hover:text-text-primary transition-colors"
+                                                                >
+                                                                    <svg viewBox="0 0 24 24" fill="none" class="size-4">
+                                                                        <path d="M6 6l12 12M18 6L6 18" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
+                                                                    </svg>
+                                                                </button>
+                                                            </div>
+                                                            <div class="px-2.5 pb-2.5" x-show="altOpen" x-cloak>
+                                                                <input
+                                                                    type="text"
+                                                                    x-model="alt"
+                                                                    placeholder="Alt text"
+                                                                    class="w-full bg-content-bg border border-content-border text-text-primary placeholder:text-text-muted text-sm rounded-lg px-3 py-1.5 h-9 focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary"
+                                                                >
+                                                            </div>
+                                                        </div>
+                                                    </div>
                                                     @break
                                                 @case('collection')
                                                     @php

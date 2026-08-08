@@ -436,6 +436,28 @@
     @stack('scripts')
     <script>
         document.addEventListener('DOMContentLoaded', function() {
+            function resetSubmittingState() {
+                var topLoader = document.getElementById('global-submit-loader');
+                if (topLoader) {
+                    topLoader.classList.add('hidden');
+                }
+                var submittingButtons = document.querySelectorAll('[data-submitting="true"]');
+                submittingButtons.forEach(function(btn) {
+                    btn.removeAttribute('data-submitting');
+                    btn.disabled = false;
+                    btn.classList.remove('opacity-80', 'cursor-not-allowed', 'pointer-events-none');
+                    var originalHtml = btn.getAttribute('data-original-html');
+                    if (originalHtml) {
+                        btn.innerHTML = originalHtml;
+                        btn.removeAttribute('data-original-html');
+                    }
+                });
+            }
+
+            window.addEventListener('pageshow', function() {
+                resetSubmittingState();
+            });
+
             document.addEventListener('submit', function(e) {
                 var form = e.target;
                 if (!form || e.defaultPrevented) return;
