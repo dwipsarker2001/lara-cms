@@ -4,6 +4,7 @@ namespace App\Providers;
 
 use App\Models\Collection;
 use App\Models\Form;
+use App\Models\Taxonomy;
 use App\Widgets\WidgetRegistry;
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\Facades\Schema;
@@ -42,6 +43,12 @@ class AppServiceProvider extends ServiceProvider
                 : collect();
 
             $view->with('sidebarCollections', $collections);
+
+            $taxonomies = Schema::hasTable('taxonomies')
+                ? Taxonomy::withCount('terms')->orderBy('position')->orderBy('title')->get()
+                : collect();
+
+            $view->with('sidebarTaxonomies', $taxonomies);
         });
     }
 }

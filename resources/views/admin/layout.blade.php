@@ -283,21 +283,6 @@
                         {{-- Pages, Blog, and Packages menus have been removed --}}
 
                         <li>
-                            <a href="{{ route('admin.taxonomies.index') }}"
-                                class="flex items-center gap-2.5 px-2.5 py-1.5 rounded-md text-sm no-underline transition-colors @if(request()->routeIs('admin.taxonomies.*')) text-text-heading bg-gray-200 font-semibold @else text-text-primary hover:bg-gray-100 hover:text-text-heading font-medium @endif"
-                            >
-                                <span class="flex w-4 shrink-0 items-center justify-center">
-                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" class="size-4">
-                                        <line x1="4" y1="9" x2="20" y2="9" />
-                                        <line x1="4" y1="15" x2="20" y2="15" />
-                                        <line x1="10" y1="3" x2="8" y2="21" />
-                                        <line x1="16" y1="3" x2="14" y2="21" />
-                                    </svg>
-                                </span>
-                                Categories
-                            </a>
-                        </li>
-                        <li>
                             <a href="{{ route('admin.assets.index') }}"
                                 class="flex items-center gap-2.5 px-2.5 py-1.5 rounded-md text-sm no-underline transition-colors @if(request()->routeIs('admin.assets.*')) text-text-heading bg-gray-200 font-semibold @else text-text-primary hover:bg-gray-100 hover:text-text-heading font-medium @endif"
                             >
@@ -311,6 +296,46 @@
                                 Assets
                             </a>
                         </li>
+                    </ul>
+                </div>
+
+                {{-- Taxonomies --}}
+                <div class="mt-5">
+                    <div class="px-2.5 pb-1.5 text-xs font-semibold uppercase tracking-wider text-text-muted/70">Taxonomies</div>
+                    <ul class="space-y-0.5">
+                        <li>
+                            <a href="{{ route('admin.taxonomies.index') }}"
+                                class="flex items-center gap-2.5 px-2.5 py-1.5 rounded-md text-sm no-underline transition-colors @if(request()->routeIs('admin.taxonomies.index') || request()->routeIs('admin.taxonomies.create')) text-text-heading bg-gray-200 font-semibold @else text-text-primary hover:bg-gray-100 hover:text-text-heading font-medium @endif"
+                            >
+                                <span class="flex w-4 shrink-0 items-center justify-center">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" class="size-3.5">
+                                        <line x1="4" y1="9" x2="20" y2="9" />
+                                        <line x1="4" y1="15" x2="20" y2="15" />
+                                        <line x1="10" y1="3" x2="8" y2="21" />
+                                        <line x1="16" y1="3" x2="14" y2="21" />
+                                    </svg>
+                                </span>
+                                All Taxonomies
+                            </a>
+                        </li>
+                        @foreach($sidebarTaxonomies ?? [] as $sidebarTax)
+                            <li>
+                                <a href="{{ route('admin.taxonomies.show', $sidebarTax) }}"
+                                    class="flex items-center gap-2.5 px-2.5 py-1.5 rounded-md text-sm no-underline transition-colors @if(request()->route('taxonomy')?->id === $sidebarTax->id) text-text-heading bg-gray-200 font-semibold @else text-text-primary hover:bg-gray-100 hover:text-text-heading font-medium @endif"
+                                >
+                                    <span class="flex w-4 shrink-0 items-center justify-center">
+                                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" class="size-3.5 text-text-muted/80">
+                                            <path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z" />
+                                            <line x1="7" y1="7" x2="7.01" y2="7" />
+                                        </svg>
+                                    </span>
+                                    <span class="truncate">{{ $sidebarTax->title }}</span>
+                                    <span class="ml-auto text-[10px] font-medium px-1.5 py-0.2 rounded-full bg-gray-200/80 text-text-muted shrink-0">
+                                        {{ $sidebarTax->terms_count ?? $sidebarTax->terms()->count() }}
+                                    </span>
+                                </a>
+                            </li>
+                        @endforeach
                     </ul>
                 </div>
 

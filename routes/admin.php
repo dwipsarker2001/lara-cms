@@ -11,6 +11,7 @@ use App\Http\Controllers\Admin\ProfileController;
 use App\Http\Controllers\Admin\SeoController;
 use App\Http\Controllers\Admin\SettingsController;
 use App\Http\Controllers\Admin\TaxonomyController;
+use App\Http\Controllers\Admin\TermController;
 use App\Http\Controllers\Admin\UpdateController;
 use App\Models\Collection;
 use App\Models\Form;
@@ -206,7 +207,12 @@ Route::middleware(['web', 'auth:admin'])->prefix('admin')->name('admin.')->group
     Route::get('seo', [SeoController::class, 'index'])->name('seo');
     Route::put('seo', [SeoController::class, 'update'])->name('seo.update');
 
-    Route::resource('taxonomies', TaxonomyController::class)->except(['show']);
+    Route::patch('taxonomies/reorder', [TaxonomyController::class, 'reorder'])->name('taxonomies.reorder');
+    Route::resource('taxonomies', TaxonomyController::class);
+    Route::post('taxonomies/{taxonomy}/terms', [TermController::class, 'store'])->name('taxonomies.terms.store');
+    Route::put('taxonomies/{taxonomy}/terms/{term}', [TermController::class, 'update'])->name('taxonomies.terms.update');
+    Route::delete('taxonomies/{taxonomy}/terms/{term}', [TermController::class, 'destroy'])->name('taxonomies.terms.destroy');
+    Route::patch('taxonomies/{taxonomy}/terms/reorder', [TermController::class, 'reorder'])->name('taxonomies.terms.reorder');
 
     Route::get('assets', [AssetsController::class, 'page'])->name('assets.index');
     Route::get('assets/list', [AssetsController::class, 'index'])->name('assets.list');

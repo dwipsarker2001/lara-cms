@@ -316,12 +316,7 @@
                                 <button type="button" @click="fieldForm.type = 'taxonomies'; open = false"
                                     class="flex items-center w-full px-3 py-1.5 text-sm rounded-md text-text-primary hover:bg-gray-100 transition-colors"
                                     :class="fieldForm.type === 'taxonomies' ? 'bg-primary/10 text-primary font-medium' : ''">
-                                    Categories
-                                </button>
-                                <button type="button" @click="fieldForm.type = 'tags'; open = false"
-                                    class="flex items-center w-full px-3 py-1.5 text-sm rounded-md text-text-primary hover:bg-gray-100 transition-colors"
-                                    :class="fieldForm.type === 'tags' ? 'bg-primary/10 text-primary font-medium' : ''">
-                                    Tags
+                                    Taxonomies
                                 </button>
                             </div>
                         </div>
@@ -335,15 +330,21 @@
                             @endforeach
                         </select>
                     </div>
-                    <div x-show="fieldForm.type === 'taxonomies'" style="display: none;">
-                        <label class="block text-sm font-medium text-text-heading mb-1">Specific Category Filter (Optional)</label>
-                        <select x-model="fieldForm.taxonomy_id" class="w-full block bg-white border border-gray-300 text-text-primary text-sm rounded-lg px-3 py-2 h-9 transition-all duration-150 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary">
-                            <option value="">All Categories (Default)</option>
-                            @foreach($taxonomies as $tax)
-                                <option value="{{ $tax->id }}">{{ $tax->title }}</option>
-                            @endforeach
-                        </select>
-                        <p class="text-xs text-text-muted mt-1">Leave as "All Categories" to allow selecting any category for posts.</p>
+                    <div x-show="fieldForm.type === 'taxonomies'" style="display: none;" class="space-y-3">
+                        <div>
+                            <label class="block text-sm font-medium text-text-heading mb-1">Taxonomy Group</label>
+                            <select x-model="fieldForm.taxonomy_id" class="w-full block bg-white border border-gray-300 text-text-primary text-sm rounded-lg px-3 py-2 h-9 transition-all duration-150 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary">
+                                <option value="">All Taxonomies (Default)</option>
+                                @foreach($taxonomies as $tax)
+                                    <option value="{{ $tax->id }}">{{ $tax->title }}</option>
+                                @endforeach
+                            </select>
+                            <p class="text-xs text-text-muted mt-1">Select a specific taxonomy group (e.g. Categories, Tags, Brands) or leave as "All Taxonomies".</p>
+                        </div>
+                        <div class="flex items-center gap-2 pt-1">
+                            <input type="checkbox" id="field_multiple" x-model="fieldForm.multiple" class="rounded border-gray-300 text-primary focus:ring-primary">
+                            <label for="field_multiple" class="text-sm font-medium text-text-heading cursor-pointer">Allow Multiple Selections</label>
+                        </div>
                     </div>
                     <div>
                         <label class="block text-sm font-medium text-text-heading mb-1">Key</label>
@@ -440,7 +441,8 @@
                     type: 'text',
                     template: '',
                     collection_id: '',
-                    taxonomy_id: ''
+                    taxonomy_id: '',
+                    multiple: false
                 };
                 this.showFieldModal = true;
             },
@@ -448,7 +450,7 @@
             editField(index) {
                 this.editingFieldIndex = index;
                 this.isKeyManuallyEdited = true;
-                const field = { ...this.fields[index] };
+                const field = { multiple: false, ...this.fields[index] };
                 if (field.template) {
                     field.template = field.template.replace(/[^a-zA-Z0-9_]+/g, '');
                 }
