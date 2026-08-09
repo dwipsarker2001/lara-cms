@@ -75,30 +75,6 @@
                                     </div>
                                     <div class="flex items-center gap-0.5 shrink-0 ml-auto pr-1">
                                         <button
-                                            type="button"
-                                            @click.stop="moveSection(i, i - 1)"
-                                            :disabled="i === 0"
-                                            :class="i === 0 ? 'opacity-30 cursor-not-allowed' : 'hover:text-primary hover:bg-text-primary/10'"
-                                            class="p-1 text-text-muted/60 transition-colors rounded"
-                                            title="Move section up"
-                                        >
-                                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="size-4">
-                                                <path d="M18 15l-6-6-6 6" stroke-linecap="round" stroke-linejoin="round" />
-                                            </svg>
-                                        </button>
-                                        <button
-                                            type="button"
-                                            @click.stop="moveSection(i, i + 1)"
-                                            :disabled="i === sections.length - 1"
-                                            :class="i === sections.length - 1 ? 'opacity-30 cursor-not-allowed' : 'hover:text-primary hover:bg-text-primary/10'"
-                                            class="p-1 text-text-muted/60 transition-colors rounded"
-                                            title="Move section down"
-                                        >
-                                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="size-4">
-                                                <path d="M6 9l6 6 6-6" stroke-linecap="round" stroke-linejoin="round" />
-                                            </svg>
-                                        </button>
-                                        <button
                                             @click.stop="edit(i)"
                                             class="p-1 text-text-muted/60 hover:text-primary group-hover:text-primary transition-colors rounded hover:bg-text-primary/10"
                                             title="Edit"
@@ -652,7 +628,7 @@
                                                                         <template x-if="item.icon">
                                                                             <i :class="item.icon" class="size-3 shrink-0 text-text-muted"></i>
                                                                         </template>
-                                                                        <span class="text-sm font-semibold text-text-heading group-hover:text-primary truncate leading-normal transition-colors" x-text="cardLabel(item, field)"></span>
+                                                                        <span class="text-sm font-semibold text-text-heading group-hover:text-primary truncate leading-normal transition-colors" x-text="cardLabel(item, field, ci)"></span>
                                                                     </div>
                                                                     <div class="flex items-center gap-0.5 shrink-0 ml-1">
                                                                         <button @click="drillIn(field.name, ci)" class="p-1 text-text-muted/60 hover:text-primary group-hover:text-primary transition-colors rounded hover:bg-text-primary/10" title="Edit">
@@ -1052,8 +1028,18 @@
             },
 
             sectionLabel(section) {
+                if (!section) return '';
+                if (section.data?.headline) return section.data.headline;
+                if (section.data?.title) return section.data.title;
+                if (section.data?.heading) return section.data.heading;
+                const block = (this.blockList || []).find(b => b.name === section.name);
+                if (block && block.label) return block.label;
                 const s = this.schemas[section.name];
-                return section.data?.headline || section.data?.title || section.data?.heading || (s ? s.label : section.name) || section.name;
+                if (s && s.label) return s.label;
+                return (section.name || '')
+                    .replace(/([A-Z])/g, ' $1')
+                    .replace(/^./, str => str.toUpperCase())
+                    .trim();
             },
 
             editorTitle() {
@@ -1594,12 +1580,17 @@
                 return fields.find(f => f.name === name) || null;
             },
 
-            cardLabel(item, field) {
-                const candidates = ['title', 'label', 'name', 'heading', 'text'];
-                for (const c of candidates) {
-                    if (item[c] && typeof item[c] === 'string') return item[c].slice(0, 40);
+            cardLabel(item, field, index) {
+                if (item && typeof item === 'object') {
+                    const candidates = ['title', 'label', 'name', 'heading', 'text', 'platform', 'caption', 'url', 'link', 'value'];
+                    for (const c of candidates) {
+                        if (item[c] && typeof item[c] === 'string' && item[c].trim() !== '') {
+                            return item[c].trim().slice(0, 40);
+                        }
+                    }
                 }
-                return (field.itemLabel || field.label || 'Item') + ' ' + ((item._key || '').slice(0, 6));
+                const num = (typeof index === 'number') ? ` #${index + 1}` : '';
+                return (field?.itemLabel || field?.label || 'Item') + num;
             },
 
             parseTags(val) {
