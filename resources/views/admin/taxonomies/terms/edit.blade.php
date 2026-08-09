@@ -1,0 +1,209 @@
+@extends('admin.layout')
+
+@section('title', 'Edit ' . $term->title)
+@section('breadcrumb', 'Edit ' . $term->title)
+
+@section('content')
+    <div
+        class="max-w-5xl mx-auto px-2 sm:px-0"
+        x-data="{
+            title: '{{ old('title', addslashes($term->title)) }}',
+            slug: '{{ old('slug', addslashes($term->slug)) }}',
+            customSlug: true,
+
+            slugify(text) {
+                return text
+                    .toString()
+                    .toLowerCase()
+                    .trim()
+                    .replace(/\s+/g, '-')
+                    .replace(/[^\w\-]+/g, '')
+                    .replace(/\-\-+/g, '-')
+                    .replace(/^-+/, '')
+                    .replace(/-+$/, '');
+            },
+
+            onTitleInput() {
+                if (!this.customSlug) {
+                    this.slug = this.slugify(this.title);
+                }
+            },
+
+            onSlugInput(val) {
+                this.customSlug = true;
+                this.slug = this.slugify(val);
+            }
+        }"
+    >
+        <form method="POST" action="{{ route('admin.taxonomies.terms.update', [$taxonomy, $term]) }}">
+            @csrf
+            @method('PUT')
+
+            <header class="relative flex flex-wrap items-center justify-between gap-4 px-2 sm:px-0 py-6 md:py-8">
+                <h1 class="text-[25px] leading-[1.25] font-medium flex items-center gap-2.5 text-text-heading">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" class="size-6 shrink-0 text-text-muted">
+                        <path d="M12 2H2v10l9.29 9.29c.94.94 2.48.94 3.42 0l6.58-6.58c.94-.94.94-2.48 0-3.42L12 2Z" />
+                        <path d="M7 7h.01" />
+                    </svg>
+                    Edit {{ $term->title }}
+                </h1>
+                <div class="flex flex-wrap items-center gap-2 sm:gap-3">
+                    @if ($errors->any())
+                        <span class="text-sm font-medium text-danger" role="alert">{{ $errors->first() }}</span>
+                    @endif
+                    <a href="{{ route('admin.taxonomies.show', $taxonomy) }}"
+                        class="inline-flex items-center justify-center gap-2 whitespace-nowrap shrink-0 font-medium cursor-pointer no-underline rounded-lg transition-colors h-10 text-sm leading-tight px-4 bg-gradient-to-b from-content-bg to-gray-50 hover:to-gray-100 text-text-primary border border-content-border shadow-sm">
+                        Cancel
+                    </a>
+                    <button type="submit"
+                        class="inline-flex items-center justify-center gap-2 whitespace-nowrap shrink-0 font-medium cursor-pointer no-underline rounded-lg transition-colors h-10 text-sm leading-tight px-4 bg-primary hover:opacity-90 text-white shadow-sm">
+                        <span>Update {{ $taxonomy->title }}</span>
+                    </button>
+                </div>
+            </header>
+
+            <div class="bg-panel-bg rounded-2xl mb-8 p-[7px]">
+                <div class="px-[18px] pt-3 pb-1 text-sm font-medium text-text-heading">Details</div>
+                <p class="px-[18px] pb-3 text-sm text-text-muted">Update details for this {{ $taxonomy->title }}.</p>
+                <div class="px-1.5 pb-2">
+                    <div class="bg-content-bg rounded-xl ring-1 ring-content-border shadow-sm px-3 py-3">
+                        <div class="divide-y divide-content-border">
+                            <div class="grid md:grid-cols-2 items-start px-[18px] py-4 gap-y-3 md:gap-y-0 md:gap-x-5">
+                                <div class="flex flex-col gap-1.5">
+                                    <label for="field-title" class="text-sm font-medium text-text-heading">Title</label>
+                                    <div class="text-sm text-text-muted">Name of the item.</div>
+                                </div>
+                                <div class="flex items-center gap-2">
+                                    <div class="flex-1">
+                                        <input
+                                            id="field-title"
+                                            type="text"
+                                            name="title"
+                                            x-model="title"
+                                            @input="onTitleInput()"
+                                            value="{{ old('title', $term->title) }}"
+                                            required
+                                            class="w-full block bg-content-bg border border-content-border text-text-primary placeholder:text-text-muted text-sm rounded-lg px-3 py-2 h-9 transition-all duration-150 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary"
+                                        >
+                                        @error('title') <p class="text-xs text-danger mt-1">{{ $message }}</p> @enderror
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="grid md:grid-cols-2 items-start px-[18px] py-4 gap-y-3 md:gap-y-0 md:gap-x-5">
+                                <div class="flex flex-col gap-1.5">
+                                    <label for="field-slug" class="text-sm font-medium text-text-heading">Slug</label>
+                                    <div class="text-sm text-text-muted">URL identifier.</div>
+                                </div>
+                                <div class="flex items-center gap-2">
+                                    <div class="flex-1">
+                                        <input
+                                            id="field-slug"
+                                            type="text"
+                                            name="slug"
+                                            x-model="slug"
+                                            @input="onSlugInput($event.target.value)"
+                                            value="{{ old('slug', $term->slug) }}"
+                                            class="w-full block bg-content-bg border border-content-border text-text-primary placeholder:text-text-muted text-sm rounded-lg px-3 py-2 h-9 transition-all duration-150 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary font-mono"
+                                        >
+                                        @error('slug') <p class="text-xs text-danger mt-1">{{ $message }}</p> @enderror
+                                    </div>
+                                </div>
+                            </div>
+
+                            @if(!empty($taxonomy->fields))
+                                @php
+                                    $tData = $term->data ?? [];
+                                @endphp
+                                @foreach($taxonomy->fields as $field)
+                                    @php
+                                        $fKey = $field['template'] ?? \Illuminate\Support\Str::slug($field['title'], '_');
+                                        $fType = $field['type'] ?? 'text';
+                                        $fTitle = $field['title'] ?? ucfirst($fKey);
+                                        $fDesc = !empty($field['description']) ? $field['description'] : 'Configure ' . strtolower($fTitle) . ' for this item.';
+                                        $val = old('data.'.$fKey, $tData[$fKey] ?? '');
+                                    @endphp
+                                    <div class="grid md:grid-cols-2 items-start px-[18px] py-4 gap-y-3 md:gap-y-0 md:gap-x-5" x-data="{ imgPreview: '{{ $val }}' }">
+                                        <div class="flex flex-col gap-1.5">
+                                            <label class="text-sm font-medium text-text-heading">{{ $fTitle }}</label>
+                                            <div class="text-sm text-text-muted">{{ $fDesc }}</div>
+                                        </div>
+                                        <div class="flex items-center gap-2">
+                                            <div class="flex-1">
+                                                @if($fType === 'image')
+                                                    <div class="rounded-lg border border-content-border bg-content-bg overflow-hidden shadow-sm" x-data="{
+                                                        imgUrl: '{{ $val }}',
+                                                        get imgName() {
+                                                            if (!this.imgUrl) return '';
+                                                            try {
+                                                                const path = this.imgUrl.split('?')[0];
+                                                                return decodeURIComponent(path.split('/').pop() || path);
+                                                            } catch (e) {
+                                                                return this.imgUrl;
+                                                            }
+                                                        },
+                                                        openAssetPicker() {
+                                                            window.dispatchEvent(new CustomEvent('open-asset-picker', {
+                                                                detail: {
+                                                                    callback: (url) => { this.imgUrl = url; }
+                                                                }
+                                                            }));
+                                                        }
+                                                    }">
+                                                        <input type="hidden" name="data[{{ $fKey }}]" :value="imgUrl">
+                                                        <div class="flex items-center gap-3 px-2.5 py-2">
+                                                            <button
+                                                                type="button"
+                                                                @click="openAssetPicker()"
+                                                                class="inline-flex items-center justify-center gap-2 whitespace-nowrap shrink-0 font-medium cursor-pointer no-underline rounded-lg transition-colors h-8 text-xs leading-tight px-3 bg-gradient-to-b from-content-bg to-gray-50 hover:to-gray-100 text-text-primary border border-content-border shadow-sm"
+                                                            >
+                                                                <svg viewBox="0 0 24 24" fill="none" class="size-4 shrink-0">
+                                                                    <path d="M3 7a2 2 0 0 1 2-2h3.5l2 2H19a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V7Z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round" />
+                                                                </svg>
+                                                                Browse Assets
+                                                            </button>
+                                                            <div class="flex items-center gap-1.5 text-xs text-text-muted min-w-0 flex-1">
+                                                                <span class="truncate" x-text="imgUrl ? '1 file selected' : 'Drag & drop here or choose a file'"></span>
+                                                            </div>
+                                                        </div>
+                                                        <div class="border-t border-content-border px-2.5 py-2 flex items-center gap-3" x-show="imgUrl">
+                                                            <div class="size-8 rounded-md overflow-hidden bg-panel-bg flex items-center justify-center shrink-0 border border-gray-200">
+                                                                <img :src="imgUrl" alt="Selected image" class="size-full object-cover">
+                                                            </div>
+                                                            <span class="flex-1 min-w-0 truncate text-xs text-text-primary font-medium" x-text="imgName"></span>
+                                                            <button
+                                                                type="button"
+                                                                @click="imgUrl = ''"
+                                                                class="shrink-0 flex size-6 items-center justify-center rounded-md text-text-muted hover:bg-text-primary/10 hover:text-text-primary transition-colors"
+                                                                title="Remove image"
+                                                            >
+                                                                <svg viewBox="0 0 24 24" fill="none" class="size-4">
+                                                                    <path d="M6 6l12 12M18 6L6 18" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
+                                                                </svg>
+                                                            </button>
+                                                        </div>
+                                                    </div>
+                                                @elseif($fType === 'textarea')
+                                                    <textarea name="data[{{ $fKey }}]" rows="3" class="w-full block bg-content-bg border border-content-border text-text-primary text-sm rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary">{{ $val }}</textarea>
+                                                @elseif($fType === 'number')
+                                                    <input type="number" name="data[{{ $fKey }}]" value="{{ $val }}" class="w-full block bg-content-bg border border-content-border text-text-primary text-sm rounded-lg px-3 py-2 h-9 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary">
+                                                @elseif($fType === 'color')
+                                                    <div class="flex items-center gap-2" x-data="{ colorVal: '{{ $val ?: '#000000' }}' }">
+                                                        <input type="color" x-model="colorVal" class="h-9 w-12 rounded border border-content-border p-0.5 cursor-pointer">
+                                                        <input type="text" name="data[{{ $fKey }}]" x-model="colorVal" class="w-full block bg-content-bg border border-content-border text-text-primary text-sm rounded-lg px-3 py-2 h-9 font-mono" placeholder="#000000">
+                                                    </div>
+                                                @else
+                                                    <input type="text" name="data[{{ $fKey }}]" value="{{ $val }}" class="w-full block bg-content-bg border border-content-border text-text-primary text-sm rounded-lg px-3 py-2 h-9 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary">
+                                                @endif
+                                            </div>
+                                        </div>
+                                    </div>
+                                @endforeach
+                            @endif
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+@endsection

@@ -8,15 +8,53 @@ use App\Models\Term;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Schema;
 
 class TermController extends Controller
 {
+    protected function ensureSchemaColumns(): void
+    {
+        if (Schema::hasTable('terms')) {
+            if (! Schema::hasColumn('terms', 'data')) {
+                Schema::table('terms', function ($table) {
+                    $table->json('data')->nullable();
+                });
+            }
+            if (! Schema::hasColumn('terms', 'description')) {
+                Schema::table('terms', function ($table) {
+                    $table->text('description')->nullable();
+                });
+            }
+        }
+    }
+
+    public function create(Taxonomy $taxonomy)
+    {
+        $this->ensureSchemaColumns();
+
+        return view('admin.taxonomies.terms.create', ['taxonomy' => $taxonomy]);
+    }
+
+    public function edit(Taxonomy $taxonomy, Term $term)
+    {
+        $this->ensureSchemaColumns();
+
+        return view('admin.taxonomies.terms.edit', [
+            'taxonomy' => $taxonomy,
+            'term' => $term,
+        ]);
+    }
+
     public function store(Request $request, Taxonomy $taxonomy): RedirectResponse|JsonResponse
     {
+        $this->ensureSchemaColumns();
+
         $validated = $request->validate([
             'title' => 'required|string|max:255',
             'slug' => 'nullable|string|max:255',
             'position' => 'nullable|integer',
+            'description' => 'nullable|string',
+            'data' => 'nullable|array',
         ]);
 
         if (empty($validated['slug'])) {
@@ -43,10 +81,14 @@ class TermController extends Controller
 
     public function update(Request $request, Taxonomy $taxonomy, Term $term): RedirectResponse|JsonResponse
     {
+        $this->ensureSchemaColumns();
+
         $validated = $request->validate([
             'title' => 'required|string|max:255',
             'slug' => 'nullable|string|max:255',
             'position' => 'nullable|integer',
+            'description' => 'nullable|string',
+            'data' => 'nullable|array',
         ]);
 
         if (empty($validated['slug'])) {
@@ -82,6 +124,8 @@ class TermController extends Controller
 
     public function reorder(Request $request, Taxonomy $taxonomy): JsonResponse
     {
+        $this->ensureSchemaColumns();
+
         $validated = $request->validate([
             'term_ids' => 'required|array',
             'term_ids.*' => 'integer|exists:terms,id',

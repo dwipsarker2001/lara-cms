@@ -9,6 +9,14 @@ class Taxonomy extends Model
 {
     protected $guarded = [];
 
+    protected function casts(): array
+    {
+        return [
+            'fields' => 'array',
+            'position' => 'integer',
+        ];
+    }
+
     public function terms(): HasMany
     {
         return $this->hasMany(Term::class)->orderBy('position')->orderBy('title');

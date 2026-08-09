@@ -308,11 +308,10 @@
                                 class="flex items-center gap-2.5 px-2.5 py-1.5 rounded-md text-sm no-underline transition-colors @if(request()->routeIs('admin.taxonomies.index') || request()->routeIs('admin.taxonomies.create')) text-text-heading bg-gray-200 font-semibold @else text-text-primary hover:bg-gray-100 hover:text-text-heading font-medium @endif"
                             >
                                 <span class="flex w-4 shrink-0 items-center justify-center">
-                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" class="size-3.5">
-                                        <line x1="4" y1="9" x2="20" y2="9" />
-                                        <line x1="4" y1="15" x2="20" y2="15" />
-                                        <line x1="10" y1="3" x2="8" y2="21" />
-                                        <line x1="16" y1="3" x2="14" y2="21" />
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" class="size-3.5">
+                                        <path d="m15 5 6.3 6.3a2.4 2.4 0 0 1 0 3.4L17 19" />
+                                        <path d="M9.586 2.586A2 2 0 0 0 8.172 2H3a1 1 0 0 0-1 1v5.172a2 2 0 0 0 .586 1.414l8.828 8.828a2 2 0 0 0 2.828 0l5.172-5.172a2 2 0 0 0 0-2.828z" />
+                                        <path d="M6.5 6.5h.01" />
                                     </svg>
                                 </span>
                                 All Taxonomies
@@ -324,9 +323,9 @@
                                     class="flex items-center gap-2.5 px-2.5 py-1.5 rounded-md text-sm no-underline transition-colors @if(request()->route('taxonomy')?->id === $sidebarTax->id) text-text-heading bg-gray-200 font-semibold @else text-text-primary hover:bg-gray-100 hover:text-text-heading font-medium @endif"
                                 >
                                     <span class="flex w-4 shrink-0 items-center justify-center">
-                                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" class="size-3.5 text-text-muted/80">
-                                            <path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z" />
-                                            <line x1="7" y1="7" x2="7.01" y2="7" />
+                                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" class="size-3.5 text-text-muted/80">
+                                            <path d="M12 2H2v10l9.29 9.29c.94.94 2.48.94 3.42 0l6.58-6.58c.94-.94.94-2.48 0-3.42L12 2Z" />
+                                            <path d="M7 7h.01" />
                                         </svg>
                                     </span>
                                     <span class="truncate">{{ $sidebarTax->title }}</span>

@@ -7,11 +7,10 @@
 <div class="max-w-5xl mx-auto px-2 sm:px-0">
     <header class="relative flex flex-wrap items-center justify-between gap-4 py-6 md:py-8">
         <h1 class="flex items-center gap-2.5 text-[25px] leading-[1.25] font-medium text-text-heading">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" class="size-6 shrink-0 text-text-muted">
-                <line x1="4" y1="9" x2="20" y2="9" />
-                <line x1="4" y1="15" x2="20" y2="15" />
-                <line x1="10" y1="3" x2="8" y2="21" />
-                <line x1="16" y1="3" x2="14" y2="21" />
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" class="size-6 shrink-0 text-text-muted">
+                <path d="m15 5 6.3 6.3a2.4 2.4 0 0 1 0 3.4L17 19" />
+                <path d="M9.586 2.586A2 2 0 0 0 8.172 2H3a1 1 0 0 0-1 1v5.172a2 2 0 0 0 .586 1.414l8.828 8.828a2 2 0 0 0 2.828 0l5.172-5.172a2 2 0 0 0 0-2.828z" />
+                <path d="M6.5 6.5h.01" />
             </svg>
             Taxonomies
         </h1>

@@ -209,6 +209,8 @@ Route::middleware(['web', 'auth:admin'])->prefix('admin')->name('admin.')->group
 
     Route::patch('taxonomies/reorder', [TaxonomyController::class, 'reorder'])->name('taxonomies.reorder');
     Route::resource('taxonomies', TaxonomyController::class);
+    Route::get('taxonomies/{taxonomy}/terms/create', [TermController::class, 'create'])->name('taxonomies.terms.create');
+    Route::get('taxonomies/{taxonomy}/terms/{term}/edit', [TermController::class, 'edit'])->name('taxonomies.terms.edit');
     Route::post('taxonomies/{taxonomy}/terms', [TermController::class, 'store'])->name('taxonomies.terms.store');
     Route::put('taxonomies/{taxonomy}/terms/{term}', [TermController::class, 'update'])->name('taxonomies.terms.update');
     Route::delete('taxonomies/{taxonomy}/terms/{term}', [TermController::class, 'destroy'])->name('taxonomies.terms.destroy');

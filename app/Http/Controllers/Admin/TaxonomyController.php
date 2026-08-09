@@ -11,13 +11,25 @@ use Illuminate\View\View;
 
 class TaxonomyController extends Controller
 {
+    protected function ensureSchemaColumns(): void
+    {
+        if (Schema::hasTable('taxonomies')) {
+            if (! Schema::hasColumn('taxonomies', 'position')) {
+                Schema::table('taxonomies', function ($table) {
+                    $table->integer('position')->default(0);
+                });
+            }
+            if (! Schema::hasColumn('taxonomies', 'fields')) {
+                Schema::table('taxonomies', function ($table) {
+                    $table->json('fields')->nullable();
+                });
+            }
+        }
+    }
+
     public function index(): View
     {
-        if (! Schema::hasColumn('taxonomies', 'position')) {
-            Schema::table('taxonomies', function ($table) {
-                $table->integer('position')->default(0);
-            });
-        }
+        $this->ensureSchemaColumns();
 
         $taxonomies = Taxonomy::withCount('terms')
             ->with(['terms' => fn ($q) => $q->orderBy('position')->limit(6)])
@@ -30,11 +42,7 @@ class TaxonomyController extends Controller
 
     public function reorder(Request $request)
     {
-        if (! Schema::hasColumn('taxonomies', 'position')) {
-            Schema::table('taxonomies', function ($table) {
-                $table->integer('position')->default(0);
-            });
-        }
+        $this->ensureSchemaColumns();
 
         foreach ($request->taxonomy_ids ?? [] as $i => $id) {
             Taxonomy::where('id', $id)->update(['position' => $i]);
@@ -45,21 +53,31 @@ class TaxonomyController extends Controller
 
     public function create(): View
     {
+        $this->ensureSchemaColumns();
+
         return view('admin.taxonomies.create');
     }
 
     public function store(Request $request): RedirectResponse
     {
+        $this->ensureSchemaColumns();
+
         if (empty($request->slug) && ! empty($request->title)) {
             $request->merge([
                 'slug' => str($request->title)->slug()->limit(255)->toString(),
             ]);
         }
 
+        if ($request->has('fields') && is_string($request->fields)) {
+            $decoded = json_decode($request->fields, true);
+            $request->merge(['fields' => is_array($decoded) ? $decoded : []]);
+        }
+
         $data = $request->validate([
             'title' => 'required|string|max:255',
             'slug' => 'required|string|max:255|unique:taxonomies,slug',
             'description' => 'nullable|string',
+            'fields' => 'nullable|array',
         ]);
 
         $taxonomy = Taxonomy::create($data);
@@ -69,6 +87,8 @@ class TaxonomyController extends Controller
 
     public function show(Taxonomy $taxonomy): View
     {
+        $this->ensureSchemaColumns();
+
         $taxonomy->load(['terms' => fn ($q) => $q->orderBy('position')->orderBy('title')]);
 
         return view('admin.taxonomies.show', ['taxonomy' => $taxonomy]);
@@ -76,15 +96,25 @@ class TaxonomyController extends Controller
 
     public function edit(Taxonomy $taxonomy): View
     {
+        $this->ensureSchemaColumns();
+
         return view('admin.taxonomies.edit', ['taxonomy' => $taxonomy]);
     }
 
     public function update(Request $request, Taxonomy $taxonomy): RedirectResponse
     {
+        $this->ensureSchemaColumns();
+
+        if ($request->has('fields') && is_string($request->fields)) {
+            $decoded = json_decode($request->fields, true);
+            $request->merge(['fields' => is_array($decoded) ? $decoded : []]);
+        }
+
         $data = $request->validate([
             'title' => 'required|string|max:255',
             'slug' => 'required|string|max:255|unique:taxonomies,slug,'.$taxonomy->id,
             'description' => 'nullable|string',
+            'fields' => 'nullable|array',
         ]);
 
         $taxonomy->update($data);

@@ -13,6 +13,8 @@ class Term extends Model
     {
         return [
             'taxonomy_id' => 'integer',
+            'data' => 'array',
+            'position' => 'integer',
         ];
     }
 
