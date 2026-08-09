@@ -188,6 +188,45 @@
                                                         <input type="color" x-model="colorVal" class="h-9 w-12 rounded border border-content-border p-0.5 cursor-pointer">
                                                         <input type="text" name="data[{{ $fKey }}]" x-model="colorVal" class="w-full block bg-content-bg border border-content-border text-text-primary text-sm rounded-lg px-3 py-2 h-9 font-mono" placeholder="#000000">
                                                     </div>
+                                                @elseif($fType === 'select')
+                                                     @php
+                                                         $rawOpts = $field['options'] ?? '';
+                                                         $optsArr = array_filter(array_map('trim', is_array($rawOpts) ? $rawOpts : explode(',', $rawOpts)));
+                                                     @endphp
+                                                     <div x-data="{ open: false, selectedVal: '{{ $oldVal }}' }" @click.outside="open = false" class="relative">
+                                                         <input type="hidden" name="data[{{ $fKey }}]" :value="selectedVal">
+                                                         <button type="button" @click="open = !open"
+                                                             class="flex items-center justify-between gap-2 w-full rounded-lg border border-content-border hover:border-gray-400 bg-content-bg px-3 py-2 text-sm text-text-primary h-9 transition-colors focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary cursor-pointer shadow-sm">
+                                                             <span x-text="selectedVal || 'Select option...'"></span>
+                                                             <svg :class="open ? 'rotate-180 text-primary' : 'text-text-muted'" class="size-4 transition-transform duration-150 shrink-0" viewBox="0 0 20 20" fill="currentColor">
+                                                                 <path fill-rule="evenodd" d="M5.22 8.22a.75.75 0 0 1 1.06 0L10 11.94l3.72-3.72a.75.75 0 1 1 1.06 1.06l-4.25 4.25a.75.75 0 0 1-1.06 0L5.22 9.28a.75.75 0 0 1 0-1.06Z" clip-rule="evenodd" />
+                                                             </svg>
+                                                         </button>
+                                                         <div x-show="open"
+                                                             x-transition:enter="transition ease-out duration-100"
+                                                             x-transition:enter-start="opacity-0 scale-95"
+                                                             x-transition:enter-end="opacity-100 scale-100"
+                                                             x-transition:leave="transition ease-in duration-75"
+                                                             x-transition:leave-start="opacity-100 scale-100"
+                                                             x-transition:leave-end="opacity-0 scale-95"
+                                                             class="absolute z-50 top-full mt-1 left-0 right-0 bg-white border border-gray-200 rounded-lg shadow-xl p-1 space-y-0.5 max-h-60 overflow-y-auto"
+                                                             style="display: none;">
+                                                             <button type="button" @click="selectedVal = ''; open = false"
+                                                                 class="flex items-center justify-between w-full px-3 py-1.5 text-sm rounded-md text-text-muted hover:bg-gray-100 transition-colors">
+                                                                 <span>Select option...</span>
+                                                             </button>
+                                                             @foreach($optsArr as $opt)
+                                                                 <button type="button" @click="selectedVal = '{{ addslashes($opt) }}'; open = false"
+                                                                     class="flex items-center justify-between w-full px-3 py-1.5 text-sm rounded-md text-text-primary hover:bg-gray-100 transition-colors"
+                                                                     :class="selectedVal === '{{ addslashes($opt) }}' ? 'bg-primary/10 text-primary font-medium' : ''">
+                                                                     <span>{{ $opt }}</span>
+                                                                     <svg x-show="selectedVal === '{{ addslashes($opt) }}'" class="size-4 text-primary shrink-0" viewBox="0 0 20 20" fill="currentColor">
+                                                                         <path fill-rule="evenodd" d="M16.704 4.153a.75.75 0 0 1 .143 1.052l-8 10.5a.75.75 0 0 1-1.127.075l-4.5-4.5a.75.75 0 0 1 1.06-1.06l3.894 3.893 7.48-9.817a.75.75 0 0 1 1.05-.143Z" clip-rule="evenodd" />
+                                                                     </svg>
+                                                                 </button>
+                                                             @endforeach
+                                                         </div>
+                                                     </div>
                                                 @else
                                                     <input type="text" name="data[{{ $fKey }}]" value="{{ $oldVal }}" class="w-full block bg-content-bg border border-content-border text-text-primary text-sm rounded-lg px-3 py-2 h-9 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary">
                                                 @endif

@@ -262,20 +262,49 @@
                             class="w-full block bg-white border border-gray-300 text-text-primary placeholder:text-text-muted text-sm rounded-lg px-3 py-2 h-9 transition-all duration-150 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary">
                     </div>
                     <div class="relative z-30">
-                        <label class="block text-sm font-medium text-text-heading mb-1">Input Type</label>
+                        <label class="block text-sm font-medium text-text-heading mb-1.5">Input Type</label>
                         <div x-data="{ open: false }" @click.outside="open = false" class="relative">
                             <button type="button" @click="open = !open"
-                                class="flex items-center justify-between gap-2 w-full rounded-lg border border-gray-300 hover:border-gray-400 bg-white px-3 py-2 text-sm text-text-primary h-9 transition-colors focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary cursor-pointer">
-                                <span x-text="{
-                                    'text': 'Text',
-                                    'textarea': 'Textarea',
-                                    'number': 'Number',
-                                    'image': 'Image',
-                                    'collection': 'Collection',
-                                    'taxonomies': 'Categories',
-                                    'tags': 'Tags'
-                                }[fieldForm.type] || 'Select type...'"></span>
-                                <svg :class="open ? 'rotate-180' : ''" class="size-4 text-gray-400 transition-transform duration-150 shrink-0" viewBox="0 0 20 20" fill="currentColor">
+                                class="flex items-center justify-between gap-2 w-full rounded-lg border border-gray-300 hover:border-gray-400 bg-white px-3 py-2 text-sm text-text-primary h-9 transition-all duration-150 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary cursor-pointer shadow-sm">
+                                <div class="flex items-center gap-2.5 min-w-0 truncate">
+                                    <template x-if="fieldForm.type === 'text'">
+                                        <div class="flex items-center gap-2">
+                                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" class="size-4 text-primary shrink-0"><path d="M4 7V4h16v3M9 20h6M12 4v16"/></svg>
+                                            <span class="font-medium">Text</span>
+                                        </div>
+                                    </template>
+                                    <template x-if="fieldForm.type === 'textarea'">
+                                        <div class="flex items-center gap-2">
+                                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" class="size-4 text-primary shrink-0"><path d="M14 3v4a1 1 0 0 0 1 1h4"/><path d="M17 21H7a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h7l5 5v11a2 2 0 0 1-2 2z"/><line x1="9" y1="9" x2="10" y2="9"/><line x1="9" y1="13" x2="15" y2="13"/><line x1="9" y1="17" x2="15" y2="17"/></svg>
+                                            <span class="font-medium">Textarea</span>
+                                        </div>
+                                    </template>
+                                    <template x-if="fieldForm.type === 'number'">
+                                        <div class="flex items-center gap-2">
+                                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" class="size-4 text-primary shrink-0"><line x1="4" y1="9" x2="20" y2="9"/><line x1="4" y1="15" x2="20" y2="15"/><line x1="10" y1="3" x2="8" y2="21"/><line x1="16" y1="3" x2="14" y2="21"/></svg>
+                                            <span class="font-medium">Number</span>
+                                        </div>
+                                    </template>
+                                    <template x-if="fieldForm.type === 'image'">
+                                        <div class="flex items-center gap-2">
+                                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" class="size-4 text-primary shrink-0"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+                                            <span class="font-medium">Image</span>
+                                        </div>
+                                    </template>
+                                    <template x-if="fieldForm.type === 'collection'">
+                                        <div class="flex items-center gap-2">
+                                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" class="size-4 text-primary shrink-0"><path d="M4 6h16M4 12h16M4 18h16"/></svg>
+                                            <span class="font-medium">Collection</span>
+                                        </div>
+                                    </template>
+                                    <template x-if="fieldForm.type === 'taxonomies'">
+                                        <div class="flex items-center gap-2">
+                                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" class="size-4 text-primary shrink-0"><path d="M12 2H2v10l9.29 9.29c.94.94 2.48.94 3.42 0l6.58-6.58c.94-.94.94-2.48 0-3.42L12 2Z"/><path d="M7 7h.01"/></svg>
+                                            <span class="font-medium">Taxonomies</span>
+                                        </div>
+                                    </template>
+                                </div>
+                                <svg :class="open ? 'rotate-180 text-primary' : 'text-gray-400'" class="size-4 transition-transform duration-150 shrink-0" viewBox="0 0 20 20" fill="currentColor">
                                     <path fill-rule="evenodd" d="M5.22 8.22a.75.75 0 0 1 1.06 0L10 11.94l3.72-3.72a.75.75 0 1 1 1.06 1.06l-4.25 4.25a.75.75 0 0 1-1.06 0L5.22 9.28a.75.75 0 0 1 0-1.06Z" clip-rule="evenodd" />
                                 </svg>
                             </button>
@@ -286,59 +315,153 @@
                                 x-transition:leave="transition ease-in duration-75"
                                 x-transition:leave-start="opacity-100 scale-100"
                                 x-transition:leave-end="opacity-0 scale-95"
-                                class="absolute z-50 top-full mt-1 left-0 right-0 bg-white border border-gray-200 rounded-lg shadow-xl p-1 space-y-0.5 max-h-60 overflow-y-auto"
+                                class="absolute z-50 top-full mt-1 left-0 right-0 bg-white border border-gray-200 rounded-lg shadow-xl p-1.5 space-y-0.5 max-h-60 overflow-y-auto"
                                 style="display: none;">
                                 <button type="button" @click="fieldForm.type = 'text'; open = false"
-                                    class="flex items-center w-full px-3 py-1.5 text-sm rounded-md text-text-primary hover:bg-gray-100 transition-colors"
+                                    class="flex items-center justify-between w-full px-3 py-2 text-sm rounded-lg text-text-primary hover:bg-gray-100/80 transition-colors"
                                     :class="fieldForm.type === 'text' ? 'bg-primary/10 text-primary font-medium' : ''">
-                                    Text
+                                    <div class="flex items-center gap-2.5">
+                                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" class="size-4 shrink-0" :class="fieldForm.type === 'text' ? 'text-primary' : 'text-text-muted'"><path d="M4 7V4h16v3M9 20h6M12 4v16"/></svg>
+                                        <span>Text</span>
+                                    </div>
+                                    <svg x-show="fieldForm.type === 'text'" class="size-4 text-primary shrink-0" viewBox="0 0 20 20" fill="currentColor">
+                                        <path fill-rule="evenodd" d="M16.704 4.153a.75.75 0 0 1 .143 1.052l-8 10.5a.75.75 0 0 1-1.127.075l-4.5-4.5a.75.75 0 0 1 1.06-1.06l3.894 3.893 7.48-9.817a.75.75 0 0 1 1.05-.143Z" clip-rule="evenodd" />
+                                    </svg>
                                 </button>
                                 <button type="button" @click="fieldForm.type = 'textarea'; open = false"
-                                    class="flex items-center w-full px-3 py-1.5 text-sm rounded-md text-text-primary hover:bg-gray-100 transition-colors"
+                                    class="flex items-center justify-between w-full px-3 py-2 text-sm rounded-lg text-text-primary hover:bg-gray-100/80 transition-colors"
                                     :class="fieldForm.type === 'textarea' ? 'bg-primary/10 text-primary font-medium' : ''">
-                                    Textarea
+                                    <div class="flex items-center gap-2.5">
+                                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" class="size-4 shrink-0" :class="fieldForm.type === 'textarea' ? 'text-primary' : 'text-text-muted'"><path d="M14 3v4a1 1 0 0 0 1 1h4"/><path d="M17 21H7a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h7l5 5v11a2 2 0 0 1-2 2z"/><line x1="9" y1="9" x2="10" y2="9"/><line x1="9" y1="13" x2="15" y2="13"/><line x1="9" y1="17" x2="15" y2="17"/></svg>
+                                        <span>Textarea</span>
+                                    </div>
+                                    <svg x-show="fieldForm.type === 'textarea'" class="size-4 text-primary shrink-0" viewBox="0 0 20 20" fill="currentColor">
+                                        <path fill-rule="evenodd" d="M16.704 4.153a.75.75 0 0 1 .143 1.052l-8 10.5a.75.75 0 0 1-1.127.075l-4.5-4.5a.75.75 0 0 1 1.06-1.06l3.894 3.893 7.48-9.817a.75.75 0 0 1 1.05-.143Z" clip-rule="evenodd" />
+                                    </svg>
                                 </button>
                                 <button type="button" @click="fieldForm.type = 'number'; open = false"
-                                    class="flex items-center w-full px-3 py-1.5 text-sm rounded-md text-text-primary hover:bg-gray-100 transition-colors"
+                                    class="flex items-center justify-between w-full px-3 py-2 text-sm rounded-lg text-text-primary hover:bg-gray-100/80 transition-colors"
                                     :class="fieldForm.type === 'number' ? 'bg-primary/10 text-primary font-medium' : ''">
-                                    Number
+                                    <div class="flex items-center gap-2.5">
+                                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" class="size-4 shrink-0" :class="fieldForm.type === 'number' ? 'text-primary' : 'text-text-muted'"><line x1="4" y1="9" x2="20" y2="9"/><line x1="4" y1="15" x2="20" y2="15"/><line x1="10" y1="3" x2="8" y2="21"/><line x1="16" y1="3" x2="14" y2="21"/></svg>
+                                        <span>Number</span>
+                                    </div>
+                                    <svg x-show="fieldForm.type === 'number'" class="size-4 text-primary shrink-0" viewBox="0 0 20 20" fill="currentColor">
+                                        <path fill-rule="evenodd" d="M16.704 4.153a.75.75 0 0 1 .143 1.052l-8 10.5a.75.75 0 0 1-1.127.075l-4.5-4.5a.75.75 0 0 1 1.06-1.06l3.894 3.893 7.48-9.817a.75.75 0 0 1 1.05-.143Z" clip-rule="evenodd" />
+                                    </svg>
                                 </button>
                                 <button type="button" @click="fieldForm.type = 'image'; open = false"
-                                    class="flex items-center w-full px-3 py-1.5 text-sm rounded-md text-text-primary hover:bg-gray-100 transition-colors"
+                                    class="flex items-center justify-between w-full px-3 py-2 text-sm rounded-lg text-text-primary hover:bg-gray-100/80 transition-colors"
                                     :class="fieldForm.type === 'image' ? 'bg-primary/10 text-primary font-medium' : ''">
-                                    Image
+                                    <div class="flex items-center gap-2.5">
+                                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" class="size-4 shrink-0" :class="fieldForm.type === 'image' ? 'text-primary' : 'text-text-muted'"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+                                        <span>Image</span>
+                                    </div>
+                                    <svg x-show="fieldForm.type === 'image'" class="size-4 text-primary shrink-0" viewBox="0 0 20 20" fill="currentColor">
+                                        <path fill-rule="evenodd" d="M16.704 4.153a.75.75 0 0 1 .143 1.052l-8 10.5a.75.75 0 0 1-1.127.075l-4.5-4.5a.75.75 0 0 1 1.06-1.06l3.894 3.893 7.48-9.817a.75.75 0 0 1 1.05-.143Z" clip-rule="evenodd" />
+                                    </svg>
                                 </button>
                                 <button type="button" @click="fieldForm.type = 'collection'; open = false"
-                                    class="flex items-center w-full px-3 py-1.5 text-sm rounded-md text-text-primary hover:bg-gray-100 transition-colors"
+                                    class="flex items-center justify-between w-full px-3 py-2 text-sm rounded-lg text-text-primary hover:bg-gray-100/80 transition-colors"
                                     :class="fieldForm.type === 'collection' ? 'bg-primary/10 text-primary font-medium' : ''">
-                                    Collection
+                                    <div class="flex items-center gap-2.5">
+                                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" class="size-4 shrink-0" :class="fieldForm.type === 'collection' ? 'text-primary' : 'text-text-muted'"><path d="M4 6h16M4 12h16M4 18h16"/></svg>
+                                        <span>Collection</span>
+                                    </div>
+                                    <svg x-show="fieldForm.type === 'collection'" class="size-4 text-primary shrink-0" viewBox="0 0 20 20" fill="currentColor">
+                                        <path fill-rule="evenodd" d="M16.704 4.153a.75.75 0 0 1 .143 1.052l-8 10.5a.75.75 0 0 1-1.127.075l-4.5-4.5a.75.75 0 0 1 1.06-1.06l3.894 3.893 7.48-9.817a.75.75 0 0 1 1.05-.143Z" clip-rule="evenodd" />
+                                    </svg>
                                 </button>
                                 <button type="button" @click="fieldForm.type = 'taxonomies'; open = false"
-                                    class="flex items-center w-full px-3 py-1.5 text-sm rounded-md text-text-primary hover:bg-gray-100 transition-colors"
+                                    class="flex items-center justify-between w-full px-3 py-2 text-sm rounded-lg text-text-primary hover:bg-gray-100/80 transition-colors"
                                     :class="fieldForm.type === 'taxonomies' ? 'bg-primary/10 text-primary font-medium' : ''">
-                                    Taxonomies
+                                    <div class="flex items-center gap-2.5">
+                                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" class="size-4 shrink-0" :class="fieldForm.type === 'taxonomies' ? 'text-primary' : 'text-text-muted'"><path d="M12 2H2v10l9.29 9.29c.94.94 2.48.94 3.42 0l6.58-6.58c.94-.94.94-2.48 0-3.42L12 2Z"/><path d="M7 7h.01"/></svg>
+                                        <span>Taxonomies</span>
+                                    </div>
+                                    <svg x-show="fieldForm.type === 'taxonomies'" class="size-4 text-primary shrink-0" viewBox="0 0 20 20" fill="currentColor">
+                                        <path fill-rule="evenodd" d="M16.704 4.153a.75.75 0 0 1 .143 1.052l-8 10.5a.75.75 0 0 1-1.127.075l-4.5-4.5a.75.75 0 0 1 1.06-1.06l3.894 3.893 7.48-9.817a.75.75 0 0 1 1.05-.143Z" clip-rule="evenodd" />
+                                    </svg>
                                 </button>
                             </div>
                         </div>
                     </div>
-                    <div x-show="fieldForm.type === 'collection'" style="display: none;">
+                    <div x-show="fieldForm.type === 'collection'" style="display: none;" class="space-y-1 relative z-20">
                         <label class="block text-sm font-medium text-text-heading mb-1">Target Collection</label>
-                        <select x-model="fieldForm.collection_id" class="w-full block bg-white border border-gray-300 text-text-primary text-sm rounded-lg px-3 py-2 h-9 transition-all duration-150 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary">
-                            <option value="">Choose a collection...</option>
-                            @foreach($collections as $col)
-                                <option value="{{ $col->id }}">{{ $col->name }}</option>
-                            @endforeach
-                        </select>
+                        <div x-data="{ open: false }" @click.outside="open = false" class="relative">
+                            <button type="button" @click="open = !open"
+                                class="flex items-center justify-between gap-2 w-full rounded-lg border border-gray-300 hover:border-gray-400 bg-white px-3 py-2 text-sm text-text-primary h-9 transition-colors focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary cursor-pointer shadow-sm">
+                                <span x-text="fieldForm.collection_id ? (@js($collections->pluck('name', 'id'))[fieldForm.collection_id] || 'Choose a collection...') : 'Choose a collection...'"></span>
+                                <svg :class="open ? 'rotate-180 text-primary' : 'text-gray-400'" class="size-4 transition-transform duration-150 shrink-0" viewBox="0 0 20 20" fill="currentColor">
+                                    <path fill-rule="evenodd" d="M5.22 8.22a.75.75 0 0 1 1.06 0L10 11.94l3.72-3.72a.75.75 0 1 1 1.06 1.06l-4.25 4.25a.75.75 0 0 1-1.06 0L5.22 9.28a.75.75 0 0 1 0-1.06Z" clip-rule="evenodd" />
+                                </svg>
+                            </button>
+                            <div x-show="open"
+                                x-transition:enter="transition ease-out duration-100"
+                                x-transition:enter-start="opacity-0 scale-95"
+                                x-transition:enter-end="opacity-100 scale-100"
+                                x-transition:leave="transition ease-in duration-75"
+                                x-transition:leave-start="opacity-100 scale-100"
+                                x-transition:leave-end="opacity-0 scale-95"
+                                class="absolute z-50 top-full mt-1 left-0 right-0 bg-white border border-gray-200 rounded-lg shadow-xl p-1.5 space-y-0.5 max-h-56 overflow-y-auto"
+                                style="display: none;">
+                                <button type="button" @click="fieldForm.collection_id = ''; open = false"
+                                    class="flex items-center justify-between w-full px-3 py-2 text-sm rounded-lg text-text-muted hover:bg-gray-100/80 transition-colors">
+                                    <span>Choose a collection...</span>
+                                </button>
+                                @foreach($collections as $col)
+                                    <button type="button" @click="fieldForm.collection_id = '{{ $col->id }}'; open = false"
+                                        class="flex items-center justify-between w-full px-3 py-2 text-sm rounded-lg text-text-primary hover:bg-gray-100/80 transition-colors"
+                                        :class="fieldForm.collection_id == '{{ $col->id }}' ? 'bg-primary/10 text-primary font-medium' : ''">
+                                        <span>{{ $col->name }}</span>
+                                        <svg x-show="fieldForm.collection_id == '{{ $col->id }}'" class="size-4 text-primary shrink-0" viewBox="0 0 20 20" fill="currentColor">
+                                            <path fill-rule="evenodd" d="M16.704 4.153a.75.75 0 0 1 .143 1.052l-8 10.5a.75.75 0 0 1-1.127.075l-4.5-4.5a.75.75 0 0 1 1.06-1.06l3.894 3.893 7.48-9.817a.75.75 0 0 1 1.05-.143Z" clip-rule="evenodd" />
+                                        </svg>
+                                    </button>
+                                @endforeach
+                            </div>
+                        </div>
                     </div>
-                    <div x-show="fieldForm.type === 'taxonomies'" style="display: none;" class="space-y-3">
+                    <div x-show="fieldForm.type === 'taxonomies'" style="display: none;" class="space-y-3 relative z-20">
                         <div>
                             <label class="block text-sm font-medium text-text-heading mb-1">Taxonomy Group</label>
-                            <select x-model="fieldForm.taxonomy_id" class="w-full block bg-white border border-gray-300 text-text-primary text-sm rounded-lg px-3 py-2 h-9 transition-all duration-150 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary">
-                                <option value="">All Taxonomies (Default)</option>
-                                @foreach($taxonomies as $tax)
-                                    <option value="{{ $tax->id }}">{{ $tax->title }}</option>
-                                @endforeach
-                            </select>
+                            <div x-data="{ open: false }" @click.outside="open = false" class="relative">
+                                <button type="button" @click="open = !open"
+                                    class="flex items-center justify-between gap-2 w-full rounded-lg border border-gray-300 hover:border-gray-400 bg-white px-3 py-2 text-sm text-text-primary h-9 transition-colors focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary cursor-pointer shadow-sm">
+                                    <span x-text="fieldForm.taxonomy_id ? (@js($taxonomies->pluck('title', 'id'))[fieldForm.taxonomy_id] || 'All Taxonomies (Default)') : 'All Taxonomies (Default)'"></span>
+                                    <svg :class="open ? 'rotate-180 text-primary' : 'text-gray-400'" class="size-4 transition-transform duration-150 shrink-0" viewBox="0 0 20 20" fill="currentColor">
+                                        <path fill-rule="evenodd" d="M5.22 8.22a.75.75 0 0 1 1.06 0L10 11.94l3.72-3.72a.75.75 0 1 1 1.06 1.06l-4.25 4.25a.75.75 0 0 1-1.06 0L5.22 9.28a.75.75 0 0 1 0-1.06Z" clip-rule="evenodd" />
+                                    </svg>
+                                </button>
+                                <div x-show="open"
+                                    x-transition:enter="transition ease-out duration-100"
+                                    x-transition:enter-start="opacity-0 scale-95"
+                                    x-transition:enter-end="opacity-100 scale-100"
+                                    x-transition:leave="transition ease-in duration-75"
+                                    x-transition:leave-start="opacity-100 scale-100"
+                                    x-transition:leave-end="opacity-0 scale-95"
+                                    class="absolute z-50 top-full mt-1 left-0 right-0 bg-white border border-gray-200 rounded-lg shadow-xl p-1.5 space-y-0.5 max-h-56 overflow-y-auto"
+                                    style="display: none;">
+                                    <button type="button" @click="fieldForm.taxonomy_id = ''; open = false"
+                                        class="flex items-center justify-between w-full px-3 py-2 text-sm rounded-lg text-text-primary hover:bg-gray-100/80 transition-colors"
+                                        :class="!fieldForm.taxonomy_id ? 'bg-primary/10 text-primary font-medium' : ''">
+                                        <span>All Taxonomies (Default)</span>
+                                        <svg x-show="!fieldForm.taxonomy_id" class="size-4 text-primary shrink-0" viewBox="0 0 20 20" fill="currentColor">
+                                            <path fill-rule="evenodd" d="M16.704 4.153a.75.75 0 0 1 .143 1.052l-8 10.5a.75.75 0 0 1-1.127.075l-4.5-4.5a.75.75 0 0 1 1.06-1.06l3.894 3.893 7.48-9.817a.75.75 0 0 1 1.05-.143Z" clip-rule="evenodd" />
+                                        </svg>
+                                    </button>
+                                    @foreach($taxonomies as $tax)
+                                        <button type="button" @click="fieldForm.taxonomy_id = '{{ $tax->id }}'; open = false"
+                                            class="flex items-center justify-between w-full px-3 py-2 text-sm rounded-lg text-text-primary hover:bg-gray-100/80 transition-colors"
+                                            :class="fieldForm.taxonomy_id == '{{ $tax->id }}' ? 'bg-primary/10 text-primary font-medium' : ''">
+                                            <span>{{ $tax->title }}</span>
+                                            <svg x-show="fieldForm.taxonomy_id == '{{ $tax->id }}'" class="size-4 text-primary shrink-0" viewBox="0 0 20 20" fill="currentColor">
+                                                <path fill-rule="evenodd" d="M16.704 4.153a.75.75 0 0 1 .143 1.052l-8 10.5a.75.75 0 0 1-1.127.075l-4.5-4.5a.75.75 0 0 1 1.06-1.06l3.894 3.893 7.48-9.817a.75.75 0 0 1 1.05-.143Z" clip-rule="evenodd" />
+                                            </svg>
+                                        </button>
+                                    @endforeach
+                                </div>
+                            </div>
                             <p class="text-xs text-text-muted mt-1">Select a specific taxonomy group (e.g. Categories, Tags, Brands) or leave as "All Taxonomies".</p>
                         </div>
                         <div class="flex items-center gap-2 pt-1">
