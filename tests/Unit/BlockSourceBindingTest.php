@@ -107,3 +107,34 @@ it('allows unlinking a field using __none__ in section-level _sources', function
 
     expect($merged['title'])->toBe('Manual User Typed Title');
 });
+
+it('recursively merges source data for nested list fields like galleryImages', function () {
+    $fields = [
+        Field::list('galleryImages', 'Gallery Images', [
+            Field::image('image', 'Image'),
+        ], count: 2),
+    ];
+
+    $page = (object) [
+        'data' => [
+            'featured_image' => 'https://example.com/entry-featured-image.jpg',
+            'cover_photo' => 'https://example.com/entry-cover.jpg',
+        ],
+    ];
+
+    $blockData = [
+        'galleryImages' => [
+            ['image' => 'https://example.com/default-1.jpg'],
+            ['image' => 'https://example.com/default-2.jpg'],
+        ],
+        '_sources' => [
+            'galleryImages.0.image' => 'featured_image',
+            'galleryImages.1.image' => 'cover_photo',
+        ],
+    ];
+
+    $merged = Block::mergeSourceData($blockData, $fields, $page, $blockData['_sources']);
+
+    expect($merged['galleryImages'][0]['image'])->toBe('https://example.com/entry-featured-image.jpg');
+    expect($merged['galleryImages'][1]['image'])->toBe('https://example.com/entry-cover.jpg');
+});

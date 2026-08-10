@@ -1341,16 +1341,37 @@
                 return d;
             },
 
+            fieldPath(name) {
+                let path = '';
+                for (const crumb of (this.crumbs || [])) {
+                    path += (path ? '.' : '') + crumb.key;
+                    if (crumb.index !== undefined && crumb.index !== null) {
+                        path += '.' + crumb.index;
+                    }
+                }
+                return path ? (path + '.' + name) : name;
+            },
+
             getSourceKey(name) {
                 if (this.active === null || !this.sections[this.active]) return null;
                 const data = this.sections[this.active].data || {};
                 const sources = data._sources || {};
-                if (sources[name] === '__none__') {
+                const path = this.fieldPath(name);
+
+                if (sources[path] === '__none__') {
                     return null;
                 }
-                if (sources[name]) {
+                if (sources[path]) {
+                    return sources[path];
+                }
+                const genericPath = path.replace(/\.\d+\./g, '.');
+                if (sources[genericPath] && sources[genericPath] !== '__none__') {
+                    return sources[genericPath];
+                }
+                if (sources[name] && sources[name] !== '__none__') {
                     return sources[name];
                 }
+
                 const fields = this.currentFields();
                 const fieldDef = fields?.find(f => f.name === name);
                 return fieldDef?.source || null;
@@ -1374,7 +1395,8 @@
                 if (!this.sections[this.active].data) this.sections[this.active].data = {};
                 if (!this.sections[this.active].data._sources) this.sections[this.active].data._sources = {};
 
-                this.sections[this.active].data._sources[name] = sourceKey;
+                const path = this.fieldPath(name);
+                this.sections[this.active].data._sources[path] = sourceKey;
                 this.sections[this.active].data = { ...this.sections[this.active].data };
                 this.dirty = true;
                 this.schedulePreview();
@@ -1385,7 +1407,8 @@
                 if (!this.sections[this.active].data) this.sections[this.active].data = {};
                 if (!this.sections[this.active].data._sources) this.sections[this.active].data._sources = {};
 
-                this.sections[this.active].data._sources[name] = '__none__';
+                const path = this.fieldPath(name);
+                this.sections[this.active].data._sources[path] = '__none__';
                 this.sections[this.active].data = { ...this.sections[this.active].data };
                 this.dirty = true;
                 this.schedulePreview();

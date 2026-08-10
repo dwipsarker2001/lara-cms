@@ -90,28 +90,55 @@ abstract class Block
      * @param  array<string, string>  $sectionSources
      * @return array<string, mixed>
      */
-    public static function mergeSourceData(array $data, array $fields, object $page, array $sectionSources = []): array
+    public static function mergeSourceData(array $data, array $fields, object $page, array $sectionSources = [], string $prefix = ''): array
     {
         $entryData = is_array($page->data ?? null) ? $page->data : [];
 
         foreach ($fields as $field) {
             $name = $field['name'] ?? '';
+            if ($name === '') {
+                continue;
+            }
 
-            // Section-level dynamic _sources overrides static PHP field source
-            // Special value '__none__' means user explicitly unlinked static PHP source
-            if (array_key_exists($name, $sectionSources)) {
-                $source = $sectionSources[$name];
+            $fullPath = $prefix !== '' ? ($prefix.'.'.$name) : $name;
+
+            if (($field['type'] ?? '') === 'object') {
+                if (! empty($field['list'])) {
+                    if (isset($data[$name]) && is_array($data[$name])) {
+                        foreach ($data[$name] as $index => &$item) {
+                            if (is_array($item)) {
+                                $itemPath = $fullPath.'.'.$index;
+                                $item = self::mergeSourceData($item, $field['fields'] ?? [], $page, $sectionSources, $itemPath);
+                            }
+                        }
+                    }
+                } else {
+                    if (isset($data[$name]) && is_array($data[$name])) {
+                        $data[$name] = self::mergeSourceData($data[$name], $field['fields'] ?? [], $page, $sectionSources, $fullPath);
+                    }
+                }
+            } else {
+                $genericPath = preg_replace('/\.\d+\./', '.', $fullPath);
+
+                if (array_key_exists($fullPath, $sectionSources)) {
+                    $source = $sectionSources[$fullPath];
+                } elseif (array_key_exists($genericPath, $sectionSources)) {
+                    $source = $sectionSources[$genericPath];
+                } elseif (array_key_exists($name, $sectionSources)) {
+                    $source = $sectionSources[$name];
+                } else {
+                    $source = $field['source'] ?? '';
+                }
+
                 if ($source === '__none__') {
                     continue;
                 }
-            } else {
-                $source = $field['source'] ?? '';
-            }
 
-            if ($source !== '' && $name !== '') {
-                $entryValue = $entryData[$source] ?? null;
-                if ($entryValue !== null && $entryValue !== '') {
-                    $data[$name] = $entryValue;
+                if ($source !== '') {
+                    $entryValue = $entryData[$source] ?? null;
+                    if ($entryValue !== null && $entryValue !== '') {
+                        $data[$name] = $entryValue;
+                    }
                 }
             }
         }
