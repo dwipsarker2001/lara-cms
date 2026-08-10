@@ -11,6 +11,7 @@ use App\Models\Layout;
 use App\Support\Sections;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\Str;
 
 class CollectionEntryController extends Controller
 {
@@ -153,6 +154,33 @@ class CollectionEntryController extends Controller
                 ]);
         }
 
+        $entryCustomFields = collect();
+
+        if (is_array($collection->fields)) {
+            foreach ($collection->fields as $f) {
+                $name = $f['name'] ?? $f['key'] ?? '';
+                if ($name !== '') {
+                    $entryCustomFields->put($name, [
+                        'key' => $name,
+                        'label' => $f['label'] ?? Str::title(str_replace(['_', '-'], ' ', $name)),
+                    ]);
+                }
+            }
+        }
+
+        if (is_array($entry->data)) {
+            foreach (array_keys($entry->data) as $key) {
+                if ($key !== '' && ! str_starts_with($key, '_') && ! $entryCustomFields->has($key)) {
+                    $entryCustomFields->put($key, [
+                        'key' => $key,
+                        'label' => Str::title(str_replace(['_', '-'], ' ', $key)),
+                    ]);
+                }
+            }
+        }
+
+        $collectionFields = $entryCustomFields->values()->all();
+
         return view('admin.collections.entries.editor', [
             'collection' => $collection,
             'entry' => $entry,
@@ -160,7 +188,7 @@ class CollectionEntryController extends Controller
             'homeGlobals' => $homeGlobals,
             'blockList' => $blockList,
             'pages' => $pages,
-
+            'collectionFields' => $collectionFields,
         ]);
     }
 

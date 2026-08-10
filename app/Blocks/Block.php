@@ -74,27 +74,39 @@ abstract class Block
         }
 
         if ($page) {
-            $data = self::mergeSourceData($data, $this->resolvedFields(), $page);
+            $sectionSources = is_array($data['_sources'] ?? null) ? $data['_sources'] : [];
+            $data = self::mergeSourceData($data, $this->resolvedFields(), $page, $sectionSources);
         }
 
         return view($this->view(), compact('data', '_key', 'preview', 'page'))->render();
     }
 
     /**
-     * Overlay entry custom-field values onto block data for fields that declare a source.
+     * Overlay entry custom-field values onto block data for fields that declare a source or visual binding.
      * Source values take priority if non-empty; block data is the fallback.
      *
      * @param  array<string, mixed>  $data
      * @param  array<int, array>  $fields
+     * @param  array<string, string>  $sectionSources
      * @return array<string, mixed>
      */
-    public static function mergeSourceData(array $data, array $fields, object $page): array
+    public static function mergeSourceData(array $data, array $fields, object $page, array $sectionSources = []): array
     {
         $entryData = is_array($page->data ?? null) ? $page->data : [];
 
         foreach ($fields as $field) {
             $name = $field['name'] ?? '';
-            $source = $field['source'] ?? '';
+
+            // Section-level dynamic _sources overrides static PHP field source
+            // Special value '__none__' means user explicitly unlinked static PHP source
+            if (array_key_exists($name, $sectionSources)) {
+                $source = $sectionSources[$name];
+                if ($source === '__none__') {
+                    continue;
+                }
+            } else {
+                $source = $field['source'] ?? '';
+            }
 
             if ($source !== '' && $name !== '') {
                 $entryValue = $entryData[$source] ?? null;

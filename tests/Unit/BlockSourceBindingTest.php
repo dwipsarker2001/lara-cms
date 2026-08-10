@@ -57,3 +57,53 @@ it('falls back to block data when source entry value is missing or empty', funct
 
     expect($merged['title'])->toBe('Fallback Block Title');
 });
+
+it('prioritizes section-level dynamic _sources over static PHP field sources', function () {
+    $fields = [
+        Field::string('title', 'Tour Title', default: 'Default Title', source: 'title'),
+        Field::string('heading', 'Heading', default: 'Default Heading'), // no static source
+    ];
+
+    $page = (object) [
+        'data' => [
+            'title' => 'Static Title From Entry',
+            'custom_heading' => 'Dynamic Heading From Entry',
+        ],
+    ];
+
+    $blockData = [
+        'title' => 'Inline Title',
+        'heading' => 'Inline Heading',
+        '_sources' => [
+            'heading' => 'custom_heading', // Dynamic visual link
+        ],
+    ];
+
+    $merged = Block::mergeSourceData($blockData, $fields, $page, $blockData['_sources']);
+
+    expect($merged['title'])->toBe('Static Title From Entry'); // static source fallback
+    expect($merged['heading'])->toBe('Dynamic Heading From Entry'); // dynamic visual binding
+});
+
+it('allows unlinking a field using __none__ in section-level _sources', function () {
+    $fields = [
+        Field::string('title', 'Tour Title', default: 'Default Title', source: 'title'),
+    ];
+
+    $page = (object) [
+        'data' => [
+            'title' => 'Entry Title Should Be Ignored',
+        ],
+    ];
+
+    $blockData = [
+        'title' => 'Manual User Typed Title',
+        '_sources' => [
+            'title' => '__none__', // Unlinked visually by user
+        ],
+    ];
+
+    $merged = Block::mergeSourceData($blockData, $fields, $page, $blockData['_sources']);
+
+    expect($merged['title'])->toBe('Manual User Typed Title');
+});
