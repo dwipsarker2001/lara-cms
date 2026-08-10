@@ -151,35 +151,38 @@
                                                 </button>
 
                                                 <div x-show="showSourcePicker" @click.outside="showSourcePicker = false"
-                                                    class="absolute right-0 z-30 mt-1 w-56 rounded-xl border border-gray-200 bg-white py-1.5 shadow-xl ring-1 ring-black/5 text-xs"
+                                                    class="absolute right-0 z-30 mt-1 w-56 rounded-xl border border-gray-200 bg-white py-1 shadow-xl ring-1 ring-black/5 text-xs"
                                                     x-transition
                                                 >
-                                                    <div class="px-3 py-1 font-semibold text-gray-500 uppercase tracking-wider text-[10px] border-b border-gray-100 flex justify-between items-center">
-                                                        <span>Bind to Collection Field</span>
-                                                        <span x-text="(collectionFields || []).length + ' fields'"></span>
+                                                    <div class="px-3 py-1.5 border-b border-gray-100 flex items-center justify-between font-semibold text-xs text-gray-700">
+                                                        <span>Bind Input</span>
+                                                        <template x-if="isSourceField(field.name)">
+                                                            <button type="button" @click="clearFieldSource(field.name); showSourcePicker = false"
+                                                                class="inline-flex items-center gap-1 text-red-500 hover:text-red-700 text-[11px] font-medium transition-colors cursor-pointer"
+                                                                title="Unlink field"
+                                                            >
+                                                                <svg class="size-3 shrink-0" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
+                                                                    <path d="m18.84 12.25 1.72-1.71h0a5 5 0 0 0-.7-7.07l-.14-.13a5 5 0 0 0-7.07 0l-1.72 1.71"/>
+                                                                    <path d="m5.16 11.75-1.72 1.71h0a5 5 0 0 0 .7 7.07l.14.13a5 5 0 0 0 7.07 0l1.72-1.71"/>
+                                                                    <line x1="2" y1="2" x2="22" y2="22"/>
+                                                                </svg>
+                                                                <span>Unlink</span>
+                                                            </button>
+                                                        </template>
                                                     </div>
-
-                                                    <template x-if="isSourceField(field.name)">
-                                                        <button type="button" @click="clearFieldSource(field.name); showSourcePicker = false"
-                                                            class="w-full flex items-center gap-2 px-3 py-1.5 text-left text-danger hover:bg-red-50 font-medium transition-colors border-b border-gray-100"
-                                                        >
-                                                            <svg class="size-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
-                                                            <span>Unlink field (Use manual text)</span>
-                                                        </button>
-                                                    </template>
 
                                                     <div class="max-h-48 overflow-y-auto py-1">
                                                         <template x-for="cf in collectionFields" :key="cf.key">
                                                             <button type="button" @click="setFieldSource(field.name, cf.key); showSourcePicker = false"
-                                                                class="w-full flex items-center justify-between px-3 py-1.5 text-left transition-colors"
+                                                                class="w-full flex items-center justify-between px-3 py-1.5 text-left text-xs transition-colors cursor-pointer"
                                                                 :class="getSourceKey(field.name) === cf.key ? 'bg-primary/10 text-primary font-bold' : 'text-gray-700 hover:bg-gray-50'"
                                                             >
-                                                                <span x-text="cf.label"></span>
-                                                                <span class="text-[10px] font-mono text-gray-400" x-text="cf.key"></span>
+                                                                <span class="truncate pr-2" x-text="cf.label"></span>
+                                                                <span class="text-[10px] font-mono text-gray-400 shrink-0" x-text="cf.key"></span>
                                                             </button>
                                                         </template>
                                                         <template x-if="(!collectionFields || collectionFields.length === 0)">
-                                                            <div class="px-3 py-2 text-gray-400 italic text-center">No entry fields available</div>
+                                                            <div class="px-3 py-2 text-gray-400 italic text-center text-xs">No entry fields available</div>
                                                         </template>
                                                     </div>
                                                 </div>
@@ -216,35 +219,38 @@
                                                 </button>
 
                                                 <div x-show="showSourcePicker" @click.outside="showSourcePicker = false"
-                                                    class="absolute right-0 z-30 mt-1 w-56 rounded-xl border border-gray-200 bg-white py-1.5 shadow-xl ring-1 ring-black/5 text-xs"
+                                                    class="absolute right-0 z-30 mt-1 w-56 rounded-xl border border-gray-200 bg-white py-1 shadow-xl ring-1 ring-black/5 text-xs"
                                                     x-transition
                                                 >
-                                                    <div class="px-3 py-1 font-semibold text-gray-500 uppercase tracking-wider text-[10px] border-b border-gray-100 flex justify-between items-center">
-                                                        <span>Bind to Collection Field</span>
-                                                        <span x-text="(collectionFields || []).length + ' fields'"></span>
+                                                    <div class="px-3 py-1.5 border-b border-gray-100 flex items-center justify-between font-semibold text-xs text-gray-700">
+                                                        <span>Bind Input</span>
+                                                        <template x-if="isSourceField(field.name)">
+                                                            <button type="button" @click="clearFieldSource(field.name); showSourcePicker = false"
+                                                                class="inline-flex items-center gap-1 text-red-500 hover:text-red-700 text-[11px] font-medium transition-colors cursor-pointer"
+                                                                title="Unlink field"
+                                                            >
+                                                                <svg class="size-3 shrink-0" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
+                                                                    <path d="m18.84 12.25 1.72-1.71h0a5 5 0 0 0-.7-7.07l-.14-.13a5 5 0 0 0-7.07 0l-1.72 1.71"/>
+                                                                    <path d="m5.16 11.75-1.72 1.71h0a5 5 0 0 0 .7 7.07l.14.13a5 5 0 0 0 7.07 0l1.72-1.71"/>
+                                                                    <line x1="2" y1="2" x2="22" y2="22"/>
+                                                                </svg>
+                                                                <span>Unlink</span>
+                                                            </button>
+                                                        </template>
                                                     </div>
-
-                                                    <template x-if="isSourceField(field.name)">
-                                                        <button type="button" @click="clearFieldSource(field.name); showSourcePicker = false"
-                                                            class="w-full flex items-center gap-2 px-3 py-1.5 text-left text-danger hover:bg-red-50 font-medium transition-colors border-b border-gray-100"
-                                                        >
-                                                            <svg class="size-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
-                                                            <span>Unlink field (Use manual text)</span>
-                                                        </button>
-                                                    </template>
 
                                                     <div class="max-h-48 overflow-y-auto py-1">
                                                         <template x-for="cf in collectionFields" :key="cf.key">
                                                             <button type="button" @click="setFieldSource(field.name, cf.key); showSourcePicker = false"
-                                                                class="w-full flex items-center justify-between px-3 py-1.5 text-left transition-colors"
+                                                                class="w-full flex items-center justify-between px-3 py-1.5 text-left text-xs transition-colors cursor-pointer"
                                                                 :class="getSourceKey(field.name) === cf.key ? 'bg-primary/10 text-primary font-bold' : 'text-gray-700 hover:bg-gray-50'"
                                                             >
-                                                                <span x-text="cf.label"></span>
-                                                                <span class="text-[10px] font-mono text-gray-400" x-text="cf.key"></span>
+                                                                <span class="truncate pr-2" x-text="cf.label"></span>
+                                                                <span class="text-[10px] font-mono text-gray-400 shrink-0" x-text="cf.key"></span>
                                                             </button>
                                                         </template>
                                                         <template x-if="(!collectionFields || collectionFields.length === 0)">
-                                                            <div class="px-3 py-2 text-gray-400 italic text-center">No entry fields available</div>
+                                                            <div class="px-3 py-2 text-gray-400 italic text-center text-xs">No entry fields available</div>
                                                         </template>
                                                     </div>
                                                 </div>
@@ -280,35 +286,38 @@
                                                 </button>
 
                                                 <div x-show="showSourcePicker" @click.outside="showSourcePicker = false"
-                                                    class="absolute right-0 z-30 mt-1 w-56 rounded-xl border border-gray-200 bg-white py-1.5 shadow-xl ring-1 ring-black/5 text-xs"
+                                                    class="absolute right-0 z-30 mt-1 w-56 rounded-xl border border-gray-200 bg-white py-1 shadow-xl ring-1 ring-black/5 text-xs"
                                                     x-transition
                                                 >
-                                                    <div class="px-3 py-1 font-semibold text-gray-500 uppercase tracking-wider text-[10px] border-b border-gray-100 flex justify-between items-center">
-                                                        <span>Bind to Collection Field</span>
-                                                        <span x-text="(collectionFields || []).length + ' fields'"></span>
+                                                    <div class="px-3 py-1.5 border-b border-gray-100 flex items-center justify-between font-semibold text-xs text-gray-700">
+                                                        <span>Bind Input</span>
+                                                        <template x-if="isSourceField(field.name)">
+                                                            <button type="button" @click="clearFieldSource(field.name); showSourcePicker = false"
+                                                                class="inline-flex items-center gap-1 text-red-500 hover:text-red-700 text-[11px] font-medium transition-colors cursor-pointer"
+                                                                title="Unlink field"
+                                                            >
+                                                                <svg class="size-3 shrink-0" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
+                                                                    <path d="m18.84 12.25 1.72-1.71h0a5 5 0 0 0-.7-7.07l-.14-.13a5 5 0 0 0-7.07 0l-1.72 1.71"/>
+                                                                    <path d="m5.16 11.75-1.72 1.71h0a5 5 0 0 0 .7 7.07l.14.13a5 5 0 0 0 7.07 0l1.72-1.71"/>
+                                                                    <line x1="2" y1="2" x2="22" y2="22"/>
+                                                                </svg>
+                                                                <span>Unlink</span>
+                                                            </button>
+                                                        </template>
                                                     </div>
-
-                                                    <template x-if="isSourceField(field.name)">
-                                                        <button type="button" @click="clearFieldSource(field.name); showSourcePicker = false"
-                                                            class="w-full flex items-center gap-2 px-3 py-1.5 text-left text-danger hover:bg-red-50 font-medium transition-colors border-b border-gray-100"
-                                                        >
-                                                            <svg class="size-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
-                                                            <span>Unlink field (Use manual text)</span>
-                                                        </button>
-                                                    </template>
 
                                                     <div class="max-h-48 overflow-y-auto py-1">
                                                         <template x-for="cf in collectionFields" :key="cf.key">
                                                             <button type="button" @click="setFieldSource(field.name, cf.key); showSourcePicker = false"
-                                                                class="w-full flex items-center justify-between px-3 py-1.5 text-left transition-colors"
+                                                                class="w-full flex items-center justify-between px-3 py-1.5 text-left text-xs transition-colors cursor-pointer"
                                                                 :class="getSourceKey(field.name) === cf.key ? 'bg-primary/10 text-primary font-bold' : 'text-gray-700 hover:bg-gray-50'"
                                                             >
-                                                                <span x-text="cf.label"></span>
-                                                                <span class="text-[10px] font-mono text-gray-400" x-text="cf.key"></span>
+                                                                <span class="truncate pr-2" x-text="cf.label"></span>
+                                                                <span class="text-[10px] font-mono text-gray-400 shrink-0" x-text="cf.key"></span>
                                                             </button>
                                                         </template>
                                                         <template x-if="(!collectionFields || collectionFields.length === 0)">
-                                                            <div class="px-3 py-2 text-gray-400 italic text-center">No entry fields available</div>
+                                                            <div class="px-3 py-2 text-gray-400 italic text-center text-xs">No entry fields available</div>
                                                         </template>
                                                     </div>
                                                 </div>
@@ -400,35 +409,38 @@
                                                 </button>
 
                                                 <div x-show="showSourcePicker" @click.outside="showSourcePicker = false"
-                                                    class="absolute right-0 z-30 mt-1 w-56 rounded-xl border border-gray-200 bg-white py-1.5 shadow-xl ring-1 ring-black/5 text-xs"
+                                                    class="absolute right-0 z-30 mt-1 w-56 rounded-xl border border-gray-200 bg-white py-1 shadow-xl ring-1 ring-black/5 text-xs"
                                                     x-transition
                                                 >
-                                                    <div class="px-3 py-1 font-semibold text-gray-500 uppercase tracking-wider text-[10px] border-b border-gray-100 flex justify-between items-center">
-                                                        <span>Bind to Collection Field</span>
-                                                        <span x-text="(collectionFields || []).length + ' fields'"></span>
+                                                    <div class="px-3 py-1.5 border-b border-gray-100 flex items-center justify-between font-semibold text-xs text-gray-700">
+                                                        <span>Bind Input</span>
+                                                        <template x-if="isSourceField(field.name)">
+                                                            <button type="button" @click="clearFieldSource(field.name); showSourcePicker = false"
+                                                                class="inline-flex items-center gap-1 text-red-500 hover:text-red-700 text-[11px] font-medium transition-colors cursor-pointer"
+                                                                title="Unlink field"
+                                                            >
+                                                                <svg class="size-3 shrink-0" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
+                                                                    <path d="m18.84 12.25 1.72-1.71h0a5 5 0 0 0-.7-7.07l-.14-.13a5 5 0 0 0-7.07 0l-1.72 1.71"/>
+                                                                    <path d="m5.16 11.75-1.72 1.71h0a5 5 0 0 0 .7 7.07l.14.13a5 5 0 0 0 7.07 0l1.72-1.71"/>
+                                                                    <line x1="2" y1="2" x2="22" y2="22"/>
+                                                                </svg>
+                                                                <span>Unlink</span>
+                                                            </button>
+                                                        </template>
                                                     </div>
-
-                                                    <template x-if="isSourceField(field.name)">
-                                                        <button type="button" @click="clearFieldSource(field.name); showSourcePicker = false"
-                                                            class="w-full flex items-center gap-2 px-3 py-1.5 text-left text-danger hover:bg-red-50 font-medium transition-colors border-b border-gray-100"
-                                                        >
-                                                            <svg class="size-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
-                                                            <span>Unlink field (Use manual upload)</span>
-                                                        </button>
-                                                    </template>
 
                                                     <div class="max-h-48 overflow-y-auto py-1">
                                                         <template x-for="cf in collectionFields" :key="cf.key">
                                                             <button type="button" @click="setFieldSource(field.name, cf.key); showSourcePicker = false"
-                                                                class="w-full flex items-center justify-between px-3 py-1.5 text-left transition-colors"
+                                                                class="w-full flex items-center justify-between px-3 py-1.5 text-left text-xs transition-colors cursor-pointer"
                                                                 :class="getSourceKey(field.name) === cf.key ? 'bg-primary/10 text-primary font-bold' : 'text-gray-700 hover:bg-gray-50'"
                                                             >
-                                                                <span x-text="cf.label"></span>
-                                                                <span class="text-[10px] font-mono text-gray-400" x-text="cf.key"></span>
+                                                                <span class="truncate pr-2" x-text="cf.label"></span>
+                                                                <span class="text-[10px] font-mono text-gray-400 shrink-0" x-text="cf.key"></span>
                                                             </button>
                                                         </template>
                                                         <template x-if="(!collectionFields || collectionFields.length === 0)">
-                                                            <div class="px-3 py-2 text-gray-400 italic text-center">No entry fields available</div>
+                                                            <div class="px-3 py-2 text-gray-400 italic text-center text-xs">No entry fields available</div>
                                                         </template>
                                                     </div>
                                                 </div>
@@ -568,35 +580,38 @@
                                                  </button>
 
                                                  <div x-show="showSourcePicker" @click.outside="showSourcePicker = false"
-                                                     class="absolute right-0 z-30 mt-1 w-56 rounded-xl border border-gray-200 bg-white py-1.5 shadow-xl ring-1 ring-black/5 text-xs"
+                                                     class="absolute right-0 z-30 mt-1 w-56 rounded-xl border border-gray-200 bg-white py-1 shadow-xl ring-1 ring-black/5 text-xs"
                                                      x-transition
                                                  >
-                                                     <div class="px-3 py-1 font-semibold text-gray-500 uppercase tracking-wider text-[10px] border-b border-gray-100 flex justify-between items-center">
-                                                         <span>Bind to Collection Field</span>
-                                                         <span x-text="(collectionFields || []).length + ' fields'"></span>
+                                                     <div class="px-3 py-1.5 border-b border-gray-100 flex items-center justify-between font-semibold text-xs text-gray-700">
+                                                         <span>Bind Input</span>
+                                                         <template x-if="isSourceField(field.name)">
+                                                             <button type="button" @click="clearFieldSource(field.name); showSourcePicker = false"
+                                                                 class="inline-flex items-center gap-1 text-red-500 hover:text-red-700 text-[11px] font-medium transition-colors cursor-pointer"
+                                                                 title="Unlink field"
+                                                             >
+                                                                 <svg class="size-3 shrink-0" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
+                                                                     <path d="m18.84 12.25 1.72-1.71h0a5 5 0 0 0-.7-7.07l-.14-.13a5 5 0 0 0-7.07 0l-1.72 1.71"/>
+                                                                     <path d="m5.16 11.75-1.72 1.71h0a5 5 0 0 0 .7 7.07l.14.13a5 5 0 0 0 7.07 0l1.72-1.71"/>
+                                                                     <line x1="2" y1="2" x2="22" y2="22"/>
+                                                                 </svg>
+                                                                 <span>Unlink</span>
+                                                             </button>
+                                                         </template>
                                                      </div>
-
-                                                     <template x-if="isSourceField(field.name)">
-                                                         <button type="button" @click="clearFieldSource(field.name); showSourcePicker = false"
-                                                             class="w-full flex items-center gap-2 px-3 py-1.5 text-left text-danger hover:bg-red-50 font-medium transition-colors border-b border-gray-100"
-                                                         >
-                                                             <svg class="size-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
-                                                             <span>Unlink field (Use manual text)</span>
-                                                         </button>
-                                                     </template>
 
                                                      <div class="max-h-48 overflow-y-auto py-1">
                                                          <template x-for="cf in collectionFields" :key="cf.key">
                                                              <button type="button" @click="setFieldSource(field.name, cf.key); showSourcePicker = false"
-                                                                 class="w-full flex items-center justify-between px-3 py-1.5 text-left transition-colors"
+                                                                 class="w-full flex items-center justify-between px-3 py-1.5 text-left text-xs transition-colors cursor-pointer"
                                                                  :class="getSourceKey(field.name) === cf.key ? 'bg-primary/10 text-primary font-bold' : 'text-gray-700 hover:bg-gray-50'"
                                                              >
-                                                                 <span x-text="cf.label"></span>
-                                                                 <span class="text-[10px] font-mono text-gray-400" x-text="cf.key"></span>
+                                                                 <span class="truncate pr-2" x-text="cf.label"></span>
+                                                                 <span class="text-[10px] font-mono text-gray-400 shrink-0" x-text="cf.key"></span>
                                                              </button>
                                                          </template>
                                                          <template x-if="(!collectionFields || collectionFields.length === 0)">
-                                                             <div class="px-3 py-2 text-gray-400 italic text-center">No entry fields available</div>
+                                                             <div class="px-3 py-2 text-gray-400 italic text-center text-xs">No entry fields available</div>
                                                          </template>
                                                      </div>
                                                  </div>
@@ -1379,15 +1394,17 @@
 
             getField(name) {
                 const sourceKey = this.getSourceKey(name);
-                if (sourceKey && this.entryData[sourceKey] !== undefined && this.entryData[sourceKey] !== '') {
-                    return this.entryData[sourceKey];
+                if (sourceKey) {
+                    return (this.entryData && this.entryData[sourceKey] !== undefined && this.entryData[sourceKey] !== null)
+                        ? this.entryData[sourceKey]
+                        : '';
                 }
                 return this.currentData()[name] ?? '';
             },
 
             isSourceField(name) {
                 const sourceKey = this.getSourceKey(name);
-                return !!(sourceKey && this.entryData[sourceKey] !== undefined && this.entryData[sourceKey] !== '');
+                return !!sourceKey;
             },
 
             setFieldSource(name, sourceKey) {

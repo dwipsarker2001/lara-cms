@@ -158,11 +158,11 @@ class CollectionEntryController extends Controller
 
         if (is_array($collection->fields)) {
             foreach ($collection->fields as $f) {
-                $name = $f['name'] ?? $f['key'] ?? '';
-                if ($name !== '') {
-                    $entryCustomFields->put($name, [
-                        'key' => $name,
-                        'label' => $f['label'] ?? Str::title(str_replace(['_', '-'], ' ', $name)),
+                $key = $f['template'] ?? $f['key'] ?? $f['name'] ?? '';
+                if ($key !== '') {
+                    $entryCustomFields->put($key, [
+                        'key' => $key,
+                        'label' => $f['title'] ?? $f['label'] ?? Str::title(str_replace(['_', '-'], ' ', $key)),
                     ]);
                 }
             }
