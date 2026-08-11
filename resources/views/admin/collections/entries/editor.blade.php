@@ -14,6 +14,7 @@
     window.editorHomeGlobals = @json($homeGlobals);
     window.editorEntryData = @json($entry->data ?? []);
     window.editorCollectionFields = @json($collectionFields ?? []);
+    window.editorGroupedCollectionFields = @json($groupedCollectionFields ?? []);
     window.editorSaveRoute = '{{ route('admin.collections.entries.update-sections', [$collection, $entry]) }}';
     window.editorPostId = null;
 
@@ -151,7 +152,7 @@
                                                 </button>
 
                                                 <div x-show="showSourcePicker" @click.outside="showSourcePicker = false"
-                                                    class="absolute right-0 z-30 mt-1 w-56 rounded-xl border border-gray-200 bg-white py-1 shadow-xl ring-1 ring-black/5 text-xs"
+                                                    class="absolute right-0 z-30 mt-1 w-60 rounded-xl border border-gray-200 bg-white py-1 shadow-xl ring-1 ring-black/5 text-xs"
                                                     x-transition
                                                 >
                                                     <div class="px-3 py-1.5 border-b border-gray-100 flex items-center justify-between font-semibold text-xs text-gray-700">
@@ -171,17 +172,33 @@
                                                         </template>
                                                     </div>
 
-                                                    <div class="max-h-48 overflow-y-auto py-1">
-                                                        <template x-for="cf in collectionFields" :key="cf.key">
-                                                            <button type="button" @click="setFieldSource(field.name, cf.key); showSourcePicker = false"
-                                                                class="w-full flex items-center justify-between px-3 py-1.5 text-left text-xs transition-colors cursor-pointer"
-                                                                :class="getSourceKey(field.name) === cf.key ? 'bg-primary/10 text-primary font-bold' : 'text-gray-700 hover:bg-gray-50'"
+                                                    <template x-if="(groupedCollectionFields || []).length > 1">
+                                                        <div class="px-3 py-1.5 border-b border-gray-100 bg-gray-50/70">
+                                                            <select x-model="selectedCollectionGroup"
+                                                                class="w-full text-xs bg-white border border-gray-200 rounded-md px-2 py-1 text-gray-700 font-medium focus:outline-none focus:ring-1 focus:ring-primary focus:border-primary cursor-pointer"
                                                             >
-                                                                <span class="truncate pr-2" x-text="cf.label"></span>
-                                                                <span class="text-[10px] font-mono text-gray-400 shrink-0" x-text="cf.key"></span>
-                                                            </button>
+                                                                <template x-for="group in groupedCollectionFields" :key="group.collection_id">
+                                                                    <option :value="group.collection_id" x-text="group.name" :selected="selectedCollectionGroup == group.collection_id"></option>
+                                                                </template>
+                                                            </select>
+                                                        </div>
+                                                    </template>
+
+                                                    <div class="max-h-48 overflow-y-auto py-1">
+                                                        <template x-for="group in (groupedCollectionFields || [])" :key="group.collection_id">
+                                                            <div x-show="(groupedCollectionFields || []).length <= 1 || selectedCollectionGroup == group.collection_id">
+                                                                <template x-for="cf in group.fields" :key="group.collection_id + '_' + cf.key">
+                                                                    <button type="button" @click="setFieldSource(field.name, cf.key); showSourcePicker = false"
+                                                                        class="w-full flex items-center justify-between px-3 py-1.5 text-left text-xs transition-colors cursor-pointer"
+                                                                        :class="getSourceKey(field.name) === cf.key ? 'bg-primary/10 text-primary font-bold' : 'text-gray-700 hover:bg-gray-50'"
+                                                                    >
+                                                                        <span class="truncate pr-2" x-text="cf.label"></span>
+                                                                        <span class="text-[10px] font-mono text-gray-400 shrink-0" x-text="cf.key"></span>
+                                                                    </button>
+                                                                </template>
+                                                            </div>
                                                         </template>
-                                                        <template x-if="(!collectionFields || collectionFields.length === 0)">
+                                                        <template x-if="(!groupedCollectionFields || groupedCollectionFields.length === 0)">
                                                             <div class="px-3 py-2 text-gray-400 italic text-center text-xs">No entry fields available</div>
                                                         </template>
                                                     </div>
@@ -219,7 +236,7 @@
                                                 </button>
 
                                                 <div x-show="showSourcePicker" @click.outside="showSourcePicker = false"
-                                                    class="absolute right-0 z-30 mt-1 w-56 rounded-xl border border-gray-200 bg-white py-1 shadow-xl ring-1 ring-black/5 text-xs"
+                                                    class="absolute right-0 z-30 mt-1 w-60 rounded-xl border border-gray-200 bg-white py-1 shadow-xl ring-1 ring-black/5 text-xs"
                                                     x-transition
                                                 >
                                                     <div class="px-3 py-1.5 border-b border-gray-100 flex items-center justify-between font-semibold text-xs text-gray-700">
@@ -239,17 +256,33 @@
                                                         </template>
                                                     </div>
 
-                                                    <div class="max-h-48 overflow-y-auto py-1">
-                                                        <template x-for="cf in collectionFields" :key="cf.key">
-                                                            <button type="button" @click="setFieldSource(field.name, cf.key); showSourcePicker = false"
-                                                                class="w-full flex items-center justify-between px-3 py-1.5 text-left text-xs transition-colors cursor-pointer"
-                                                                :class="getSourceKey(field.name) === cf.key ? 'bg-primary/10 text-primary font-bold' : 'text-gray-700 hover:bg-gray-50'"
+                                                    <template x-if="(groupedCollectionFields || []).length > 1">
+                                                        <div class="px-3 py-1.5 border-b border-gray-100 bg-gray-50/70">
+                                                            <select x-model="selectedCollectionGroup"
+                                                                class="w-full text-xs bg-white border border-gray-200 rounded-md px-2 py-1 text-gray-700 font-medium focus:outline-none focus:ring-1 focus:ring-primary focus:border-primary cursor-pointer"
                                                             >
-                                                                <span class="truncate pr-2" x-text="cf.label"></span>
-                                                                <span class="text-[10px] font-mono text-gray-400 shrink-0" x-text="cf.key"></span>
-                                                            </button>
+                                                                <template x-for="group in groupedCollectionFields" :key="group.collection_id">
+                                                                    <option :value="group.collection_id" x-text="group.name" :selected="selectedCollectionGroup == group.collection_id"></option>
+                                                                </template>
+                                                            </select>
+                                                        </div>
+                                                    </template>
+
+                                                    <div class="max-h-48 overflow-y-auto py-1">
+                                                        <template x-for="group in (groupedCollectionFields || [])" :key="group.collection_id">
+                                                            <div x-show="(groupedCollectionFields || []).length <= 1 || selectedCollectionGroup == group.collection_id">
+                                                                <template x-for="cf in group.fields" :key="group.collection_id + '_' + cf.key">
+                                                                    <button type="button" @click="setFieldSource(field.name, cf.key); showSourcePicker = false"
+                                                                        class="w-full flex items-center justify-between px-3 py-1.5 text-left text-xs transition-colors cursor-pointer"
+                                                                        :class="getSourceKey(field.name) === cf.key ? 'bg-primary/10 text-primary font-bold' : 'text-gray-700 hover:bg-gray-50'"
+                                                                    >
+                                                                        <span class="truncate pr-2" x-text="cf.label"></span>
+                                                                        <span class="text-[10px] font-mono text-gray-400 shrink-0" x-text="cf.key"></span>
+                                                                    </button>
+                                                                </template>
+                                                            </div>
                                                         </template>
-                                                        <template x-if="(!collectionFields || collectionFields.length === 0)">
+                                                        <template x-if="(!groupedCollectionFields || groupedCollectionFields.length === 0)">
                                                             <div class="px-3 py-2 text-gray-400 italic text-center text-xs">No entry fields available</div>
                                                         </template>
                                                     </div>
@@ -286,7 +319,7 @@
                                                 </button>
 
                                                 <div x-show="showSourcePicker" @click.outside="showSourcePicker = false"
-                                                    class="absolute right-0 z-30 mt-1 w-56 rounded-xl border border-gray-200 bg-white py-1 shadow-xl ring-1 ring-black/5 text-xs"
+                                                    class="absolute right-0 z-30 mt-1 w-60 rounded-xl border border-gray-200 bg-white py-1 shadow-xl ring-1 ring-black/5 text-xs"
                                                     x-transition
                                                 >
                                                     <div class="px-3 py-1.5 border-b border-gray-100 flex items-center justify-between font-semibold text-xs text-gray-700">
@@ -306,17 +339,33 @@
                                                         </template>
                                                     </div>
 
-                                                    <div class="max-h-48 overflow-y-auto py-1">
-                                                        <template x-for="cf in collectionFields" :key="cf.key">
-                                                            <button type="button" @click="setFieldSource(field.name, cf.key); showSourcePicker = false"
-                                                                class="w-full flex items-center justify-between px-3 py-1.5 text-left text-xs transition-colors cursor-pointer"
-                                                                :class="getSourceKey(field.name) === cf.key ? 'bg-primary/10 text-primary font-bold' : 'text-gray-700 hover:bg-gray-50'"
+                                                    <template x-if="(groupedCollectionFields || []).length > 1">
+                                                        <div class="px-3 py-1.5 border-b border-gray-100 bg-gray-50/70">
+                                                            <select x-model="selectedCollectionGroup"
+                                                                class="w-full text-xs bg-white border border-gray-200 rounded-md px-2 py-1 text-gray-700 font-medium focus:outline-none focus:ring-1 focus:ring-primary focus:border-primary cursor-pointer"
                                                             >
-                                                                <span class="truncate pr-2" x-text="cf.label"></span>
-                                                                <span class="text-[10px] font-mono text-gray-400 shrink-0" x-text="cf.key"></span>
-                                                            </button>
+                                                                <template x-for="group in groupedCollectionFields" :key="group.collection_id">
+                                                                    <option :value="group.collection_id" x-text="group.name" :selected="selectedCollectionGroup == group.collection_id"></option>
+                                                                </template>
+                                                            </select>
+                                                        </div>
+                                                    </template>
+
+                                                    <div class="max-h-48 overflow-y-auto py-1">
+                                                        <template x-for="group in (groupedCollectionFields || [])" :key="group.collection_id">
+                                                            <div x-show="(groupedCollectionFields || []).length <= 1 || selectedCollectionGroup == group.collection_id">
+                                                                <template x-for="cf in group.fields" :key="group.collection_id + '_' + cf.key">
+                                                                    <button type="button" @click="setFieldSource(field.name, cf.key); showSourcePicker = false"
+                                                                        class="w-full flex items-center justify-between px-3 py-1.5 text-left text-xs transition-colors cursor-pointer"
+                                                                        :class="getSourceKey(field.name) === cf.key ? 'bg-primary/10 text-primary font-bold' : 'text-gray-700 hover:bg-gray-50'"
+                                                                    >
+                                                                        <span class="truncate pr-2" x-text="cf.label"></span>
+                                                                        <span class="text-[10px] font-mono text-gray-400 shrink-0" x-text="cf.key"></span>
+                                                                    </button>
+                                                                </template>
+                                                            </div>
                                                         </template>
-                                                        <template x-if="(!collectionFields || collectionFields.length === 0)">
+                                                        <template x-if="(!groupedCollectionFields || groupedCollectionFields.length === 0)">
                                                             <div class="px-3 py-2 text-gray-400 italic text-center text-xs">No entry fields available</div>
                                                         </template>
                                                     </div>
@@ -409,7 +458,7 @@
                                                 </button>
 
                                                 <div x-show="showSourcePicker" @click.outside="showSourcePicker = false"
-                                                    class="absolute right-0 z-30 mt-1 w-56 rounded-xl border border-gray-200 bg-white py-1 shadow-xl ring-1 ring-black/5 text-xs"
+                                                    class="absolute right-0 z-30 mt-1 w-60 rounded-xl border border-gray-200 bg-white py-1 shadow-xl ring-1 ring-black/5 text-xs"
                                                     x-transition
                                                 >
                                                     <div class="px-3 py-1.5 border-b border-gray-100 flex items-center justify-between font-semibold text-xs text-gray-700">
@@ -429,17 +478,33 @@
                                                         </template>
                                                     </div>
 
-                                                    <div class="max-h-48 overflow-y-auto py-1">
-                                                        <template x-for="cf in collectionFields" :key="cf.key">
-                                                            <button type="button" @click="setFieldSource(field.name, cf.key); showSourcePicker = false"
-                                                                class="w-full flex items-center justify-between px-3 py-1.5 text-left text-xs transition-colors cursor-pointer"
-                                                                :class="getSourceKey(field.name) === cf.key ? 'bg-primary/10 text-primary font-bold' : 'text-gray-700 hover:bg-gray-50'"
+                                                    <template x-if="(groupedCollectionFields || []).length > 1">
+                                                        <div class="px-3 py-1.5 border-b border-gray-100 bg-gray-50/70">
+                                                            <select x-model="selectedCollectionGroup"
+                                                                class="w-full text-xs bg-white border border-gray-200 rounded-md px-2 py-1 text-gray-700 font-medium focus:outline-none focus:ring-1 focus:ring-primary focus:border-primary cursor-pointer"
                                                             >
-                                                                <span class="truncate pr-2" x-text="cf.label"></span>
-                                                                <span class="text-[10px] font-mono text-gray-400 shrink-0" x-text="cf.key"></span>
-                                                            </button>
+                                                                <template x-for="group in groupedCollectionFields" :key="group.collection_id">
+                                                                    <option :value="group.collection_id" x-text="group.name" :selected="selectedCollectionGroup == group.collection_id"></option>
+                                                                </template>
+                                                            </select>
+                                                        </div>
+                                                    </template>
+
+                                                    <div class="max-h-48 overflow-y-auto py-1">
+                                                        <template x-for="group in (groupedCollectionFields || [])" :key="group.collection_id">
+                                                            <div x-show="(groupedCollectionFields || []).length <= 1 || selectedCollectionGroup == group.collection_id">
+                                                                <template x-for="cf in group.fields" :key="group.collection_id + '_' + cf.key">
+                                                                    <button type="button" @click="setFieldSource(field.name, cf.key); showSourcePicker = false"
+                                                                        class="w-full flex items-center justify-between px-3 py-1.5 text-left text-xs transition-colors cursor-pointer"
+                                                                        :class="getSourceKey(field.name) === cf.key ? 'bg-primary/10 text-primary font-bold' : 'text-gray-700 hover:bg-gray-50'"
+                                                                    >
+                                                                        <span class="truncate pr-2" x-text="cf.label"></span>
+                                                                        <span class="text-[10px] font-mono text-gray-400 shrink-0" x-text="cf.key"></span>
+                                                                    </button>
+                                                                </template>
+                                                            </div>
                                                         </template>
-                                                        <template x-if="(!collectionFields || collectionFields.length === 0)">
+                                                        <template x-if="(!groupedCollectionFields || groupedCollectionFields.length === 0)">
                                                             <div class="px-3 py-2 text-gray-400 italic text-center text-xs">No entry fields available</div>
                                                         </template>
                                                     </div>
@@ -580,7 +645,7 @@
                                                  </button>
 
                                                  <div x-show="showSourcePicker" @click.outside="showSourcePicker = false"
-                                                     class="absolute right-0 z-30 mt-1 w-56 rounded-xl border border-gray-200 bg-white py-1 shadow-xl ring-1 ring-black/5 text-xs"
+                                                     class="absolute right-0 z-30 mt-1 w-60 rounded-xl border border-gray-200 bg-white py-1 shadow-xl ring-1 ring-black/5 text-xs"
                                                      x-transition
                                                  >
                                                      <div class="px-3 py-1.5 border-b border-gray-100 flex items-center justify-between font-semibold text-xs text-gray-700">
@@ -600,17 +665,33 @@
                                                          </template>
                                                      </div>
 
-                                                     <div class="max-h-48 overflow-y-auto py-1">
-                                                         <template x-for="cf in collectionFields" :key="cf.key">
-                                                             <button type="button" @click="setFieldSource(field.name, cf.key); showSourcePicker = false"
-                                                                 class="w-full flex items-center justify-between px-3 py-1.5 text-left text-xs transition-colors cursor-pointer"
-                                                                 :class="getSourceKey(field.name) === cf.key ? 'bg-primary/10 text-primary font-bold' : 'text-gray-700 hover:bg-gray-50'"
+                                                     <template x-if="(groupedCollectionFields || []).length > 1">
+                                                         <div class="px-3 py-1.5 border-b border-gray-100 bg-gray-50/70">
+                                                             <select x-model="selectedCollectionGroup"
+                                                                 class="w-full text-xs bg-white border border-gray-200 rounded-md px-2 py-1 text-gray-700 font-medium focus:outline-none focus:ring-1 focus:ring-primary focus:border-primary cursor-pointer"
                                                              >
-                                                                 <span class="truncate pr-2" x-text="cf.label"></span>
-                                                                 <span class="text-[10px] font-mono text-gray-400 shrink-0" x-text="cf.key"></span>
-                                                             </button>
+                                                                 <template x-for="group in groupedCollectionFields" :key="group.collection_id">
+                                                                     <option :value="group.collection_id" x-text="group.name" :selected="selectedCollectionGroup == group.collection_id"></option>
+                                                                 </template>
+                                                             </select>
+                                                         </div>
+                                                     </template>
+
+                                                     <div class="max-h-48 overflow-y-auto py-1">
+                                                         <template x-for="group in (groupedCollectionFields || [])" :key="group.collection_id">
+                                                             <div x-show="(groupedCollectionFields || []).length <= 1 || selectedCollectionGroup == group.collection_id">
+                                                                 <template x-for="cf in group.fields" :key="group.collection_id + '_' + cf.key">
+                                                                     <button type="button" @click="setFieldSource(field.name, cf.key); showSourcePicker = false"
+                                                                         class="w-full flex items-center justify-between px-3 py-1.5 text-left text-xs transition-colors cursor-pointer"
+                                                                         :class="getSourceKey(field.name) === cf.key ? 'bg-primary/10 text-primary font-bold' : 'text-gray-700 hover:bg-gray-50'"
+                                                                     >
+                                                                         <span class="truncate pr-2" x-text="cf.label"></span>
+                                                                         <span class="text-[10px] font-mono text-gray-400 shrink-0" x-text="cf.key"></span>
+                                                                     </button>
+                                                                 </template>
+                                                             </div>
                                                          </template>
-                                                         <template x-if="(!collectionFields || collectionFields.length === 0)">
+                                                         <template x-if="(!groupedCollectionFields || groupedCollectionFields.length === 0)">
                                                              <div class="px-3 py-2 text-gray-400 italic text-center text-xs">No entry fields available</div>
                                                          </template>
                                                      </div>
@@ -1020,6 +1101,8 @@
             pages: [],
             entryData: {},
             collectionFields: window.editorCollectionFields || [],
+            groupedCollectionFields: window.editorGroupedCollectionFields || [],
+            selectedCollectionGroup: (window.editorGroupedCollectionFields && window.editorGroupedCollectionFields.length > 0) ? window.editorGroupedCollectionFields[0].collection_id : null,
             linkModes: {},
             active: null,
             crumbs: [],

@@ -185,7 +185,54 @@ class CollectionEntryController extends Controller
             }
         }
 
+        $allGroupedFields = collect();
+
+        if (! $collection->enable_seo) {
+            // Layout Collection (Enable SEO is OFF): Include current collection fields + ALL other collections' fields
+            if ($entryCustomFields->isNotEmpty()) {
+                $allGroupedFields->push([
+                    'collection_id' => $collection->id,
+                    'name' => $collection->name.' (Current)',
+                    'fields' => $entryCustomFields->values()->all(),
+                ]);
+            }
+
+            $otherCollections = Collection::where('id', '!=', $collection->id)->orderBy('position')->orderBy('name')->get();
+            foreach ($otherCollections as $otherCol) {
+                $colFields = collect();
+                if (is_array($otherCol->fields)) {
+                    foreach ($otherCol->fields as $f) {
+                        $key = $f['template'] ?? $f['key'] ?? $f['name'] ?? '';
+                        if ($key !== '' && ($f['type'] ?? '') !== 'collection') {
+                            $colFields->put($key, [
+                                'key' => $key,
+                                'label' => $f['title'] ?? $f['label'] ?? Str::title(str_replace(['_', '-'], ' ', $key)),
+                            ]);
+                        }
+                    }
+                }
+
+                if ($colFields->isNotEmpty()) {
+                    $allGroupedFields->push([
+                        'collection_id' => $otherCol->id,
+                        'name' => $otherCol->name,
+                        'fields' => $colFields->values()->all(),
+                    ]);
+                }
+            }
+        } else {
+            // Specific Content Collection (Enable SEO is ON): Include ONLY this specific collection's fields
+            if ($entryCustomFields->isNotEmpty()) {
+                $allGroupedFields->push([
+                    'collection_id' => $collection->id,
+                    'name' => $collection->name,
+                    'fields' => $entryCustomFields->values()->all(),
+                ]);
+            }
+        }
+
         $collectionFields = $entryCustomFields->values()->all();
+        $groupedCollectionFields = $allGroupedFields->all();
 
         return view('admin.collections.entries.editor', [
             'collection' => $collection,
@@ -195,6 +242,7 @@ class CollectionEntryController extends Controller
             'blockList' => $blockList,
             'pages' => $pages,
             'collectionFields' => $collectionFields,
+            'groupedCollectionFields' => $groupedCollectionFields,
         ]);
     }
 

@@ -325,3 +325,51 @@ it('filters out collection type custom fields from editor collectionFields list'
         ->assertSee('"key":"cover_photo"', false)
         ->assertDontSee('"key":"related_tour"', false);
 });
+
+it('shows all collection fields when enable_seo is false and only specific collection fields when enable_seo is true', function () {
+    $packagesCol = Collection::create([
+        'name' => 'Packages',
+        'slug' => 'packages',
+        'enable_seo' => true,
+        'position' => 1,
+        'fields' => [
+            ['title' => 'Package Image', 'type' => 'image', 'template' => 'package_image'],
+        ],
+    ]);
+
+    $layoutCol = Collection::create([
+        'name' => 'Layouts',
+        'slug' => 'layouts',
+        'enable_seo' => false,
+        'position' => 2,
+        'fields' => [
+            ['title' => 'Layout Banner', 'type' => 'image', 'template' => 'layout_banner'],
+        ],
+    ]);
+
+    $packageEntry = $packagesCol->entries()->create([
+        'slug' => 'bali-tour',
+        'data' => ['title' => 'Bali Tour', 'package_image' => 'https://example.com/bali.jpg'],
+        'published' => true,
+        'sections' => [],
+    ]);
+
+    $layoutEntry = $layoutCol->entries()->create([
+        'slug' => 'hero-layout',
+        'data' => ['title' => 'Hero Layout', 'layout_banner' => 'https://example.com/banner.jpg'],
+        'published' => true,
+        'sections' => [],
+    ]);
+
+    // 1. Specific Collection (enable_seo === true): shows ONLY package_image, NOT layout_banner
+    get(route('admin.collections.entries.editor', [$packagesCol, $packageEntry]))
+        ->assertSuccessful()
+        ->assertSee('package_image')
+        ->assertDontSee('layout_banner');
+
+    // 2. Layout Collection (enable_seo === false): shows ALL collections fields (package_image AND layout_banner)
+    get(route('admin.collections.entries.editor', [$layoutCol, $layoutEntry]))
+        ->assertSuccessful()
+        ->assertSee('package_image')
+        ->assertSee('layout_banner');
+});
