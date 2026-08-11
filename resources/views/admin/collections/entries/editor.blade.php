@@ -152,7 +152,7 @@
                                                 </button>
 
                                                 <div x-show="showSourcePicker" @click.outside="showSourcePicker = false"
-                                                    class="absolute right-0 z-30 mt-1 w-60 rounded-xl border border-gray-200 bg-white py-1 shadow-xl ring-1 ring-black/5 text-xs"
+                                                    class="absolute right-0 z-30 mt-1 min-w-[240px] rounded-xl border border-gray-200 bg-white py-1 shadow-xl ring-1 ring-black/5 text-xs"
                                                     x-transition
                                                 >
                                                     <div class="px-3 py-1.5 border-b border-gray-100 flex items-center justify-between font-semibold text-xs text-gray-700">
@@ -174,13 +174,34 @@
 
                                                     <template x-if="(groupedCollectionFields || []).length > 1">
                                                         <div class="px-3 py-1.5 border-b border-gray-100 bg-gray-50/70">
-                                                            <select x-model="selectedCollectionGroup"
-                                                                class="w-full text-xs bg-white border border-gray-200 rounded-md px-2 py-1 text-gray-700 font-medium focus:outline-none focus:ring-1 focus:ring-primary focus:border-primary cursor-pointer"
-                                                            >
-                                                                <template x-for="group in groupedCollectionFields" :key="group.collection_id">
-                                                                    <option :value="group.collection_id" x-text="group.name" :selected="selectedCollectionGroup == group.collection_id"></option>
-                                                                </template>
-                                                            </select>
+                                                            <div class="relative" x-data="{ groupPickerOpen: false }">
+                                                                <button type="button" @click="groupPickerOpen = !groupPickerOpen"
+                                                                    class="w-full flex items-center justify-between gap-2 rounded-lg border border-gray-200 bg-white px-2.5 py-1.5 text-xs font-medium text-gray-700 transition-colors hover:border-gray-300 focus:outline-none focus:ring-1 focus:ring-primary focus:border-primary cursor-pointer"
+                                                                    :class="groupPickerOpen ? 'border-primary ring-1 ring-primary' : ''"
+                                                                >
+                                                                    <span class="truncate" x-text="(groupedCollectionFields.find(g => g.collection_id == selectedCollectionGroup) || groupedCollectionFields[0])?.name || 'Select collection'"></span>
+                                                                    <svg class="size-3.5 shrink-0 text-gray-400 transition-transform duration-200" :class="groupPickerOpen ? 'rotate-180' : ''" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
+                                                                        <path d="m6 9 6 6 6-6"/>
+                                                                    </svg>
+                                                                </button>
+
+                                                                <div x-show="groupPickerOpen" @click.outside="groupPickerOpen = false"
+                                                                    class="absolute inset-x-0 top-full z-40 mt-1 max-h-48 overflow-y-auto rounded-lg border border-gray-200 bg-white py-1 shadow-xl ring-1 ring-black/5"
+                                                                    x-transition
+                                                                >
+                                                                    <template x-for="group in groupedCollectionFields" :key="'g_' + group.collection_id">
+                                                                        <button type="button" @click="selectedCollectionGroup = group.collection_id; groupPickerOpen = false"
+                                                                            class="w-full flex items-center justify-between px-2.5 py-1.5 text-left text-xs transition-colors cursor-pointer"
+                                                                            :class="selectedCollectionGroup == group.collection_id ? 'bg-primary/10 text-primary font-bold' : 'text-gray-700 hover:bg-gray-50'"
+                                                                        >
+                                                                            <span class="truncate pr-2" x-text="group.name"></span>
+                                                                            <svg x-show="selectedCollectionGroup == group.collection_id" class="size-3.5 shrink-0" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
+                                                                                <path d="M20 6 9 17l-5-5"/>
+                                                                            </svg>
+                                                                        </button>
+                                                                    </template>
+                                                                </div>
+                                                            </div>
                                                         </div>
                                                     </template>
 
@@ -236,7 +257,7 @@
                                                 </button>
 
                                                 <div x-show="showSourcePicker" @click.outside="showSourcePicker = false"
-                                                    class="absolute right-0 z-30 mt-1 w-60 rounded-xl border border-gray-200 bg-white py-1 shadow-xl ring-1 ring-black/5 text-xs"
+                                                    class="absolute right-0 z-30 mt-1 min-w-[240px] rounded-xl border border-gray-200 bg-white py-1 shadow-xl ring-1 ring-black/5 text-xs"
                                                     x-transition
                                                 >
                                                     <div class="px-3 py-1.5 border-b border-gray-100 flex items-center justify-between font-semibold text-xs text-gray-700">
@@ -258,13 +279,34 @@
 
                                                     <template x-if="(groupedCollectionFields || []).length > 1">
                                                         <div class="px-3 py-1.5 border-b border-gray-100 bg-gray-50/70">
-                                                            <select x-model="selectedCollectionGroup"
-                                                                class="w-full text-xs bg-white border border-gray-200 rounded-md px-2 py-1 text-gray-700 font-medium focus:outline-none focus:ring-1 focus:ring-primary focus:border-primary cursor-pointer"
-                                                            >
-                                                                <template x-for="group in groupedCollectionFields" :key="group.collection_id">
-                                                                    <option :value="group.collection_id" x-text="group.name" :selected="selectedCollectionGroup == group.collection_id"></option>
-                                                                </template>
-                                                            </select>
+                                                            <div class="relative" x-data="{ groupPickerOpen: false }">
+                                                                <button type="button" @click="groupPickerOpen = !groupPickerOpen"
+                                                                    class="w-full flex items-center justify-between gap-2 rounded-lg border border-gray-200 bg-white px-2.5 py-1.5 text-xs font-medium text-gray-700 transition-colors hover:border-gray-300 focus:outline-none focus:ring-1 focus:ring-primary focus:border-primary cursor-pointer"
+                                                                    :class="groupPickerOpen ? 'border-primary ring-1 ring-primary' : ''"
+                                                                >
+                                                                    <span class="truncate" x-text="(groupedCollectionFields.find(g => g.collection_id == selectedCollectionGroup) || groupedCollectionFields[0])?.name || 'Select collection'"></span>
+                                                                    <svg class="size-3.5 shrink-0 text-gray-400 transition-transform duration-200" :class="groupPickerOpen ? 'rotate-180' : ''" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
+                                                                        <path d="m6 9 6 6 6-6"/>
+                                                                    </svg>
+                                                                </button>
+
+                                                                <div x-show="groupPickerOpen" @click.outside="groupPickerOpen = false"
+                                                                    class="absolute inset-x-0 top-full z-40 mt-1 max-h-48 overflow-y-auto rounded-lg border border-gray-200 bg-white py-1 shadow-xl ring-1 ring-black/5"
+                                                                    x-transition
+                                                                >
+                                                                    <template x-for="group in groupedCollectionFields" :key="'g_' + group.collection_id">
+                                                                        <button type="button" @click="selectedCollectionGroup = group.collection_id; groupPickerOpen = false"
+                                                                            class="w-full flex items-center justify-between px-2.5 py-1.5 text-left text-xs transition-colors cursor-pointer"
+                                                                            :class="selectedCollectionGroup == group.collection_id ? 'bg-primary/10 text-primary font-bold' : 'text-gray-700 hover:bg-gray-50'"
+                                                                        >
+                                                                            <span class="truncate pr-2" x-text="group.name"></span>
+                                                                            <svg x-show="selectedCollectionGroup == group.collection_id" class="size-3.5 shrink-0" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
+                                                                                <path d="M20 6 9 17l-5-5"/>
+                                                                            </svg>
+                                                                        </button>
+                                                                    </template>
+                                                                </div>
+                                                            </div>
                                                         </div>
                                                     </template>
 
@@ -319,7 +361,7 @@
                                                 </button>
 
                                                 <div x-show="showSourcePicker" @click.outside="showSourcePicker = false"
-                                                    class="absolute right-0 z-30 mt-1 w-60 rounded-xl border border-gray-200 bg-white py-1 shadow-xl ring-1 ring-black/5 text-xs"
+                                                    class="absolute right-0 z-30 mt-1 min-w-[240px] rounded-xl border border-gray-200 bg-white py-1 shadow-xl ring-1 ring-black/5 text-xs"
                                                     x-transition
                                                 >
                                                     <div class="px-3 py-1.5 border-b border-gray-100 flex items-center justify-between font-semibold text-xs text-gray-700">
@@ -341,13 +383,34 @@
 
                                                     <template x-if="(groupedCollectionFields || []).length > 1">
                                                         <div class="px-3 py-1.5 border-b border-gray-100 bg-gray-50/70">
-                                                            <select x-model="selectedCollectionGroup"
-                                                                class="w-full text-xs bg-white border border-gray-200 rounded-md px-2 py-1 text-gray-700 font-medium focus:outline-none focus:ring-1 focus:ring-primary focus:border-primary cursor-pointer"
-                                                            >
-                                                                <template x-for="group in groupedCollectionFields" :key="group.collection_id">
-                                                                    <option :value="group.collection_id" x-text="group.name" :selected="selectedCollectionGroup == group.collection_id"></option>
-                                                                </template>
-                                                            </select>
+                                                            <div class="relative" x-data="{ groupPickerOpen: false }">
+                                                                <button type="button" @click="groupPickerOpen = !groupPickerOpen"
+                                                                    class="w-full flex items-center justify-between gap-2 rounded-lg border border-gray-200 bg-white px-2.5 py-1.5 text-xs font-medium text-gray-700 transition-colors hover:border-gray-300 focus:outline-none focus:ring-1 focus:ring-primary focus:border-primary cursor-pointer"
+                                                                    :class="groupPickerOpen ? 'border-primary ring-1 ring-primary' : ''"
+                                                                >
+                                                                    <span class="truncate" x-text="(groupedCollectionFields.find(g => g.collection_id == selectedCollectionGroup) || groupedCollectionFields[0])?.name || 'Select collection'"></span>
+                                                                    <svg class="size-3.5 shrink-0 text-gray-400 transition-transform duration-200" :class="groupPickerOpen ? 'rotate-180' : ''" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
+                                                                        <path d="m6 9 6 6 6-6"/>
+                                                                    </svg>
+                                                                </button>
+
+                                                                <div x-show="groupPickerOpen" @click.outside="groupPickerOpen = false"
+                                                                    class="absolute inset-x-0 top-full z-40 mt-1 max-h-48 overflow-y-auto rounded-lg border border-gray-200 bg-white py-1 shadow-xl ring-1 ring-black/5"
+                                                                    x-transition
+                                                                >
+                                                                    <template x-for="group in groupedCollectionFields" :key="'g_' + group.collection_id">
+                                                                        <button type="button" @click="selectedCollectionGroup = group.collection_id; groupPickerOpen = false"
+                                                                            class="w-full flex items-center justify-between px-2.5 py-1.5 text-left text-xs transition-colors cursor-pointer"
+                                                                            :class="selectedCollectionGroup == group.collection_id ? 'bg-primary/10 text-primary font-bold' : 'text-gray-700 hover:bg-gray-50'"
+                                                                        >
+                                                                            <span class="truncate pr-2" x-text="group.name"></span>
+                                                                            <svg x-show="selectedCollectionGroup == group.collection_id" class="size-3.5 shrink-0" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
+                                                                                <path d="M20 6 9 17l-5-5"/>
+                                                                            </svg>
+                                                                        </button>
+                                                                    </template>
+                                                                </div>
+                                                            </div>
                                                         </div>
                                                     </template>
 
@@ -458,7 +521,7 @@
                                                 </button>
 
                                                 <div x-show="showSourcePicker" @click.outside="showSourcePicker = false"
-                                                    class="absolute right-0 z-30 mt-1 w-60 rounded-xl border border-gray-200 bg-white py-1 shadow-xl ring-1 ring-black/5 text-xs"
+                                                    class="absolute right-0 z-30 mt-1 min-w-[240px] rounded-xl border border-gray-200 bg-white py-1 shadow-xl ring-1 ring-black/5 text-xs"
                                                     x-transition
                                                 >
                                                     <div class="px-3 py-1.5 border-b border-gray-100 flex items-center justify-between font-semibold text-xs text-gray-700">
@@ -480,13 +543,34 @@
 
                                                     <template x-if="(groupedCollectionFields || []).length > 1">
                                                         <div class="px-3 py-1.5 border-b border-gray-100 bg-gray-50/70">
-                                                            <select x-model="selectedCollectionGroup"
-                                                                class="w-full text-xs bg-white border border-gray-200 rounded-md px-2 py-1 text-gray-700 font-medium focus:outline-none focus:ring-1 focus:ring-primary focus:border-primary cursor-pointer"
-                                                            >
-                                                                <template x-for="group in groupedCollectionFields" :key="group.collection_id">
-                                                                    <option :value="group.collection_id" x-text="group.name" :selected="selectedCollectionGroup == group.collection_id"></option>
-                                                                </template>
-                                                            </select>
+                                                            <div class="relative" x-data="{ groupPickerOpen: false }">
+                                                                <button type="button" @click="groupPickerOpen = !groupPickerOpen"
+                                                                    class="w-full flex items-center justify-between gap-2 rounded-lg border border-gray-200 bg-white px-2.5 py-1.5 text-xs font-medium text-gray-700 transition-colors hover:border-gray-300 focus:outline-none focus:ring-1 focus:ring-primary focus:border-primary cursor-pointer"
+                                                                    :class="groupPickerOpen ? 'border-primary ring-1 ring-primary' : ''"
+                                                                >
+                                                                    <span class="truncate" x-text="(groupedCollectionFields.find(g => g.collection_id == selectedCollectionGroup) || groupedCollectionFields[0])?.name || 'Select collection'"></span>
+                                                                    <svg class="size-3.5 shrink-0 text-gray-400 transition-transform duration-200" :class="groupPickerOpen ? 'rotate-180' : ''" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
+                                                                        <path d="m6 9 6 6 6-6"/>
+                                                                    </svg>
+                                                                </button>
+
+                                                                <div x-show="groupPickerOpen" @click.outside="groupPickerOpen = false"
+                                                                    class="absolute inset-x-0 top-full z-40 mt-1 max-h-48 overflow-y-auto rounded-lg border border-gray-200 bg-white py-1 shadow-xl ring-1 ring-black/5"
+                                                                    x-transition
+                                                                >
+                                                                    <template x-for="group in groupedCollectionFields" :key="'g_' + group.collection_id">
+                                                                        <button type="button" @click="selectedCollectionGroup = group.collection_id; groupPickerOpen = false"
+                                                                            class="w-full flex items-center justify-between px-2.5 py-1.5 text-left text-xs transition-colors cursor-pointer"
+                                                                            :class="selectedCollectionGroup == group.collection_id ? 'bg-primary/10 text-primary font-bold' : 'text-gray-700 hover:bg-gray-50'"
+                                                                        >
+                                                                            <span class="truncate pr-2" x-text="group.name"></span>
+                                                                            <svg x-show="selectedCollectionGroup == group.collection_id" class="size-3.5 shrink-0" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
+                                                                                <path d="M20 6 9 17l-5-5"/>
+                                                                            </svg>
+                                                                        </button>
+                                                                    </template>
+                                                                </div>
+                                                            </div>
                                                         </div>
                                                     </template>
 
@@ -645,7 +729,7 @@
                                                  </button>
 
                                                  <div x-show="showSourcePicker" @click.outside="showSourcePicker = false"
-                                                     class="absolute right-0 z-30 mt-1 w-60 rounded-xl border border-gray-200 bg-white py-1 shadow-xl ring-1 ring-black/5 text-xs"
+                                                     class="absolute right-0 z-30 mt-1 min-w-[240px] rounded-xl border border-gray-200 bg-white py-1 shadow-xl ring-1 ring-black/5 text-xs"
                                                      x-transition
                                                  >
                                                      <div class="px-3 py-1.5 border-b border-gray-100 flex items-center justify-between font-semibold text-xs text-gray-700">
@@ -667,13 +751,34 @@
 
                                                      <template x-if="(groupedCollectionFields || []).length > 1">
                                                          <div class="px-3 py-1.5 border-b border-gray-100 bg-gray-50/70">
-                                                             <select x-model="selectedCollectionGroup"
-                                                                 class="w-full text-xs bg-white border border-gray-200 rounded-md px-2 py-1 text-gray-700 font-medium focus:outline-none focus:ring-1 focus:ring-primary focus:border-primary cursor-pointer"
-                                                             >
-                                                                 <template x-for="group in groupedCollectionFields" :key="group.collection_id">
-                                                                     <option :value="group.collection_id" x-text="group.name" :selected="selectedCollectionGroup == group.collection_id"></option>
-                                                                 </template>
-                                                             </select>
+                                                             <div class="relative" x-data="{ groupPickerOpen: false }">
+                                                                 <button type="button" @click="groupPickerOpen = !groupPickerOpen"
+                                                                     class="w-full flex items-center justify-between gap-2 rounded-lg border border-gray-200 bg-white px-2.5 py-1.5 text-xs font-medium text-gray-700 transition-colors hover:border-gray-300 focus:outline-none focus:ring-1 focus:ring-primary focus:border-primary cursor-pointer"
+                                                                     :class="groupPickerOpen ? 'border-primary ring-1 ring-primary' : ''"
+                                                                 >
+                                                                     <span class="truncate" x-text="(groupedCollectionFields.find(g => g.collection_id == selectedCollectionGroup) || groupedCollectionFields[0])?.name || 'Select collection'"></span>
+                                                                     <svg class="size-3.5 shrink-0 text-gray-400 transition-transform duration-200" :class="groupPickerOpen ? 'rotate-180' : ''" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
+                                                                         <path d="m6 9 6 6 6-6"/>
+                                                                     </svg>
+                                                                 </button>
+
+                                                                 <div x-show="groupPickerOpen" @click.outside="groupPickerOpen = false"
+                                                                     class="absolute inset-x-0 top-full z-40 mt-1 max-h-48 overflow-y-auto rounded-lg border border-gray-200 bg-white py-1 shadow-xl ring-1 ring-black/5"
+                                                                     x-transition
+                                                                 >
+                                                                     <template x-for="group in groupedCollectionFields" :key="'g_' + group.collection_id">
+                                                                         <button type="button" @click="selectedCollectionGroup = group.collection_id; groupPickerOpen = false"
+                                                                             class="w-full flex items-center justify-between px-2.5 py-1.5 text-left text-xs transition-colors cursor-pointer"
+                                                                             :class="selectedCollectionGroup == group.collection_id ? 'bg-primary/10 text-primary font-bold' : 'text-gray-700 hover:bg-gray-50'"
+                                                                         >
+                                                                             <span class="truncate pr-2" x-text="group.name"></span>
+                                                                             <svg x-show="selectedCollectionGroup == group.collection_id" class="size-3.5 shrink-0" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
+                                                                                 <path d="M20 6 9 17l-5-5"/>
+                                                                             </svg>
+                                                                         </button>
+                                                                     </template>
+                                                                 </div>
+                                                             </div>
                                                          </div>
                                                      </template>
 
