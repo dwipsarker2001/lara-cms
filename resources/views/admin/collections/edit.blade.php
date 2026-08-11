@@ -386,39 +386,88 @@
                             </div>
                         </div>
                     </div>
-                    <div x-show="fieldForm.type === 'collection'" style="display: none;" class="space-y-1 relative z-20">
-                        <label class="block text-sm font-medium text-text-heading mb-1">Target Collection</label>
-                        <div x-data="{ open: false }" @click.outside="open = false" class="relative">
-                            <button type="button" @click="open = !open"
-                                class="flex items-center justify-between gap-2 w-full rounded-lg border border-gray-300 hover:border-gray-400 bg-white px-3 py-2 text-sm text-text-primary h-9 transition-colors focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary cursor-pointer shadow-sm">
-                                <span x-text="fieldForm.collection_id ? (@js($collections->pluck('name', 'id'))[fieldForm.collection_id] || 'Choose a collection...') : 'Choose a collection...'"></span>
-                                <svg :class="open ? 'rotate-180 text-primary' : 'text-gray-400'" class="size-4 transition-transform duration-150 shrink-0" viewBox="0 0 20 20" fill="currentColor">
-                                    <path fill-rule="evenodd" d="M5.22 8.22a.75.75 0 0 1 1.06 0L10 11.94l3.72-3.72a.75.75 0 1 1 1.06 1.06l-4.25 4.25a.75.75 0 0 1-1.06 0L5.22 9.28a.75.75 0 0 1 0-1.06Z" clip-rule="evenodd" />
-                                </svg>
-                            </button>
-                            <div x-show="open"
-                                x-transition:enter="transition ease-out duration-100"
-                                x-transition:enter-start="opacity-0 scale-95"
-                                x-transition:enter-end="opacity-100 scale-100"
-                                x-transition:leave="transition ease-in duration-75"
-                                x-transition:leave-start="opacity-100 scale-100"
-                                x-transition:leave-end="opacity-0 scale-95"
-                                class="absolute z-50 top-full mt-1 left-0 right-0 bg-white border border-gray-200 rounded-lg shadow-xl p-1.5 space-y-0.5 max-h-56 overflow-y-auto"
-                                style="display: none;">
-                                <button type="button" @click="fieldForm.collection_id = ''; open = false"
-                                    class="flex items-center justify-between w-full px-3 py-2 text-sm rounded-lg text-text-muted hover:bg-gray-100/80 transition-colors">
-                                    <span>Choose a collection...</span>
+                    <div x-show="fieldForm.type === 'collection'" style="display: none;" class="space-y-3 relative z-20">
+                        <div>
+                            <label class="block text-sm font-medium text-text-heading mb-1">Target Collection</label>
+                            <div x-data="{ open: false }" @click.outside="open = false" class="relative">
+                                <button type="button" @click="open = !open"
+                                    class="flex items-center justify-between gap-2 w-full rounded-lg border border-gray-300 hover:border-gray-400 bg-white px-3 py-2 text-sm text-text-primary h-9 transition-colors focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary cursor-pointer shadow-sm">
+                                    <span x-text="fieldForm.collection_id ? (@js($collections->pluck('name', 'id'))[fieldForm.collection_id] || 'Choose a collection...') : 'Choose a collection...'"></span>
+                                    <svg :class="open ? 'rotate-180 text-primary' : 'text-gray-400'" class="size-4 transition-transform duration-150 shrink-0" viewBox="0 0 20 20" fill="currentColor">
+                                        <path fill-rule="evenodd" d="M5.22 8.22a.75.75 0 0 1 1.06 0L10 11.94l3.72-3.72a.75.75 0 1 1 1.06 1.06l-4.25 4.25a.75.75 0 0 1-1.06 0L5.22 9.28a.75.75 0 0 1 0-1.06Z" clip-rule="evenodd" />
+                                    </svg>
                                 </button>
-                                @foreach($collections as $col)
-                                    <button type="button" @click="fieldForm.collection_id = '{{ $col->id }}'; open = false"
-                                        class="flex items-center justify-between w-full px-3 py-2 text-sm rounded-lg text-text-primary hover:bg-gray-100/80 transition-colors"
-                                        :class="fieldForm.collection_id == '{{ $col->id }}' ? 'bg-primary/10 text-primary font-medium' : ''">
-                                        <span>{{ $col->name }}</span>
-                                        <svg x-show="fieldForm.collection_id == '{{ $col->id }}'" class="size-4 text-primary shrink-0" viewBox="0 0 20 20" fill="currentColor">
+                                <div x-show="open"
+                                    x-transition:enter="transition ease-out duration-100"
+                                    x-transition:enter-start="opacity-0 scale-95"
+                                    x-transition:enter-end="opacity-100 scale-100"
+                                    x-transition:leave="transition ease-in duration-75"
+                                    x-transition:leave-start="opacity-100 scale-100"
+                                    x-transition:leave-end="opacity-0 scale-95"
+                                    class="absolute z-50 top-full mt-1 left-0 right-0 bg-white border border-gray-200 rounded-lg shadow-xl p-1.5 space-y-0.5 max-h-56 overflow-y-auto"
+                                    style="display: none;">
+                                    <button type="button" @click="if (fieldForm.collection_id !== '') { fieldForm.collection_id = ''; fieldForm.default_entry_id = ''; } open = false"
+                                        class="flex items-center justify-between w-full px-3 py-2 text-sm rounded-lg text-text-muted hover:bg-gray-100/80 transition-colors">
+                                        <span>Choose a collection...</span>
+                                    </button>
+                                    @foreach($collections as $col)
+                                        <button type="button" @click="if (fieldForm.collection_id != '{{ $col->id }}') { fieldForm.collection_id = '{{ $col->id }}'; fieldForm.default_entry_id = ''; } open = false"
+                                            class="flex items-center justify-between w-full px-3 py-2 text-sm rounded-lg text-text-primary hover:bg-gray-100/80 transition-colors"
+                                            :class="fieldForm.collection_id == '{{ $col->id }}' ? 'bg-primary/10 text-primary font-medium' : ''">
+                                            <span>{{ $col->name }}</span>
+                                            <svg x-show="fieldForm.collection_id == '{{ $col->id }}'" class="size-4 text-primary shrink-0" viewBox="0 0 20 20" fill="currentColor">
+                                                <path fill-rule="evenodd" d="M16.704 4.153a.75.75 0 0 1 .143 1.052l-8 10.5a.75.75 0 0 1-1.127.075l-4.5-4.5a.75.75 0 0 1 1.06-1.06l3.894 3.893 7.48-9.817a.75.75 0 0 1 1.05-.143Z" clip-rule="evenodd" />
+                                            </svg>
+                                        </button>
+                                    @endforeach
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Default Entry Optional Field -->
+                        <div x-show="fieldForm.collection_id" style="display: none;">
+                            <label class="block text-sm font-medium text-text-heading mb-1">
+                                Default Entry <span class="text-xs text-text-muted font-normal">(Optional)</span>
+                            </label>
+                            <div x-data="{ open: false }" @click.outside="open = false" class="relative">
+                                <button type="button" @click="open = !open"
+                                    class="flex items-center justify-between gap-2 w-full rounded-lg border border-gray-300 hover:border-gray-400 bg-white px-3 py-2 text-sm text-text-primary h-9 transition-colors focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary cursor-pointer shadow-sm">
+                                    <span x-text="selectedDefaultEntryTitle"></span>
+                                    <svg :class="open ? 'rotate-180 text-primary' : 'text-gray-400'" class="size-4 transition-transform duration-150 shrink-0" viewBox="0 0 20 20" fill="currentColor">
+                                        <path fill-rule="evenodd" d="M5.22 8.22a.75.75 0 0 1 1.06 0L10 11.94l3.72-3.72a.75.75 0 1 1 1.06 1.06l-4.25 4.25a.75.75 0 0 1-1.06 0L5.22 9.28a.75.75 0 0 1 0-1.06Z" clip-rule="evenodd" />
+                                    </svg>
+                                </button>
+                                <div x-show="open"
+                                    x-transition:enter="transition ease-out duration-100"
+                                    x-transition:enter-start="opacity-0 scale-95"
+                                    x-transition:enter-end="opacity-100 scale-100"
+                                    x-transition:leave="transition ease-in duration-75"
+                                    x-transition:leave-start="opacity-100 scale-100"
+                                    x-transition:leave-end="opacity-0 scale-95"
+                                    class="absolute z-50 top-full mt-1 left-0 right-0 bg-white border border-gray-200 rounded-lg shadow-xl p-1.5 space-y-0.5 max-h-56 overflow-y-auto"
+                                    style="display: none;">
+                                    <button type="button" @click="fieldForm.default_entry_id = ''; open = false"
+                                        class="flex items-center justify-between w-full px-3 py-2 text-sm rounded-lg text-text-muted hover:bg-gray-100/80 transition-colors"
+                                        :class="!fieldForm.default_entry_id ? 'bg-primary/10 text-primary font-medium' : ''">
+                                        <span>None (No Default)</span>
+                                        <svg x-show="!fieldForm.default_entry_id" class="size-4 text-primary shrink-0" viewBox="0 0 20 20" fill="currentColor">
                                             <path fill-rule="evenodd" d="M16.704 4.153a.75.75 0 0 1 .143 1.052l-8 10.5a.75.75 0 0 1-1.127.075l-4.5-4.5a.75.75 0 0 1 1.06-1.06l3.894 3.893 7.48-9.817a.75.75 0 0 1 1.05-.143Z" clip-rule="evenodd" />
                                         </svg>
                                     </button>
-                                @endforeach
+                                    <template x-for="entry in targetCollectionEntries" :key="entry.id">
+                                        <button type="button" @click="fieldForm.default_entry_id = String(entry.id); open = false"
+                                            class="flex items-center justify-between w-full px-3 py-2 text-sm rounded-lg text-text-primary hover:bg-gray-100/80 transition-colors"
+                                            :class="String(fieldForm.default_entry_id) === String(entry.id) ? 'bg-primary/10 text-primary font-medium' : ''">
+                                            <span x-text="entry.title"></span>
+                                            <svg x-show="String(fieldForm.default_entry_id) === String(entry.id)" class="size-4 text-primary shrink-0" viewBox="0 0 20 20" fill="currentColor">
+                                                <path fill-rule="evenodd" d="M16.704 4.153a.75.75 0 0 1 .143 1.052l-8 10.5a.75.75 0 0 1-1.127.075l-4.5-4.5a.75.75 0 0 1 1.06-1.06l3.894 3.893 7.48-9.817a.75.75 0 0 1 1.05-.143Z" clip-rule="evenodd" />
+                                            </svg>
+                                        </button>
+                                    </template>
+                                    <template x-if="targetCollectionEntries.length === 0">
+                                        <div class="px-3 py-2 text-xs text-text-muted text-center">No entries found in this collection</div>
+                                    </template>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -491,13 +540,31 @@
 @endsection
 
 @push('scripts')
+@php
+    $collectionsMap = $collections->mapWithKeys(function ($col) {
+        return [
+            (string) $col->id => [
+                'id' => (string) $col->id,
+                'name' => $col->name,
+                'entries' => $col->entries->map(function ($entry) {
+                    return [
+                        'id' => (string) $entry->id,
+                        'title' => $entry->title,
+                    ];
+                })->values()->toArray(),
+            ]
+        ];
+    });
+@endphp
 <script>
     function collectionForm(existingFields) {
+        const collectionsMap = @json($collectionsMap);
         const initialName = @json($collection->name);
         const initialIcon = @json($collection->icon ?? '');
         const initialFields = JSON.parse(JSON.stringify(existingFields || []));
 
         return {
+            collectionsMap: collectionsMap,
             name: initialName,
             selectedIcon: initialIcon,
             iconPickerOpen: false,
@@ -517,10 +584,23 @@
                 type: 'text',
                 template: '',
                 collection_id: '',
-                taxonomy_id: ''
+                taxonomy_id: '',
+                multiple: false,
+                default_entry_id: ''
             },
             enableSeo: @json($collection->enable_seo ?? true),
 
+            get targetCollectionEntries() {
+                if (!this.fieldForm.collection_id) return [];
+                const col = this.collectionsMap[String(this.fieldForm.collection_id)];
+                return col ? (col.entries || []) : [];
+            },
+            get selectedDefaultEntryTitle() {
+                if (!this.fieldForm.default_entry_id) return 'Choose default entry (Optional)...';
+                const entries = this.targetCollectionEntries;
+                const entry = entries.find(e => String(e.id) === String(this.fieldForm.default_entry_id));
+                return entry ? entry.title : 'Choose default entry (Optional)...';
+            },
             get filteredIcons() {
                 let icons = this.faIcons;
                 if (this.iconSearch.trim()) {
@@ -565,7 +645,8 @@
                     template: '',
                     collection_id: '',
                     taxonomy_id: '',
-                    multiple: false
+                    multiple: false,
+                    default_entry_id: ''
                 };
                 this.showFieldModal = true;
             },
@@ -573,7 +654,12 @@
             editField(index) {
                 this.editingFieldIndex = index;
                 this.isKeyManuallyEdited = true;
-                const field = { multiple: false, ...this.fields[index] };
+                const rawField = this.fields[index] || {};
+                const field = {
+                    multiple: false,
+                    default_entry_id: rawField.default_entry_id || rawField.default_value || rawField.default || '',
+                    ...rawField
+                };
                 if (field.template) {
                     field.template = field.template.replace(/[^a-zA-Z0-9_]+/g, '');
                 }

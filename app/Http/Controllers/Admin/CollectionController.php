@@ -53,7 +53,7 @@ class CollectionController extends Controller
     {
         return view('admin.collections.edit', [
             'collection' => $collection,
-            'collections' => Collection::orderBy('name')->get(),
+            'collections' => Collection::with('entries')->orderBy('name')->get(),
             'taxonomies' => Taxonomy::orderBy('title')->get(),
         ]);
     }

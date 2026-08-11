@@ -129,7 +129,7 @@
                                 @php
                                     $rawKey = $field['template'] ?? $loop->index;
                                     $key = str_replace(['@{{', '@}}', '@{', '}@'], '', $rawKey);
-                                    $value = old('data.' . $key, $entry->data[$key] ?? $entry->data[$rawKey] ?? '');
+                                    $value = old('data.' . $key, $entry->data[$key] ?? $entry->data[$rawKey] ?? $field['default_entry_id'] ?? $field['default_value'] ?? $field['default'] ?? '');
                                 @endphp
                                 <div class="grid md:grid-cols-2 items-start px-[18px] py-4 gap-y-3 md:gap-y-0 md:gap-x-5">
                                     <div class="flex flex-col gap-1.5">
@@ -290,7 +290,7 @@
                                                         $targetCollection = \App\Models\Collection::find($field['collection_id'] ?? null);
                                                         $targetEntries = $targetCollection ? $targetCollection->entries()->get() : collect();
                                                         $selectedEntry = $targetEntries->firstWhere('id', $value);
-                                                        $selectedLabel = $selectedEntry?->data['title'] ?? 'Choose entry...';
+                                                        $selectedLabel = $selectedEntry?->title ?? $selectedEntry?->data['title'] ?? 'Choose entry...';
                                                     @endphp
                                                     <div x-data="{ open: false, selectedValue: '{{ $value }}', label: '{{ addslashes($selectedLabel) }}' }" @click.outside="open = false" @keydown.escape.window="open = false" class="relative">
                                                         <button type="button" @click="open = !open" class="w-full flex items-center justify-between bg-content-bg border border-content-border text-text-primary text-sm rounded-lg px-3 py-2 h-9 cursor-pointer transition-all duration-150 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary">

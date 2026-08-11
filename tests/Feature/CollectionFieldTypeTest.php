@@ -251,3 +251,77 @@ it('can create and edit collection entries using tags custom field type', functi
         ->assertSee('Laravel')
         ->assertSee('AI');
 });
+
+it('supports default_entry_id for collection field type and preselects it', function () {
+    $targetCollection = Collection::create(['name' => 'Authors', 'slug' => 'authors', 'position' => 1]);
+    $targetEntry = $targetCollection->entries()->create([
+        'slug' => 'john-doe',
+        'data' => ['title' => 'John Doe'],
+        'published' => true,
+        'position' => 1,
+    ]);
+
+    $sourceCollection = Collection::create([
+        'name' => 'Posts',
+        'slug' => 'posts',
+        'position' => 2,
+        'fields' => [
+            [
+                'title' => 'Author',
+                'description' => 'Select an author',
+                'type' => 'collection',
+                'template' => 'author_id',
+                'collection_id' => (string) $targetCollection->id,
+                'default_entry_id' => (string) $targetEntry->id,
+            ],
+        ],
+    ]);
+
+    get(route('admin.collections.edit', $sourceCollection))
+        ->assertSuccessful()
+        ->assertSee('Default Entry')
+        ->assertSee('John Doe');
+
+    get(route('admin.collections.entries.create', $sourceCollection))
+        ->assertSuccessful()
+        ->assertSee('John Doe');
+});
+
+it('filters out collection type custom fields from editor collectionFields list', function () {
+    $targetCollection = Collection::create(['name' => 'Target', 'slug' => 'target', 'position' => 1]);
+    $sourceCollection = Collection::create([
+        'name' => 'Source Collection',
+        'slug' => 'source-col',
+        'position' => 2,
+        'fields' => [
+            [
+                'title' => 'Cover Photo',
+                'type' => 'image',
+                'template' => 'cover_photo',
+            ],
+            [
+                'title' => 'Related Tour',
+                'type' => 'collection',
+                'template' => 'related_tour',
+                'collection_id' => (string) $targetCollection->id,
+            ],
+        ],
+    ]);
+
+    $entry = $sourceCollection->entries()->create([
+        'slug' => 'test-entry',
+        'data' => [
+            'title' => 'Test Entry Title',
+            'cover_photo' => 'https://example.com/photo.jpg',
+            'related_tour' => '123',
+        ],
+        'published' => true,
+        'sections' => [],
+        'position' => 1,
+    ]);
+
+    get(route('admin.collections.entries.editor', [$sourceCollection, $entry]))
+        ->assertSuccessful()
+        ->assertSee('"key":"cover_photo"', false)
+        ->assertDontSee('"key":"related_tour"', false);
+});

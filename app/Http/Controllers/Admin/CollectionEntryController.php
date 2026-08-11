@@ -155,11 +155,17 @@ class CollectionEntryController extends Controller
         }
 
         $entryCustomFields = collect();
+        $excludedKeys = [];
 
         if (is_array($collection->fields)) {
             foreach ($collection->fields as $f) {
                 $key = $f['template'] ?? $f['key'] ?? $f['name'] ?? '';
                 if ($key !== '') {
+                    if (($f['type'] ?? '') === 'collection') {
+                        $excludedKeys[] = $key;
+
+                        continue;
+                    }
                     $entryCustomFields->put($key, [
                         'key' => $key,
                         'label' => $f['title'] ?? $f['label'] ?? Str::title(str_replace(['_', '-'], ' ', $key)),
@@ -170,7 +176,7 @@ class CollectionEntryController extends Controller
 
         if (is_array($entry->data)) {
             foreach (array_keys($entry->data) as $key) {
-                if ($key !== '' && ! str_starts_with($key, '_') && ! $entryCustomFields->has($key)) {
+                if ($key !== '' && ! str_starts_with($key, '_') && ! $entryCustomFields->has($key) && ! in_array($key, $excludedKeys, true)) {
                     $entryCustomFields->put($key, [
                         'key' => $key,
                         'label' => Str::title(str_replace(['_', '-'], ' ', $key)),
