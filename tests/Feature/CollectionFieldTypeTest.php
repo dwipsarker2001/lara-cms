@@ -373,3 +373,39 @@ it('shows all collection fields when enable_seo is false and only specific colle
         ->assertSee('package_image')
         ->assertSee('layout_banner');
 });
+
+it('always includes title field in grouped collection fields for input binding', function () {
+    $layoutCol = Collection::create([
+        'name' => 'Layouts',
+        'slug' => 'layouts',
+        'enable_seo' => false,
+        'position' => 1,
+        'fields' => [
+            ['title' => 'Layout Banner', 'type' => 'image', 'template' => 'layout_banner'],
+        ],
+    ]);
+
+    $servicesCol = Collection::create([
+        'name' => 'Services',
+        'slug' => 'services',
+        'enable_seo' => true,
+        'position' => 2,
+        'fields' => [
+            ['title' => 'Service Icon', 'type' => 'image', 'template' => 'service_icon'],
+        ],
+    ]);
+
+    $layoutEntry = $layoutCol->entries()->create([
+        'slug' => 'main-layout',
+        'data' => ['title' => 'Main Layout'],
+        'published' => true,
+        'sections' => [],
+    ]);
+
+    $response = get(route('admin.collections.entries.editor', [$layoutCol, $layoutEntry]));
+    $response->assertSuccessful();
+
+    // Verify Title key exists under both groups in the JSON data passed to window.editorGroupedCollectionFields
+    $response->assertSee('"key":"title"', false);
+    $response->assertSee('"label":"Title"', false);
+});

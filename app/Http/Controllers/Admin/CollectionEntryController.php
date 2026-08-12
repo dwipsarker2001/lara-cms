@@ -154,7 +154,12 @@ class CollectionEntryController extends Controller
                 ]);
         }
 
-        $entryCustomFields = collect();
+        $entryCustomFields = collect([
+            'title' => [
+                'key' => 'title',
+                'label' => 'Title',
+            ],
+        ]);
         $excludedKeys = [];
 
         if (is_array($collection->fields)) {
@@ -199,7 +204,12 @@ class CollectionEntryController extends Controller
 
             $otherCollections = Collection::where('id', '!=', $collection->id)->orderBy('position')->orderBy('name')->get();
             foreach ($otherCollections as $otherCol) {
-                $colFields = collect();
+                $colFields = collect([
+                    'title' => [
+                        'key' => 'title',
+                        'label' => 'Title',
+                    ],
+                ]);
                 if (is_array($otherCol->fields)) {
                     foreach ($otherCol->fields as $f) {
                         $key = $f['template'] ?? $f['key'] ?? $f['name'] ?? '';

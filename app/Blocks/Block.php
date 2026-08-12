@@ -135,7 +135,7 @@ abstract class Block
                 }
 
                 if ($source !== '') {
-                    $entryValue = $entryData[$source] ?? null;
+                    $entryValue = $entryData[$source] ?? ($page->$source ?? null);
                     if ($entryValue !== null && $entryValue !== '') {
                         $data[$name] = $entryValue;
                     }
