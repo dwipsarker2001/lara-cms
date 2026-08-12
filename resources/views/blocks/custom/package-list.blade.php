@@ -8,7 +8,7 @@
     $minPriceFilter = request()->query('min_price') !== null ? (int) request()->query('min_price') : null;
     $perPage = max(1, (int) ($d['packagesPerPage'] ?? 6));
     $maxPriceLimit = max(1, (int) ($d['priceMax'] ?? 500000));
-    $selectedCollection = $d['packageCollection'] ?? null;
+    $selectedCollection = $d['listCollection'] ?? $d['packageCollection'] ?? null;
 
     $packages = collect();
     $sidebarDestinations = collect();
@@ -16,15 +16,6 @@
     $sidebarRecentPackages = collect();
     $totalPackages = 0;
     $totalPages = 1;
-
-    $parsePrice = function ($val) {
-        if (is_numeric($val)) return (float) $val;
-        if (is_string($val)) {
-            $cleaned = preg_replace('/[^0-9.]/', '', $val);
-            return is_numeric($cleaned) ? (float) $cleaned : 0;
-        }
-        return 0;
-    };
 
     if (\Illuminate\Support\Facades\Schema::hasTable('collection_entries')) {
         $query = \App\Models\CollectionEntry::where('published', true);
@@ -76,53 +67,47 @@
         $allEntries = $query->latest()->get();
 
         // Price range filter in PHP map/filter
-        $transformed = $allEntries->map(function ($entry) use ($parsePrice) {
-            $eData = $entry->data ?? [];
+        $block = app(\App\Blocks\BlockRegistry::class)->get($data['_block'] ?? 'packageList')
+            ?? new \App\Blocks\custom\PackageList;
 
-            $image = $eData['featured_image']
-                ?? $eData['image']
-                ?? $eData['hero_image']
-                ?? $eData['banner_img']
-                ?? $eData['thumbnail']
-                ?? null;
+        $transformed = $allEntries->map(fn ($entry) => $block->resolveCard($entry, $d));
 
-            if (empty($image) && !empty($entry->sections)) {
-                foreach ($entry->sections as $sec) {
-                    $secImg = $sec['data']['featured_image'] ?? $sec['data']['image'] ?? null;
-                    if (!empty($secImg)) {
-                        $image = $secImg;
+        // For price-based filtering, we still need to parse price values
+        $parsePrice = function ($val) {
+            if (is_numeric($val)) {
+                return (float) $val;
+            }
+            if (is_string($val)) {
+                $cleaned = preg_replace('/[^0-9.]/', '', $val);
+
+                return is_numeric($cleaned) ? (float) $cleaned : 0;
+            }
+
+            return 0;
+        };
+
+        $transformed = $transformed->map(function ($card) use ($parsePrice) {
+            $card->price = $parsePrice($card->price ?? 0);
+            $card->originalPrice = $parsePrice($card->originalPrice ?? 0);
+
+            if (! empty($card->excerpt)) {
+                $card->excerpt = \Illuminate\Support\Str::limit(strip_tags((string) $card->excerpt), 140);
+            }
+
+            // Image fallback from gallery section if not mapped
+            if (empty($card->image) && ! empty($card->_entry->sections)) {
+                foreach ($card->_entry->sections as $sec) {
+                    $gallery = $sec['data']['galleryImages'] ?? [];
+                    if (is_array($gallery) && ! empty($gallery[0]['image'])) {
+                        $card->image = $gallery[0]['image'];
                         break;
                     }
                 }
             }
 
-            $currentPrice = $parsePrice($eData['current_price'] ?? $eData['price'] ?? $eData['cost'] ?? 0);
-            $originalPrice = $parsePrice($eData['original_price'] ?? $eData['orginal_price'] ?? 0);
-
-            $title = $eData['title'] ?? $entry->title ?? 'Tour Package';
-            $rawDesc = $eData['excerpt'] ?? $eData['description'] ?? $eData['aboutDescription'] ?? '';
-            $excerpt = !empty($rawDesc) ? \Illuminate\Support\Str::limit(strip_tags($rawDesc), 140) : '';
-
-            $destination = $eData['location'] ?? $eData['destination'] ?? $eData['city'] ?? null;
-            $category = $eData['category'] ?? $eData['type'] ?? $eData['tour_type'] ?? null;
-            $duration = $eData['duration'] ?? $eData['tour_duration'] ?? null;
-            $discountBadge = $eData['discount_badge'] ?? $eData['badge'] ?? null;
-
-            return (object) [
-                'id' => $entry->id,
-                'title' => $title,
-                'slug' => $entry->slug,
-                'link' => $entry->route(),
-                'image' => $image,
-                'excerpt' => $excerpt,
-                'price' => $currentPrice,
-                'originalPrice' => $originalPrice,
-                'destination' => $destination,
-                'category' => $category,
-                'duration' => $duration,
-                'discountBadge' => $discountBadge,
-            ];
+            return $card;
         });
+
 
         $filtered = $transformed->filter(function ($pkg) use ($minPriceFilter, $maxPriceFilter) {
             if ($minPriceFilter !== null && $pkg->price < $minPriceFilter) return false;
@@ -193,6 +178,7 @@
                 'title' => 'Sylhet Adventure & Hiking Tour',
                 'slug' => 'sylhet-adventure-hiking-tour',
                 'link' => '#',
+                '_link' => '#',
                 'image' => 'https://images.unsplash.com/photo-1544735716-392fe2489ffa?auto=format&fit=crop&w=800&q=80',
                 'excerpt' => 'Hiking in Jaintiapur Hills, trekking to Hamham Waterfall, exploring Khadimnagar National Park & Khasi village life.',
                 'price' => 8500,
@@ -200,13 +186,14 @@
                 'destination' => 'Sylhet',
                 'category' => 'Adventure',
                 'duration' => '4 Days / 3 Nights',
-                'discountBadge' => '10% OFF',
+                'badge' => '10% OFF',
             ],
             (object) [
                 'id' => 2,
                 'title' => 'Cox\'s Bazar Luxury Beach Resort Escape',
                 'slug' => 'coxs-bazar-luxury-beach-resort',
                 'link' => '#',
+                '_link' => '#',
                 'image' => 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=800&q=80',
                 'excerpt' => 'Relax on the world\'s longest natural sea beach with 5-star resort stay and sunset cruises.',
                 'price' => 14500,
@@ -214,13 +201,14 @@
                 'destination' => 'Cox\'s Bazar',
                 'category' => 'Luxury',
                 'duration' => '3 Days / 2 Nights',
-                'discountBadge' => '20% OFF',
+                'badge' => '20% OFF',
             ],
             (object) [
                 'id' => 3,
                 'title' => 'Sreemangal Tea Garden & Wildlife Sanctuary',
                 'slug' => 'sreemangal-tea-garden-wildlife',
                 'link' => '#',
+                '_link' => '#',
                 'image' => 'https://images.unsplash.com/photo-1596895111956-bf1cf0599ce5?auto=format&fit=crop&w=800&q=80',
                 'excerpt' => 'Explore Lawachara Rain Forest, seven-layer tea cabin, cycling through tea estates and birdwatching.',
                 'price' => 6500,
@@ -228,13 +216,14 @@
                 'destination' => 'Sreemangal',
                 'category' => 'Nature',
                 'duration' => '3 Days / 2 Nights',
-                'discountBadge' => null,
+                'badge' => null,
             ],
             (object) [
                 'id' => 4,
                 'title' => 'Saint Martin Island Coral Beach Expedition',
                 'slug' => 'saint-martin-island-coral-beach',
                 'link' => '#',
+                '_link' => '#',
                 'image' => 'https://images.unsplash.com/photo-1510414842594-a61c69b5ae57?auto=format&fit=crop&w=800&q=80',
                 'excerpt' => 'Experience crystal clear ocean water, night camping under starry sky, fresh seafood, and boat rides.',
                 'price' => 11200,
@@ -242,13 +231,14 @@
                 'destination' => 'Saint Martin',
                 'category' => 'Beach',
                 'duration' => '4 Days / 3 Nights',
-                'discountBadge' => 'Popular',
+                'badge' => 'Popular',
             ],
             (object) [
                 'id' => 5,
                 'title' => 'Bandarban Hill Tracts & Nilgiri Summit',
                 'slug' => 'bandarban-hill-tracts-nilgiri',
                 'link' => '#',
+                '_link' => '#',
                 'image' => 'https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?auto=format&fit=crop&w=800&q=80',
                 'excerpt' => 'Cloud watching at Nilgiri resort, Chimbuk hill viewpoint, Boga Lake trekking and Golden Temple exploration.',
                 'price' => 9800,
@@ -256,7 +246,7 @@
                 'destination' => 'Bandarban',
                 'category' => 'Trekking',
                 'duration' => '3 Days / 2 Nights',
-                'discountBadge' => 'Best Seller',
+                'badge' => 'Best Seller',
             ],
         ]);
 
@@ -489,7 +479,7 @@
                         <div class="space-y-4 rounded-xl border border-gray-100 bg-white p-4 shadow-sm">
                             @foreach($sidebarRecentPackages as $rPkg)
                                 @php $rPkg = (object) $rPkg; @endphp
-                                <a href="{{ $rPkg->link ?? '#' }}" class="group flex gap-3 rounded-lg p-1.5 transition-colors hover:bg-gray-50">
+                                <a href="{{ $rPkg->_link ?? '#' }}" class="group flex gap-3 rounded-lg p-1.5 transition-colors hover:bg-gray-50">
                                     @if(!empty($rPkg->image))
                                         <div class="relative h-16 w-20 shrink-0 overflow-hidden rounded-lg">
                                             <img src="{{ $rPkg->image }}" alt="{{ $rPkg->title }}" class="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" />
@@ -530,7 +520,7 @@
                     {{-- Exclusive List View Layout --}}
                     <div class="flex flex-col gap-5">
                         @foreach($packages as $pkg)
-                            <a href="{{ $pkg->link }}" class="group flex flex-col overflow-hidden rounded-2xl border border-gray-100 bg-white p-3 shadow-sm transition-all duration-300 hover:-translate-y-0.5 hover:border-gray-200 hover:shadow-xl hover:shadow-brand/5 sm:flex-row sm:items-center sm:gap-5">
+                            <a href="{{ $pkg->_link }}" class="group flex flex-col overflow-hidden rounded-2xl border border-gray-100 bg-white p-3 shadow-sm transition-all duration-300 hover:-translate-y-0.5 hover:border-gray-200 hover:shadow-xl hover:shadow-brand/5 sm:flex-row sm:items-center sm:gap-5">
                                 {{-- Thumbnail Image --}}
                                 <div class="relative aspect-[16/9] w-full shrink-0 overflow-hidden rounded-xl bg-gray-100 sm:aspect-auto sm:h-44 sm:w-64">
                                     @if($pkg->image)
@@ -551,10 +541,10 @@
                                     @endif
 
                                     {{-- Discount Badge --}}
-                                    @if($pkg->discountBadge)
-                                        <div class="absolute right-3 top-3 rounded-lg bg-brand text-white text-xs font-semibold px-2.5 py-1 shadow-md">
-                                            {{ $pkg->discountBadge }}
-                                        </div>
+                                    @if($pkg->badge)
+                                        <span class="absolute top-2 right-2 rounded-full bg-red-500 px-2 py-0.5 text-[10px] font-bold text-white shadow">
+                                            {{ $pkg->badge }}
+                                        </span>
                                     @endif
                                 </div>
 

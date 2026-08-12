@@ -476,7 +476,7 @@
                                                 class="w-full flex items-center gap-2.5 rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm text-text-primary shadow-[0_2px_3px_-2px_rgba(0,0,0,0.15)] hover:border-gray-400 focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary transition-colors"
                                             >
                                                 <span class="inline-block size-4 rounded border border-gray-200 shrink-0" :style="'background-color: ' + (getField(field.name) || '#ffffff')"></span>
-                                                <span class="flex-1 text-left" x-text="(field.options || []).find(o => o.value === getField(field.name))?.label || 'Select...'"></span>
+                                                <span class="flex-1 text-left" x-text="filteredSelectOptions(field).find(o => o.value === getField(field.name))?.label || 'Select...'"></span>
                                                 <svg class="size-4 text-text-muted transition-transform" :class="open ? 'rotate-180' : ''" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" /></svg>
                                             </button>
                                             <div x-show="open" @click.outside="open = false"
@@ -484,7 +484,7 @@
                                                 x-transition:enter="transition ease-out duration-100" x-transition:enter-start="opacity-0 scale-95" x-transition:enter-end="opacity-100 scale-100"
                                                 x-transition:leave="transition ease-in duration-75" x-transition:leave-start="opacity-100 scale-100" x-transition:leave-end="opacity-0 scale-95"
                                             >
-                                                <template x-for="opt in field.options" :key="opt.value">
+                                                <template x-for="opt in filteredSelectOptions(field)" :key="(opt.collection || '') + '__' + opt.value">
                                                     <button type="button" @click="setField(field.name, opt.value); open = false"
                                                         class="w-full flex items-center gap-2.5 px-3 py-2 text-sm text-left transition-colors"
                                                         :class="getField(field.name) === opt.value ? 'bg-primary/5 text-primary font-medium' : 'text-text-primary hover:bg-gray-50'"
@@ -1530,6 +1530,38 @@
                     }
                 }
                 return current.fields || [];
+            },
+
+            /**
+             * Filters Field::select() options for card slot selectors on ListBlock-based blocks.
+             *
+             * Options tagged with a 'collection' slug are filtered to match the currently
+             * selected listCollection value. Options with an empty 'collection' (e.g. "-- Not Mapped --")
+             * are always shown.
+             *
+             * For non-tagged option arrays (regular blocks), all options are returned unchanged.
+             */
+            filteredSelectOptions(field) {
+                const opts = field.options || [];
+                if (!opts.length) return opts;
+
+                // Only filter if options carry collection tagging
+                const isTagged = opts.some(o => o && typeof o.collection === 'string');
+                if (!isTagged) return opts;
+
+                // Find the listCollection value in this section's data
+                const sectionData = (this.active !== null && this.sections[this.active])
+                    ? (this.sections[this.active].data || {})
+                    : {};
+                const selectedCol = sectionData['listCollection'] || '';
+
+                if (!selectedCol) {
+                    // No collection chosen — show only the "Not Mapped" option
+                    return opts.filter(o => o.collection === '');
+                }
+
+                // Show options belonging to the selected collection + universal options (collection === '')
+                return opts.filter(o => o.collection === '' || o.collection === selectedCol);
             },
 
             currentData() {
