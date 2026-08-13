@@ -409,3 +409,87 @@ it('always includes title field in grouped collection fields for input binding',
     $response->assertSee('"key":"title"', false);
     $response->assertSee('"label":"Title"', false);
 });
+
+it('can create collection with location field and store entry with country state city data', function () {
+    $collection = Collection::create([
+        'name' => 'Tours',
+        'slug' => 'tours',
+        'position' => 1,
+        'fields' => [
+            [
+                'title' => 'Tour Location',
+                'description' => 'Select destination location',
+                'type' => 'location',
+                'template' => 'tour_location',
+            ],
+        ],
+    ]);
+
+    // Check entry create view renders the location picker setup
+    get(route('admin.collections.entries.create', $collection))
+        ->assertSuccessful()
+        ->assertSee('locationField')
+        ->assertSee('data[tour_location][country]', false);
+
+    // Store entry with structured location data
+    post(route('admin.collections.entries.store', $collection), [
+        'data' => [
+            'title' => 'Paris Romance Trip',
+            'tour_location' => [
+                'country' => 'France',
+                'country_code' => 'FR',
+                'state' => 'Île-de-France',
+                'state_code' => 'IDF',
+                'city' => 'Paris',
+                'formatted' => 'Paris, Île-de-France, France',
+            ],
+        ],
+        'slug' => 'paris-romance-trip',
+        'published' => '1',
+    ])->assertRedirect();
+
+    $entry = CollectionEntry::where('slug', 'paris-romance-trip')->firstOrFail();
+    expect($entry->data['tour_location']['country'])->toBe('France');
+    expect($entry->data['tour_location']['country_code'])->toBe('FR');
+    expect($entry->data['tour_location']['city'])->toBe('Paris');
+    expect($entry->data['tour_location']['formatted'])->toBe('Paris, Île-de-France, France');
+
+    // Check entry edit view renders the saved location values
+    get(route('admin.collections.entries.edit', [$collection, $entry]))
+        ->assertSuccessful()
+        ->assertSee('locationField')
+        ->assertSee('Paris, Île-de-France, France');
+});
+
+it('supports custom sub-field checkboxes (country, state, city) on location custom fields', function () {
+    $fields = [
+        [
+            'title' => 'City Only Location',
+            'type' => 'location',
+            'template' => 'city_location',
+            'enable_country' => false,
+            'enable_state' => false,
+            'enable_city' => true,
+        ],
+    ];
+
+    post(route('admin.collections.store'), [
+        'name' => 'City Tours',
+        'icon' => 'fa-map',
+        'fields' => json_encode($fields),
+        'enable_seo' => '0',
+    ])->assertRedirect();
+
+    $collection = Collection::where('slug', 'city-tours')->firstOrFail();
+    expect($collection->fields[0]['enable_country'])->toBeFalse();
+    expect($collection->fields[0]['enable_city'])->toBeTrue();
+
+    // Verify create view hides country and state hidden inputs and renders config
+    get(route('admin.collections.entries.create', $collection))
+        ->assertSuccessful()
+        ->assertSee('enable_country: false', false)
+        ->assertSee('enable_city: true', false)
+        ->assertSee('data[city_location][city]', false)
+        ->assertDontSee('data[city_location][country]', false)
+        ->assertDontSee('data[city_location][state]', false);
+});

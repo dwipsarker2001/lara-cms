@@ -1612,14 +1612,59 @@
                 return fieldDef?.source || null;
             },
 
+            formatToString(val) {
+                if (val === null || val === undefined) return '';
+                if (typeof val === 'string') {
+                    if (val.trim().startsWith('{') && val.trim().endsWith('}')) {
+                        try {
+                            const parsed = JSON.parse(val);
+                            if (parsed && typeof parsed === 'object') {
+                                return this.formatToString(parsed);
+                            }
+                        } catch (e) {}
+                    }
+                    return val;
+                }
+                if (typeof val === 'number' || typeof val === 'boolean') return String(val);
+                if (typeof val === 'object') {
+                    if (val.formatted && typeof val.formatted === 'string') {
+                        return val.formatted;
+                    }
+                    const parts = [val.city, val.state, val.country].filter(Boolean);
+                    if (parts.length > 0) {
+                        return parts.join(', ');
+                    }
+                    if (val.name && typeof val.name === 'string') return val.name;
+                    if (val.title && typeof val.title === 'string') return val.title;
+                    if (val.label && typeof val.label === 'string') return val.label;
+                    if (val.url && typeof val.url === 'string') return val.url;
+                    return '';
+                }
+                return String(val);
+            },
+
             getField(name) {
                 const sourceKey = this.getSourceKey(name);
+                let val;
                 if (sourceKey) {
-                    return (this.entryData && this.entryData[sourceKey] !== undefined && this.entryData[sourceKey] !== null)
+                    val = (this.entryData && this.entryData[sourceKey] !== undefined && this.entryData[sourceKey] !== null)
                         ? this.entryData[sourceKey]
                         : '';
+                } else {
+                    val = this.currentData()[name] ?? '';
                 }
-                return this.currentData()[name] ?? '';
+
+                const fields = this.currentFields();
+                const fieldDef = fields?.find(f => f.name === name);
+                if (fieldDef && (fieldDef.type === 'object' || fieldDef.type === 'location')) {
+                    return val;
+                }
+
+                if (typeof val === 'object' && val !== null) {
+                    return this.formatToString(val);
+                }
+
+                return val;
             },
 
             isSourceField(name) {

@@ -137,7 +137,26 @@ abstract class Block
                 if ($source !== '') {
                     $entryValue = $entryData[$source] ?? ($page->$source ?? null);
                     if ($entryValue !== null && $entryValue !== '') {
-                        $data[$name] = $entryValue;
+                        if (is_array($entryValue) && ($field['type'] ?? '') !== 'object' && ($field['type'] ?? '') !== 'location') {
+                            if (! empty($entryValue['formatted']) && is_string($entryValue['formatted'])) {
+                                $data[$name] = $entryValue['formatted'];
+                            } else {
+                                $parts = array_filter([$entryValue['city'] ?? null, $entryValue['state'] ?? null, $entryValue['country'] ?? null]);
+                                if (! empty($parts)) {
+                                    $data[$name] = implode(', ', $parts);
+                                } elseif (! empty($entryValue['name']) && is_string($entryValue['name'])) {
+                                    $data[$name] = $entryValue['name'];
+                                } elseif (! empty($entryValue['title']) && is_string($entryValue['title'])) {
+                                    $data[$name] = $entryValue['title'];
+                                } elseif (! empty($entryValue['url']) && is_string($entryValue['url'])) {
+                                    $data[$name] = $entryValue['url'];
+                                } else {
+                                    $data[$name] = '';
+                                }
+                            }
+                        } else {
+                            $data[$name] = $entryValue;
+                        }
                     }
                 }
             }

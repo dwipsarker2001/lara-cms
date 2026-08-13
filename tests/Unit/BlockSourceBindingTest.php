@@ -138,3 +138,30 @@ it('recursively merges source data for nested list fields like galleryImages', f
     expect($merged['galleryImages'][0]['image'])->toBe('https://example.com/entry-featured-image.jpg');
     expect($merged['galleryImages'][1]['image'])->toBe('https://example.com/entry-cover.jpg');
 });
+
+it('formats structured location data to a string when bound to a string field', function () {
+    $fields = [
+        Field::string('location_text', 'Location', default: 'Default Location', source: 'address'),
+    ];
+
+    $page = (object) [
+        'data' => [
+            'address' => [
+                'country' => 'United States',
+                'country_code' => 'US',
+                'state' => 'California',
+                'state_code' => 'CA',
+                'city' => 'Los Angeles',
+                'formatted' => 'Los Angeles, California, United States',
+            ],
+        ],
+    ];
+
+    $blockData = [
+        'location_text' => 'Inline Location',
+    ];
+
+    $merged = Block::mergeSourceData($blockData, $fields, $page);
+
+    expect($merged['location_text'])->toBe('Los Angeles, California, United States');
+});

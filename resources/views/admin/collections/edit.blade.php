@@ -303,6 +303,12 @@
                                             <span class="font-medium">Taxonomies</span>
                                         </div>
                                     </template>
+                                    <template x-if="fieldForm.type === 'location'">
+                                        <div class="flex items-center gap-2">
+                                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" class="size-4 text-primary shrink-0"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg>
+                                            <span class="font-medium">Location</span>
+                                        </div>
+                                    </template>
                                 </div>
                                 <svg :class="open ? 'rotate-180 text-primary' : 'text-gray-400'" class="size-4 transition-transform duration-150 shrink-0" viewBox="0 0 20 20" fill="currentColor">
                                     <path fill-rule="evenodd" d="M5.22 8.22a.75.75 0 0 1 1.06 0L10 11.94l3.72-3.72a.75.75 0 1 1 1.06 1.06l-4.25 4.25a.75.75 0 0 1-1.06 0L5.22 9.28a.75.75 0 0 1 0-1.06Z" clip-rule="evenodd" />
@@ -380,6 +386,17 @@
                                         <span>Taxonomies</span>
                                     </div>
                                     <svg x-show="fieldForm.type === 'taxonomies'" class="size-4 text-primary shrink-0" viewBox="0 0 20 20" fill="currentColor">
+                                        <path fill-rule="evenodd" d="M16.704 4.153a.75.75 0 0 1 .143 1.052l-8 10.5a.75.75 0 0 1-1.127.075l-4.5-4.5a.75.75 0 0 1 1.06-1.06l3.894 3.893 7.48-9.817a.75.75 0 0 1 1.05-.143Z" clip-rule="evenodd" />
+                                    </svg>
+                                </button>
+                                <button type="button" @click="fieldForm.type = 'location'; open = false"
+                                    class="flex items-center justify-between w-full px-3 py-2 text-sm rounded-lg text-text-primary hover:bg-gray-100/80 transition-colors"
+                                    :class="fieldForm.type === 'location' ? 'bg-primary/10 text-primary font-medium' : ''">
+                                    <div class="flex items-center gap-2.5">
+                                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" class="size-4 shrink-0" :class="fieldForm.type === 'location' ? 'text-primary' : 'text-text-muted'"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg>
+                                        <span>Location</span>
+                                    </div>
+                                    <svg x-show="fieldForm.type === 'location'" class="size-4 text-primary shrink-0" viewBox="0 0 20 20" fill="currentColor">
                                         <path fill-rule="evenodd" d="M16.704 4.153a.75.75 0 0 1 .143 1.052l-8 10.5a.75.75 0 0 1-1.127.075l-4.5-4.5a.75.75 0 0 1 1.06-1.06l3.894 3.893 7.48-9.817a.75.75 0 0 1 1.05-.143Z" clip-rule="evenodd" />
                                     </svg>
                                 </button>
@@ -518,6 +535,23 @@
                             <label for="field_multiple" class="text-sm font-medium text-text-heading cursor-pointer">Allow Multiple Selections</label>
                         </div>
                     </div>
+
+                    {{-- Location Sub-Fields Config --}}
+                    <div x-show="fieldForm.type === 'location'" style="display: none;" class="flex items-center flex-wrap gap-5 pt-1">
+                        <label class="flex items-center gap-2 cursor-pointer text-sm text-text-heading">
+                            <input type="checkbox" x-model="fieldForm.enable_country" class="rounded border-gray-300 text-primary focus:ring-primary">
+                            <span class="font-medium">Country</span>
+                        </label>
+                        <label class="flex items-center gap-2 cursor-pointer text-sm text-text-heading">
+                            <input type="checkbox" x-model="fieldForm.enable_state" class="rounded border-gray-300 text-primary focus:ring-primary">
+                            <span class="font-medium">State / Province</span>
+                        </label>
+                        <label class="flex items-center gap-2 cursor-pointer text-sm text-text-heading">
+                            <input type="checkbox" x-model="fieldForm.enable_city" class="rounded border-gray-300 text-primary focus:ring-primary">
+                            <span class="font-medium">City</span>
+                        </label>
+                    </div>
+
                     <div>
                         <label class="block text-sm font-medium text-text-heading mb-1">Key</label>
                         <input type="text" x-model="fieldForm.template" @input="onKeyInput"
@@ -646,7 +680,10 @@
                     collection_id: '',
                     taxonomy_id: '',
                     multiple: false,
-                    default_entry_id: ''
+                    default_entry_id: '',
+                    enable_country: true,
+                    enable_state: true,
+                    enable_city: true
                 };
                 this.showFieldModal = true;
             },
@@ -658,6 +695,9 @@
                 const field = {
                     multiple: false,
                     default_entry_id: rawField.default_entry_id || rawField.default_value || rawField.default || '',
+                    enable_country: rawField.enable_country !== undefined ? !!rawField.enable_country : true,
+                    enable_state: rawField.enable_state !== undefined ? !!rawField.enable_state : true,
+                    enable_city: rawField.enable_city !== undefined ? !!rawField.enable_city : true,
                     ...rawField
                 };
                 if (field.template) {
@@ -673,6 +713,17 @@
                     this.fieldForm.template = this.fieldForm.title.replace(/[^a-zA-Z0-9]+/g, '_').replace(/^_|_$/g, '').toLowerCase();
                 } else {
                     this.fieldForm.template = this.fieldForm.template.replace(/[^a-zA-Z0-9_]+/g, '').toLowerCase();
+                }
+                if (this.fieldForm.type === 'location') {
+                    this.fieldForm.enable_country = this.fieldForm.enable_country !== undefined ? !!this.fieldForm.enable_country : true;
+                    this.fieldForm.enable_state = this.fieldForm.enable_state !== undefined ? !!this.fieldForm.enable_state : true;
+                    this.fieldForm.enable_city = this.fieldForm.enable_city !== undefined ? !!this.fieldForm.enable_city : true;
+                    // If none checked, default all to true
+                    if (!this.fieldForm.enable_country && !this.fieldForm.enable_state && !this.fieldForm.enable_city) {
+                        this.fieldForm.enable_country = true;
+                        this.fieldForm.enable_state = true;
+                        this.fieldForm.enable_city = true;
+                    }
                 }
                 if (this.editingFieldIndex !== null) {
                     this.fields[this.editingFieldIndex] = { ...this.fieldForm, _key: this.fields[this.editingFieldIndex]._key };

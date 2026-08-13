@@ -231,6 +231,165 @@
                                                             @endforeach
                                                         </div>
                                                     </div>
+                                                @elseif($fType === 'location')
+                                                    @php
+                                                        $showCountry = $f['enable_country'] ?? true;
+                                                        $showState = $f['enable_state'] ?? true;
+                                                        $showCity = $f['enable_city'] ?? true;
+                                                        $activeCount = ($showCountry ? 1 : 0) + ($showState ? 1 : 0) + ($showCity ? 1 : 0);
+                                                        $gridClass = match($activeCount) {
+                                                            1 => 'grid-cols-1',
+                                                            2 => 'grid-cols-1 sm:grid-cols-2',
+                                                            default => 'grid-cols-1 sm:grid-cols-3',
+                                                        };
+                                                    @endphp
+                                                    <div class="w-full rounded-lg border border-content-border bg-content-bg shadow-sm min-w-0" x-data="locationField({{ json_encode($val, JSON_UNESCAPED_UNICODE) }}, { enable_country: {{ $showCountry ? 'true' : 'false' }}, enable_state: {{ $showState ? 'true' : 'false' }}, enable_city: {{ $showCity ? 'true' : 'false' }} })">
+                                                        {{-- Selectors toolbar / grid --}}
+                                                        <div class="p-2.5">
+                                                            <div class="grid {{ $gridClass }} gap-2.5 w-full">
+                                                                @if($showCountry)
+                                                                    {{-- Country Select --}}
+                                                                    <div class="relative">
+                                                                        <button type="button" @click="countryOpen = !countryOpen; stateOpen = false; cityOpen = false" class="w-full flex items-center justify-between bg-white border border-content-border text-text-primary text-xs rounded-lg px-2.5 py-2 h-9 cursor-pointer transition-all duration-150 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary shadow-xs hover:border-gray-400">
+                                                                            <div class="flex items-center gap-1.5 truncate">
+                                                                                <span x-show="countryFlag" x-text="countryFlag" class="text-sm leading-none"></span>
+                                                                                <span class="truncate font-medium text-text-heading" x-text="country || 'Select Country...'"></span>
+                                                                            </div>
+                                                                            <svg class="size-3.5 text-text-muted shrink-0 transition-transform duration-150" :class="countryOpen ? 'rotate-180' : ''" viewBox="0 0 20 20" fill="currentColor">
+                                                                                <path fill-rule="evenodd" d="M5.22 8.22a.75.75 0 0 1 1.06 0L10 11.94l3.72-3.72a.75.75 0 1 1 1.06 1.06l-4.25 4.25a.75.75 0 0 1-1.06 0L5.22 9.28a.75.75 0 0 1 0-1.06Z" clip-rule="evenodd" />
+                                                                            </svg>
+                                                                        </button>
+                                                                        <div x-show="countryOpen" @click.outside="countryOpen = false" @keydown.escape.window="countryOpen = false" class="absolute z-50 top-full mt-1.5 left-0 right-0 min-w-[220px] bg-content-bg border border-content-border rounded-lg shadow-xl overflow-hidden" style="display: none;">
+                                                                            <div class="p-1.5 border-b border-content-border bg-content-bg">
+                                                                                <input type="text" x-model="countrySearch" placeholder="Search countries..." class="w-full bg-white border border-content-border text-text-primary text-xs rounded-md px-2.5 py-1.5 focus:outline-none focus:ring-1 focus:ring-primary focus:border-primary">
+                                                                            </div>
+                                                                            <div class="p-1.5 space-y-0.5 max-h-56 overflow-y-auto [scrollbar-width:thin]">
+                                                                                <button type="button" @click="selectCountry(null)" class="w-full text-left px-2.5 py-1.5 text-xs rounded-md transition-colors text-text-muted hover:bg-content-border/30">
+                                                                                    None (Clear)
+                                                                                </button>
+                                                                                <template x-for="c in countries" :key="c.isoCode">
+                                                                                    <button type="button" @click="selectCountry(c)" class="w-full flex items-center justify-between px-2.5 py-1.5 text-xs rounded-md transition-colors" :class="countryCode === c.isoCode ? 'bg-primary/10 text-primary font-medium' : 'text-text-primary hover:bg-content-border/30'">
+                                                                                        <div class="flex items-center gap-1.5 truncate">
+                                                                                            <span x-text="c.flag" class="text-sm"></span>
+                                                                                            <span class="truncate" x-text="c.name"></span>
+                                                                                        </div>
+                                                                                        <span class="text-[10px] font-mono text-text-muted shrink-0 ml-1" x-text="c.isoCode"></span>
+                                                                                    </button>
+                                                                                </template>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                @endif
+
+                                                                @if($showState)
+                                                                    {{-- State Select --}}
+                                                                    <div class="relative">
+                                                                        <button type="button" :disabled="enableCountry && !countryCode" @click="if (!enableCountry || countryCode) { stateOpen = !stateOpen; countryOpen = false; cityOpen = false; }" class="w-full flex items-center justify-between bg-white border border-content-border text-text-primary text-xs rounded-lg px-2.5 py-2 h-9 transition-all duration-150 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary shadow-xs hover:border-gray-400" :class="enableCountry && !countryCode ? 'opacity-50 cursor-not-allowed bg-gray-50' : 'cursor-pointer'">
+                                                                            <span class="truncate font-medium text-text-heading" x-text="state || (enableCountry && !countryCode ? 'State' : 'Select State...')"></span>
+                                                                            <svg class="size-3.5 text-text-muted shrink-0 transition-transform duration-150" :class="stateOpen ? 'rotate-180' : ''" viewBox="0 0 20 20" fill="currentColor">
+                                                                                <path fill-rule="evenodd" d="M5.22 8.22a.75.75 0 0 1 1.06 0L10 11.94l3.72-3.72a.75.75 0 1 1 1.06 1.06l-4.25 4.25a.75.75 0 0 1-1.06 0L5.22 9.28a.75.75 0 0 1 0-1.06Z" clip-rule="evenodd" />
+                                                                            </svg>
+                                                                        </button>
+                                                                        <div x-show="stateOpen" @click.outside="stateOpen = false" @keydown.escape.window="stateOpen = false" class="absolute z-50 top-full mt-1.5 left-0 right-0 min-w-[220px] bg-content-bg border border-content-border rounded-lg shadow-xl overflow-hidden" style="display: none;">
+                                                                            <div class="p-1.5 border-b border-content-border bg-content-bg">
+                                                                                <input type="text" x-model="stateSearch" placeholder="Search states..." class="w-full bg-white border border-content-border text-text-primary text-xs rounded-md px-2.5 py-1.5 focus:outline-none focus:ring-1 focus:ring-primary focus:border-primary">
+                                                                            </div>
+                                                                            <div class="p-1.5 space-y-0.5 max-h-56 overflow-y-auto [scrollbar-width:thin]">
+                                                                                <button type="button" @click="selectState(null)" class="w-full text-left px-2.5 py-1.5 text-xs rounded-md transition-colors text-text-muted hover:bg-content-border/30">
+                                                                                    None (Clear State)
+                                                                                </button>
+                                                                                <template x-for="s in states" :key="s.isoCode || s.name">
+                                                                                    <button type="button" @click="selectState(s)" class="w-full flex items-center justify-between px-2.5 py-1.5 text-xs rounded-md transition-colors" :class="stateCode === s.isoCode || state === s.name ? 'bg-primary/10 text-primary font-medium' : 'text-text-primary hover:bg-content-border/30'">
+                                                                                        <span class="truncate" x-text="s.name"></span>
+                                                                                        <span class="text-[10px] font-mono text-text-muted shrink-0 ml-1" x-text="s.isoCode"></span>
+                                                                                    </button>
+                                                                                </template>
+                                                                                <template x-if="states.length === 0">
+                                                                                    <div class="px-2.5 py-2 text-xs text-text-muted text-center">No states found</div>
+                                                                                </template>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                @endif
+
+                                                                @if($showCity)
+                                                                    {{-- City Select / Input --}}
+                                                                    <div class="relative">
+                                                                        <button type="button" :disabled="enableCountry && !countryCode" @click="if (!enableCountry || countryCode) { cityOpen = !cityOpen; countryOpen = false; stateOpen = false; }" class="w-full flex items-center justify-between bg-white border border-content-border text-text-primary text-xs rounded-lg px-2.5 py-2 h-9 transition-all duration-150 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary shadow-xs hover:border-gray-400" :class="enableCountry && !countryCode ? 'opacity-50 cursor-not-allowed bg-gray-50' : 'cursor-pointer'">
+                                                                            <span class="truncate font-medium text-text-heading" x-text="city || (enableCountry && !countryCode ? 'City' : 'Select City...')"></span>
+                                                                            <svg class="size-3.5 text-text-muted shrink-0 transition-transform duration-150" :class="cityOpen ? 'rotate-180' : ''" viewBox="0 0 20 20" fill="currentColor">
+                                                                                <path fill-rule="evenodd" d="M5.22 8.22a.75.75 0 0 1 1.06 0L10 11.94l3.72-3.72a.75.75 0 1 1 1.06 1.06l-4.25 4.25a.75.75 0 0 1-1.06 0L5.22 9.28a.75.75 0 0 1 0-1.06Z" clip-rule="evenodd" />
+                                                                            </svg>
+                                                                        </button>
+                                                                        <div x-show="cityOpen" @click.outside="cityOpen = false" @keydown.escape.window="cityOpen = false" class="absolute z-50 top-full mt-1.5 left-0 right-0 min-w-[220px] bg-content-bg border border-content-border rounded-lg shadow-xl overflow-hidden" style="display: none;">
+                                                                            <div class="p-1.5 border-b border-content-border bg-content-bg">
+                                                                                <input type="text" x-model="citySearch" placeholder="Search or type city..." class="w-full bg-white border border-content-border text-text-primary text-xs rounded-md px-2.5 py-1.5 focus:outline-none focus:ring-1 focus:ring-primary focus:border-primary" @keydown.enter.prevent="if (citySearch.trim()) { selectCity(citySearch.trim()); }">
+                                                                            </div>
+                                                                            <div class="p-1.5 space-y-0.5 max-h-56 overflow-y-auto [scrollbar-width:thin]">
+                                                                                <button type="button" @click="selectCity('')" class="w-full text-left px-2.5 py-1.5 text-xs rounded-md transition-colors text-text-muted hover:bg-content-border/30">
+                                                                                    None (Clear City)
+                                                                                </button>
+                                                                                <template x-if="citySearch.trim() && !cities.some(c => c.name.toLowerCase() === citySearch.trim().toLowerCase())">
+                                                                                    <button type="button" @click="selectCity(citySearch.trim())" class="w-full flex items-center gap-1.5 px-2.5 py-1.5 text-xs rounded-md text-primary hover:bg-primary/10 transition-colors font-medium border border-primary/20">
+                                                                                        <span>Use:</span>
+                                                                                        <strong x-text="citySearch.trim()" class="truncate"></strong>
+                                                                                    </button>
+                                                                                </template>
+                                                                                <template x-for="ct in cities" :key="ct.name + (ct.stateCode || '')">
+                                                                                    <button type="button" @click="selectCity(ct.name)" class="w-full flex items-center justify-between px-2.5 py-1.5 text-xs rounded-md transition-colors" :class="city === ct.name ? 'bg-primary/10 text-primary font-medium' : 'text-text-primary hover:bg-content-border/30'">
+                                                                                        <span class="truncate" x-text="ct.name"></span>
+                                                                                    </button>
+                                                                                </template>
+                                                                                <template x-if="cities.length === 0 && !citySearch.trim()">
+                                                                                    <div class="px-2.5 py-2 text-xs text-text-muted text-center">No cities found. Type to add custom city.</div>
+                                                                                </template>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                @endif
+                                                        </div>
+                                                    </div>
+
+                                                    {{-- Selected Location row (matching image selector's selected row) --}}
+                                                    <div class="border-t border-content-border min-w-0" x-show="formatted" style="display: none;">
+                                                        <div class="flex items-center gap-2.5 sm:gap-3 pl-3.5 pr-2.5 py-2.5 min-w-0">
+                                                            <template x-if="countryFlag">
+                                                                <span x-text="countryFlag" class="text-lg leading-none shrink-0"></span>
+                                                            </template>
+                                                            <template x-if="!countryFlag">
+                                                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="size-4 text-text-muted shrink-0"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg>
+                                                            </template>
+                                                            <span class="flex-1 min-w-0 truncate text-sm font-medium text-text-primary" x-text="formatted"></span>
+                                                            <template x-if="countryCode">
+                                                                <span class="shrink-0 text-xs text-text-muted tabular-nums font-mono px-1.5 py-0.5 rounded bg-panel-bg border border-content-border" x-text="countryCode"></span>
+                                                            </template>
+                                                            <button
+                                                                type="button"
+                                                                aria-label="Remove location"
+                                                                @click="clearAll()"
+                                                                class="shrink-0 flex size-6 items-center justify-center rounded-md text-text-muted hover:bg-text-primary/10 hover:text-text-primary transition-colors cursor-pointer"
+                                                            >
+                                                                <svg viewBox="0 0 24 24" fill="none" class="size-4">
+                                                                    <path d="M6 6l12 12M18 6L6 18" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
+                                                                </svg>
+                                                            </button>
+                                                        </div>
+                                                    </div>
+
+                                                    {{-- Hidden Inputs --}}
+                                                    @if($showCountry)
+                                                        <input type="hidden" name="data[{{ $fKey }}][country]" :value="country">
+                                                        <input type="hidden" name="data[{{ $fKey }}][country_code]" :value="countryCode">
+                                                    @endif
+                                                    @if($showState)
+                                                        <input type="hidden" name="data[{{ $fKey }}][state]" :value="state">
+                                                        <input type="hidden" name="data[{{ $fKey }}][state_code]" :value="stateCode">
+                                                    @endif
+                                                    @if($showCity)
+                                                        <input type="hidden" name="data[{{ $fKey }}][city]" :value="city">
+                                                    @endif
+                                                    <input type="hidden" name="data[{{ $fKey }}][formatted]" :value="formatted">
+                                                </div>
                                                 @else
                                                     <input type="text" name="data[{{ $fKey }}]" value="{{ $val }}" class="w-full block bg-content-bg border border-content-border text-text-primary text-sm rounded-lg px-3 py-2 h-9 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary">
                                                 @endif

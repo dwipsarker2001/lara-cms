@@ -41,6 +41,7 @@
         "alpinejs": "^3.15.12",
         "chrome-devtools-mcp": "^1.6.0",
         "codemirror": "^6.0.2",
+        "country-state-city": "^3.2.1",
         "pusher-js": "^8.5.0",
         "sortablejs": "^1.15.7"
     }
