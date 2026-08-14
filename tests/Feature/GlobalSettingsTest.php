@@ -38,3 +38,23 @@ it('renders global settings page without site_title input', function () {
         ->assertDontSee('id="field-site-title"', false)
         ->assertDontSee('name="site_title"', false);
 });
+
+it('can store and update recaptcha keys in settings and load on login page', function () {
+    $response = put(route('admin.settings.update'), [
+        'recaptcha_site_key' => '6LtestSiteKey123',
+        'recaptcha_secret_key' => '6LtestSecretKey456',
+    ]);
+
+    $response->assertRedirect();
+
+    $settings = Setting::first();
+    expect($settings->recaptcha_site_key)->toBe('6LtestSiteKey123')
+        ->and($settings->recaptcha_secret_key)->toBe('6LtestSecretKey456');
+
+    // Unauthenticate and check login page
+    auth('admin')->logout();
+
+    get(route('login'))
+        ->assertSuccessful()
+        ->assertSee('https://www.google.com/recaptcha/api.js?render=6LtestSiteKey123', false);
+});
