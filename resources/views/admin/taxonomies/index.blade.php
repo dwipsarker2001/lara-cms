@@ -61,6 +61,9 @@
                             </div>
                             <div class="flex gap-2 sm:gap-3 grow items-center py-3 min-w-0">
                                 <a href="{{ route('admin.taxonomies.show', $taxonomy) }}" class="flex items-center gap-2 no-underline min-w-0">
+                                    @if($taxonomy->icon)
+                                        <i class="{{ $taxonomy->icon }} text-base text-text-muted shrink-0"></i>
+                                    @endif
                                     <span class="text-sm font-semibold text-text-heading truncate group-hover:text-primary transition-colors">{{ $taxonomy->title }}</span>
                                 </a>
                                 <span class="text-[10px] text-text-muted select-all bg-panel-bg px-1.5 py-0.5 rounded-md border border-content-border shrink-0 font-medium leading-none">

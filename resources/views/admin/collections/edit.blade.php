@@ -128,7 +128,7 @@
                                                 </div>
                                             </template>
                                         </div>
-                                        <button type="button" x-show="selectedIcon" @click="selectedIcon = ''"
+                                        <button type="button" x-show="selectedIcon" x-cloak @click="selectedIcon = ''"
                                             class="size-9 shrink-0 flex items-center justify-center rounded-lg border border-gray-200 bg-white hover:bg-gray-50 text-text-muted transition-colors">
                                             <svg viewBox="0 0 16 16" fill="none" stroke="currentColor"
                                                 stroke-width="2" stroke-linecap="round" stroke-linejoin="round"

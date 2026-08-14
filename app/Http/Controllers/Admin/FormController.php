@@ -81,13 +81,16 @@ class FormController extends Controller
             $form->entries()->where('status', 1)->update(['status' => 0]);
         }
 
-        $perPage = (int) ($form->per_page ?? 15);
+        $perPage = (int) request('per_page', $form->per_page ?? 10);
+        if (! in_array($perPage, [10, 25, 50, 100], true)) {
+            $perPage = (int) ($form->per_page ?? 10);
+        }
         if ($perPage < 1) {
-            $perPage = 15;
+            $perPage = 10;
         }
 
         $entries = Schema::hasTable('form_entries')
-            ? $form->entries()->latest()->paginate($perPage)
+            ? $form->entries()->latest()->paginate($perPage)->withQueryString()
             : new LengthAwarePaginator([], 0, $perPage);
 
         $savedColumns = WidgetLayout::where('admin_id', auth('admin')->id())

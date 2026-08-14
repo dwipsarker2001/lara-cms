@@ -24,6 +24,11 @@ class TaxonomyController extends Controller
                     $table->json('fields')->nullable();
                 });
             }
+            if (! Schema::hasColumn('taxonomies', 'icon')) {
+                Schema::table('taxonomies', function ($table) {
+                    $table->string('icon')->nullable();
+                });
+            }
         }
     }
 
@@ -76,6 +81,7 @@ class TaxonomyController extends Controller
         $data = $request->validate([
             'title' => 'required|string|max:255',
             'slug' => 'required|string|max:255|unique:taxonomies,slug',
+            'icon' => 'nullable|string|max:255',
             'description' => 'nullable|string',
             'fields' => 'nullable|array',
         ]);
@@ -113,6 +119,7 @@ class TaxonomyController extends Controller
         $data = $request->validate([
             'title' => 'required|string|max:255',
             'slug' => 'required|string|max:255|unique:taxonomies,slug,'.$taxonomy->id,
+            'icon' => 'nullable|string|max:255',
             'description' => 'nullable|string',
             'fields' => 'nullable|array',
         ]);

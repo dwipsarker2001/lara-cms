@@ -298,10 +298,10 @@
                                                     title="More Actions"
                                                     aria-label="More Actions"
                                                 >
-                                                    <svg viewBox="0 0 16 3" class="size-4" fill="currentColor">
-                                                        <circle cx="2" cy="1.5" r="1.5" />
-                                                        <circle cx="8" cy="1.5" r="1.5" />
-                                                        <circle cx="14" cy="1.5" r="1.5" />
+                                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-more-horizontal">
+                                                        <circle cx="12" cy="12" r="1"/>
+                                                        <circle cx="19" cy="12" r="1"/>
+                                                        <circle cx="5" cy="12" r="1"/>
                                                     </svg>
                                                 </button>
                                                 <div
@@ -314,37 +314,38 @@
                                                     x-transition:leave-start="opacity-100 scale-100"
                                                     x-transition:leave-end="opacity-0 scale-95"
                                                     role="menu"
-                                                    style="z-index: 9999;"
-                                                    class="absolute right-0 top-full mt-1 w-36 rounded-xl border border-content-border bg-content-bg shadow-xl p-1.5 text-left"
+                                                    style="position: fixed; z-index: 99999;"
+                                                    :style="open ? { top: ($el.parentElement.getBoundingClientRect().bottom + 4) + 'px', left: ($el.parentElement.getBoundingClientRect().right - 144) + 'px' } : {}"
+                                                    class="w-36 rounded-xl border border-content-border bg-content-bg shadow-xl p-1.5 text-left"
                                                 >
                                                     <button type="button" role="menuitem"
                                                         @click="$dispatch('open-entry-detail', { id: {{ $entry->id }} }); open = false"
-                                                        class="flex w-full items-center justify-start gap-2 px-2.5 py-1.5 rounded-lg text-xs font-medium transition-colors text-text-primary hover:bg-body-bg cursor-pointer"
+                                                        class="flex w-full items-center justify-start gap-2.5 px-2.5 py-1.5 rounded-lg text-xs font-medium transition-colors text-text-primary hover:bg-body-bg cursor-pointer"
                                                     >
-                                                        <svg viewBox="0 0 20 20" fill="currentColor" class="size-3.5 shrink-0 text-text-muted">
-                                                            <path d="M10 12.5a2.5 2.5 0 100-5 2.5 2.5 0 000 5z" />
-                                                            <path fill-rule="evenodd" d="M.664 10.59a1.651 1.651 0 010-1.186A10.004 10.004 0 0110 3c4.257 0 7.893 2.66 9.336 6.41.147.381.146.804 0 1.186A10.004 10.004 0 0110 17c-4.257 0-7.893-2.66-9.336-6.41zM14 10a4 4 0 11-8 0 4 4 0 018 0z" clip-rule="evenodd" />
+                                                        <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-eye shrink-0 text-text-muted">
+                                                            <path d="M2.062 12.348a1 1 0 0 1 0-.696 10.75 10.75 0 0 1 19.876 0 1 1 0 0 1 0 .696 10.75 10.75 0 0 1-19.876 0"/>
+                                                            <circle cx="12" cy="12" r="3"/>
                                                         </svg>
                                                         <span>View</span>
                                                     </button>
                                                     <button type="button" role="menuitem"
                                                         @click="$dispatch('open-entry-edit', { id: {{ $entry->id }} }); open = false"
-                                                        class="flex w-full items-center justify-start gap-2 px-2.5 py-1.5 rounded-lg text-xs font-medium transition-colors text-text-primary hover:bg-body-bg cursor-pointer"
+                                                        class="flex w-full items-center justify-start gap-2.5 px-2.5 py-1.5 rounded-lg text-xs font-medium transition-colors text-text-primary hover:bg-body-bg cursor-pointer"
                                                     >
-                                                        <svg viewBox="0 0 20 20" fill="currentColor" class="size-3.5 shrink-0 text-text-muted">
-                                                            <path d="M5.433 13.917l1.262-3.155A4 4 0 017.58 9.42l6.92-6.918a2.121 2.121 0 013 3l-6.92 6.918c-.383.383-.84.685-1.343.886l-3.154 1.262a.5.5 0 01-.65-.65z" />
-                                                            <path d="M3.5 5.75c0-.69.56-1.25 1.25-1.25H10A.75.75 0 0010 3H4.75A2.75 2.75 0 002 5.75v9.5A2.75 2.75 0 004.75 18h9.5A2.75 2.75 0 0017 15.25V10a.75.75 0 00-1.5 0v5.25c0 .69-.56 1.25-1.25 1.25h-9.5c-.69 0-1.25-.56-1.25-1.25v-9.5z" />
+                                                        <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-pencil shrink-0 text-text-muted">
+                                                            <path d="M21.174 6.812a1 1 0 0 0-3.986-3.987L3.842 16.174a2 2 0 0 0-.5.83l-1.321 4.352a.5.5 0 0 0 .623.622l4.353-1.32a2 2 0 0 0 .83-.497z"/>
+                                                            <path d="m15 5 4 4"/>
                                                         </svg>
                                                         <span>Edit</span>
                                                     </button>
                                                     <form method="POST" action="{{ route('admin.forms.entries.duplicate', [$form, $entry]) }}" class="w-full mb-0">
                                                         @csrf
                                                         <button type="submit" role="menuitem"
-                                                            class="flex w-full items-center justify-start gap-2 px-2.5 py-1.5 rounded-lg text-xs font-medium transition-colors text-text-primary hover:bg-body-bg cursor-pointer"
+                                                            class="flex w-full items-center justify-start gap-2.5 px-2.5 py-1.5 rounded-lg text-xs font-medium transition-colors text-text-primary hover:bg-body-bg cursor-pointer"
                                                         >
-                                                            <svg viewBox="0 0 20 20" fill="currentColor" class="size-3.5 shrink-0 text-text-muted">
-                                                                <path d="M7 3.5A1.5 1.5 0 018.5 2h7A1.5 1.5 0 0117 3.5v7a1.5 1.5 0 01-1.5 1.5h-7A1.5 1.5 0 017 10.5v-7z" />
-                                                                <path d="M3 7.5A1.5 1.5 0 014.5 6H5v5.5A2.5 2.5 0 007.5 14H13v.5a1.5 1.5 0 01-1.5 1.5h-7A1.5 1.5 0 013 14.5v-7z" />
+                                                            <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-copy shrink-0 text-text-muted">
+                                                                <rect width="14" height="14" x="8" y="8" rx="2" ry="2"/>
+                                                                <path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/>
                                                             </svg>
                                                             <span>Duplicate</span>
                                                         </button>
@@ -355,10 +356,14 @@
                                                         @method('DELETE')
                                                         <button type="submit" role="menuitem"
                                                             onclick="return confirm('Are you sure you want to delete this submission?')"
-                                                            class="flex w-full items-center justify-start gap-2 px-2.5 py-1.5 rounded-lg text-xs font-medium transition-colors text-red-600 hover:bg-red-50 cursor-pointer"
+                                                            class="flex w-full items-center justify-start gap-2.5 px-2.5 py-1.5 rounded-lg text-xs font-medium transition-colors text-red-600 hover:bg-red-50 cursor-pointer"
                                                         >
-                                                            <svg viewBox="0 0 20 20" fill="currentColor" class="size-3.5 shrink-0 text-red-500">
-                                                                <path fill-rule="evenodd" d="M8.75 1A2.75 2.75 0 006 3.75v.443c-.795.077-1.584.176-2.365.298a.75.75 0 10.23 1.482l.149-.022.841 10.518A2.75 2.75 0 007.596 19h4.807a2.75 2.75 0 002.742-2.53l.841-10.52.149.023a.75.75 0 00.23-1.482A41.03 41.03 0 0014 4.193V3.75A2.75 2.75 0 0011.25 1h-2.5zM10 4c.84 0 1.673.025 2.5.075V3.75c0-.69.56-1.25-1.25-1.25h-2.5c-.69 0-1.25.56-1.25 1.25v.325C8.327 4.025 9.16 4 10 4zM8.58 7.72a.75.75 0 01.75.72v5.25a.75.75 0 01-1.5 0V8.44a.75.75 0 01.75-.72zm3.34 0a.75.75 0 01.75.72v5.25a.75.75 0 01-1.5 0V8.44a.75.75 0 01.75-.72z" clip-rule="evenodd" />
+                                                            <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-trash-2 shrink-0 text-red-500">
+                                                                <path d="M3 6h18"/>
+                                                                <path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/>
+                                                                <path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/>
+                                                                <line x1="10" x2="10" y1="11" y2="17"/>
+                                                                <line x1="14" x2="14" y1="11" y2="17"/>
                                                             </svg>
                                                             <span>Delete</span>
                                                         </button>
@@ -431,7 +436,39 @@
                                 </button>
                             @endif
                         </div>
-                        <div class="text-sm text-text-muted">Per Page <span class="px-2 py-1 border border-content-border rounded text-text-heading">{{ $entries->perPage() }}</span></div>
+                        {{-- Interactive Per Page Dropdown --}}
+                        <div class="relative shrink-0" x-data="{ open: false }" @click.outside="open = false" @keydown.escape.window="open = false">
+                            <div class="flex items-center gap-2 text-xs text-text-muted font-medium">
+                                <span>Per Page</span>
+                                <button type="button" @click="open = !open"
+                                    class="inline-flex items-center justify-between gap-1.5 bg-white border border-content-border text-text-primary text-xs font-semibold rounded-lg px-2.5 py-1 h-7 cursor-pointer transition-all duration-150 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary shadow-2xs">
+                                    <span>{{ $entries->perPage() }}</span>
+                                    <svg class="size-3 text-text-muted shrink-0 transition-transform duration-150" :class="open ? 'rotate-180 text-primary' : ''" viewBox="0 0 20 20" fill="currentColor">
+                                        <path fill-rule="evenodd" d="M5.22 8.22a.75.75 0 0 1 1.06 0L10 11.94l3.72-3.72a.75.75 0 1 1 1.06 1.06l-4.25 4.25a.75.75 0 0 1-1.06 0L5.22 9.28a.75.75 0 0 1 0-1.06Z" clip-rule="evenodd" />
+                                    </svg>
+                                </button>
+                            </div>
+                            <div x-show="open" x-cloak
+                                x-transition:enter="transition ease-out duration-100"
+                                x-transition:enter-start="opacity-0 scale-95"
+                                x-transition:enter-end="opacity-100 scale-100"
+                                x-transition:leave="transition ease-in duration-75"
+                                x-transition:leave-start="opacity-100 scale-100"
+                                x-transition:leave-end="opacity-0 scale-95"
+                                class="absolute bottom-full right-0 mb-1 z-[100] min-w-[5.5rem] rounded-xl border border-gray-200 bg-white shadow-xl p-1 space-y-0.5"
+                            >
+                                @foreach([10, 25, 50, 100] as $n)
+                                    <a href="{{ request()->fullUrlWithQuery(['per_page' => $n, 'page' => 1]) }}"
+                                        class="flex w-full items-center justify-between px-2.5 py-1.5 text-xs rounded-lg no-underline transition-colors {{ $entries->perPage() == $n ? 'bg-primary/10 text-primary font-bold' : 'text-text-primary hover:bg-gray-100' }}"
+                                    >
+                                        <span>{{ $n }}</span>
+                                        @if($entries->perPage() == $n)
+                                            <span class="font-bold text-primary">✓</span>
+                                        @endif
+                                    </a>
+                                @endforeach
+                            </div>
+                        </div>
                     </footer>
                 @endif
             @endif
@@ -485,7 +522,12 @@
                 class="flex items-center gap-2 px-4 py-2.5 text-red-600 hover:bg-red-50/90 hover:text-red-700 transition-colors duration-150 cursor-pointer group"
             >
                 <span>Delete</span>
-                <span class="bg-red-100/80 group-hover:bg-red-200/80 text-red-700 text-[10px] font-bold px-1.5 py-0.5 rounded tracking-wide transition-colors">⌫</span>
+                <span class="inline-flex items-center justify-center bg-red-100/80 group-hover:bg-red-200/80 text-red-700 p-1 rounded transition-colors">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" class="size-3 text-red-600">
+                        <polyline points="3 6 5 6 21 6" />
+                        <path d="M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2" />
+                    </svg>
+                </span>
             </button>
         </form>
     </div>
