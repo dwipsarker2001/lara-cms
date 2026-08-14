@@ -167,20 +167,28 @@
                                                 <path opacity="0.25" d="M4 16.5771C4 14.368 5.79086 12.5789 8 12.5789H40C42.2091 12.5789 44 14.3681 44 16.5772V38C44 40.2091 42.2091 42 40 42H8C5.79086 42 4 40.2091 4 38V16.5771Z" fill="white" />
                                             </svg>
                                         </template>
-                                        <template x-if="!item.is_directory && item.mime_type?.startsWith('image/')">
-                                            <img :src="`/storage/${item.path}`" :alt="item.name" class="size-full object-cover" draggable="false" x-on:error="$el.style.display='none'">
+                                        <template x-if="!item.is_directory && getAssetCategory(item) === 'image'">
+                                            <img :src="`/admin/assets/${item.id}/file`" :alt="item.name" class="size-full object-cover" draggable="false" x-on:error="$el.style.display='none'">
                                         </template>
-                                        <template x-if="!item.is_directory && !item.mime_type?.startsWith('image/')">
-                                            <div class="flex flex-col items-center justify-center p-2 text-center">
-                                                <div class="size-10 rounded-lg bg-blue-50 text-blue-600 flex items-center justify-center mb-1">
-                                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" class="size-6 text-blue-600">
+                                        <template x-if="!item.is_directory && getAssetCategory(item) !== 'image'">
+                                            <div class="flex flex-col items-center justify-center p-2 text-center size-full select-none">
+                                                <div class="size-11 rounded-xl flex flex-col items-center justify-center border shadow-2xs mb-1"
+                                                    :class="{
+                                                        'bg-red-50 border-red-200 text-red-600': getAssetCategory(item) === 'pdf',
+                                                        'bg-blue-50 border-blue-200 text-blue-600': getAssetCategory(item) === 'doc',
+                                                        'bg-emerald-50 border-emerald-200 text-emerald-600': getAssetCategory(item) === 'spreadsheet',
+                                                        'bg-amber-50 border-amber-200 text-amber-600': getAssetCategory(item) === 'presentation',
+                                                        'bg-purple-50 border-purple-200 text-purple-600': getAssetCategory(item) === 'archive',
+                                                        'bg-indigo-50 border-indigo-200 text-indigo-600': getAssetCategory(item) === 'audio',
+                                                        'bg-rose-50 border-rose-200 text-rose-600': getAssetCategory(item) === 'video',
+                                                        'bg-slate-100 border-slate-200 text-slate-700': ['code', 'other'].includes(getAssetCategory(item))
+                                                    }">
+                                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" class="size-5">
                                                         <path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z" />
                                                         <polyline points="14 2 14 8 20 8" />
-                                                        <line x1="16" x2="8" y1="13" y2="13" />
-                                                        <line x1="16" x2="8" y1="17" y2="17" />
                                                     </svg>
                                                 </div>
-                                                <span class="text-[10px] font-bold text-gray-500 uppercase tracking-wider" x-text="getFileExtension(item.name)"></span>
+                                                <span class="text-[10px] font-extrabold tracking-wider uppercase text-gray-600" x-text="getFileExtension(item.name)"></span>
                                             </div>
                                         </template>
                                     </button>
@@ -284,6 +292,48 @@
             dragCounter: 0,
             dragTargetId: null,
             crumbDragActive: null,
+
+            getAssetCategory(item) {
+                if (!item || item.is_directory) return 'folder';
+                const name = item.name || '';
+                const ext = name.includes('.') ? name.split('.').pop().toLowerCase() : '';
+                const mime = (item.mime_type || '').toLowerCase();
+
+                if (mime.startsWith('image/') || ['jpg', 'jpeg', 'png', 'gif', 'webp', 'svg', 'bmp', 'ico', 'avif'].includes(ext)) {
+                    return 'image';
+                }
+                if (mime.startsWith('audio/') || ['mp3', 'wav', 'ogg', 'flac', 'm4a', 'aac', 'wma'].includes(ext)) {
+                    return 'audio';
+                }
+                if (mime.startsWith('video/') || ['mp4', 'webm', 'mov', 'avi', 'mkv', 'wmv'].includes(ext)) {
+                    return 'video';
+                }
+                if (mime === 'application/pdf' || ext === 'pdf') {
+                    return 'pdf';
+                }
+                if (['doc', 'docx'].includes(ext) || mime.includes('wordprocessingml') || mime.includes('msword')) {
+                    return 'doc';
+                }
+                if (['xls', 'xlsx', 'csv'].includes(ext) || mime.includes('spreadsheetml') || mime.includes('excel')) {
+                    return 'spreadsheet';
+                }
+                if (['ppt', 'pptx'].includes(ext) || mime.includes('presentationml') || mime.includes('powerpoint')) {
+                    return 'presentation';
+                }
+                if (['zip', 'rar', 'tar', 'gz', '7z', 'bz2'].includes(ext) || mime.includes('zip') || mime.includes('compressed')) {
+                    return 'archive';
+                }
+                if (['txt', 'json', 'md', 'js', 'css', 'php', 'html', 'xml', 'yaml', 'yml', 'env', 'sh', 'py', 'ts'].includes(ext) || mime.startsWith('text/')) {
+                    return 'code';
+                }
+                return 'other';
+            },
+
+            getFileExtension(name) {
+                if (!name) return 'FILE';
+                const parts = name.split('.');
+                return parts.length > 1 ? parts.pop().toUpperCase() : 'FILE';
+            },
 
             init(open, cb) {
                 if (open) { this.isOpen = true; this.callback = cb; this.fetchAssets(); }

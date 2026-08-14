@@ -432,22 +432,31 @@
                                                             <path d="M3.5 7.878V14.5A1.5 1.5 0 005 16h10a1.5 1.5 0 001.5-1.5V7.878a.5.5 0 00-.5-.5H4a.5.5 0 00-.5.5z" />
                                                         </svg>
                                                     </template>
-                                                    <template x-if="!asset.is_directory && asset.mime_type?.startsWith('image/')">
-                                                        <div class="size-8 rounded overflow-hidden bg-gray-100 shrink-0">
+                                                    <template x-if="!asset.is_directory && getAssetCategory(asset) === 'image'">
+                                                        <div class="size-8 rounded-lg overflow-hidden bg-gray-100 shrink-0 border border-gray-200 shadow-2xs">
                                                             <img
-                                                                :src="`/storage/${asset.path}`"
+                                                                :src="`/admin/assets/${asset.id}/file`"
                                                                 :alt="asset.name"
                                                                 draggable="false"
                                                                 class="size-full object-cover"
-                                                                x-on:error='$el.style.display="none";$el.parentElement.innerHTML=`<div class="size-full flex items-center justify-center text-xs text-blue-600 font-medium bg-gradient-to-br from-blue-100 to-blue-200">IMG</div>`'
+                                                                x-on:error='$el.style.display="none";$el.nextElementSibling.style.display="flex"'
                                                             >
+                                                            <div class="size-full hidden items-center justify-center text-[9px] font-black text-blue-600 bg-blue-50 border border-blue-200 uppercase">IMG</div>
                                                         </div>
                                                     </template>
-                                                    <template x-if="!asset.is_directory && !asset.mime_type?.startsWith('image/')">
-                                                        <div class="size-8 rounded bg-gradient-to-br from-blue-100 to-blue-200 flex items-center justify-center text-xs text-blue-600 font-medium shrink-0">
-                                                            <svg viewBox="0 0 20 20" fill="currentColor" class="size-4">
-                                                                <path fill-rule="evenodd" d="M5.5 2a3 3 0 00-3 3v10a3 3 0 003 3h9a3 3 0 003-3V5a3 3 0 00-3-3h-9zM4 5a1.5 1.5 0 011.5-1.5h9A1.5 1.5 0 0116 5v10a1.5 1.5 0 01-1.5 1.5h-9A1.5 1.5 0 014 15V5z" clip-rule="evenodd" />
-                                                            </svg>
+                                                    <template x-if="!asset.is_directory && getAssetCategory(asset) !== 'image'">
+                                                        <div class="size-8 rounded-lg flex items-center justify-center shrink-0 border font-extrabold text-[9px] uppercase shadow-2xs select-none"
+                                                            :class="{
+                                                                'bg-red-50 border-red-200 text-red-600': getAssetCategory(asset) === 'pdf',
+                                                                'bg-blue-50 border-blue-200 text-blue-600': getAssetCategory(asset) === 'doc',
+                                                                'bg-emerald-50 border-emerald-200 text-emerald-600': getAssetCategory(asset) === 'spreadsheet',
+                                                                'bg-amber-50 border-amber-200 text-amber-600': getAssetCategory(asset) === 'presentation',
+                                                                'bg-purple-50 border-purple-200 text-purple-600': getAssetCategory(asset) === 'archive',
+                                                                'bg-indigo-50 border-indigo-200 text-indigo-600': getAssetCategory(asset) === 'audio',
+                                                                'bg-rose-50 border-rose-200 text-rose-600': getAssetCategory(asset) === 'video',
+                                                                'bg-slate-100 border-slate-200 text-slate-700': ['code', 'other'].includes(getAssetCategory(asset))
+                                                            }"
+                                                            x-text="getFileExtension(asset.name)">
                                                         </div>
                                                     </template>
                                                     <button
@@ -853,18 +862,70 @@
                             <path fill-rule="evenodd" d="M7.21 14.77a.75.75 0 01.02-1.06L11.168 10 7.23 6.29a.75.75 0 111.04-1.08l4.5 4.25a.75.75 0 010 1.08l-4.5 4.25a.75.75 0 01-1.06-.02z" clip-rule="evenodd" />
                         </svg>
                     </button>
-                    <template x-if="previewAsset?.mime_type?.startsWith('image/')">
+                    {{-- Image Preview --}}
+                    <template x-if="getAssetCategory(previewAsset) === 'image'">
                         <img
-                            :src="`/storage/${previewAsset.path}`"
+                            :src="`/admin/assets/${previewAsset.id}/file`"
                             :alt="previewAsset.name"
-                            class="max-h-[500px] max-w-full object-contain"
+                            class="max-h-[500px] max-w-full object-contain p-4 rounded-xl"
                         >
                     </template>
-                    <template x-if="!previewAsset?.mime_type?.startsWith('image/')">
-                        <div class="size-24 rounded-xl bg-gradient-to-br from-blue-100 to-blue-200 flex items-center justify-center">
-                            <svg viewBox="0 0 20 20" fill="currentColor" class="size-10 text-blue-500">
-                                <path fill-rule="evenodd" d="M5.5 2a3 3 0 00-3 3v10a3 3 0 003 3h9a3 3 0 003-3V5a3 3 0 00-3-3h-9zM4 5a1.5 1.5 0 011.5-1.5h9A1.5 1.5 0 0116 5v10a1.5 1.5 0 01-1.5 1.5h-9A1.5 1.5 0 014 15V5z" clip-rule="evenodd" />
-                            </svg>
+
+                    {{-- PDF Interactive Document Viewer --}}
+                    <template x-if="getAssetCategory(previewAsset) === 'pdf'">
+                        <iframe :src="`/admin/assets/${previewAsset.id}/file`" class="w-full h-[500px] border-0 rounded-xl bg-white shadow-md"></iframe>
+                    </template>
+
+                    {{-- Audio Player --}}
+                    <template x-if="getAssetCategory(previewAsset) === 'audio'">
+                        <div class="flex flex-col items-center justify-center p-6 text-center space-y-4 w-full">
+                            <div class="size-20 rounded-2xl bg-indigo-500/10 border border-indigo-500/20 flex items-center justify-center text-indigo-500 shadow-md">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" class="size-10">
+                                    <path d="M9 18V5l12-2v13" /><circle cx="6" cy="18" r="3" /><circle cx="18" cy="16" r="3" />
+                                </svg>
+                            </div>
+                            <audio controls :src="`/admin/assets/${previewAsset.id}/file`" class="w-full max-w-md"></audio>
+                        </div>
+                    </template>
+
+                    {{-- Video Player --}}
+                    <template x-if="getAssetCategory(previewAsset) === 'video'">
+                        <video controls :src="`/admin/assets/${previewAsset.id}/file`" class="max-h-[500px] max-w-full rounded-xl shadow-lg p-2"></video>
+                    </template>
+
+                    {{-- Code & Text Previewer --}}
+                    <template x-if="getAssetCategory(previewAsset) === 'code'">
+                        <div class="w-full h-[500px] bg-slate-950 text-slate-100 p-4 rounded-xl overflow-auto text-xs font-mono border border-slate-800">
+                            <template x-if="loadingPreviewText">
+                                <div class="flex items-center justify-center h-full text-slate-400">Loading document preview...</div>
+                            </template>
+                            <template x-if="!loadingPreviewText">
+                                <pre class="whitespace-pre-wrap break-all" x-text="previewTextContent || 'No text content.'"></pre>
+                            </template>
+                        </div>
+                    </template>
+
+                    {{-- Office & Archive Document Card --}}
+                    <template x-if="['doc', 'spreadsheet', 'presentation', 'archive', 'other'].includes(getAssetCategory(previewAsset))">
+                        <div class="flex flex-col items-center justify-center p-8 text-center space-y-4">
+                            <div class="size-24 rounded-2xl flex flex-col items-center justify-center shadow-lg border p-3"
+                                :class="{
+                                    'bg-blue-50 border-blue-200 text-blue-600': getAssetCategory(previewAsset) === 'doc',
+                                    'bg-emerald-50 border-emerald-200 text-emerald-600': getAssetCategory(previewAsset) === 'spreadsheet',
+                                    'bg-amber-50 border-amber-200 text-amber-600': getAssetCategory(previewAsset) === 'presentation',
+                                    'bg-purple-50 border-purple-200 text-purple-600': getAssetCategory(previewAsset) === 'archive',
+                                    'bg-gray-50 border-gray-200 text-gray-600': getAssetCategory(previewAsset) === 'other'
+                                }">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" class="size-10 mb-1">
+                                    <path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"/>
+                                    <polyline points="14 2 14 8 20 8"/>
+                                </svg>
+                                <span class="text-xs font-black tracking-wider uppercase" x-text="getFileExtension(previewAsset?.name)"></span>
+                            </div>
+                            <a :href="`/admin/assets/${previewAsset?.id}/file?download=1`" class="px-4 py-2 rounded-xl bg-primary text-white text-xs font-semibold hover:opacity-90 transition-opacity flex items-center gap-2 shadow-sm">
+                                <svg viewBox="0 0 20 20" fill="currentColor" class="size-4"><path d="M10.75 2.75a.75.75 0 00-1.5 0v8.614L6.295 8.409a.75.75 0 10-1.09 1.03l4.25 4.5a.75.75 0 001.09 0l4.25-4.5a.75.75 0 00-1.09-1.03l-2.955 3.129V2.75z"/><path d="M3.5 12.75a.75.75 0 00-1.5 0v2.5A2.75 2.75 0 004.75 18h10.5A2.75 2.75 0 0018 15.25v-2.5a.75.75 0 00-1.5 0v2.5c0 .69-.56 1.25-1.25 1.25H4.75c-.69 0-1.25-.56-1.25-1.25v-2.5z"/></svg>
+                                Download File
+                            </a>
                         </div>
                     </template>
                 </div>
@@ -944,9 +1005,50 @@
             loading: true,
             uploading: false,
             uploadingFileName: '',
-            dragOverFolderId: null,
-            dragOverCrumb: null,
-            fileAssets: [],
+            previewTextContent: '',
+            loadingPreviewText: false,
+
+            getAssetCategory(asset) {
+                if (!asset || asset.is_directory) return 'folder';
+                const name = asset.name || '';
+                const ext = name.includes('.') ? name.split('.').pop().toLowerCase() : '';
+                const mime = (asset.mime_type || '').toLowerCase();
+
+                if (mime.startsWith('image/') || ['jpg', 'jpeg', 'png', 'gif', 'webp', 'svg', 'bmp', 'ico', 'avif'].includes(ext)) {
+                    return 'image';
+                }
+                if (mime.startsWith('audio/') || ['mp3', 'wav', 'ogg', 'flac', 'm4a', 'aac', 'wma'].includes(ext)) {
+                    return 'audio';
+                }
+                if (mime.startsWith('video/') || ['mp4', 'webm', 'mov', 'avi', 'mkv', 'wmv'].includes(ext)) {
+                    return 'video';
+                }
+                if (mime === 'application/pdf' || ext === 'pdf') {
+                    return 'pdf';
+                }
+                if (['doc', 'docx'].includes(ext) || mime.includes('wordprocessingml') || mime.includes('msword')) {
+                    return 'doc';
+                }
+                if (['xls', 'xlsx', 'csv'].includes(ext) || mime.includes('spreadsheetml') || mime.includes('excel')) {
+                    return 'spreadsheet';
+                }
+                if (['ppt', 'pptx'].includes(ext) || mime.includes('presentationml') || mime.includes('powerpoint')) {
+                    return 'presentation';
+                }
+                if (['zip', 'rar', 'tar', 'gz', '7z', 'bz2'].includes(ext) || mime.includes('zip') || mime.includes('compressed')) {
+                    return 'archive';
+                }
+                if (['txt', 'json', 'md', 'js', 'css', 'php', 'html', 'xml', 'yaml', 'yml', 'env', 'sh', 'py', 'ts'].includes(ext) || mime.startsWith('text/')) {
+                    return 'code';
+                }
+                return 'other';
+            },
+
+            getFileExtension(name) {
+                if (!name) return 'FILE';
+                const parts = name.split('.');
+                return parts.length > 1 ? parts.pop().toUpperCase() : 'FILE';
+            },
 
             get filterColumnLabel() {
                 if (this.filterColumn === 'all') return 'Filter: All';
@@ -1138,22 +1240,45 @@
                 await this.loadAssets();
             },
 
-            openPreview(asset, index) {
+            async openPreview(asset, index) {
+                if (!asset || asset.is_directory) return;
                 this.previewAsset = asset;
-                this.previewIndex = index !== undefined ? index : this.fileAssets.indexOf(asset);
+                this.previewIndex = index !== undefined ? index : this.fileAssets.findIndex(a => a.id === asset.id);
+                this.previewTextContent = '';
+                this.loadingPreviewText = false;
+
+                const cat = this.getAssetCategory(asset);
+                if (cat === 'code') {
+                    this.loadingPreviewText = true;
+                    try {
+                        const res = await fetch(`/admin/assets/${asset.id}/file`);
+                        if (res.ok) {
+                            const text = await res.text();
+                            this.previewTextContent = text.length > 50000 ? text.slice(0, 50000) + '\n\n... [File content truncated]' : text;
+                        } else {
+                            this.previewTextContent = 'Unable to load text document preview.';
+                        }
+                    } catch (e) {
+                        this.previewTextContent = 'Error reading document content.';
+                    } finally {
+                        this.loadingPreviewText = false;
+                    }
+                }
             },
 
             previewPrev() {
                 if (this.previewIndex > 0) {
                     this.previewIndex--;
-                    this.previewAsset = this.fileAssets[this.previewIndex];
+                    const prevAsset = this.fileAssets[this.previewIndex];
+                    if (prevAsset) this.openPreview(prevAsset, this.previewIndex);
                 }
             },
 
             previewNext() {
                 if (this.previewIndex < this.fileAssets.length - 1) {
                     this.previewIndex++;
-                    this.previewAsset = this.fileAssets[this.previewIndex];
+                    const nextAsset = this.fileAssets[this.previewIndex];
+                    if (nextAsset) this.openPreview(nextAsset, this.previewIndex);
                 }
             },
 
