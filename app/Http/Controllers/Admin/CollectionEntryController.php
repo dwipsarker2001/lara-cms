@@ -8,6 +8,7 @@ use App\Models\Admin;
 use App\Models\Collection;
 use App\Models\CollectionEntry;
 use App\Models\Layout;
+use App\Models\Setting;
 use App\Support\Sections;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Schema;
@@ -241,6 +242,46 @@ class CollectionEntryController extends Controller
             }
         }
 
+        // Add Site Settings inputs (custom_fields & core settings) to binding options
+        $settings = Setting::first();
+        $settingsCustomValues = [];
+        $settingsFieldsList = collect();
+
+        if ($settings) {
+            $settingsCustomValues = is_array($settings->custom_values) ? $settings->custom_values : [];
+            $settingsCustomValues['app_name'] = $settings->app_name ?? '';
+            $settingsCustomValues['tagline'] = $settings->tagline ?? '';
+            $settingsCustomValues['admin_email'] = $settings->admin_email ?? '';
+            $settingsCustomValues['language'] = $settings->language ?? '';
+            $settingsCustomValues['currency'] = $settings->currency ?? '';
+
+            $settingsFieldsList->put('app_name', ['key' => 'app_name', 'label' => 'Site Name']);
+            $settingsFieldsList->put('tagline', ['key' => 'tagline', 'label' => 'Site Tagline']);
+            $settingsFieldsList->put('admin_email', ['key' => 'admin_email', 'label' => 'Admin Email']);
+            $settingsFieldsList->put('language', ['key' => 'language', 'label' => 'Language']);
+            $settingsFieldsList->put('currency', ['key' => 'currency', 'label' => 'Currency']);
+
+            if (is_array($settings->custom_fields)) {
+                foreach ($settings->custom_fields as $sf) {
+                    $key = $sf['template'] ?? $sf['key'] ?? '';
+                    if ($key !== '') {
+                        $settingsFieldsList->put($key, [
+                            'key' => $key,
+                            'label' => $sf['title'] ?? Str::title(str_replace(['_', '-'], ' ', $key)),
+                        ]);
+                    }
+                }
+            }
+        }
+
+        if ($settingsFieldsList->isNotEmpty()) {
+            $allGroupedFields->push([
+                'collection_id' => 'site_settings',
+                'name' => 'Site Settings',
+                'fields' => $settingsFieldsList->values()->all(),
+            ]);
+        }
+
         $collectionFields = $entryCustomFields->values()->all();
         $groupedCollectionFields = $allGroupedFields->all();
 
@@ -253,6 +294,7 @@ class CollectionEntryController extends Controller
             'pages' => $pages,
             'collectionFields' => $collectionFields,
             'groupedCollectionFields' => $groupedCollectionFields,
+            'settingsCustomValues' => $settingsCustomValues,
         ]);
     }
 

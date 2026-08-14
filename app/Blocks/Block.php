@@ -2,6 +2,7 @@
 
 namespace App\Blocks;
 
+use App\Models\Setting;
 use Illuminate\Support\Str;
 
 /**
@@ -136,6 +137,17 @@ abstract class Block
 
                 if ($source !== '') {
                     $entryValue = $entryData[$source] ?? ($page->$source ?? null);
+                    if ($entryValue === null || $entryValue === '') {
+                        $settings = Setting::first();
+                        if ($settings) {
+                            $customValues = is_array($settings->custom_values) ? $settings->custom_values : [];
+                            if (array_key_exists($source, $customValues)) {
+                                $entryValue = $customValues[$source];
+                            } elseif (isset($settings->$source)) {
+                                $entryValue = $settings->$source;
+                            }
+                        }
+                    }
                     if ($entryValue !== null && $entryValue !== '') {
                         if (is_array($entryValue) && ($field['type'] ?? '') !== 'object' && ($field['type'] ?? '') !== 'location') {
                             if (! empty($entryValue['formatted']) && is_string($entryValue['formatted'])) {

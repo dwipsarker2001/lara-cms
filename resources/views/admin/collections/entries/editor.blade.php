@@ -15,6 +15,7 @@
     window.editorEntryData = @json($entry->data ?? []);
     window.editorCollectionFields = @json($collectionFields ?? []);
     window.editorGroupedCollectionFields = @json($groupedCollectionFields ?? []);
+    window.editorSettingsCustomValues = @json($settingsCustomValues ?? (object)[]);
     window.editorSaveRoute = '{{ route('admin.collections.entries.update-sections', [$collection, $entry]) }}';
     window.editorPostId = null;
 
@@ -1205,6 +1206,7 @@
             slug: '',
             pages: [],
             entryData: {},
+            siteSettings: window.editorSettingsCustomValues || {},
             collectionFields: window.editorCollectionFields || [],
             groupedCollectionFields: window.editorGroupedCollectionFields || [],
             selectedCollectionGroup: (window.editorGroupedCollectionFields && window.editorGroupedCollectionFields.length > 0) ? window.editorGroupedCollectionFields[0].collection_id : null,
@@ -1647,9 +1649,15 @@
                 const sourceKey = this.getSourceKey(name);
                 let val;
                 if (sourceKey) {
-                    val = (this.entryData && this.entryData[sourceKey] !== undefined && this.entryData[sourceKey] !== null)
-                        ? this.entryData[sourceKey]
-                        : '';
+                    if (this.entryData && this.entryData[sourceKey] !== undefined && this.entryData[sourceKey] !== null && this.entryData[sourceKey] !== '') {
+                        val = this.entryData[sourceKey];
+                    } else if (this.siteSettings && this.siteSettings[sourceKey] !== undefined && this.siteSettings[sourceKey] !== null) {
+                        val = this.siteSettings[sourceKey];
+                    } else if (this.homeGlobals && this.homeGlobals[sourceKey] !== undefined && this.homeGlobals[sourceKey] !== null) {
+                        val = this.homeGlobals[sourceKey];
+                    } else {
+                        val = '';
+                    }
                 } else {
                     val = this.currentData()[name] ?? '';
                 }
