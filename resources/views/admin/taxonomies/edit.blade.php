@@ -215,15 +215,14 @@
                             </svg>
                         </button>
 
-                        <div x-show="open"
+                        <div x-show="open" x-cloak
                             x-transition:enter="transition ease-out duration-100"
                             x-transition:enter-start="opacity-0 scale-95"
                             x-transition:enter-end="opacity-100 scale-100"
                             x-transition:leave="transition ease-in duration-75"
                             x-transition:leave-start="opacity-100 scale-100"
                             x-transition:leave-end="opacity-0 scale-95"
-                            class="absolute z-50 top-full mt-1 left-0 right-0 bg-white border border-gray-200 rounded-lg shadow-xl p-1.5 space-y-0.5 max-h-60 overflow-y-auto"
-                            style="display: none;">
+                            class="absolute z-50 top-full mt-1 left-0 right-0 bg-white border border-gray-200 rounded-lg shadow-xl p-1.5 space-y-0.5 max-h-60 overflow-y-auto">
                             <button type="button" @click="fieldForm.type = 'text'; open = false"
                                 class="flex items-center justify-between w-full px-3 py-2 text-sm rounded-lg text-text-primary hover:bg-gray-100/80 transition-colors"
                                 :class="fieldForm.type === 'text' ? 'bg-primary/10 text-primary font-medium' : ''">

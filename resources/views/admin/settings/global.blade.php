@@ -99,7 +99,7 @@
                                                         <path fill-rule="evenodd" d="M5.22 8.22a.75.75 0 0 1 1.06 0L10 11.94l3.72-3.72a.75.75 0 1 1 1.06 1.06l-4.25 4.25a.75.75 0 0 1-1.06 0L5.22 9.28a.75.75 0 0 1 0-1.06Z" clip-rule="evenodd" />
                                                     </svg>
                                                 </button>
-                                                <div x-show="open"
+                                                <div x-show="open" x-cloak
                                                     x-transition:enter="transition ease-out duration-100"
                                                     x-transition:enter-start="opacity-0 scale-95"
                                                     x-transition:enter-end="opacity-100 scale-100"
@@ -107,7 +107,6 @@
                                                     x-transition:leave-start="opacity-100 scale-100"
                                                     x-transition:leave-end="opacity-0 scale-95"
                                                     class="absolute z-50 top-full mt-1 left-0 right-0 bg-white border border-gray-200 rounded-lg shadow-xl p-1 max-h-60 overflow-y-auto space-y-0.5"
-                                                    style="display: none;"
                                                 >
                                                     <template x-for="opt in options" :key="opt.value">
                                                         <button type="button" @click="select(opt.value)" class="w-full flex items-center justify-between px-3 py-2 text-sm rounded-md transition-colors cursor-pointer" :class="opt.value === selected ? 'bg-primary/10 text-primary font-medium' : 'text-text-primary hover:bg-gray-100'">
@@ -160,7 +159,7 @@
                                                         <path fill-rule="evenodd" d="M5.22 8.22a.75.75 0 0 1 1.06 0L10 11.94l3.72-3.72a.75.75 0 0 1-1.06 0L5.22 9.28a.75.75 0 0 1 0-1.06Z" clip-rule="evenodd" />
                                                     </svg>
                                                 </button>
-                                                <div x-show="open"
+                                                <div x-show="open" x-cloak
                                                     x-transition:enter="transition ease-out duration-100"
                                                     x-transition:enter-start="opacity-0 scale-95"
                                                     x-transition:enter-end="opacity-100 scale-100"
@@ -168,7 +167,6 @@
                                                     x-transition:leave-start="opacity-100 scale-100"
                                                     x-transition:leave-end="opacity-0 scale-95"
                                                     class="absolute z-50 top-full mt-1 left-0 right-0 bg-white border border-gray-200 rounded-lg shadow-xl p-1 max-h-60 overflow-y-auto space-y-0.5"
-                                                    style="display: none;"
                                                 >
                                                     <template x-for="opt in options" :key="opt.value">
                                                         <button type="button" @click="select(opt.value)" class="w-full flex items-center justify-between px-3 py-2 text-sm rounded-md transition-colors cursor-pointer" :class="opt.value === selected ? 'bg-primary/10 text-primary font-medium' : 'text-text-primary hover:bg-gray-100'">

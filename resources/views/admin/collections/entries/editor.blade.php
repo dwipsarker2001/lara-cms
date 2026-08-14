@@ -480,7 +480,7 @@
                                                 <span class="flex-1 text-left" x-text="filteredSelectOptions(field).find(o => o.value === getField(field.name))?.label || 'Select...'"></span>
                                                 <svg class="size-4 text-text-muted transition-transform" :class="open ? 'rotate-180' : ''" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" /></svg>
                                             </button>
-                                            <div x-show="open" @click.outside="open = false"
+                                            <div x-show="open" x-cloak @click.outside="open = false"
                                                 class="absolute z-20 mt-1 w-full rounded-xl border border-gray-200 bg-white py-1 shadow-lg ring-1 ring-black/5 max-h-60 overflow-y-auto"
                                                 x-transition:enter="transition ease-out duration-100" x-transition:enter-start="opacity-0 scale-95" x-transition:enter-end="opacity-100 scale-100"
                                                 x-transition:leave="transition ease-in duration-75" x-transition:leave-start="opacity-100 scale-100" x-transition:leave-end="opacity-0 scale-95"
