@@ -284,8 +284,13 @@
                                         <td x-show="visibleColumns['created'] !== false" class="px-4 py-3 text-text-primary whitespace-nowrap min-w-[160px] border-b border-content-border group-last:border-b-0">
                                             <span class="font-medium">{{ $entry->created_at->format('M j, Y g:i A') }}</span>
                                         </td>
-                                        <td x-show="visibleColumns['actions'] !== false" class="sticky right-0 bg-white group-hover:bg-[#f9fafb] group-last:rounded-br-xl z-10 px-4 py-3 text-right whitespace-nowrap transition-colors border-b border-content-border group-last:border-b-0">
-                                            <div class="relative inline-block text-left" x-data="{ open: false }" @click.outside="open = false" @keydown.escape.window="open = false">
+                                        <td x-show="visibleColumns['actions'] !== false"
+                                            x-data="{ open: false }"
+                                            @click.outside="open = false"
+                                            @keydown.escape.window="open = false"
+                                            :class="open ? 'z-50' : 'z-10'"
+                                            class="sticky right-0 bg-white group-hover:bg-[#f9fafb] group-last:rounded-br-xl px-4 py-3 text-right whitespace-nowrap transition-colors border-b border-content-border group-last:border-b-0">
+                                            <div class="relative inline-block text-left">
                                                 <button
                                                     type="button"
                                                     @click="open = !open"
