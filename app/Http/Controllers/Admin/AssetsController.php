@@ -38,6 +38,7 @@ class AssetsController extends Controller
                         ? ($asset->directory ? $asset->directory.'/'.$asset->name : $asset->name)
                         : null,
                     'size' => $asset->is_directory ? null : $this->formatSize($asset->size),
+                    'raw_size' => $asset->is_directory ? 0 : (int) $asset->size,
                     'width' => $asset->width,
                     'height' => $asset->height,
                     'mime_type' => $asset->mime,
@@ -47,7 +48,13 @@ class AssetsController extends Controller
                 ];
             })->values();
 
-        return response()->json(['assets' => $assets]);
+        $totalStorageBytes = (int) Asset::where('is_directory', false)->sum('size');
+
+        return response()->json([
+            'assets' => $assets,
+            'total_storage' => $this->formatSize($totalStorageBytes),
+            'total_storage_bytes' => $totalStorageBytes,
+        ]);
     }
 
     public function page()

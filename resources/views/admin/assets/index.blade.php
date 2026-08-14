@@ -491,23 +491,47 @@
                 </template>
             </div>
 
-            {{-- Footer (Only shown if total assets > 10) --}}
-            <footer class="flex justify-between flex-wrap items-center px-[18px] pt-2.5 md:pt-3 pb-2.5 antialiased" x-show="filteredAssets.length > 10">
-                <div class="text-sm text-text-muted">
-                    <span x-text="filteredAssets.length > 0 ? `${(page - 1) * perPage + 1}\u2013${Math.min(page * perPage, filteredAssets.length)} of ${filteredAssets.length}` : 'No assets'"></span>
+            {{-- Footer Storage Capacity & Pagination Bar --}}
+            <footer class="flex justify-between flex-wrap items-center gap-3 px-[18px] py-3 border-t border-content-border bg-[#f9fafb]/80 rounded-b-2xl antialiased">
+                <div class="flex items-center gap-3 flex-wrap">
+                    {{-- Asset Count --}}
+                    <div class="text-xs text-text-muted font-medium">
+                        <span x-text="filteredAssets.length > 0 ? `${(page - 1) * perPage + 1}\u2013${Math.min(page * perPage, filteredAssets.length)} of ${filteredAssets.length} items` : '0 items'"></span>
+                    </div>
+
+                    {{-- Storage Capacity Gray Badge --}}
+                    <div class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-gray-200/90 border border-gray-300/80 text-xs font-semibold text-gray-700 select-none shadow-2xs">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" class="size-3.5 text-gray-500 shrink-0">
+                            <path d="M21 5H3v4h18V5z" />
+                            <path d="M21 15H3v4h18v-4z" />
+                            <circle cx="6" cy="7" r="1" />
+                            <circle cx="6" cy="17" r="1" />
+                        </svg>
+                        <span>Storage: <strong class="font-bold text-gray-900" x-text="totalStorageFormatted">0 B</strong></span>
+                    </div>
                 </div>
-                <div class="flex items-center gap-1">
-                    <button type="button" @click="if (page > 1) page--" :disabled="page <= 1" class="inline-flex items-center justify-center w-8 h-8 rounded-full hover:bg-gray-400/10 text-text-heading disabled:opacity-50 transition-colors cursor-pointer">
-                        <svg viewBox="0 0 15 15" fill="currentColor" class="size-3.5"><path fill-rule="evenodd" d="M8.842 3.135a.5.5 0 01.023.707L5.435 7.5l3.43 3.658a.5.5 0 01-.73.684l-3.75-4a.5.5 0 010-.684l3.75-4a.5.5 0 01.707-.023" clip-rule="evenodd" /></svg>
-                    </button>
-                    <span class="inline-flex items-center justify-center px-3 h-8 rounded-full bg-gray-400/10 text-text-heading text-sm font-medium" x-text="page">1</span>
-                    <button type="button" @click="if (page < totalPages) page++" :disabled="page >= totalPages" class="inline-flex items-center justify-center w-8 h-8 rounded-full hover:bg-gray-400/10 text-text-heading disabled:opacity-50 transition-colors cursor-pointer">
-                        <svg viewBox="0 0 15 15" fill="currentColor" class="size-3.5"><path fill-rule="evenodd" d="M6.158 3.135a.5.5 0 01-.023.707L9.565 7.5l-3.43 3.658a.5.5 0 00.73.684l3.75-4a.5.5 0 000-.684l-3.75-4a.5.5 0 00-.707-.023" clip-rule="evenodd" /></svg>
-                    </button>
-                </div>
-                <div class="flex items-center gap-2 text-sm text-text-muted">
-                    <span>Per Page</span>
-                    <span class="px-2 py-1 border border-content-border rounded text-text-heading">10</span>
+
+                <div class="flex items-center gap-4 flex-wrap">
+                    {{-- Pagination Controls --}}
+                    <div class="flex items-center gap-1" x-show="filteredAssets.length > perPage">
+                        <button type="button" @click="if (page > 1) page--" :disabled="page <= 1" class="inline-flex items-center justify-center w-7 h-7 rounded-lg border border-gray-200 bg-white hover:bg-gray-100 text-text-heading disabled:opacity-40 transition-colors cursor-pointer shadow-2xs">
+                            <svg viewBox="0 0 15 15" fill="currentColor" class="size-3.5"><path fill-rule="evenodd" d="M8.842 3.135a.5.5 0 01.023.707L5.435 7.5l3.43 3.658a.5.5 0 01-.73.684l-3.75-4a.5.5 0 010-.684l3.75-4a.5.5 0 01.707-.023" clip-rule="evenodd" /></svg>
+                        </button>
+                        <span class="inline-flex items-center justify-center px-2.5 h-7 rounded-lg bg-white border border-gray-200 text-text-heading text-xs font-semibold shadow-2xs" x-text="`${page} / ${totalPages}`">1 / 1</span>
+                        <button type="button" @click="if (page < totalPages) page++" :disabled="page >= totalPages" class="inline-flex items-center justify-center w-7 h-7 rounded-lg border border-gray-200 bg-white hover:bg-gray-100 text-text-heading disabled:opacity-40 transition-colors cursor-pointer shadow-2xs">
+                            <svg viewBox="0 0 15 15" fill="currentColor" class="size-3.5"><path fill-rule="evenodd" d="M6.158 3.135a.5.5 0 01-.023.707L9.565 7.5l-3.43 3.658a.5.5 0 00.73.684l3.75-4a.5.5 0 000-.684l-3.75-4a.5.5 0 00-.707-.023" clip-rule="evenodd" /></svg>
+                        </button>
+                    </div>
+
+                    <div class="flex items-center gap-2 text-xs text-text-muted">
+                        <span>Per Page</span>
+                        <select x-model.number="perPage" @change="page = 1" class="px-2 py-1 bg-white border border-content-border rounded text-text-heading text-xs font-medium focus:ring-0 focus:outline-none cursor-pointer">
+                            <option :value="10">10</option>
+                            <option :value="25">25</option>
+                            <option :value="50">50</option>
+                            <option :value="100">100</option>
+                        </select>
+                    </div>
                 </div>
             </footer>
         </div>
@@ -1007,6 +1031,27 @@
             uploadingFileName: '',
             previewTextContent: '',
             loadingPreviewText: false,
+            totalStorageApi: '',
+
+            get totalStorageFormatted() {
+                if (this.totalStorageApi) return this.totalStorageApi;
+                let bytes = 0;
+                this.assets.forEach(a => {
+                    if (!a.is_directory && a.raw_size) bytes += a.raw_size;
+                });
+                return this.formatBytes(bytes);
+            },
+
+            formatBytes(bytes) {
+                if (!bytes || bytes <= 0) return '0 B';
+                const units = ['B', 'KB', 'MB', 'GB'];
+                let i = 0;
+                while (bytes >= 1024 && i < units.length - 1) {
+                    bytes /= 1024;
+                    i++;
+                }
+                return Math.round(bytes * 10) / 10 + ' ' + units[i];
+            },
 
             getAssetCategory(asset) {
                 if (!asset || asset.is_directory) return 'folder';
@@ -1170,7 +1215,8 @@
                 const params = new URLSearchParams({ directory: this.currentDirectory });
                 const res = await fetch(`{{ route("admin.assets.list") }}?${params}`);
                 const data = await res.json();
-                this.assets = data.assets;
+                this.assets = data.assets || [];
+                this.totalStorageApi = data.total_storage || '';
                 this.fileAssets = this.assets.filter(a => !a.is_directory);
                 this.loading = false;
             },
