@@ -204,6 +204,51 @@ class FormController extends Controller
         return redirect()->route('admin.forms.entries', $form)->with('success', 'Submission deleted successfully.');
     }
 
+    public function destroyEntriesBulk(Request $request, Form $form)
+    {
+        $validated = $request->validate([
+            'ids' => ['required', 'array'],
+            'ids.*' => ['integer', 'exists:form_entries,id'],
+        ]);
+
+        FormEntry::where('form_id', $form->id)
+            ->whereIn('id', $validated['ids'])
+            ->delete();
+
+        return redirect()->route('admin.forms.entries', $form)->with('success', count($validated['ids']).' submission(s) deleted successfully.');
+    }
+
+    public function duplicateEntry(Form $form, FormEntry $entry)
+    {
+        abort_if((int) $entry->form_id !== (int) $form->id, 404);
+
+        $newEntry = $entry->replicate();
+        $newEntry->created_at = now();
+        $newEntry->save();
+
+        return redirect()->route('admin.forms.entries', $form)->with('success', 'Submission duplicated successfully.');
+    }
+
+    public function duplicateEntriesBulk(Request $request, Form $form)
+    {
+        $validated = $request->validate([
+            'ids' => ['required', 'array'],
+            'ids.*' => ['integer', 'exists:form_entries,id'],
+        ]);
+
+        $entries = FormEntry::where('form_id', $form->id)
+            ->whereIn('id', $validated['ids'])
+            ->get();
+
+        foreach ($entries as $entry) {
+            $newEntry = $entry->replicate();
+            $newEntry->created_at = now();
+            $newEntry->save();
+        }
+
+        return redirect()->route('admin.forms.entries', $form)->with('success', count($entries).' submission(s) duplicated successfully.');
+    }
+
     public function saveColumns(Request $request, Form $form)
     {
         $validated = $request->validate([

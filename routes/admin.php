@@ -191,6 +191,9 @@ Route::middleware(['web', 'auth:admin'])->prefix('admin')->name('admin.')->group
     Route::get('forms/{form}/entries/export', [FormController::class, 'export'])->name('forms.export');
     Route::get('forms/{form}/entries/{entry}', [FormController::class, 'entryJson'])->name('forms.entries.json');
     Route::put('forms/{form}/entries/{entry}', [FormController::class, 'updateEntry'])->name('forms.entries.update');
+    Route::delete('forms/{form}/entries-bulk', [FormController::class, 'destroyEntriesBulk'])->name('forms.entries.bulk-destroy');
+    Route::post('forms/{form}/entries-bulk-duplicate', [FormController::class, 'duplicateEntriesBulk'])->name('forms.entries.bulk-duplicate');
+    Route::post('forms/{form}/entries/{entry}/duplicate', [FormController::class, 'duplicateEntry'])->name('forms.entries.duplicate');
     Route::delete('forms/{form}/entries/{entry}', [FormController::class, 'destroyEntry'])->name('forms.entries.destroy');
     Route::patch('forms/{form}/fields', [FormController::class, 'updateFields'])->name('forms.update-fields');
     Route::post('forms/{form}/columns', [FormController::class, 'saveColumns'])->name('forms.save-columns');

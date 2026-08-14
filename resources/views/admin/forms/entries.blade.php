@@ -27,9 +27,7 @@
         ];
     });
 
-    $headers = [
-        ['key' => 'id', 'label' => '#'],
-    ];
+    $headers = [];
     foreach ($fields as $field) {
         $headers[] = ['key' => $field['name'], 'label' => $field['label']];
     }
@@ -157,10 +155,6 @@
                                 <span>Submitted Date</span>
                                 <span x-show="sortColumn === 'created'" class="font-bold">✓</span>
                             </button>
-                            <button type="button" @click="sortColumn = 'id'; sortRows(); open = false" class="flex w-full items-center justify-between gap-2 whitespace-nowrap px-3 py-1.5 rounded-lg text-xs transition-colors cursor-pointer" :class="sortColumn === 'id' ? 'bg-primary/10 text-primary font-medium' : 'text-text-primary hover:bg-body-bg'">
-                                <span>ID (#)</span>
-                                <span x-show="sortColumn === 'id'" class="font-bold">✓</span>
-                            </button>
                             @foreach ($fields as $field)
                                 <button type="button" @click="sortColumn = '{{ $field['name'] }}'; sortRows(); open = false" class="flex w-full items-center justify-between gap-2 whitespace-nowrap px-3 py-1.5 rounded-lg text-xs transition-colors cursor-pointer" :class="sortColumn === '{{ $field['name'] }}' ? 'bg-primary/10 text-primary font-medium' : 'text-text-primary hover:bg-body-bg'">
                                     <span>{{ $field['label'] }}</span>
@@ -198,10 +192,6 @@
                                 Display Columns
                             </div>
                             <div class="my-1 border-t border-content-border"></div>
-                            <label class="flex items-center gap-2 px-2 py-1.5 rounded-lg hover:bg-body-bg text-xs text-text-primary cursor-pointer select-none">
-                                <input type="checkbox" x-model="visibleColumns['id']" @change="saveColumnPreferences()" class="rounded border-content-border text-primary focus:ring-primary/20">
-                                <span># (ID)</span>
-                            </label>
                             @foreach ($fields as $field)
                                 <label class="flex items-center gap-2 px-2 py-1.5 rounded-lg hover:bg-body-bg text-xs text-text-primary cursor-pointer select-none">
                                     <input type="checkbox" x-model="visibleColumns['{{ $field['name'] }}']" @change="saveColumnPreferences()" class="rounded border-content-border text-primary focus:ring-primary/20">
@@ -235,8 +225,12 @@
                         <table class="w-full min-w-full border-separate border-spacing-y-0 text-left text-[13px]">
                             <thead>
                                 <tr class="bg-[#f9fafb]">
-                                    <th x-show="visibleColumns['id'] !== false" class="whitespace-nowrap px-4 py-3 font-medium text-text-muted text-[12px] border-b border-content-border rounded-tl-xl">
-                                        <button @click="sortColumn = 'id'; sortRows()" class="cursor-pointer hover:text-text-heading">#</button>
+                                    <th class="w-10 px-4 py-3 border-b border-content-border rounded-tl-xl text-center">
+                                        <input type="checkbox"
+                                            @change="toggleSelectAll($event)"
+                                            :checked="allSelected"
+                                            class="size-4 rounded border-content-border text-primary focus:ring-primary/20 cursor-pointer"
+                                        >
                                     </th>
                                     @foreach ($fields as $field)
                                         <th x-show="visibleColumns['{{ $field['name'] }}'] !== false" class="whitespace-nowrap px-4 py-3 font-medium text-text-muted text-[12px] border-b border-content-border">
@@ -260,7 +254,13 @@
                                         x-show="matchesSearch({{ json_encode($entry->data) }}, {{ $entry->id }}, {{ json_encode($entry->created_at->format('M j, Y g:i A')) }})"
                                         class="group hover:bg-[#f9fafb] transition-colors"
                                     >
-                                        <td x-show="visibleColumns['id'] !== false" class="px-4 py-3 text-text-muted text-xs whitespace-nowrap min-w-[70px] border-b border-content-border group-last:border-b-0 group-last:rounded-bl-xl">#{{ $entry->id }}</td>
+                                        <td class="w-10 px-4 py-3 border-b border-content-border group-last:border-b-0 group-last:rounded-bl-xl text-center">
+                                            <input type="checkbox"
+                                                value="{{ $entry->id }}"
+                                                x-model="selectedEntries"
+                                                class="size-4 rounded border-content-border text-primary focus:ring-primary/20 cursor-pointer"
+                                            >
+                                        </td>
 
                                         @foreach ($fields as $field)
                                             @php
@@ -337,6 +337,18 @@
                                                         </svg>
                                                         <span>Edit</span>
                                                     </button>
+                                                    <form method="POST" action="{{ route('admin.forms.entries.duplicate', [$form, $entry]) }}" class="w-full mb-0">
+                                                        @csrf
+                                                        <button type="submit" role="menuitem"
+                                                            class="flex w-full items-center justify-start gap-2 px-2.5 py-1.5 rounded-lg text-xs font-medium transition-colors text-text-primary hover:bg-body-bg cursor-pointer"
+                                                        >
+                                                            <svg viewBox="0 0 20 20" fill="currentColor" class="size-3.5 shrink-0 text-text-muted">
+                                                                <path d="M7 3.5A1.5 1.5 0 018.5 2h7A1.5 1.5 0 0117 3.5v7a1.5 1.5 0 01-1.5 1.5h-7A1.5 1.5 0 017 10.5v-7z" />
+                                                                <path d="M3 7.5A1.5 1.5 0 014.5 6H5v5.5A2.5 2.5 0 007.5 14H13v.5a1.5 1.5 0 01-1.5 1.5h-7A1.5 1.5 0 013 14.5v-7z" />
+                                                            </svg>
+                                                            <span>Duplicate</span>
+                                                        </button>
+                                                    </form>
                                                     <hr class="my-1 border-content-border">
                                                     <form method="POST" action="{{ route('admin.forms.entries.destroy', [$form, $entry]) }}" class="w-full mb-0">
                                                         @csrf
@@ -424,6 +436,58 @@
                 @endif
             @endif
         </div>
+    </div>
+
+    {{-- Floating Bulk Action Bar --}}
+    <div x-show="selectedEntries.length > 0"
+        x-cloak
+        x-transition:enter="transition ease-out duration-200 transform"
+        x-transition:enter-start="opacity-0 translate-y-4 scale-95"
+        x-transition:enter-end="opacity-100 translate-y-0 scale-100"
+        x-transition:leave="transition ease-in duration-150 transform"
+        x-transition:leave-start="opacity-100 translate-y-0 scale-100"
+        x-transition:leave-end="opacity-0 translate-y-4 scale-95"
+        @keydown.escape.window="selectedEntries = []"
+        class="sticky bottom-6 mx-auto w-fit z-[9999] flex items-center bg-white/95 backdrop-blur-md border border-gray-200/90 shadow-[0_10px_35px_rgba(0,0,0,0.14)] rounded-xl overflow-hidden divide-x divide-gray-200 text-xs font-medium"
+    >
+        {{-- Deselect Segment --}}
+        <button type="button"
+            @click="selectedEntries = []"
+            class="flex items-center gap-2 px-4 py-2.5 text-blue-600 hover:bg-blue-50/80 hover:text-blue-700 transition-colors duration-150 cursor-pointer group"
+        >
+            <span>Deselect <span x-text="selectedEntries.length"></span> item<span x-show="selectedEntries.length > 1">s</span></span>
+            <span class="bg-blue-100/80 group-hover:bg-blue-200/80 text-blue-700 text-[10px] font-bold px-1.5 py-0.5 rounded tracking-wide uppercase transition-colors">ESC</span>
+        </button>
+
+        {{-- Duplicate Segment --}}
+        <form method="POST" action="{{ route('admin.forms.entries.bulk-duplicate', $form) }}" class="mb-0 flex items-center">
+            @csrf
+            <template x-for="id in selectedEntries" :key="id">
+                <input type="hidden" name="ids[]" :value="id">
+            </template>
+            <button type="submit"
+                class="flex items-center gap-2 px-4 py-2.5 text-text-primary hover:bg-gray-100/80 transition-colors duration-150 cursor-pointer group"
+            >
+                <span>Duplicate</span>
+                <span class="bg-gray-100 group-hover:bg-gray-200 text-text-muted text-[10px] font-bold px-1.5 py-0.5 rounded tracking-wide uppercase transition-colors">D</span>
+            </button>
+        </form>
+
+        {{-- Delete Segment --}}
+        <form method="POST" action="{{ route('admin.forms.entries.bulk-destroy', $form) }}" class="mb-0 flex items-center">
+            @csrf
+            @method('DELETE')
+            <template x-for="id in selectedEntries" :key="id">
+                <input type="hidden" name="ids[]" :value="id">
+            </template>
+            <button type="submit"
+                onclick="return confirm('Are you sure you want to delete the selected submission(s)?')"
+                class="flex items-center gap-2 px-4 py-2.5 text-red-600 hover:bg-red-50/90 hover:text-red-700 transition-colors duration-150 cursor-pointer group"
+            >
+                <span>Delete</span>
+                <span class="bg-red-100/80 group-hover:bg-red-200/80 text-red-700 text-[10px] font-bold px-1.5 py-0.5 rounded tracking-wide transition-colors">⌫</span>
+            </button>
+        </form>
     </div>
 </div>
 
@@ -539,7 +603,6 @@
 <script>
     function formEntriesPage() {
         const defaultVisibility = {
-            id: true,
             created: true,
             actions: true,
         };
@@ -560,6 +623,20 @@
             visibleColumns: initialVisibility,
             fields: @js($fields->pluck('name')->toArray()),
             fieldLabels: @js($fields->pluck('label', 'name')->toArray()),
+            selectedEntries: [],
+            allEntryIds: @js($entries->pluck('id')->toArray()),
+
+            get allSelected() {
+                return this.allEntryIds.length > 0 && this.selectedEntries.length === this.allEntryIds.length;
+            },
+
+            toggleSelectAll(e) {
+                if (e.target.checked) {
+                    this.selectedEntries = [...this.allEntryIds];
+                } else {
+                    this.selectedEntries = [];
+                }
+            },
 
             async saveColumnPreferences() {
                 const token = document.querySelector('meta[name="csrf-token"]')?.content
