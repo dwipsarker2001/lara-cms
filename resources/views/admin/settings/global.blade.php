@@ -28,7 +28,7 @@
                     Settings
                 </h1>
                 <div class="flex flex-wrap items-center gap-2 sm:gap-3">
-                    <button type="button" @click="openFieldModal()"
+                    <button type="button" @click="openFieldModal()" x-show="activeTab === 'general'"
                         class="inline-flex items-center justify-center gap-1.5 shrink-0 font-medium cursor-pointer no-underline rounded-lg transition-colors h-10 px-3 bg-white hover:bg-gray-50 text-text-heading shadow-sm border border-gray-200 text-sm">
                         <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="size-4">
                             <path d="M8 3v10M3 8h10" />
@@ -43,160 +43,147 @@
                 </div>
             </header>
 
+            {{-- Settings Navigation Tabs --}}
+            <div class="flex items-center gap-1 border-b border-content-border mb-6 px-2 sm:px-0">
+                <button type="button" @click="activeTab = 'general'"
+                    class="px-4 py-2.5 text-sm font-medium transition-colors border-b-2 cursor-pointer -mb-px"
+                    :class="activeTab === 'general' ? 'border-primary text-primary font-semibold' : 'border-transparent text-text-muted hover:text-text-primary'">
+                    General
+                </button>
+                <button type="button" @click="activeTab = 'recaptcha'"
+                    class="px-4 py-2.5 text-sm font-medium transition-colors border-b-2 cursor-pointer -mb-px"
+                    :class="activeTab === 'recaptcha' ? 'border-primary text-primary font-semibold' : 'border-transparent text-text-muted hover:text-text-primary'">
+                    reCAPTCHA
+                </button>
+            </div>
+
             {{-- Settings Content --}}
             <div class="space-y-6">
-                {{-- General Settings Card --}}
-                <div class="bg-panel-bg rounded-2xl mb-8 p-[7px]">
-                    <div class="px-[18px] pt-3 pb-1 text-sm font-medium text-text-heading">General Settings</div>
-                    <p class="px-[18px] pb-3 text-sm text-text-muted">Configure default preferences for your application.</p>
-                    <div class="px-1.5 pb-2">
-                        <div class="bg-content-bg rounded-xl ring-1 ring-content-border shadow-sm px-3 py-3">
-                            <div>
+                {{-- General Settings Tab Panel --}}
+                <div x-show="activeTab === 'general'">
+                    <div class="bg-panel-bg rounded-2xl mb-8 p-[7px]">
+                        <div class="px-[18px] pt-3 pb-1 text-sm font-medium text-text-heading">General Settings</div>
+                        <p class="px-[18px] pb-3 text-sm text-text-muted">Configure default preferences for your application.</p>
+                        <div class="px-1.5 pb-2">
+                            <div class="bg-content-bg rounded-xl ring-1 ring-content-border shadow-sm px-3 py-3">
+                                <div>
 
-                                {{-- Language --}}
-                                <div class="grid md:grid-cols-2 items-start px-[18px] py-4 gap-y-3 md:gap-y-0 md:gap-x-5 border-b border-content-border">
-                                    <div class="flex flex-col gap-1.5">
-                                        <label class="text-sm font-medium text-text-heading">Language</label>
-                                        <div class="text-sm text-text-muted">The preferred language for the control panel.</div>
-                                    </div>
-                                    <div>
-                                        <div x-data="{
-                                            open: false,
-                                            selected: @js(old('language', $settings->language ?? 'en')),
-                                            options: [
-                                                { value: 'en', label: 'English' },
-                                                { value: 'fr', label: 'French' },
-                                                { value: 'de', label: 'German' },
-                                                { value: 'es', label: 'Spanish' },
-                                                { value: 'nl', label: 'Dutch' }
-                                            ],
-                                            get selectedLabel() {
-                                                return this.options.find(o => o.value === this.selected)?.label ?? 'English';
-                                            },
-                                            select(val) {
-                                                this.selected = val;
-                                                this.open = false;
-                                            }
-                                        }" @click.outside="open = false" @keydown.escape.window="open = false" class="relative">
-                                            <button type="button" @click="open = !open" class="w-full flex items-center justify-between bg-content-bg border border-content-border text-text-primary text-sm rounded-lg px-3 py-2 h-10 cursor-pointer transition-all duration-150 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary shadow-xs">
-                                                <span class="truncate font-medium" x-text="selectedLabel"></span>
-                                                <svg class="size-4 text-text-muted shrink-0 transition-transform duration-150" :class="open ? 'rotate-180 text-primary' : ''" viewBox="0 0 20 20" fill="currentColor">
-                                                    <path fill-rule="evenodd" d="M5.22 8.22a.75.75 0 0 1 1.06 0L10 11.94l3.72-3.72a.75.75 0 1 1 1.06 1.06l-4.25 4.25a.75.75 0 0 1-1.06 0L5.22 9.28a.75.75 0 0 1 0-1.06Z" clip-rule="evenodd" />
-                                                </svg>
-                                            </button>
-                                            <div x-show="open"
-                                                x-transition:enter="transition ease-out duration-100"
-                                                x-transition:enter-start="opacity-0 scale-95"
-                                                x-transition:enter-end="opacity-100 scale-100"
-                                                x-transition:leave="transition ease-in duration-75"
-                                                x-transition:leave-start="opacity-100 scale-100"
-                                                x-transition:leave-end="opacity-0 scale-95"
-                                                class="absolute z-50 top-full mt-1 left-0 right-0 bg-white border border-gray-200 rounded-lg shadow-xl p-1 max-h-60 overflow-y-auto space-y-0.5"
-                                                style="display: none;"
-                                            >
-                                                <template x-for="opt in options" :key="opt.value">
-                                                    <button type="button" @click="select(opt.value)" class="w-full flex items-center justify-between px-3 py-2 text-sm rounded-md transition-colors cursor-pointer" :class="opt.value === selected ? 'bg-primary/10 text-primary font-medium' : 'text-text-primary hover:bg-gray-100'">
-                                                        <span x-text="opt.label"></span>
-                                                        <svg x-show="opt.value === selected" class="size-4 text-primary shrink-0" viewBox="0 0 20 20" fill="currentColor">
-                                                            <path fill-rule="evenodd" d="M16.704 4.153a.75.75 0 0 1 .143 1.052l-8 10.5a.75.75 0 0 1-1.127.075l-4.5-4.5a.75.75 0 0 1 1.06-1.06l3.894 3.893 7.48-9.817a.75.75 0 0 1 1.05-.143Z" clip-rule="evenodd" />
-                                                        </svg>
-                                                    </button>
-                                                </template>
+                                    {{-- Language --}}
+                                    <div class="grid md:grid-cols-2 items-start px-[18px] py-4 gap-y-3 md:gap-y-0 md:gap-x-5 border-b border-content-border">
+                                        <div class="flex flex-col gap-1.5">
+                                            <label class="text-sm font-medium text-text-heading">Language</label>
+                                            <div class="text-sm text-text-muted">The preferred language for the control panel.</div>
+                                        </div>
+                                        <div>
+                                            <div x-data="{
+                                                open: false,
+                                                selected: @js(old('language', $settings->language ?? 'en')),
+                                                options: [
+                                                    { value: 'en', label: 'English' },
+                                                    { value: 'fr', label: 'French' },
+                                                    { value: 'de', label: 'German' },
+                                                    { value: 'es', label: 'Spanish' },
+                                                    { value: 'nl', label: 'Dutch' }
+                                                ],
+                                                get selectedLabel() {
+                                                    return this.options.find(o => o.value === this.selected)?.label ?? 'English';
+                                                },
+                                                select(val) {
+                                                    this.selected = val;
+                                                    this.open = false;
+                                                }
+                                            }" @click.outside="open = false" @keydown.escape.window="open = false" class="relative">
+                                                <button type="button" @click="open = !open" class="w-full flex items-center justify-between bg-content-bg border border-content-border text-text-primary text-sm rounded-lg px-3 py-2 h-10 cursor-pointer transition-all duration-150 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary shadow-xs">
+                                                    <span class="truncate font-medium" x-text="selectedLabel"></span>
+                                                    <svg class="size-4 text-text-muted shrink-0 transition-transform duration-150" :class="open ? 'rotate-180 text-primary' : ''" viewBox="0 0 20 20" fill="currentColor">
+                                                        <path fill-rule="evenodd" d="M5.22 8.22a.75.75 0 0 1 1.06 0L10 11.94l3.72-3.72a.75.75 0 1 1 1.06 1.06l-4.25 4.25a.75.75 0 0 1-1.06 0L5.22 9.28a.75.75 0 0 1 0-1.06Z" clip-rule="evenodd" />
+                                                    </svg>
+                                                </button>
+                                                <div x-show="open"
+                                                    x-transition:enter="transition ease-out duration-100"
+                                                    x-transition:enter-start="opacity-0 scale-95"
+                                                    x-transition:enter-end="opacity-100 scale-100"
+                                                    x-transition:leave="transition ease-in duration-75"
+                                                    x-transition:leave-start="opacity-100 scale-100"
+                                                    x-transition:leave-end="opacity-0 scale-95"
+                                                    class="absolute z-50 top-full mt-1 left-0 right-0 bg-white border border-gray-200 rounded-lg shadow-xl p-1 max-h-60 overflow-y-auto space-y-0.5"
+                                                    style="display: none;"
+                                                >
+                                                    <template x-for="opt in options" :key="opt.value">
+                                                        <button type="button" @click="select(opt.value)" class="w-full flex items-center justify-between px-3 py-2 text-sm rounded-md transition-colors cursor-pointer" :class="opt.value === selected ? 'bg-primary/10 text-primary font-medium' : 'text-text-primary hover:bg-gray-100'">
+                                                            <span x-text="opt.label"></span>
+                                                            <svg x-show="opt.value === selected" class="size-4 text-primary shrink-0" viewBox="0 0 20 20" fill="currentColor">
+                                                                <path fill-rule="evenodd" d="M16.704 4.153a.75.75 0 0 1 .143 1.052l-8 10.5a.75.75 0 0 1-1.127.075l-4.5-4.5a.75.75 0 0 1 1.06-1.06l3.894 3.893 7.48-9.817a.75.75 0 0 1 1.05-.143Z" clip-rule="evenodd" />
+                                                            </svg>
+                                                        </button>
+                                                    </template>
+                                                </div>
+                                                <input type="hidden" name="language" :value="selected">
                                             </div>
-                                            <input type="hidden" name="language" :value="selected">
                                         </div>
                                     </div>
-                                </div>
 
-                                {{-- Currency --}}
-                                <div class="grid md:grid-cols-2 items-start px-[18px] py-4 gap-y-3 md:gap-y-0 md:gap-x-5" :class="fields.length > 0 ? 'border-b border-content-border' : ''">
-                                    <div class="flex flex-col gap-1.5">
-                                        <label class="text-sm font-medium text-text-heading">Currency</label>
-                                        <div class="text-sm text-text-muted">The default currency for your site.</div>
-                                    </div>
-                                    <div>
-                                        <div x-data="{
-                                            open: false,
-                                            selected: @js(old('currency', $settings->currency ?? 'USD')),
-                                            options: [
-                                                { value: 'USD', label: 'USD ($)' },
-                                                { value: 'EUR', label: 'EUR (€)' },
-                                                { value: 'GBP', label: 'GBP (£)' },
-                                                { value: 'BDT', label: 'BDT (৳)' },
-                                                { value: 'INR', label: 'INR (₹)' },
-                                                { value: 'CAD', label: 'CAD (C$)' },
-                                                { value: 'AUD', label: 'AUD (A$)' },
-                                                { value: 'JPY', label: 'JPY (¥)' },
-                                                { value: 'CNY', label: 'CNY (¥)' },
-                                                { value: 'SAR', label: 'SAR (﷼)' },
-                                                { value: 'AED', label: 'AED (د.إ)' }
-                                            ],
-                                            get selectedLabel() {
-                                                return this.options.find(o => o.value === this.selected)?.label ?? 'USD ($)';
-                                            },
-                                            select(val) {
-                                                this.selected = val;
-                                                this.open = false;
-                                            }
-                                        }" @click.outside="open = false" @keydown.escape.window="open = false" class="relative">
-                                            <button type="button" @click="open = !open" class="w-full flex items-center justify-between bg-content-bg border border-content-border text-text-primary text-sm rounded-lg px-3 py-2 h-10 cursor-pointer transition-all duration-150 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary shadow-xs">
-                                                <span class="truncate font-medium" x-text="selectedLabel"></span>
-                                                <svg class="size-4 text-text-muted shrink-0 transition-transform duration-150" :class="open ? 'rotate-180 text-primary' : ''" viewBox="0 0 20 20" fill="currentColor">
-                                                    <path fill-rule="evenodd" d="M5.22 8.22a.75.75 0 0 1 1.06 0L10 11.94l3.72-3.72a.75.75 0 1 1 1.06 1.06l-4.25 4.25a.75.75 0 0 1-1.06 0L5.22 9.28a.75.75 0 0 1 0-1.06Z" clip-rule="evenodd" />
-                                                </svg>
-                                            </button>
-                                            <div x-show="open"
-                                                x-transition:enter="transition ease-out duration-100"
-                                                x-transition:enter-start="opacity-0 scale-95"
-                                                x-transition:enter-end="opacity-100 scale-100"
-                                                x-transition:leave="transition ease-in duration-75"
-                                                x-transition:leave-start="opacity-100 scale-100"
-                                                x-transition:leave-end="opacity-0 scale-95"
-                                                class="absolute z-50 top-full mt-1 left-0 right-0 bg-white border border-gray-200 rounded-lg shadow-xl p-1 max-h-60 overflow-y-auto space-y-0.5"
-                                                style="display: none;"
-                                            >
-                                                <template x-for="opt in options" :key="opt.value">
-                                                    <button type="button" @click="select(opt.value)" class="w-full flex items-center justify-between px-3 py-2 text-sm rounded-md transition-colors cursor-pointer" :class="opt.value === selected ? 'bg-primary/10 text-primary font-medium' : 'text-text-primary hover:bg-gray-100'">
-                                                        <span x-text="opt.label"></span>
-                                                        <svg x-show="opt.value === selected" class="size-4 text-primary shrink-0" viewBox="0 0 20 20" fill="currentColor">
-                                                            <path fill-rule="evenodd" d="M16.704 4.153a.75.75 0 0 1 .143 1.052l-8 10.5a.75.75 0 0 1-1.127.075l-4.5-4.5a.75.75 0 0 1 1.06-1.06l3.894 3.893 7.48-9.817a.75.75 0 0 1 1.05-.143Z" clip-rule="evenodd" />
-                                                        </svg>
-                                                    </button>
-                                                </template>
-                                            </div>
-                                            <input type="hidden" name="currency" :value="selected">
+                                    {{-- Currency --}}
+                                    <div class="grid md:grid-cols-2 items-start px-[18px] py-4 gap-y-3 md:gap-y-0 md:gap-x-5" :class="fields.length > 0 ? 'border-b border-content-border' : ''">
+                                        <div class="flex flex-col gap-1.5">
+                                            <label class="text-sm font-medium text-text-heading">Currency</label>
+                                            <div class="text-sm text-text-muted">The default currency for your site.</div>
                                         </div>
-                                        @error('currency') <p class="text-xs text-danger mt-1">{{ $message }}</p> @enderror
+                                        <div>
+                                            <div x-data="{
+                                                open: false,
+                                                selected: @js(old('currency', $settings->currency ?? 'USD')),
+                                                options: [
+                                                    { value: 'USD', label: 'USD ($)' },
+                                                    { value: 'EUR', label: 'EUR (€)' },
+                                                    { value: 'GBP', label: 'GBP (£)' },
+                                                    { value: 'BDT', label: 'BDT (৳)' },
+                                                    { value: 'INR', label: 'INR (₹)' },
+                                                    { value: 'CAD', label: 'CAD (C$)' },
+                                                    { value: 'AUD', label: 'AUD (A$)' },
+                                                    { value: 'JPY', label: 'JPY (¥)' },
+                                                    { value: 'CNY', label: 'CNY (¥)' },
+                                                    { value: 'SAR', label: 'SAR (﷼)' },
+                                                    { value: 'AED', label: 'AED (د.إ)' }
+                                                ],
+                                                get selectedLabel() {
+                                                    return this.options.find(o => o.value === this.selected)?.label ?? 'USD ($)';
+                                                },
+                                                select(val) {
+                                                    this.selected = val;
+                                                    this.open = false;
+                                                }
+                                            }" @click.outside="open = false" @keydown.escape.window="open = false" class="relative">
+                                                <button type="button" @click="open = !open" class="w-full flex items-center justify-between bg-content-bg border border-content-border text-text-primary text-sm rounded-lg px-3 py-2 h-10 cursor-pointer transition-all duration-150 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary shadow-xs">
+                                                    <span class="truncate font-medium" x-text="selectedLabel"></span>
+                                                    <svg class="size-4 text-text-muted shrink-0 transition-transform duration-150" :class="open ? 'rotate-180 text-primary' : ''" viewBox="0 0 20 20" fill="currentColor">
+                                                        <path fill-rule="evenodd" d="M5.22 8.22a.75.75 0 0 1 1.06 0L10 11.94l3.72-3.72a.75.75 0 0 1-1.06 0L5.22 9.28a.75.75 0 0 1 0-1.06Z" clip-rule="evenodd" />
+                                                    </svg>
+                                                </button>
+                                                <div x-show="open"
+                                                    x-transition:enter="transition ease-out duration-100"
+                                                    x-transition:enter-start="opacity-0 scale-95"
+                                                    x-transition:enter-end="opacity-100 scale-100"
+                                                    x-transition:leave="transition ease-in duration-75"
+                                                    x-transition:leave-start="opacity-100 scale-100"
+                                                    x-transition:leave-end="opacity-0 scale-95"
+                                                    class="absolute z-50 top-full mt-1 left-0 right-0 bg-white border border-gray-200 rounded-lg shadow-xl p-1 max-h-60 overflow-y-auto space-y-0.5"
+                                                    style="display: none;"
+                                                >
+                                                    <template x-for="opt in options" :key="opt.value">
+                                                        <button type="button" @click="select(opt.value)" class="w-full flex items-center justify-between px-3 py-2 text-sm rounded-md transition-colors cursor-pointer" :class="opt.value === selected ? 'bg-primary/10 text-primary font-medium' : 'text-text-primary hover:bg-gray-100'">
+                                                            <span x-text="opt.label"></span>
+                                                            <svg x-show="opt.value === selected" class="size-4 text-primary shrink-0" viewBox="0 0 20 20" fill="currentColor">
+                                                                <path fill-rule="evenodd" d="M16.704 4.153a.75.75 0 0 1 .143 1.052l-8 10.5a.75.75 0 0 1-1.127.075l-4.5-4.5a.75.75 0 0 1 1.06-1.06l3.894 3.893 7.48-9.817a.75.75 0 0 1 1.05-.143Z" clip-rule="evenodd" />
+                                                            </svg>
+                                                        </button>
+                                                    </template>
+                                                </div>
+                                                <input type="hidden" name="currency" :value="selected">
+                                            </div>
+                                            @error('currency') <p class="text-xs text-danger mt-1">{{ $message }}</p> @enderror
+                                        </div>
                                     </div>
-                                </div>
-
-                                {{-- reCAPTCHA Site Key --}}
-                                <div class="grid md:grid-cols-2 items-start px-[18px] py-4 gap-y-3 md:gap-y-0 md:gap-x-5 border-b border-content-border">
-                                    <div class="flex flex-col gap-1.5">
-                                        <label class="text-sm font-medium text-text-heading">reCAPTCHA Site Key</label>
-                                        <div class="text-sm text-text-muted">Google reCAPTCHA v3 public site key for login protection.</div>
-                                    </div>
-                                    <div>
-                                        <input type="text" name="recaptcha_site_key" value="{{ old('recaptcha_site_key', $settings->recaptcha_site_key ?? '') }}"
-                                            placeholder="6L..."
-                                            class="w-full block bg-white border border-gray-300 text-text-primary text-sm rounded-lg px-3 py-2 h-9 font-mono focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary shadow-xs">
-                                        @error('recaptcha_site_key') <p class="text-xs text-danger mt-1">{{ $message }}</p> @enderror
-                                    </div>
-                                </div>
-
-                                {{-- reCAPTCHA Secret Key --}}
-                                <div class="grid md:grid-cols-2 items-start px-[18px] py-4 gap-y-3 md:gap-y-0 md:gap-x-5" :class="fields.length > 0 ? 'border-b border-content-border' : ''">
-                                    <div class="flex flex-col gap-1.5">
-                                        <label class="text-sm font-medium text-text-heading">reCAPTCHA Secret Key</label>
-                                        <div class="text-sm text-text-muted">Google reCAPTCHA v3 private secret key for server verification.</div>
-                                    </div>
-                                    <div>
-                                        <input type="password" name="recaptcha_secret_key" value="{{ old('recaptcha_secret_key', $settings->recaptcha_secret_key ?? '') }}"
-                                            placeholder="6L..."
-                                            class="w-full block bg-white border border-gray-300 text-text-primary text-sm rounded-lg px-3 py-2 h-9 font-mono focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary shadow-xs">
-                                        @error('recaptcha_secret_key') <p class="text-xs text-danger mt-1">{{ $message }}</p> @enderror
-                                    </div>
-                                </div>
 
                                 {{-- Dynamic Custom Inputs in General Settings --}}
                                 <div x-show="fields.length > 0" id="sortable-custom-fields">
@@ -403,6 +390,48 @@
                                     </template>
                                 </div>
 
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                </div> {{-- End General Tab Panel --}}
+
+                {{-- reCAPTCHA Settings Tab Panel --}}
+                <div x-show="activeTab === 'recaptcha'" style="display: none;">
+                    <div class="bg-panel-bg rounded-2xl mb-8 p-[7px]">
+                        <div class="px-[18px] pt-3 pb-1 text-sm font-medium text-text-heading">reCAPTCHA v3 Protection</div>
+                        <p class="px-[18px] pb-3 text-sm text-text-muted">Configure Google reCAPTCHA v3 credentials to protect your admin login page from automated brute-force attacks.</p>
+                        <div class="px-1.5 pb-2">
+                            <div class="bg-content-bg rounded-xl ring-1 ring-content-border shadow-sm px-3 py-3">
+                                <div>
+                                    {{-- reCAPTCHA Site Key --}}
+                                    <div class="grid md:grid-cols-2 items-start px-[18px] py-4 gap-y-3 md:gap-y-0 md:gap-x-5 border-b border-content-border">
+                                        <div class="flex flex-col gap-1.5">
+                                            <label class="text-sm font-medium text-text-heading">reCAPTCHA Site Key</label>
+                                            <div class="text-sm text-text-muted">Google reCAPTCHA v3 public site key for login protection.</div>
+                                        </div>
+                                        <div>
+                                            <input type="text" name="recaptcha_site_key" value="{{ old('recaptcha_site_key', $settings->recaptcha_site_key ?? '') }}"
+                                                placeholder="6L..."
+                                                class="w-full block bg-white border border-gray-300 text-text-primary text-sm rounded-lg px-3 py-2 h-9 font-mono focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary shadow-xs">
+                                            @error('recaptcha_site_key') <p class="text-xs text-danger mt-1">{{ $message }}</p> @enderror
+                                        </div>
+                                    </div>
+
+                                    {{-- reCAPTCHA Secret Key --}}
+                                    <div class="grid md:grid-cols-2 items-start px-[18px] py-4 gap-y-3 md:gap-y-0 md:gap-x-5">
+                                        <div class="flex flex-col gap-1.5">
+                                            <label class="text-sm font-medium text-text-heading">reCAPTCHA Secret Key</label>
+                                            <div class="text-sm text-text-muted">Google reCAPTCHA v3 private secret key for server verification.</div>
+                                        </div>
+                                        <div>
+                                            <input type="password" name="recaptcha_secret_key" value="{{ old('recaptcha_secret_key', $settings->recaptcha_secret_key ?? '') }}"
+                                                placeholder="6L..."
+                                                class="w-full block bg-white border border-gray-300 text-text-primary text-sm rounded-lg px-3 py-2 h-9 font-mono focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary shadow-xs">
+                                            @error('recaptcha_secret_key') <p class="text-xs text-danger mt-1">{{ $message }}</p> @enderror
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -758,6 +787,7 @@
         const initialFields = window.settingsCustomFields || [];
         const initialValues = window.settingsCustomValues || {};
         return {
+            activeTab: 'general',
             fields: (initialFields || []).map(f => ({
                 ...f,
                 template: (f.template || '').replace(/[^a-zA-Z0-9_]+/g, ''),
