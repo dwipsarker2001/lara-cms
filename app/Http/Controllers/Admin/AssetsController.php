@@ -49,11 +49,15 @@ class AssetsController extends Controller
             })->values();
 
         $totalStorageBytes = (int) Asset::where('is_directory', false)->sum('size');
+        $diskTotalBytes = @disk_total_space(storage_path('app/public')) ?: (5 * 1024 * 1024 * 1024);
 
         return response()->json([
             'assets' => $assets,
             'total_storage' => $this->formatSize($totalStorageBytes),
             'total_storage_bytes' => $totalStorageBytes,
+            'capacity_storage' => $this->formatSize($diskTotalBytes),
+            'capacity_storage_bytes' => $diskTotalBytes,
+            'storage_display' => $this->formatSize($totalStorageBytes).' / '.$this->formatSize($diskTotalBytes),
         ]);
     }
 

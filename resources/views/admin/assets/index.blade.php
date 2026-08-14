@@ -491,23 +491,12 @@
                 </template>
             </div>
 
-            {{-- Footer Storage Capacity & Pagination Bar --}}
-            <footer class="flex justify-between flex-wrap items-center gap-3 px-[18px] py-3 border-t border-content-border bg-[#f9fafb]/80 rounded-b-2xl antialiased">
+            {{-- Footer Pagination Bar --}}
+            <footer class="flex justify-between flex-wrap items-center gap-3 px-[18px] py-3 border-t border-content-border rounded-b-2xl antialiased">
                 <div class="flex items-center gap-3 flex-wrap">
                     {{-- Asset Count --}}
                     <div class="text-xs text-text-muted font-medium">
                         <span x-text="filteredAssets.length > 0 ? `${(page - 1) * perPage + 1}\u2013${Math.min(page * perPage, filteredAssets.length)} of ${filteredAssets.length} items` : '0 items'"></span>
-                    </div>
-
-                    {{-- Storage Capacity Gray Badge --}}
-                    <div class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-gray-200/90 border border-gray-300/80 text-xs font-semibold text-gray-700 select-none shadow-2xs">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" class="size-3.5 text-gray-500 shrink-0">
-                            <path d="M21 5H3v4h18V5z" />
-                            <path d="M21 15H3v4h18v-4z" />
-                            <circle cx="6" cy="7" r="1" />
-                            <circle cx="6" cy="17" r="1" />
-                        </svg>
-                        <span>Storage: <strong class="font-bold text-gray-900" x-text="totalStorageFormatted">0 B</strong></span>
                     </div>
                 </div>
 
@@ -523,17 +512,47 @@
                         </button>
                     </div>
 
-                    <div class="flex items-center gap-2 text-xs text-text-muted">
-                        <span>Per Page</span>
-                        <select x-model.number="perPage" @change="page = 1" class="px-2 py-1 bg-white border border-content-border rounded text-text-heading text-xs font-medium focus:ring-0 focus:outline-none cursor-pointer">
-                            <option :value="10">10</option>
-                            <option :value="25">25</option>
-                            <option :value="50">50</option>
-                            <option :value="100">100</option>
-                        </select>
+                    {{-- Modern Per Page Dropdown --}}
+                    <div class="relative shrink-0" x-data="{ open: false }" @click.outside="open = false" @keydown.escape.window="open = false">
+                        <div class="flex items-center gap-2 text-xs text-text-muted font-medium">
+                            <span>Per Page</span>
+                            <button type="button" @click="open = !open"
+                                class="inline-flex items-center justify-between gap-1.5 bg-white border border-content-border text-text-primary text-xs font-semibold rounded-lg px-2.5 py-1 h-7 cursor-pointer transition-all duration-150 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary shadow-2xs">
+                                <span x-text="perPage">10</span>
+                                <svg class="size-3 text-text-muted shrink-0 transition-transform duration-150" :class="open ? 'rotate-180 text-primary' : ''" viewBox="0 0 20 20" fill="currentColor">
+                                    <path fill-rule="evenodd" d="M5.22 8.22a.75.75 0 0 1 1.06 0L10 11.94l3.72-3.72a.75.75 0 1 1 1.06 1.06l-4.25 4.25a.75.75 0 0 1-1.06 0L5.22 9.28a.75.75 0 0 1 0-1.06Z" clip-rule="evenodd" />
+                                </svg>
+                            </button>
+                        </div>
+                        <div x-show="open" x-cloak
+                            x-transition:enter="transition ease-out duration-100"
+                            x-transition:enter-start="opacity-0 scale-95"
+                            x-transition:enter-end="opacity-100 scale-100"
+                            x-transition:leave="transition ease-in duration-75"
+                            x-transition:leave-start="opacity-100 scale-100"
+                            x-transition:leave-end="opacity-0 scale-95"
+                            class="absolute bottom-full right-0 mb-1 z-[100] min-w-[5.5rem] rounded-xl border border-gray-200 bg-white shadow-xl p-1 space-y-0.5"
+                        >
+                            <template x-for="n in [10, 25, 50, 100]" :key="n">
+                                <button type="button" @click="perPage = n; page = 1; open = false"
+                                    class="flex w-full items-center justify-between px-2.5 py-1.5 text-xs rounded-lg transition-colors cursor-pointer"
+                                    :class="perPage === n ? 'bg-primary/10 text-primary font-bold' : 'text-text-primary hover:bg-gray-100'"
+                                >
+                                    <span x-text="n"></span>
+                                    <span x-show="perPage === n" class="font-bold text-primary">✓</span>
+                                </button>
+                            </template>
+                        </div>
                     </div>
                 </div>
             </footer>
+        </div>
+
+        {{-- Storage Used Badge (Outside Assets Panel in Bottom Center) --}}
+        <div class="flex justify-center items-center pt-3 pb-6">
+            <div class="inline-flex items-center px-6 py-2 rounded-full bg-panel-bg border border-content-border text-xs font-medium text-text-heading shadow-xs select-none">
+                <span>Storage Used: <strong class="font-bold text-text-heading" x-text="storageDisplay">0 B / 0 B</strong></span>
+            </div>
         </div>
 
     </div>
@@ -1032,6 +1051,15 @@
             previewTextContent: '',
             loadingPreviewText: false,
             totalStorageApi: '',
+            capacityStorageApi: '',
+            storageDisplayApi: '',
+
+            get storageDisplay() {
+                if (this.storageDisplayApi) return this.storageDisplayApi;
+                const used = this.totalStorageFormatted || '0 B';
+                const total = this.capacityStorageApi || '5 GB';
+                return `${used} / ${total}`;
+            },
 
             get totalStorageFormatted() {
                 if (this.totalStorageApi) return this.totalStorageApi;
@@ -1217,6 +1245,8 @@
                 const data = await res.json();
                 this.assets = data.assets || [];
                 this.totalStorageApi = data.total_storage || '';
+                this.capacityStorageApi = data.capacity_storage || '';
+                this.storageDisplayApi = data.storage_display || '';
                 this.fileAssets = this.assets.filter(a => !a.is_directory);
                 this.loading = false;
             },
