@@ -246,7 +246,7 @@
                                     <th x-show="visibleColumns['created'] !== false" class="whitespace-nowrap px-4 py-3 font-medium text-text-muted text-[12px] border-b border-content-border">
                                         <button @click="sortColumn = 'created'; sortRows()" class="cursor-pointer hover:text-text-heading">Submitted</button>
                                     </th>
-                                    <th x-show="visibleColumns['actions'] !== false" class="whitespace-nowrap px-4 py-3 font-medium text-text-muted text-[12px] border-b border-content-border sticky right-0 bg-[#f9fafb] z-20 text-right rounded-tr-xl">Actions</th>
+                                    <th x-show="visibleColumns['actions'] !== false" class="whitespace-nowrap px-3 py-3 font-medium text-text-muted text-[12px] border-b border-content-border sticky right-0 bg-[#f9fafb] z-20 text-right rounded-tr-xl w-14">Actions</th>
                                 </tr>
                             </thead>
                             <tbody x-ref="tbody">
@@ -289,7 +289,7 @@
                                             @click.outside="open = false"
                                             @keydown.escape.window="open = false"
                                             :class="open ? 'z-50' : 'z-10'"
-                                            class="sticky right-0 bg-white group-hover:bg-[#f9fafb] group-last:rounded-br-xl px-4 py-3 text-right whitespace-nowrap transition-colors border-b border-content-border group-last:border-b-0">
+                                            class="sticky right-0 bg-white group-hover:bg-[#f9fafb] group-last:rounded-br-xl px-3 py-2 text-right whitespace-nowrap transition-colors border-b border-content-border group-last:border-b-0 w-14">
                                             <div class="relative inline-block text-left">
                                                 <button
                                                     type="button"
