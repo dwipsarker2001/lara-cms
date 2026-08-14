@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
+use App\Models\Setting;
 use Illuminate\Auth\Events\Lockout;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -85,7 +86,9 @@ class LoginController extends Controller
      */
     protected function validateRecaptcha(Request $request): void
     {
-        $secretKey = config('services.recaptcha.secret_key');
+        $settings = Setting::first();
+        $secretKey = config('services.recaptcha.secret_key')
+            ?: ($settings->recaptcha_secret_key ?? ($settings->custom_values['recaptcha_secret_key'] ?? null));
 
         if (empty($secretKey) || app()->environment('testing')) {
             return;

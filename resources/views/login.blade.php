@@ -12,8 +12,14 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 
     @vite(['resources/css/app.css', 'resources/js/app.js'])
-    @if(config('services.recaptcha.site_key'))
-        <script src="https://www.google.com/recaptcha/api.js?render={{ config('services.recaptcha.site_key') }}"></script>
+    @php
+        $settingsModel = \App\Models\Setting::first();
+        $recaptchaSiteKey = config('services.recaptcha.site_key')
+            ?: ($settingsModel->recaptcha_site_key ?? ($settingsModel->custom_values['recaptcha_site_key'] ?? null));
+    @endphp
+
+    @if($recaptchaSiteKey)
+        <script src="https://www.google.com/recaptcha/api.js?render={{ $recaptchaSiteKey }}"></script>
         <script>
             document.addEventListener('DOMContentLoaded', function () {
                 const loginForm = document.getElementById('login-form');
@@ -24,7 +30,7 @@
                     if (!responseInput || responseInput.value) return;
 
                     e.preventDefault();
-                    const siteKey = "{{ config('services.recaptcha.site_key') }}";
+                    const siteKey = "{{ $recaptchaSiteKey }}";
                     if (!siteKey || typeof grecaptcha === 'undefined') {
                         loginForm.submit();
                         return;

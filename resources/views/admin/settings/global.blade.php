@@ -170,6 +170,34 @@
                                     </div>
                                 </div>
 
+                                {{-- reCAPTCHA Site Key --}}
+                                <div class="grid md:grid-cols-2 items-start px-[18px] py-4 gap-y-3 md:gap-y-0 md:gap-x-5 border-b border-content-border">
+                                    <div class="flex flex-col gap-1.5">
+                                        <label class="text-sm font-medium text-text-heading">reCAPTCHA Site Key</label>
+                                        <div class="text-sm text-text-muted">Google reCAPTCHA v3 public site key for login protection.</div>
+                                    </div>
+                                    <div>
+                                        <input type="text" name="recaptcha_site_key" value="{{ old('recaptcha_site_key', $settings->recaptcha_site_key ?? '') }}"
+                                            placeholder="6L..."
+                                            class="w-full block bg-white border border-gray-300 text-text-primary text-sm rounded-lg px-3 py-2 h-9 font-mono focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary shadow-xs">
+                                        @error('recaptcha_site_key') <p class="text-xs text-danger mt-1">{{ $message }}</p> @enderror
+                                    </div>
+                                </div>
+
+                                {{-- reCAPTCHA Secret Key --}}
+                                <div class="grid md:grid-cols-2 items-start px-[18px] py-4 gap-y-3 md:gap-y-0 md:gap-x-5" :class="fields.length > 0 ? 'border-b border-content-border' : ''">
+                                    <div class="flex flex-col gap-1.5">
+                                        <label class="text-sm font-medium text-text-heading">reCAPTCHA Secret Key</label>
+                                        <div class="text-sm text-text-muted">Google reCAPTCHA v3 private secret key for server verification.</div>
+                                    </div>
+                                    <div>
+                                        <input type="password" name="recaptcha_secret_key" value="{{ old('recaptcha_secret_key', $settings->recaptcha_secret_key ?? '') }}"
+                                            placeholder="6L..."
+                                            class="w-full block bg-white border border-gray-300 text-text-primary text-sm rounded-lg px-3 py-2 h-9 font-mono focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary shadow-xs">
+                                        @error('recaptcha_secret_key') <p class="text-xs text-danger mt-1">{{ $message }}</p> @enderror
+                                    </div>
+                                </div>
+
                                 {{-- Dynamic Custom Inputs in General Settings --}}
                                 <div x-show="fields.length > 0" id="sortable-custom-fields">
                                     <template x-for="(field, index) in fields" :key="field._key || field.template || index">

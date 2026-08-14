@@ -254,12 +254,14 @@ class CollectionEntryController extends Controller
             $settingsCustomValues['admin_email'] = $settings->admin_email ?? '';
             $settingsCustomValues['language'] = $settings->language ?? '';
             $settingsCustomValues['currency'] = $settings->currency ?? '';
+            $settingsCustomValues['recaptcha_site_key'] = $settings->recaptcha_site_key ?? '';
 
             $settingsFieldsList->put('app_name', ['key' => 'app_name', 'label' => 'Site Name']);
             $settingsFieldsList->put('tagline', ['key' => 'tagline', 'label' => 'Site Tagline']);
             $settingsFieldsList->put('admin_email', ['key' => 'admin_email', 'label' => 'Admin Email']);
             $settingsFieldsList->put('language', ['key' => 'language', 'label' => 'Language']);
             $settingsFieldsList->put('currency', ['key' => 'currency', 'label' => 'Currency']);
+            $settingsFieldsList->put('recaptcha_site_key', ['key' => 'recaptcha_site_key', 'label' => 'reCAPTCHA Site Key']);
 
             if (is_array($settings->custom_fields)) {
                 foreach ($settings->custom_fields as $sf) {

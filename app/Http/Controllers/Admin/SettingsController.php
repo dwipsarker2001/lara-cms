@@ -27,6 +27,16 @@ class SettingsController extends Controller
                     $table->string('language', 10)->default('en')->nullable();
                 });
             }
+            if (! Schema::hasColumn('settings', 'recaptcha_site_key')) {
+                Schema::table('settings', function ($table) {
+                    $table->string('recaptcha_site_key')->nullable();
+                });
+            }
+            if (! Schema::hasColumn('settings', 'recaptcha_secret_key')) {
+                Schema::table('settings', function ($table) {
+                    $table->string('recaptcha_secret_key')->nullable();
+                });
+            }
         }
     }
 
@@ -51,6 +61,8 @@ class SettingsController extends Controller
             'theme_color' => 'nullable|string|max:7',
             'currency' => 'nullable|string|max:10',
             'language' => 'nullable|string|max:10',
+            'recaptcha_site_key' => 'nullable|string|max:255',
+            'recaptcha_secret_key' => 'nullable|string|max:255',
             'logo_light' => 'nullable|string|max:255',
             'logo_dark' => 'nullable|string|max:255',
             'contact_number' => 'nullable|string|max:50',

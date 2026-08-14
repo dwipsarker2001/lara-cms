@@ -26,6 +26,8 @@ class Setting extends Model
         'seo',
         'payment',
         'cms_version',
+        'recaptcha_site_key',
+        'recaptcha_secret_key',
         'custom_fields',
         'custom_values',
     ];
