@@ -43,3 +43,46 @@ test('blog list handles empty thumbnail when entry has no image', function () {
 
     $view->assertSee('Post without Image');
 });
+
+test('blog list resolves map_title slot mapping to slug when configured', function () {
+    $collection = Collection::create(['name' => 'Blog', 'slug' => 'blog']);
+    CollectionEntry::create([
+        'collection_id' => $collection->id,
+        'slug' => 'custom-slug-title-test',
+        'data' => [
+            'title' => 'Original Post Title',
+        ],
+        'published' => true,
+    ]);
+
+    $view = $this->view('blocks.custom.blog-list', [
+        'data' => [
+            'postCollection' => 'blog',
+            'map_title' => 'slug',
+        ],
+    ]);
+
+    $view->assertSee('custom-slug-title-test');
+});
+
+test('blog list resolves map_author slot mapping to created_by when configured', function () {
+    $collection = Collection::create(['name' => 'Blog', 'slug' => 'blog']);
+    CollectionEntry::create([
+        'collection_id' => $collection->id,
+        'slug' => 'created-by-test',
+        'data' => [
+            'title' => 'Post with Created By',
+            'created_by' => 'John Doe',
+        ],
+        'published' => true,
+    ]);
+
+    $view = $this->view('blocks.custom.blog-list', [
+        'data' => [
+            'postCollection' => 'blog',
+            'map_author' => 'created_by',
+        ],
+    ]);
+
+    $view->assertSee('John Doe');
+});

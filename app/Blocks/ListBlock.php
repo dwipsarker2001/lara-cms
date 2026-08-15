@@ -109,16 +109,26 @@ abstract class ListBlock extends Block
             $value = null;
 
             if ($mappedKey !== '') {
-                // Look in entry data first
-                $value = $eData[$mappedKey] ?? null;
+                if ($mappedKey === 'created_at') {
+                    $value = $entry->created_at ? (is_string($entry->created_at) ? $entry->created_at : $entry->created_at->format('M d, Y')) : null;
+                } elseif ($mappedKey === 'updated_at') {
+                    $value = $entry->updated_at ? (is_string($entry->updated_at) ? $entry->updated_at : $entry->updated_at->format('M d, Y')) : null;
+                } elseif ($mappedKey === 'created_by') {
+                    $value = $eData['created_by'] ?? $eData['author'] ?? ($entry->meta['author'] ?? ($entry->created_by ?? ($entry->author ?? (auth('admin')->user()->name ?? 'Admin'))));
+                } elseif ($mappedKey === 'slug') {
+                    $value = $entry->slug ?? null;
+                } else {
+                    // Look in entry data first
+                    $value = $eData[$mappedKey] ?? ($entry->$mappedKey ?? null);
 
-                // Then search section data
-                if ($value === null || $value === '') {
-                    foreach ($sections as $sec) {
-                        $secData = $sec['data'] ?? [];
-                        if (! empty($secData[$mappedKey])) {
-                            $value = $secData[$mappedKey];
-                            break;
+                    // Then search section data
+                    if ($value === null || $value === '') {
+                        foreach ($sections as $sec) {
+                            $secData = $sec['data'] ?? [];
+                            if (! empty($secData[$mappedKey])) {
+                                $value = $secData[$mappedKey];
+                                break;
+                            }
                         }
                     }
                 }
@@ -188,6 +198,10 @@ abstract class ListBlock extends Block
         $options = [
             ['value' => '', 'label' => '-- Not Mapped --', 'collection' => ''],
             ['value' => 'title', 'label' => 'Title', 'collection' => ''],
+            ['value' => 'slug', 'label' => 'Slug', 'collection' => ''],
+            ['value' => 'created_at', 'label' => 'Created At', 'collection' => ''],
+            ['value' => 'updated_at', 'label' => 'Updated At', 'collection' => ''],
+            ['value' => 'created_by', 'label' => 'Created By', 'collection' => ''],
         ];
 
         try {
@@ -207,7 +221,7 @@ abstract class ListBlock extends Block
                     }
 
                     foreach ($fields as $f) {
-                        $key = $f['template'] ?? $f['_key'] ?? null;
+                        $key = $f['template'] ?? $f['key'] ?? $f['name'] ?? $f['_key'] ?? null;
                         if (! $key) {
                             continue;
                         }

@@ -138,15 +138,26 @@ abstract class Block
                 if ($source !== '') {
                     $entryValue = $entryData[$source] ?? ($page->$source ?? null);
                     if ($entryValue === null || $entryValue === '') {
-                        $settings = Setting::first();
-                        if ($settings) {
-                            $customValues = is_array($settings->custom_values) ? $settings->custom_values : [];
-                            if (array_key_exists($source, $customValues)) {
-                                $entryValue = $customValues[$source];
-                            } elseif (isset($settings->$source)) {
-                                $entryValue = $settings->$source;
+                        if ($source === 'created_by') {
+                            $eData = is_array($entryData) ? $entryData : [];
+                            $entryValue = $eData['created_by'] ?? $eData['author'] ?? (is_object($page) ? ($page->data['created_by'] ?? $page->data['author'] ?? ($page->meta['author'] ?? ($page->created_by ?? ($page->author ?? null)))) : null);
+                            if (empty($entryValue)) {
+                                $entryValue = auth('admin')->user()->name ?? 'Admin';
+                            }
+                        } else {
+                            $settings = Setting::first();
+                            if ($settings) {
+                                $customValues = is_array($settings->custom_values) ? $settings->custom_values : [];
+                                if (array_key_exists($source, $customValues)) {
+                                    $entryValue = $customValues[$source];
+                                } elseif (isset($settings->$source)) {
+                                    $entryValue = $settings->$source;
+                                }
                             }
                         }
+                    }
+                    if ($entryValue instanceof \DateTimeInterface) {
+                        $entryValue = $entryValue->format('M d, Y');
                     }
                     if ($entryValue !== null && $entryValue !== '') {
                         if (is_array($entryValue) && ($field['type'] ?? '') !== 'object' && ($field['type'] ?? '') !== 'location') {

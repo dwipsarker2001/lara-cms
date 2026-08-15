@@ -5,7 +5,7 @@
     $searchQuery = request()->query('search');
     $perPage = max(1, (int) ($d['postsPerPage'] ?? 6));
     $layout = $d['layout'] ?? 'grid';
-    $selectedCollection = $d['postCollection'] ?? null;
+    $selectedCollection = $d['listCollection'] ?? $d['postCollection'] ?? null;
 
     $posts = collect();
     $sidebarCategories = [];
@@ -70,99 +70,18 @@
             ->take($perPage)
             ->get();
 
-        $posts = $entries->map(function ($entry) {
-            $eData = $entry->data ?? [];
-            $image = $eData['featured_image']
-                ?? $eData['image']
-                ?? $eData['hero_image']
-                ?? $eData['socialImage']
-                ?? $eData['banner_img']
-                ?? $eData['cover_image']
-                ?? $eData['thumbnail']
-                ?? $eData['thumb']
-                ?? $entry->meta['featured_image']
-                ?? $entry->meta['image']
-                ?? null;
+        $blockInstance = new \App\Blocks\custom\BlogList();
+        $posts = $entries->map(function ($entry) use ($blockInstance, $d) {
+            $card = $blockInstance->resolveCard($entry, $d);
+            $card->id = $entry->id;
+            $card->slug = $entry->slug;
+            $card->link = $entry->route();
+            $card->dt = $entry->created_at ?? now();
+            $card->date = ! empty($card->date) ? $card->date : ($entry->created_at ? $entry->created_at->format('M d, Y') : 'Recent');
+            $card->categoryName = $card->category ?: null;
+            $card->body = $entry->data['content'] ?? $card->excerpt ?? '';
 
-            if (empty($image) && ! empty($entry->sections)) {
-                foreach ($entry->sections as $sec) {
-                    $secImg = $sec['data']['featured_image']
-                        ?? $sec['data']['image']
-                        ?? $sec['data']['hero_image']
-                        ?? null;
-                    if (! empty($secImg)) {
-                        $image = $secImg;
-                        break;
-                    }
-                }
-            }
-
-            $title = $eData['title'] ?? $entry->title ?? 'Untitled Post';
-
-            // Resolve description/excerpt from entry fields, meta, or page sections
-            $rawDescription = $eData['excerpt']
-                ?? $eData['description']
-                ?? $eData['summary']
-                ?? $eData['content']
-                ?? $eData['body']
-                ?? $entry->meta['metaDescription']
-                ?? null;
-
-            if (empty($rawDescription) && ! empty($entry->sections)) {
-                foreach ($entry->sections as $sec) {
-                    if (! empty($sec['data']['content'])) {
-                        $rawDescription = $sec['data']['content'];
-                        break;
-                    }
-                    if (! empty($sec['data']['description'])) {
-                        $rawDescription = $sec['data']['description'];
-                        break;
-                    }
-                }
-            }
-
-            $excerpt = ! empty($rawDescription)
-                ? \Illuminate\Support\Str::limit(\Illuminate\Support\Str::squish(strip_tags($rawDescription)), 140)
-                : '';
-
-            $author = $entry->meta['author'] ?? $eData['author'] ?? 'Admin';
-            $date = $entry->created_at ? $entry->created_at->format('M d, Y') : 'Recent';
-            $dt = $entry->created_at ?? now();
-
-            $catVal = $eData['category'] ?? null;
-            $catName = null;
-            if ($catVal) {
-                $cIds = [];
-                if (is_array($catVal)) {
-                    $cIds = $catVal;
-                } elseif (is_string($catVal) && (str_starts_with(trim($catVal), '[') || str_starts_with(trim($catVal), '{'))) {
-                    $decoded = json_decode($catVal, true);
-                    $cIds = is_array($decoded) ? $decoded : [$catVal];
-                } else {
-                    $cIds = [$catVal];
-                }
-                $cIds = array_filter(array_map('strval', $cIds));
-
-                $catName = \App\Models\Term::whereIn('id', $cIds)->value('title')
-                    ?? \App\Models\Taxonomy::whereIn('id', $cIds)->value('title')
-                    ?? \App\Models\Term::whereIn('slug', $cIds)->value('title')
-                    ?? \App\Models\Taxonomy::whereIn('slug', $cIds)->value('title')
-                    ?? (is_string($catVal) ? $catVal : null);
-            }
-
-            return (object) [
-                'id' => $entry->id,
-                'slug' => $entry->slug,
-                'link' => $entry->route(),
-                'title' => $title,
-                'excerpt' => $excerpt,
-                'image' => $image,
-                'author' => $author,
-                'date' => $date,
-                'dt' => $dt,
-                'categoryName' => $catName,
-                'body' => $eData['content'] ?? $rawDescription ?? '',
-            ];
+            return $card;
         });
 
         $sidebarCategories = \App\Support\BlogSidebarData::getCategories($selectedCollection);
@@ -209,7 +128,34 @@
     };
 @endphp
 
-<section data-block="blogList">
+<section data-block="blogList"
+         x-data="{
+             fetchBlogResults(targetUrl) {
+                 const container = document.getElementById('blog-posts-container');
+                 if (container) {
+                     container.classList.add('opacity-50', 'pointer-events-none');
+                 }
+                 window.history.replaceState({}, '', targetUrl);
+                 fetch(targetUrl, {
+                     headers: { 'X-Requested-With': 'XMLHttpRequest' }
+                 })
+                 .then(r => r.text())
+                 .then(html => {
+                     const parser = new DOMParser();
+                     const doc = parser.parseFromString(html, 'text/html');
+                     const newContainer = doc.getElementById('blog-posts-container');
+                     if (container && newContainer) {
+                         container.innerHTML = newContainer.innerHTML;
+                     }
+                 })
+                 .catch(err => console.error('Blog fetch error:', err))
+                 .finally(() => {
+                     if (container) {
+                         container.classList.remove('opacity-50', 'pointer-events-none');
+                     }
+                 });
+             }
+         }">
     {{-- Content --}}
     <div class="mx-auto max-w-7xl px-6 py-16">
         @if($categoryTag)
@@ -217,7 +163,9 @@
                 <span class="text-gray-600">Filtering by:</span>
                 <span class="inline-flex items-center gap-1 bg-brand text-white px-3 py-1 rounded text-sm">
                     {{ $categoryTag }}
-                    <a href="{{ $buildUrl(['category' => null, 'page' => null]) }}" class="hover:bg-brand-hover rounded p-0.5" aria-label="Clear filter">
+                    <a href="{{ $buildUrl(['category' => null, 'page' => null]) }}"
+                       @click.prevent="fetchBlogResults($el.href)"
+                       class="hover:bg-brand-hover rounded p-0.5" aria-label="Clear filter">
                         <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M18 6L6 18M6 6l12 12"/></svg>
                     </a>
                 </span>
@@ -226,7 +174,7 @@
 
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-10">
             {{-- Posts column --}}
-            <div class="lg:col-span-2">
+            <div id="blog-posts-container" class="lg:col-span-2 transition-opacity duration-200">
                 @if($posts->isEmpty())
                     <p class="text-gray-500 text-center py-12">{{ $searchQuery ? 'No posts match your search.' : 'No posts found.' }}</p>
                 @else
@@ -351,6 +299,7 @@
                         <nav aria-label="Blog pagination" class="mt-14 flex flex-col items-center gap-4">
                             <div class="flex items-center justify-center gap-1.5 sm:gap-2">
                                 <a href="{{ $buildUrl(['page' => $currentPage - 1]) }}"
+                                   @click.prevent="fetchBlogResults($el.href)"
                                    class="inline-flex h-10 items-center justify-center gap-1 rounded-full border border-gray-200 bg-white px-3 text-sm font-medium text-gray-700 transition-all hover:border-brand hover:text-brand {{ $currentPage <= 1 ? 'pointer-events-none opacity-40' : '' }}"
                                    aria-label="Previous page">
                                     <svg class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6"/></svg>
@@ -362,14 +311,16 @@
                                         <span class="px-1 text-sm text-gray-400">…</span>
                                     @else
                                         <a href="{{ $buildUrl(['page' => $b]) }}"
+                                           @click.prevent="fetchBlogResults($el.href)"
                                            aria-current="{{ $b === $currentPage ? 'page' : '' }}"
                                            class="inline-flex h-10 w-10 items-center justify-center rounded-full text-sm font-semibold transition-all duration-200 {{ $b === $currentPage ? 'scale-105 bg-gradient-to-br from-brand to-brand-hover text-white shadow-md shadow-brand/30' : 'border border-gray-200 bg-white text-gray-700 hover:border-brand hover:text-brand' }}">
-                                            {{ str_pad($b, 2, '0', STR_PAD_LEFT) }}
+                                            {{ $b }}
                                         </a>
                                     @endif
                                 @endforeach
 
                                 <a href="{{ $buildUrl(['page' => $currentPage + 1]) }}"
+                                   @click.prevent="fetchBlogResults($el.href)"
                                    class="inline-flex h-10 items-center justify-center gap-1 rounded-full border border-gray-200 bg-white px-3 text-sm font-medium text-gray-700 transition-all hover:border-brand hover:text-brand {{ $currentPage >= $totalPages ? 'pointer-events-none opacity-40' : '' }}"
                                    aria-label="Next page">
                                     <span class="hidden sm:inline">Next</span>
@@ -387,7 +338,6 @@
                 @endif
             </div>
 
-            {{-- Sidebar --}}
             <aside class="space-y-8 lg:sticky lg:top-24 lg:self-start">
                 {{-- Search --}}
                 <div>
@@ -395,7 +345,9 @@
                         <svg class="h-4 w-4 text-brand" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
                         Search Here
                     </h3>
-                    <form method="GET" action="{{ url()->current() }}" class="group relative">
+                    <form method="GET" action="{{ url()->current() }}"
+                          @submit.prevent="fetchBlogResults($el.action + '?' + new URLSearchParams(new FormData($el)).toString())"
+                          class="group relative">
                         @if($categoryTag)
                             <input type="hidden" name="category" value="{{ $categoryTag }}">
                         @endif
@@ -404,6 +356,7 @@
                         <svg class="pointer-events-none absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400 transition-colors group-focus-within:text-brand" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
                         @if(request()->query('search'))
                             <a href="{{ $buildUrl(['search' => null, 'page' => null]) }}"
+                               @click.prevent="fetchBlogResults($el.href)"
                                class="absolute right-9 top-1/2 -translate-y-1/2 rounded-full p-0.5 text-gray-400 transition-colors hover:bg-gray-100 hover:text-gray-600"
                                aria-label="Clear search">
                                 <svg class="h-3.5 w-3.5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M18 6L6 18M6 6l12 12"/></svg>
@@ -426,12 +379,13 @@
                             @endphp
                             <li>
                                 <a href="{{ $buildUrl(['category' => $active ? null : $catSlug, 'page' => null]) }}"
+                                   @click.prevent="fetchBlogResults($el.href)"
                                    class="flex w-full items-center justify-between rounded-lg px-3 py-2 text-sm transition-all duration-200 {{ $active ? 'bg-brand text-white shadow-sm shadow-brand/20' : 'text-gray-700 hover:bg-brand/5 hover:text-brand' }}">
                                     <span class="flex items-center gap-2.5">
                                         <span class="h-2 w-2 rounded-full transition-all {{ $active ? 'bg-white scale-110' : 'bg-gray-300' }}"></span>
                                         {{ $cat['name'] }}
                                     </span>
-                                    <span class="text-xs font-mono opacity-80">({{ $cat['count'] }})</span>
+                                    <span class="text-xs font-mono opacity-80">{{ $cat['count'] }}</span>
                                 </a>
                             </li>
                         @empty
@@ -443,7 +397,7 @@
                 {{-- Recent Posts --}}
                 <div>
                     <h3 class="mb-4 flex items-center gap-2 text-base font-bold tracking-tight text-gray-900">
-                        <svg class="h-4 w-4 text-brand" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                        <svg class="h-4 w-4 text-brand" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 16 14"/></svg>
                         Recent Post
                     </h3>
                     <div class="space-y-4 rounded-xl border border-gray-100 bg-white p-4 shadow-sm">
@@ -485,6 +439,7 @@
                         @forelse($sidebarTags as $tag)
                             @php $active = $categoryTag === $tag; @endphp
                             <a href="{{ $buildUrl(['category' => $active ? null : $tag, 'page' => null]) }}"
+                               @click.prevent="fetchBlogResults($el.href)"
                                class="rounded-full border px-3.5 py-1.5 text-xs font-medium transition-all duration-200 {{ $active ? 'border-brand bg-brand text-white shadow-sm shadow-brand/20' : 'border-gray-200 bg-white text-gray-600 hover:border-brand hover:bg-brand/5 hover:text-brand' }}">
                                 {{ $tag }}
                             </a>

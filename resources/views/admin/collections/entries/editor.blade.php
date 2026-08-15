@@ -12,7 +12,7 @@
     window.editorSlug = '{{ Str::slug($entry->title) }}';
     window.editorPages = @json($pages);
     window.editorHomeGlobals = @json($homeGlobals);
-    window.editorEntryData = @json($entry->data ?? []);
+    window.editorEntryData = @json($entryData ?? (object)[]);
     window.editorCollectionFields = @json($collectionFields ?? []);
     window.editorGroupedCollectionFields = @json($groupedCollectionFields ?? []);
     window.editorSettingsCustomValues = @json($settingsCustomValues ?? (object)[]);

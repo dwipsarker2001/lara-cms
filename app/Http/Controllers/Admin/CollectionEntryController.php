@@ -160,6 +160,22 @@ class CollectionEntryController extends Controller
                 'key' => 'title',
                 'label' => 'Title',
             ],
+            'slug' => [
+                'key' => 'slug',
+                'label' => 'Slug',
+            ],
+            'created_at' => [
+                'key' => 'created_at',
+                'label' => 'Created At',
+            ],
+            'updated_at' => [
+                'key' => 'updated_at',
+                'label' => 'Updated At',
+            ],
+            'created_by' => [
+                'key' => 'created_by',
+                'label' => 'Created By',
+            ],
         ]);
         $excludedKeys = [];
 
@@ -209,6 +225,22 @@ class CollectionEntryController extends Controller
                     'title' => [
                         'key' => 'title',
                         'label' => 'Title',
+                    ],
+                    'slug' => [
+                        'key' => 'slug',
+                        'label' => 'Slug',
+                    ],
+                    'created_at' => [
+                        'key' => 'created_at',
+                        'label' => 'Created At',
+                    ],
+                    'updated_at' => [
+                        'key' => 'updated_at',
+                        'label' => 'Updated At',
+                    ],
+                    'created_by' => [
+                        'key' => 'created_by',
+                        'label' => 'Created By',
                     ],
                 ]);
                 if (is_array($otherCol->fields)) {
@@ -287,9 +319,18 @@ class CollectionEntryController extends Controller
         $collectionFields = $entryCustomFields->values()->all();
         $groupedCollectionFields = $allGroupedFields->all();
 
+        $entryData = array_merge([
+            'title' => $entry->title,
+            'slug' => $entry->slug ?? '',
+            'created_at' => ! empty($entry->created_at) ? (is_string($entry->created_at) ? $entry->created_at : $entry->created_at->format('M d, Y')) : '',
+            'updated_at' => ! empty($entry->updated_at) ? (is_string($entry->updated_at) ? $entry->updated_at : $entry->updated_at->format('M d, Y')) : '',
+            'created_by' => $entry->data['created_by'] ?? $entry->data['author'] ?? ($entry->meta['author'] ?? (auth('admin')->check() ? auth('admin')->user()->name : 'Admin')),
+        ], is_array($entry->data) ? $entry->data : []);
+
         return view('admin.collections.entries.editor', [
             'collection' => $collection,
             'entry' => $entry,
+            'entryData' => $entryData,
             'blockSchemas' => $registry->schemas(),
             'homeGlobals' => $homeGlobals,
             'blockList' => $blockList,
