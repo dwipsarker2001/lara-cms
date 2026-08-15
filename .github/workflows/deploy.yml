@@ -1,9 +1,11 @@
-name: Laravel Deploy
+name: Laravel Deploy (Disabled)
 
-on:
-  push:
-    branches:
-      - main
+# Disabled automated deployment because server instance is stopped
+# on:
+#   push:
+#     branches:
+#       - main
+on: workflow_dispatch
 
 jobs:
   deploy:
