@@ -72,3 +72,35 @@ test('Field::background returns a structured object field with image, color, opa
     expect($bg['type'])->toBe('object');
     expect(array_column($bg['fields'], 'name'))->toBe(['image', 'color', 'opacity']);
 });
+
+test('Field::map returns a map field array', function () {
+    $field = Field::map('mapImage', 'Map Image', default: 'https://maps.example.com');
+
+    expect($field['type'])->toBe('map');
+    expect($field['name'])->toBe('mapImage');
+    expect($field['label'])->toBe('Map Image');
+    expect($field['defaultValue'])->toBe('https://maps.example.com');
+});
+
+test('Block::parseMapValue resolves iframe tags, share links, embed URLs and image assets', function () {
+    $iframeTag = '<iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12..." width="600" height="450"></iframe>';
+    $shareLink = 'https://maps.app.goo.gl/YZTtmrA8dA1ok9Hz9';
+    $embedUrl = 'https://www.google.com/maps/embed?pb=!1m18!...';
+    $imagePath = '/uploads/map-sylhet.jpg';
+
+    $parsedIframe = Block::parseMapValue($iframeTag);
+    expect($parsedIframe['type'])->toBe('iframe');
+    expect($parsedIframe['url'])->toBe('https://www.google.com/maps/embed?pb=!1m18!1m12...');
+
+    $parsedShare = Block::parseMapValue($shareLink);
+    expect($parsedShare['type'])->toBe('iframe');
+    expect($parsedShare['url'])->toContain('https://maps.google.com/maps?q=https%3A%2F%2Fmaps.app.goo.gl');
+
+    $parsedEmbed = Block::parseMapValue($embedUrl);
+    expect($parsedEmbed['type'])->toBe('iframe');
+    expect($parsedEmbed['url'])->toBe($embedUrl);
+
+    $parsedImage = Block::parseMapValue($imagePath);
+    expect($parsedImage['type'])->toBe('image');
+    expect($parsedImage['url'])->toBe($imagePath);
+});

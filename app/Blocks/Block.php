@@ -177,6 +177,42 @@ abstract class Block
         return $data;
     }
 
+    /**
+     * Parse any map input (Google Maps share link, iframe tag HTML snippet, direct embed URL, or image URL)
+     * into a normalized rendering array.
+     *
+     * @return array{type: 'iframe'|'image'|'empty', url: string}
+     */
+    public static function parseMapValue(?string $value): array
+    {
+        $value = trim($value ?? '');
+        if ($value === '') {
+            return ['type' => 'empty', 'url' => ''];
+        }
+
+        // 1. Raw <iframe> tag pasted by user
+        if (preg_match('/<iframe[^>]+src=["\']([^"\']+)["\']/i', $value, $matches)) {
+            $src = html_entity_decode($matches[1]);
+
+            return ['type' => 'iframe', 'url' => $src];
+        }
+
+        // 2. Google Maps share links (maps.app.goo.gl, goo.gl/maps, google.com/maps/place, etc.)
+        if (preg_match('/(maps\.app\.goo\.gl|goo\.gl\/maps|google\.com\/maps\/place)/i', $value)) {
+            if (! str_contains($value, 'output=embed') && ! str_contains($value, '/embed')) {
+                return ['type' => 'iframe', 'url' => 'https://maps.google.com/maps?q='.urlencode($value).'&output=embed'];
+            }
+        }
+
+        // 3. Direct embed URLs (google.com/maps, openstreetmap.org, output=embed)
+        if (str_contains($value, 'google.com/maps') || str_contains($value, 'openstreetmap.org') || str_contains($value, 'output=embed')) {
+            return ['type' => 'iframe', 'url' => $value];
+        }
+
+        // 4. Fallback to image URL or asset
+        return ['type' => 'image', 'url' => $value];
+    }
+
     /** Serializable shape handed to the admin editor (JSON). */
     public function toArray(): array
     {

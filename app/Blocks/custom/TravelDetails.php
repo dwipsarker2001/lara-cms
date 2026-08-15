@@ -76,7 +76,7 @@ class TravelDetails extends Block
 
             // ── Destination Map ──
             Field::string('mapTitle', 'Map Title', default: 'Package Destination Map'),
-            Field::image('mapImage', 'Map Image'),
+            Field::map('mapImage', 'Map Image'),
 
             // ── Features (Include / Exclude) ──
             Field::string('featuresTitle', 'Features Title', default: 'Package Features List'),

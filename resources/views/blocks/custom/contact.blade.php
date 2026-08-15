@@ -41,18 +41,25 @@
         @endif
 
         @if($d['mapEmbedUrl'] ?? false)
+            @php
+                $mapInfo = \App\Blocks\Block::parseMapValue($d['mapEmbedUrl'] ?? '');
+            @endphp
             <div data-edit="mapEmbedUrl" class="w-full rounded-xl mb-14 shadow-md overflow-hidden">
                 <div class="relative w-full h-[420px] max-sm:h-[300px]">
-                    <iframe
-                        src="{{ $d['mapEmbedUrl'] }}"
-                        class="absolute inset-0 w-full h-full"
-                        style="border:0"
-                        allowfullscreen
-                        loading="lazy"
-                        referrerpolicy="no-referrer-when-downgrade"
-                        title="Office Location"
-                        aria-label="Office Location Map"
-                    ></iframe>
+                    @if($mapInfo['type'] === 'iframe')
+                        <iframe
+                            src="{{ $mapInfo['url'] }}"
+                            class="absolute inset-0 w-full h-full"
+                            style="border:0"
+                            allowfullscreen
+                            loading="lazy"
+                            referrerpolicy="no-referrer-when-downgrade"
+                            title="Office Location"
+                            aria-label="Office Location Map"
+                        ></iframe>
+                    @elseif($mapInfo['type'] === 'image' && !empty($mapInfo['url']))
+                        <img src="{{ $mapInfo['url'] }}" alt="Office Location Map" class="absolute inset-0 w-full h-full object-cover">
+                    @endif
                 </div>
             </div>
         @endif

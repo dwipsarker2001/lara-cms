@@ -710,7 +710,157 @@
                                             >Remove icon</button>
                                         </template>
                                     </div>
-                                </template>                                 {{-- rich-text (TipTap WYSIWYG) --}}
+                                </template>
+
+                                {{-- map --}}
+                                <template x-if="field.type === 'map'">
+                                    <div x-data="{ showSourcePicker: false }">
+                                        <div class="flex items-center justify-between mb-1">
+                                            <label class="block text-sm font-semibold text-text-primary" x-text="field.label"></label>
+                                            
+                                            {{-- Visual Source Selector Link Button & Popover --}}
+                                            <div class="relative">
+                                                <button type="button" @click="showSourcePicker = !showSourcePicker"
+                                                    class="flex items-center gap-1 px-1.5 py-0.5 text-xs font-medium rounded transition-colors"
+                                                    :class="isSourceField(field.name) ? 'bg-primary/10 text-primary border border-primary/20' : 'text-gray-400 hover:text-gray-600 hover:bg-gray-100'"
+                                                    :title="isSourceField(field.name) ? 'Linked to field: ' + getSourceKey(field.name) : 'Link to Collection Field'"
+                                                >
+                                                    <svg class="size-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                                        <path stroke-linecap="round" stroke-linejoin="round" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"/>
+                                                    </svg>
+                                                    <span x-text="isSourceField(field.name) ? getSourceKey(field.name) : 'Link'"></span>
+                                                </button>
+
+                                                <div x-show="showSourcePicker" @click.outside="showSourcePicker = false"
+                                                    class="absolute right-0 z-30 mt-1 min-w-[240px] rounded-xl border border-gray-200 bg-white py-1 shadow-xl ring-1 ring-black/5 text-xs"
+                                                    x-transition
+                                                >
+                                                    <div class="px-3 py-1.5 border-b border-gray-100 flex items-center justify-between font-semibold text-xs text-gray-700">
+                                                        <span>Bind Input</span>
+                                                        <template x-if="isSourceField(field.name)">
+                                                            <button type="button" @click="clearFieldSource(field.name); showSourcePicker = false"
+                                                                class="inline-flex items-center gap-1 text-red-500 hover:text-red-700 text-[11px] font-medium transition-colors cursor-pointer"
+                                                                title="Unlink field"
+                                                            >
+                                                                <svg class="size-3 shrink-0" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
+                                                                    <path d="m18.84 12.25 1.72-1.71h0a5 5 0 0 0-.7-7.07l-.14-.13a5 5 0 0 0-7.07 0l-1.72 1.71"/>
+                                                                    <path d="m5.16 11.75-1.72 1.71h0a5 5 0 0 0 .7 7.07l.14.13a5 5 0 0 0 7.07 0l1.72-1.71"/>
+                                                                    <line x1="2" y1="2" x2="22" y2="22"/>
+                                                                </svg>
+                                                                <span>Unlink</span>
+                                                            </button>
+                                                        </template>
+                                                    </div>
+
+                                                    <template x-if="(groupedCollectionFields || []).length > 1">
+                                                        <div class="px-3 py-1.5 border-b border-gray-100 bg-gray-50/70">
+                                                            <div class="relative" x-data="{ groupPickerOpen: false }">
+                                                                <button type="button" @click="groupPickerOpen = !groupPickerOpen"
+                                                                    class="w-full flex items-center justify-between gap-2 rounded-lg border border-gray-200 bg-white px-2.5 py-1.5 text-xs font-medium text-gray-700 transition-colors hover:border-gray-300 focus:outline-none focus:ring-1 focus:ring-primary focus:border-primary cursor-pointer"
+                                                                    :class="groupPickerOpen ? 'border-primary ring-1 ring-primary' : ''"
+                                                                >
+                                                                    <span class="truncate" x-text="(groupedCollectionFields.find(g => g.collection_id == selectedCollectionGroup) || groupedCollectionFields[0])?.name || 'Select collection'"></span>
+                                                                    <svg class="size-3.5 shrink-0 text-gray-400 transition-transform duration-200" :class="groupPickerOpen ? 'rotate-180' : ''" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
+                                                                        <path d="m6 9 6 6 6-6"/>
+                                                                    </svg>
+                                                                </button>
+
+                                                                <div x-show="groupPickerOpen" @click.outside="groupPickerOpen = false"
+                                                                    class="absolute inset-x-0 top-full z-40 mt-1 max-h-48 overflow-y-auto rounded-lg border border-gray-200 bg-white py-1 shadow-xl ring-1 ring-black/5"
+                                                                    x-transition
+                                                                >
+                                                                    <template x-for="group in groupedCollectionFields" :key="'g_' + group.collection_id">
+                                                                        <button type="button" @click="selectedCollectionGroup = group.collection_id; groupPickerOpen = false"
+                                                                            class="w-full flex items-center justify-between px-2.5 py-1.5 text-left text-xs transition-colors cursor-pointer"
+                                                                            :class="selectedCollectionGroup == group.collection_id ? 'bg-primary/10 text-primary font-bold' : 'text-gray-700 hover:bg-gray-50'"
+                                                                        >
+                                                                            <span class="truncate pr-2" x-text="group.name"></span>
+                                                                            <svg x-show="selectedCollectionGroup == group.collection_id" class="size-3.5 shrink-0" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
+                                                                                <path d="M20 6 9 17l-5-5"/>
+                                                                            </svg>
+                                                                        </button>
+                                                                    </template>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </template>
+
+                                                    <div class="max-h-48 overflow-y-auto py-1">
+                                                        <template x-for="group in (groupedCollectionFields || [])" :key="group.collection_id">
+                                                            <div x-show="(groupedCollectionFields || []).length <= 1 || selectedCollectionGroup == group.collection_id">
+                                                                <template x-for="cf in group.fields" :key="group.collection_id + '_' + cf.key">
+                                                                    <button type="button" @click="setFieldSource(field.name, cf.key); showSourcePicker = false"
+                                                                        class="w-full flex items-center justify-between px-3 py-1.5 text-left text-xs transition-colors cursor-pointer"
+                                                                        :class="getSourceKey(field.name) === cf.key ? 'bg-primary/10 text-primary font-bold' : 'text-gray-700 hover:bg-gray-50'"
+                                                                    >
+                                                                        <span class="truncate pr-2" x-text="cf.label"></span>
+                                                                        <span class="text-[10px] font-mono text-gray-400 shrink-0" x-text="cf.key"></span>
+                                                                    </button>
+                                                                </template>
+                                                            </div>
+                                                        </template>
+                                                        <template x-if="(!groupedCollectionFields || groupedCollectionFields.length === 0)">
+                                                            <div class="px-3 py-2 text-gray-400 italic text-center text-xs">No entry fields available</div>
+                                                        </template>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <template x-if="isSourceField(field.name)">
+                                            <input type="text" :value="getField(field.name)" disabled
+                                                class="w-full rounded-lg border border-primary/30 bg-primary/5 px-3 py-2 text-sm text-text-primary cursor-not-allowed opacity-75">
+                                        </template>
+
+                                        <template x-if="!isSourceField(field.name)">
+                                            <div class="space-y-2">
+                                                <div class="flex gap-1.5">
+                                                    <input type="text" :value="getField(field.name)" @input="setField(field.name, $event.target.value)"
+                                                        :data-field-target="field.name"
+                                                        placeholder="Map Image URL or Google Maps embed URL"
+                                                        class="w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-xs text-text-primary shadow-[0_2px_3px_-2px_rgba(0,0,0,0.15)] focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary"
+                                                    >
+                                                    <button type="button"
+                                                        @click="window.dispatchEvent(new CustomEvent('open-asset-picker', { detail: { callback: (url) => { setField(field.name, url) } } }))"
+                                                        class="shrink-0 px-2.5 py-1.5 bg-gray-100 hover:bg-gray-200 border border-gray-300 rounded-lg text-xs font-semibold text-text-primary flex items-center gap-1 transition-colors"
+                                                        title="Select Map Image from Assets"
+                                                    >
+                                                        <svg class="size-4 text-gray-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                                            <path stroke-linecap="round" stroke-linejoin="round" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                                                        </svg>
+                                                        <span>Select</span>
+                                                    </button>
+                                                </div>
+
+                                                <div class="relative w-full h-28 rounded-lg border border-gray-200 bg-gray-50 overflow-hidden flex items-center justify-center">
+                                                    <template x-if="getField(field.name) && (getField(field.name).includes('google.com/maps') || getField(field.name).includes('maps.app') || getField(field.name).includes('embed') || getField(field.name).includes('<iframe'))">
+                                                        <div class="flex flex-col items-center justify-center p-3 text-center text-xs text-primary">
+                                                            <svg class="size-6 mb-1 text-primary" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                                                <path stroke-linecap="round" stroke-linejoin="round" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/>
+                                                                <path stroke-linecap="round" stroke-linejoin="round" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/>
+                                                            </svg>
+                                                            <span class="font-medium truncate max-w-[220px]" x-text="getField(field.name)"></span>
+                                                            <span class="text-[10px] text-gray-400 mt-0.5">Google Maps Link / Embed</span>
+                                                        </div>
+                                                    </template>
+                                                    <template x-if="getField(field.name) && !getField(field.name).includes('google.com/maps') && !getField(field.name).includes('maps.app') && !getField(field.name).includes('embed') && !getField(field.name).includes('<iframe')">
+                                                        <img :src="getField(field.name)" alt="Map Preview" class="w-full h-full object-cover">
+                                                    </template>
+                                                    <template x-if="!getField(field.name)">
+                                                        <div class="flex flex-col items-center justify-center text-gray-400 text-xs">
+                                                            <svg class="size-6 mb-1" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
+                                                                <path stroke-linecap="round" stroke-linejoin="round" d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7"/>
+                                                            </svg>
+                                                            <span>No map selected</span>
+                                                        </div>
+                                                    </template>
+                                                </div>
+                                            </div>
+                                        </template>
+                                    </div>
+                                </template>
+
+                                {{-- rich-text (TipTap WYSIWYG) --}}
                                  <template x-if="field.type === 'rich-text'">
                                      <div x-data="{ showSourcePicker: false }">
                                          <div class="flex items-center justify-between mb-1">
@@ -1868,6 +2018,12 @@
                 const target = context.querySelector(`[data-edit="${name}"]`);
                 if (!target) return false;
 
+                const isMapField = name.toLowerCase().includes('map') || (value && typeof value === 'string' && (value.includes('google.com/maps') || value.includes('maps.app') || value.includes('<iframe')));
+                if (isMapField) {
+                    this.schedulePreview();
+                    return true;
+                }
+
                 const isImgTag = target.tagName === 'IMG';
                 let imgEl = isImgTag ? target : target.querySelector('img');
                 const isImageField = name.toLowerCase().includes('image') || isImgTag || !!imgEl;
@@ -2331,6 +2487,9 @@
 
                     const idx = parseInt(sectionEl.getAttribute('data-section-index'), 10);
                     if (isNaN(idx) || idx < 0 || idx >= this.sections.length) return;
+
+                    // Always open the sidebar when clicking the preview
+                    this.sidebarOpen = true;
 
                     const path = this.buildFieldPath(e.target);
                     this.focusField(path, idx);

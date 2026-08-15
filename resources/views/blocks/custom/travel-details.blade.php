@@ -277,9 +277,17 @@
                     @if($d['mapTitle'] ?? false)
                     <h2 class="text-xl font-bold text-gray-900" data-edit="mapTitle">{{ $d['mapTitle'] }}</h2>
                     @endif
+                    @php
+                        $mapInfo = \App\Blocks\Block::parseMapValue($d['mapImage'] ?? '');
+                    @endphp
                     <div class="relative w-full h-64 sm:h-72 bg-gray-100 rounded-xl overflow-hidden mt-4 flex items-center justify-center" data-edit="mapImage">
-                        <img src="{{ $d['mapImage'] ?? '' }}" alt="Map" class="absolute inset-0 w-full h-full object-cover {{ empty($d['mapImage']) ? 'hidden' : '' }}">
-                        <span class="text-gray-400 {{ !empty($d['mapImage']) ? 'hidden' : '' }}">Map Image</span>
+                        @if($mapInfo['type'] === 'iframe')
+                            <iframe src="{{ $mapInfo['url'] }}" class="w-full h-full border-0" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+                        @elseif($mapInfo['type'] === 'image' && !empty($mapInfo['url']))
+                            <img src="{{ $mapInfo['url'] }}" alt="Map" class="absolute inset-0 w-full h-full object-cover">
+                        @else
+                            <span class="text-gray-400">Map / Location</span>
+                        @endif
                     </div>
                 </div>
 

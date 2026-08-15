@@ -80,6 +80,16 @@ class Field
         return $field;
     }
 
+    public static function map(string $name, string $label, string $default = '', string $source = ''): array
+    {
+        $field = compact('name', 'label') + ['type' => 'map', 'defaultValue' => $default];
+        if ($source !== '') {
+            $field['source'] = $source;
+        }
+
+        return $field;
+    }
+
     public static function richText(string $name, string $label, string $default = '', string $source = ''): array
     {
         $field = compact('name', 'label') + ['type' => 'rich-text', 'defaultValue' => $default];
