@@ -38,12 +38,20 @@
             <h2 class="text-lg font-bold text-gray-900">Assets</h2>
             <div class="flex items-center gap-2">
                 <label class="inline-flex items-center justify-center size-9 rounded-lg text-gray-500 hover:text-gray-800 hover:bg-gray-100 transition-colors cursor-pointer shrink-0" title="Upload File">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" class="size-5">
-                        <path d="M4 14.899A7 7 0 1115.71 8h1.79a4.5 4.5 0 012.5 8.242" />
-                        <path d="M12 12v9" />
-                        <path d="m16 16-4-4-4 4" />
-                    </svg>
-                    <input type="file" accept="image/*,.pdf,.doc,.docx,.zip" class="hidden" @change="upload($event)">
+                    <template x-if="!uploading">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" class="size-5">
+                            <path d="M4 14.899A7 7 0 1115.71 8h1.79a4.5 4.5 0 012.5 8.242" />
+                            <path d="M12 12v9" />
+                            <path d="m16 16-4-4-4 4" />
+                        </svg>
+                    </template>
+                    <template x-if="uploading">
+                        <svg class="animate-spin size-5 text-primary" fill="none" viewBox="0 0 24 24">
+                            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="3"></circle>
+                            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                        </svg>
+                    </template>
+                    <input type="file" accept="image/*,.pdf,.doc,.docx,.zip" multiple class="hidden" @change="upload($event)" :disabled="uploading">
                 </label>
                 <button type="button" @click="createDir()" class="inline-flex items-center justify-center size-9 rounded-lg text-gray-500 hover:text-gray-800 hover:bg-gray-100 transition-colors shrink-0 cursor-pointer" title="New Folder">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" class="size-5">
@@ -52,10 +60,87 @@
                         <line x1="9" y1="13" x2="15" y2="13" />
                     </svg>
                 </button>
+                <button type="button" @click="toggleLinkMode()" class="inline-flex items-center justify-center size-9 rounded-lg transition-colors shrink-0 cursor-pointer" :class="showLinkInput ? 'text-primary bg-primary/10' : 'text-gray-500 hover:text-gray-800 hover:bg-gray-100'" title="Add Image URL / Link">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" class="size-5">
+                        <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71" />
+                        <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71" />
+                    </svg>
+                </button>
                 <button type="button" @click="close()" class="inline-flex items-center justify-center size-9 rounded-lg text-gray-400 hover:text-gray-800 hover:bg-gray-100 transition-colors shrink-0 cursor-pointer" title="Close Panel">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="size-5">
                         <line x1="18" y1="6" x2="6" y2="18" />
                         <line x1="6" y1="6" x2="18" y2="18" />
+                    </svg>
+                </button>
+            </div>
+        </div>
+
+        {{-- Link URL Input Card --}}
+        <div
+            x-show="showLinkInput"
+            x-cloak
+            x-transition:enter="transition ease-out duration-200"
+            x-transition:enter-start="opacity-0 -translate-y-2 scale-[0.98]"
+            x-transition:enter-end="opacity-100 translate-y-0 scale-100"
+            x-transition:leave="transition ease-in duration-150"
+            x-transition:leave-start="opacity-100 translate-y-0 scale-100"
+            x-transition:leave-end="opacity-0 -translate-y-2 scale-[0.98]"
+            class="mx-5 my-3 p-3 bg-gradient-to-b from-gray-50 to-white rounded-xl border border-gray-200/90 shadow-md shadow-gray-100 shrink-0 space-y-2.5 relative"
+        >
+            {{-- Card Header --}}
+            <div class="flex items-center justify-between">
+                <h3 class="text-xs font-bold text-gray-900 tracking-tight">External Image Link</h3>
+                <button type="button" @click="showLinkInput = false" class="size-6 flex items-center justify-center rounded-lg text-gray-400 hover:text-gray-700 hover:bg-gray-200/60 transition-colors cursor-pointer" title="Close">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="size-3.5">
+                        <line x1="18" y1="6" x2="6" y2="18" />
+                        <line x1="6" y1="6" x2="18" y2="18" />
+                    </svg>
+                </button>
+            </div>
+
+            {{-- Input Row with Thumbnail Preview --}}
+            <div class="flex items-center gap-2">
+                {{-- Live Thumbnail Preview --}}
+                <template x-if="externalUrl && (externalUrl.startsWith('http') || externalUrl.startsWith('//'))">
+                    <div class="relative size-9 rounded-lg border border-gray-200 bg-gray-100 overflow-hidden shrink-0 shadow-2xs">
+                        <img :src="externalUrl" x-on:error="$el.style.display='none'" class="size-full object-cover">
+                    </div>
+                </template>
+
+                <div class="relative flex-1">
+                    <input
+                        type="url"
+                        x-model="externalUrl"
+                        x-ref="externalUrlInput"
+                        @keydown.enter.prevent="applyExternalUrl()"
+                        @keydown.escape.prevent="showLinkInput = false"
+                        placeholder="https://example.com/image.jpg"
+                        class="w-full pl-3 pr-8 py-2 text-xs font-medium bg-white rounded-lg border border-gray-200 focus:border-primary focus:ring-2 focus:ring-primary/20 text-gray-800 placeholder:text-gray-400 transition-all outline-none shadow-2xs"
+                    >
+                    <button
+                        type="button"
+                        x-show="externalUrl"
+                        x-cloak
+                        @click="externalUrl = ''"
+                        class="absolute right-2.5 top-1/2 -translate-y-1/2 size-4 flex items-center justify-center rounded-full text-gray-400 hover:text-gray-700 hover:bg-gray-100 transition-colors cursor-pointer"
+                        title="Clear URL"
+                    >
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="size-3">
+                            <path d="M18 6 6 18" />
+                            <path d="m6 6 12 12" />
+                        </svg>
+                    </button>
+                </div>
+
+                <button
+                    type="button"
+                    @click="applyExternalUrl()"
+                    :disabled="!externalUrl.trim()"
+                    class="px-4 py-2 bg-primary hover:bg-primary/90 active:scale-[0.98] disabled:opacity-40 disabled:cursor-not-allowed text-white rounded-lg text-xs font-semibold transition-all shadow-sm shadow-primary/25 flex items-center gap-1.5 shrink-0 cursor-pointer"
+                >
+                    <span>Insert</span>
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="size-3.5">
+                        <polyline points="9 18 15 12 9 6" />
                     </svg>
                 </button>
             </div>
@@ -72,7 +157,7 @@
                     type="text"
                     x-model="searchQuery"
                     placeholder="Search files and folders..."
-                    class="w-full pl-10 pr-9 py-2 text-xs font-medium bg-gray-50/80 hover:bg-gray-100/80 focus:bg-white rounded-xl border border-gray-200/80 focus:border-primary focus:ring-2 focus:ring-primary/20 text-gray-800 placeholder:text-gray-400 transition-all duration-150 outline-none"
+                    class="w-full pl-10 pr-9 py-2 text-xs font-medium bg-gray-50/80 hover:bg-gray-100/80 focus:bg-white rounded-lg border border-gray-200/80 focus:border-primary focus:ring-2 focus:ring-primary/20 text-gray-800 placeholder:text-gray-400 transition-all duration-150 outline-none"
                 >
                 <button type="button" x-show="searchQuery" x-cloak @click="searchQuery = ''" class="absolute right-2.5 top-1/2 -translate-y-1/2 size-5 flex items-center justify-center rounded-full text-gray-400 hover:text-gray-700 hover:bg-gray-200/70 transition-all cursor-pointer" title="Clear search">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="size-3">
@@ -136,15 +221,16 @@
                     </nav>
                 </template>
 
-                {{-- Loading --}}
-                <template x-if="loading">
-                    <div class="flex items-center justify-center py-20">
+                {{-- Loading / Uploading --}}
+                <template x-if="loading || uploading">
+                    <div class="flex flex-col items-center justify-center py-20 gap-3">
                         <div class="animate-spin size-9 border-[3px] border-primary/10 border-t-primary rounded-full"></div>
+                        <p class="text-xs font-semibold text-gray-500" x-text="uploading ? 'Uploading assets...' : 'Loading assets...'"></p>
                     </div>
                 </template>
 
                 {{-- Grid --}}
-                <template x-if="!loading && allItems.length > 0">
+                <template x-if="!loading && !uploading && allItems.length > 0">
                     <div class="grid grid-cols-3 gap-x-4 gap-y-6 p-5 pb-28">
                         <template x-for="(item, idx) in allItems" :key="item.id">
                             <div
@@ -257,7 +343,7 @@
                 </template>
 
                 {{-- Empty --}}
-                <template x-if="!loading && allItems.length === 0">
+                <template x-if="!loading && !uploading && allItems.length === 0">
                     <div class="flex flex-col items-center justify-center py-20 text-center px-4">
                         <div class="size-16 rounded-full bg-gray-100 flex items-center justify-center text-gray-400 mb-3">
                             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="size-7 text-gray-400">
@@ -292,6 +378,31 @@
             dragCounter: 0,
             dragTargetId: null,
             crumbDragActive: null,
+            showLinkInput: false,
+            externalUrl: '',
+            uploading: false,
+
+            toggleLinkMode() {
+                this.showLinkInput = !this.showLinkInput;
+                if (this.showLinkInput) {
+                    this.$nextTick(() => {
+                        if (this.$refs.externalUrlInput) {
+                            this.$refs.externalUrlInput.focus();
+                        }
+                    });
+                }
+            },
+
+            applyExternalUrl() {
+                const url = (this.externalUrl || '').trim();
+                if (!url) return;
+                if (this.callback) {
+                    this.callback(url);
+                    this.externalUrl = '';
+                    this.showLinkInput = false;
+                    this.close();
+                }
+            },
 
             getAssetCategory(item) {
                 if (!item || item.is_directory) return 'folder';
@@ -348,6 +459,9 @@
                 this.renamingId = null;
                 this.deleteConfirm = null;
                 this.openMenuId = null;
+                this.showLinkInput = false;
+                this.externalUrl = '';
+                this.uploading = false;
                 this.$nextTick(() => this.fetchAssets());
             },
 
@@ -357,6 +471,9 @@
                     this.closing = false;
                     this.isOpen = false;
                     this.callback = null;
+                    this.showLinkInput = false;
+                    this.externalUrl = '';
+                    this.uploading = false;
                 }, 200);
             },
 
@@ -419,20 +536,26 @@
             },
 
             async upload(event) {
-                const file = event.target.files?.[0];
-                if (!file) return;
-                const formData = new FormData();
-                formData.append('file', file);
-                if (this.currentDirectory) formData.append('directory', this.currentDirectory);
+                const files = Array.from(event.target.files || []);
+                if (files.length === 0) return;
+                this.uploading = true;
                 try {
-                    await fetch('{{ route("admin.assets.store") }}', {
-                        method: 'POST',
-                        headers: { 'X-CSRF-TOKEN': '{{ csrf_token() }}' },
-                        body: formData,
+                    const uploadPromises = files.map(file => {
+                        const formData = new FormData();
+                        formData.append('file', file);
+                        if (this.currentDirectory) formData.append('directory', this.currentDirectory);
+                        return fetch('{{ route("admin.assets.store") }}', {
+                            method: 'POST',
+                            headers: { 'X-CSRF-TOKEN': '{{ csrf_token() }}' },
+                            body: formData,
+                        });
                     });
-                } catch {}
-                event.target.value = '';
-                this.fetchAssets();
+                    await Promise.all(uploadPromises);
+                } catch {} finally {
+                    event.target.value = '';
+                    await this.fetchAssets();
+                    this.uploading = false;
+                }
             },
 
             focusAndSelectRenameInput(id) {
@@ -540,6 +663,7 @@
                 const files = Array.from(e.dataTransfer.files || []);
                 if (files.length === 0) return;
 
+                this.uploading = true;
                 const uploadPromises = files.map(file => {
                     const formData = new FormData();
                     formData.append('file', file);
@@ -550,7 +674,9 @@
                         body: formData,
                     });
                 });
-                Promise.all(uploadPromises).then(() => this.fetchAssets());
+                Promise.all(uploadPromises)
+                    .then(() => this.fetchAssets())
+                    .finally(() => { this.uploading = false; });
             },
 
             onCardDragStart(e, item) {
@@ -603,6 +729,7 @@
                 const files = Array.from(e.dataTransfer.files || []);
                 if (files.length === 0) return;
 
+                this.uploading = true;
                 const uploadPromises = files.map(file => {
                     const formData = new FormData();
                     formData.append('file', file);
@@ -613,7 +740,9 @@
                         body: formData,
                     });
                 });
-                Promise.all(uploadPromises).then(() => this.fetchAssets());
+                Promise.all(uploadPromises)
+                    .then(() => this.fetchAssets())
+                    .finally(() => { this.uploading = false; });
             },
 
             crumbDragEnter(path) { this.crumbDragActive = path; },
