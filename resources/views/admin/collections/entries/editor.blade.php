@@ -1766,6 +1766,10 @@
                     return val;
                 }
                 if (typeof val === 'number' || typeof val === 'boolean') return String(val);
+                if (Array.isArray(val)) {
+                    if (val.length === 0) return '';
+                    return this.formatToString(val[0]);
+                }
                 if (typeof val === 'object') {
                     if (val.formatted && typeof val.formatted === 'string') {
                         return val.formatted;
@@ -1774,10 +1778,10 @@
                     if (parts.length > 0) {
                         return parts.join(', ');
                     }
+                    if (val.url && typeof val.url === 'string') return val.url;
                     if (val.name && typeof val.name === 'string') return val.name;
                     if (val.title && typeof val.title === 'string') return val.title;
                     if (val.label && typeof val.label === 'string') return val.label;
-                    if (val.url && typeof val.url === 'string') return val.url;
                     return '';
                 }
                 return String(val);
@@ -1789,9 +1793,9 @@
                 if (sourceKey) {
                     if (this.entryData && this.entryData[sourceKey] !== undefined && this.entryData[sourceKey] !== null && this.entryData[sourceKey] !== '') {
                         val = this.entryData[sourceKey];
-                    } else if (this.siteSettings && this.siteSettings[sourceKey] !== undefined && this.siteSettings[sourceKey] !== null) {
+                    } else if (this.siteSettings && this.siteSettings[sourceKey] !== undefined && this.siteSettings[sourceKey] !== null && this.siteSettings[sourceKey] !== '') {
                         val = this.siteSettings[sourceKey];
-                    } else if (this.homeGlobals && this.homeGlobals[sourceKey] !== undefined && this.homeGlobals[sourceKey] !== null) {
+                    } else if (this.homeGlobals && this.homeGlobals[sourceKey] !== undefined && this.homeGlobals[sourceKey] !== null && this.homeGlobals[sourceKey] !== '') {
                         val = this.homeGlobals[sourceKey];
                     } else {
                         val = '';
@@ -1826,6 +1830,7 @@
                 const path = this.fieldPath(name);
                 this.sections[this.active].data._sources[path] = sourceKey;
                 this.sections[this.active].data = { ...this.sections[this.active].data };
+                this.sections = [...this.sections];
                 this.dirty = true;
                 this.schedulePreview();
             },
@@ -1838,6 +1843,7 @@
                 const path = this.fieldPath(name);
                 this.sections[this.active].data._sources[path] = '__none__';
                 this.sections[this.active].data = { ...this.sections[this.active].data };
+                this.sections = [...this.sections];
                 this.dirty = true;
                 this.schedulePreview();
             },

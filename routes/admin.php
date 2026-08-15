@@ -5,6 +5,7 @@ use App\Http\Controllers\Admin\AssetsController;
 use App\Http\Controllers\Admin\CollectionController;
 use App\Http\Controllers\Admin\CollectionEntryController;
 use App\Http\Controllers\Admin\CommandSearchController;
+use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\FormController;
 use App\Http\Controllers\Admin\PreviewController;
 use App\Http\Controllers\Admin\ProfileController;
@@ -13,164 +14,15 @@ use App\Http\Controllers\Admin\SettingsController;
 use App\Http\Controllers\Admin\TaxonomyController;
 use App\Http\Controllers\Admin\TermController;
 use App\Http\Controllers\Admin\UpdateController;
-use App\Models\Collection;
-use App\Models\Form;
-use App\Models\WidgetLayout;
-use App\Widgets\WidgetRegistry;
-use Illuminate\Http\Request;
+use App\Http\Controllers\Admin\WidgetController;
 use Illuminate\Support\Facades\Route;
 
 Route::middleware(['web', 'auth:admin'])->prefix('admin')->name('admin.')->group(function () {
-    Route::get('/', function (WidgetRegistry $registry) {
-        $allTypes = $registry->all();
-        $saved = WidgetLayout::where('admin_id', auth('admin')->id())->first();
-        $layout = $saved->layout ?? [];
+    Route::get('/', [DashboardController::class, 'index'])->name('dashboard');
+    Route::post('widgets/layout', [WidgetController::class, 'layout'])->name('widgets.layout');
+    Route::post('widgets/render', [WidgetController::class, 'render'])->name('widgets.render');
 
-        if (! isset($layout['grid'])) {
-            if (isset($layout['order'])) {
-                $layout = [
-                    'grid' => ['order' => $layout['order'], 'hidden' => $layout['hidden'] ?? []],
-                    'chart' => ['order' => [$layout['chart_type'] ?? 'website_analytics'], 'hidden' => ($layout['chart_hidden'] ?? false) ? [0] : []],
-                    'table' => ['order' => ['form_entries_table'], 'hidden' => []],
-                    'list' => ['order' => ['updates_list'], 'hidden' => []],
-                ];
-            } else {
-                $layout = [];
-            }
-        }
-
-        $zones = ['grid', 'chart', 'table', 'list'];
-        $grouped = [];
-        foreach ($allTypes as $type => $class) {
-            $grouped[$class::zone()][] = ['type' => $type, 'label' => $class::make([])->label(), 'image' => $class::make([])->image];
-        }
-
-        $zoneData = [];
-        foreach ($zones as $zone) {
-            $savedZone = $layout[$zone] ?? null;
-            $zoneTypes = collect($grouped[$zone] ?? [])->pluck('type')->all();
-
-            if (! is_array($savedZone)) {
-                $order = $zone === 'table' && in_array('form_entries_table', $zoneTypes, true)
-                    ? ['form_entries_table']
-                    : $zoneTypes;
-            } else {
-                $order = collect($savedZone['order'] ?? [])->filter(function ($item) use ($allTypes) {
-                    $type = is_array($item) ? ($item['type'] ?? null) : $item;
-
-                    return $type && isset($allTypes[$type]);
-                })->values()->all();
-            }
-
-            $widgets = collect($order)->map(function ($item) use ($allTypes, $zone, $savedZone) {
-                $type = is_array($item) ? ($item['type'] ?? null) : $item;
-                $config = is_array($item) ? $item : [];
-                if ($zone === 'table' && ! empty($savedZone['form_id']) && empty($config['form_id'])) {
-                    $config['form_id'] = (int) $savedZone['form_id'];
-                }
-                $class = $allTypes[$type] ?? null;
-
-                return $class ? $class::make($config) : null;
-            })->filter()->values();
-
-            $hidden = $savedZone['hidden'] ?? [];
-            $widgetList = $widgets->map(fn ($w, $i) => [
-                'index' => $i,
-                'label' => $w->label(),
-                'image' => $w->image,
-                'type' => $w::type(),
-                'form_id' => property_exists($w, 'formId') ? $w->formId : null,
-            ])->values();
-            $zoneData[$zone] = compact('widgets', 'widgetList', 'hidden');
-        }
-
-        $allByZone = collect($grouped)->map(fn ($items) => collect($items)->values());
-
-        return view('admin.dashboard', array_merge(
-            ['allByZone' => $allByZone],
-            ['sidebarForms' => Form::orderBy('position')->get(['id', 'title'])],
-            ['allCollections' => Collection::orderBy('name')->get(['id', 'name', 'slug'])],
-            collect($zones)->flatMap(fn ($z) => [
-                "{$z}Widgets" => $zoneData[$z]['widgets'],
-                "{$z}WidgetList" => $zoneData[$z]['widgetList'],
-                "{$z}Hidden" => $zoneData[$z]['hidden'],
-            ])->all(),
-        ));
-    })->name('dashboard');
-
-    Route::post('widgets/layout', function (Request $request) {
-        $data = $request->validate([
-            'grid' => 'array',
-            'grid.order' => 'array',
-            'grid.hidden' => 'array',
-            'chart' => 'array',
-            'chart.order' => 'array',
-            'chart.hidden' => 'array',
-            'table' => 'array',
-            'table.order' => 'array',
-            'table.hidden' => 'array',
-            'table.form_id' => 'nullable|integer|exists:forms,id',
-            'list' => 'array',
-            'list.order' => 'array',
-            'list.hidden' => 'array',
-        ]);
-
-        $layout = WidgetLayout::query()
-            ->where('admin_id', auth('admin')->id())
-            ->value('layout') ?? [];
-
-        foreach ($data as $zone => $zoneData) {
-            $layout[$zone] = array_replace($layout[$zone] ?? [], $zoneData);
-        }
-
-        WidgetLayout::updateOrCreate(
-            ['admin_id' => auth('admin')->id()],
-            ['layout' => $layout]
-        );
-
-        return response()->json(['saved' => true]);
-    })->name('widgets.layout');
-
-    Route::post('widgets/render', function (Request $request) {
-        $data = $request->validate([
-            'zone' => 'required|string|in:chart,table,list,grid',
-            'type' => 'required|string',
-            'form_id' => 'nullable|integer|exists:forms,id',
-        ]);
-
-        $registry = app(WidgetRegistry::class);
-        $allTypes = $registry->all();
-        $class = $allTypes[$data['type']] ?? null;
-
-        if (! $class || $class::zone() !== $data['zone']) {
-            abort(404);
-        }
-
-        $config = [];
-        if (! empty($data['form_id'])) {
-            $config['form_id'] = (int) $data['form_id'];
-        } elseif ($data['zone'] === 'table') {
-            $savedFormId = WidgetLayout::query()
-                ->where('admin_id', auth('admin')->id())
-                ->value('layout')['table']['form_id'] ?? null;
-
-            if ($savedFormId) {
-                $config['form_id'] = (int) $savedFormId;
-            }
-        }
-
-        $widget = $class::make($config);
-        $html = $widget->render();
-
-        return response()->json([
-            'html' => is_string($html) ? $html : (string) $html,
-            'type' => $widget::type(),
-            'label' => $widget->label(),
-            'image' => $widget->image,
-        ]);
-    })->name('widgets.render');
-
-    Route::post('preview', PreviewController::class)->name('preview');
+    Route::match(['get', 'post'], 'preview', PreviewController::class)->name('preview');
 
     Route::get('search', CommandSearchController::class)->name('search');
 
@@ -230,5 +82,4 @@ Route::middleware(['web', 'auth:admin'])->prefix('admin')->name('admin.')->group
     Route::resource('administrators', AdminUserController::class)
         ->except(['show'])
         ->parameters(['administrators' => 'admin']);
-
 });
