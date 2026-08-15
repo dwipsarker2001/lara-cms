@@ -309,6 +309,12 @@
                                             <span class="font-medium">Location</span>
                                         </div>
                                     </template>
+                                    <template x-if="fieldForm.type === 'date'">
+                                        <div class="flex items-center gap-2">
+                                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" class="size-4 text-primary shrink-0"><rect width="18" height="18" x="3" y="4" rx="2" ry="2"/><line x1="16" x2="16" y1="2" y2="6"/><line x1="8" x2="8" y1="2" y2="6"/><line x1="3" x2="21" y1="10" y2="10"/></svg>
+                                            <span class="font-medium" x-text="fieldForm.enable_time ? 'Date & Time' : 'Date'"></span>
+                                        </div>
+                                    </template>
                                 </div>
                                 <svg :class="open ? 'rotate-180 text-primary' : 'text-gray-400'" class="size-4 transition-transform duration-150 shrink-0" viewBox="0 0 20 20" fill="currentColor">
                                     <path fill-rule="evenodd" d="M5.22 8.22a.75.75 0 0 1 1.06 0L10 11.94l3.72-3.72a.75.75 0 1 1 1.06 1.06l-4.25 4.25a.75.75 0 0 1-1.06 0L5.22 9.28a.75.75 0 0 1 0-1.06Z" clip-rule="evenodd" />
@@ -363,6 +369,17 @@
                                         <span>Image</span>
                                     </div>
                                     <svg x-show="fieldForm.type === 'image'" class="size-4 text-primary shrink-0" viewBox="0 0 20 20" fill="currentColor">
+                                        <path fill-rule="evenodd" d="M16.704 4.153a.75.75 0 0 1 .143 1.052l-8 10.5a.75.75 0 0 1-1.127.075l-4.5-4.5a.75.75 0 0 1 1.06-1.06l3.894 3.893 7.48-9.817a.75.75 0 0 1 1.05-.143Z" clip-rule="evenodd" />
+                                    </svg>
+                                </button>
+                                <button type="button" @click="fieldForm.type = 'date'; open = false"
+                                    class="flex items-center justify-between w-full px-3 py-2 text-sm rounded-lg text-text-primary hover:bg-gray-100/80 transition-colors"
+                                    :class="fieldForm.type === 'date' ? 'bg-primary/10 text-primary font-medium' : ''">
+                                    <div class="flex items-center gap-2.5">
+                                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" class="size-4 shrink-0" :class="fieldForm.type === 'date' ? 'text-primary' : 'text-text-muted'"><rect width="18" height="18" x="3" y="4" rx="2" ry="2"/><line x1="16" x2="16" y1="2" y2="6"/><line x1="8" x2="8" y1="2" y2="6"/><line x1="3" x2="21" y1="10" y2="10"/></svg>
+                                        <span>Date</span>
+                                    </div>
+                                    <svg x-show="fieldForm.type === 'date'" class="size-4 text-primary shrink-0" viewBox="0 0 20 20" fill="currentColor">
                                         <path fill-rule="evenodd" d="M16.704 4.153a.75.75 0 0 1 .143 1.052l-8 10.5a.75.75 0 0 1-1.127.075l-4.5-4.5a.75.75 0 0 1 1.06-1.06l3.894 3.893 7.48-9.817a.75.75 0 0 1 1.05-.143Z" clip-rule="evenodd" />
                                     </svg>
                                 </button>
@@ -548,6 +565,14 @@
                         </label>
                     </div>
 
+                    {{-- Date Sub-Fields Config --}}
+                    <div x-show="fieldForm.type === 'date'" style="display: none;" class="flex items-center flex-wrap gap-5 pt-1">
+                        <label class="flex items-center gap-2 cursor-pointer text-sm text-text-heading">
+                            <input type="checkbox" x-model="fieldForm.enable_time" class="rounded border-gray-300 text-primary focus:ring-primary">
+                            <span class="font-medium">Include Time (Date & Time)</span>
+                        </label>
+                    </div>
+
                     <div>
                         <label class="block text-sm font-medium text-text-heading mb-1">Key</label>
                         <input type="text" x-model="fieldForm.template" @input="onKeyInput"
@@ -679,7 +704,8 @@
                     default_entry_id: '',
                     enable_country: true,
                     enable_state: true,
-                    enable_city: true
+                    enable_city: true,
+                    enable_time: false
                 };
                 this.showFieldModal = true;
             },
@@ -688,13 +714,21 @@
                 this.editingFieldIndex = index;
                 this.isKeyManuallyEdited = true;
                 const rawField = this.fields[index] || {};
+                let rawType = rawField.type || 'text';
+                let enableTime = rawField.enable_time !== undefined ? !!rawField.enable_time : false;
+                if (rawType === 'datetime' || rawType === 'datetime-local') {
+                    rawType = 'date';
+                    enableTime = true;
+                }
                 const field = {
                     multiple: false,
                     default_entry_id: rawField.default_entry_id || rawField.default_value || rawField.default || '',
                     enable_country: rawField.enable_country !== undefined ? !!rawField.enable_country : true,
                     enable_state: rawField.enable_state !== undefined ? !!rawField.enable_state : true,
                     enable_city: rawField.enable_city !== undefined ? !!rawField.enable_city : true,
-                    ...rawField
+                    enable_time: enableTime,
+                    ...rawField,
+                    type: rawType
                 };
                 if (field.template) {
                     field.template = field.template.replace(/[^a-zA-Z0-9_]+/g, '');
@@ -720,6 +754,9 @@
                         this.fieldForm.enable_state = true;
                         this.fieldForm.enable_city = true;
                     }
+                }
+                if (this.fieldForm.type === 'date') {
+                    this.fieldForm.enable_time = !!this.fieldForm.enable_time;
                 }
                 if (this.editingFieldIndex !== null) {
                     this.fields[this.editingFieldIndex] = { ...this.fieldForm, _key: this.fields[this.editingFieldIndex]._key };

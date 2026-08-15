@@ -10,6 +10,38 @@
     <style>[x-cloak] { display: none !important; }</style>
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+    <style>
+        .flatpickr-calendar {
+            border-radius: 0.75rem !important;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.05) !important;
+            border: 1px solid #e5e7eb !important;
+            font-family: inherit !important;
+            z-index: 99999 !important;
+        }
+        .flatpickr-day.selected, .flatpickr-day.startRange, .flatpickr-day.endRange, .flatpickr-day.selected.inRange, .flatpickr-day.startRange.inRange, .flatpickr-day.endRange.inRange, .flatpickr-day.selected:focus, .flatpickr-day.startRange:focus, .flatpickr-day.endRange:focus, .flatpickr-day.selected:hover, .flatpickr-day.startRange:hover, .flatpickr-day.endRange:hover, .flatpickr-day.selected.prevMonthDay, .flatpickr-day.startRange.prevMonthDay, .flatpickr-day.endRange.prevMonthDay, .flatpickr-day.selected.nextMonthDay, .flatpickr-day.startRange.nextMonthDay, .flatpickr-day.endRange.nextMonthDay {
+            background: #4f46e5 !important;
+            border-color: #4f46e5 !important;
+        }
+        .flatpickr-day.today {
+            border-color: #6366f1 !important;
+        }
+        .flatpickr-day.today:hover {
+            background: #6366f1 !important;
+            color: white !important;
+        }
+        .flatpickr-months .flatpickr-month {
+            border-top-left-radius: 0.75rem;
+            border-top-right-radius: 0.75rem;
+        }
+        .flatpickr-current-month .flatpickr-monthDropdown-months {
+            font-weight: 600 !important;
+        }
+        .flatpickr-time input:hover, .flatpickr-time .flatpickr-am-pm:hover, .flatpickr-time input:focus, .flatpickr-time .flatpickr-am-pm:focus {
+            background: #f3f4f6 !important;
+        }
+    </style>
     <script>
         window.FA_ICONS = {{ \Illuminate\Support\Js::from(file_exists(public_path('fa-icons.json')) ? json_decode(file_get_contents(public_path('fa-icons.json'))) : []) }};
         window.categoryPicker = function(initialSelected, termsList) {
