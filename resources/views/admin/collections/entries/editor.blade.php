@@ -73,7 +73,7 @@
                                             @click="edit(i, 'title')"
                                             class="flex items-center"
                                         >
-                                            <span class="text-sm font-semibold text-text-heading group-hover:text-primary truncate leading-normal transition-colors" :class="section.enabled === false ? 'opacity-50' : ''" x-text="sectionLabel(section)"></span>
+                                            <span class="text-sm font-semibold text-text-heading group-hover:text-primary truncate leading-normal transition-colors" x-text="sectionLabel(section)"></span>
                                         </div>
                                     </div>
                                     <div class="flex items-center gap-0.5 shrink-0 ml-auto pr-1">
@@ -117,18 +117,6 @@
                         <div class="grow truncate text-sm font-bold text-text-heading">
                             <span x-text="editorTitle()"></span>
                         </div>
-                        <button
-                            @click="toggleEnabled()"
-                            class="relative inline-flex h-6 w-10 shrink-0 items-center rounded-full transition-colors"
-                            :class="currentSection()?.enabled !== false ? 'bg-primary' : 'bg-gray-300'"
-                            role="switch"
-                            :aria-checked="currentSection()?.enabled !== false"
-                        >
-                            <span
-                                class="inline-block size-4 rounded-full bg-white shadow-sm transition-transform"
-                                :style="`transform: translateX(${currentSection()?.enabled !== false ? 22 : 2}px)`"
-                            ></span>
-                        </button>
                     </div>
                     <div class="flex flex-col gap-3 p-0.5">
                         <template x-for="field in currentFields()" :key="field.name">
