@@ -163,7 +163,6 @@
                                         <span class="truncate">
                                             Drag &amp; drop here or
                                             <button type="button" @click="openAssetPicker()" class="underline hover:text-text-primary">choose a file</button>.
-                                            <span x-show="avatar" x-cloak> 1/1 selected</span>
                                         </span>
                                     </div>
                                 </div>

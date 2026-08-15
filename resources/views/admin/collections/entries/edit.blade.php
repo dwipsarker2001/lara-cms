@@ -284,7 +284,6 @@
                                                                  <span class="truncate">
                                                                      Drag &amp; drop here or
                                                                      <button type="button" @click="openAssetPicker()" class="underline hover:text-text-primary">choose a file</button>.
-                                                                     <span x-show="imageUrl" x-cloak> 1/1 selected</span>
                                                                  </span>
                                                              </div>
                                                          </div>
@@ -358,123 +357,590 @@
                                                     </div>
                                                     @break
                                                 @case('taxonomies')
-                                                    @php
-                                                        $taxId = $field['taxonomy_id'] ?? null;
-                                                        $isMultiple = !empty($field['multiple']);
-                                                        $termModels = collect();
-                                                        if ($taxId) {
-                                                            $termModels = \App\Models\Term::where('taxonomy_id', $taxId)->orderBy('title')->get();
-                                                            if ($termModels->isEmpty()) {
-                                                                $termModels = \App\Models\Taxonomy::where('id', $taxId)->orderBy('title')->get();
-                                                            }
-                                                        } else {
-                                                            $termsFromTable = \App\Models\Term::orderBy('title')->get();
-                                                            $taxonomiesFromTable = \App\Models\Taxonomy::orderBy('title')->get();
-                                                            $termModels = $termsFromTable->concat($taxonomiesFromTable)->unique(fn($item) => $item->title);
-                                                        }
-                                                    @endphp
+    @php
+        $taxId = $field['taxonomy_id'] ?? null;
+        $isMultiple = !empty($field['multiple']);
 
-                                                    @if($isMultiple)
-                                                        @php
-                                                            $rawSelected = is_array($value) ? $value : (is_string($value) && $value !== '' ? json_decode($value, true) ?: [$value] : []);
-                                                            $selectedArray = array_map('strval', array_filter((array) $rawSelected));
-                                                        @endphp
-                                                        <div x-data="{
-                                                            open: false,
-                                                            selected: @json($selectedArray),
-                                                            toggle(val) {
-                                                                val = String(val);
-                                                                if (this.selected.includes(val)) {
-                                                                    this.selected = this.selected.filter(i => i !== val);
-                                                                } else {
-                                                                    this.selected.push(val);
-                                                                }
-                                                            },
-                                                            get label() {
-                                                                if (this.selected.length === 0) return 'Select items...';
-                                                                return this.selected.length + ' selected';
-                                                            }
-                                                        }" @click.outside="open = false" @keydown.escape.window="open = false" class="relative">
-                                                            <button type="button" @click="open = !open" class="w-full flex items-center justify-between bg-content-bg border border-content-border text-text-primary text-sm rounded-lg px-3 py-2 h-9 cursor-pointer transition-all duration-150 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary">
-                                                                <span class="truncate font-medium text-text-heading" x-text="label"></span>
-                                                                <svg class="size-4 text-text-muted shrink-0 transition-transform duration-150" :class="open ? 'rotate-180' : ''" viewBox="0 0 20 20" fill="currentColor">
-                                                                    <path fill-rule="evenodd" d="M5.22 8.22a.75.75 0 0 1 1.06 0L10 11.94l3.72-3.72a.75.75 0 1 1 1.06 1.06l-4.25 4.25a.75.75 0 0 1-1.06 0L5.22 9.28a.75.75 0 0 1 0-1.06Z" clip-rule="evenodd" />
-                                                                </svg>
-                                                            </button>
-                                                            <div x-show="open" class="absolute z-50 top-full mt-1 left-0 right-0 bg-content-bg border border-content-border rounded-lg shadow-lg p-1 max-h-80 overflow-y-auto [scrollbar-width:thin] space-y-0.5" style="display: none;">
-                                                                @foreach ($termModels as $t)
-                                                                    @php
-                                                                        $tId = (string) $t->id;
-                                                                        $tTitle = $t->title ?? 'Untitled Item';
-                                                                    @endphp
-                                                                    <button type="button" @click="toggle('{{ $tId }}')" class="w-full flex items-center justify-between px-3 py-1.5 text-sm rounded-md transition-colors" :class="selected.includes('{{ $tId }}') ? 'bg-primary/10 text-primary font-medium' : 'text-text-primary hover:bg-content-border/30'">
-                                                                        <span>{{ $tTitle }}</span>
-                                                                        <svg x-show="selected.includes('{{ $tId }}')" class="size-4 text-primary shrink-0" viewBox="0 0 20 20" fill="currentColor">
-                                                                            <path fill-rule="evenodd" d="M16.704 4.153a.75.75 0 0 1 .143 1.052l-8 10.5a.75.75 0 0 1-1.127.075l-4.5-4.5a.75.75 0 0 1 1.06-1.06l3.894 3.893 7.48-9.817a.75.75 0 0 1 1.05-.143Z" clip-rule="evenodd" />
-                                                                        </svg>
-                                                                    </button>
-                                                                @endforeach
-                                                                @if($termModels->isEmpty())
-                                                                    <div class="px-3 py-2 text-sm text-text-muted text-center">
-                                                                        No items found.
-                                                                    </div>
-                                                                @endif
-                                                            </div>
-                                                            <template x-for="itemVal in selected" :key="itemVal">
-                                                                <input type="hidden" name="data[{{ $key }}][]" :value="itemVal">
-                                                            </template>
-                                                        </div>
-                                                    @else
-                                                        @php
-                                                            $selectedValue = is_array($value) ? ($value[0] ?? '') : (string)($value ?? '');
-                                                            $selectedCat = $termModels->first(function ($t) use ($selectedValue) {
-                                                                $tId = (string) $t->id;
-                                                                $tSlug = $t->slug ?? '';
-                                                                $tTitle = $t->title ?? '';
-                                                                return $selectedValue == $tId || ($selectedValue !== '' && (strtolower($selectedValue) == strtolower($tTitle) || strtolower($selectedValue) == strtolower($tSlug)));
-                                                            });
-                                                            $selectedLabel = $selectedCat?->title ?? 'Select item...';
-                                                            $initialVal = $selectedCat ? (string)$selectedCat->id : $selectedValue;
-                                                        @endphp
-                                                        <div x-data="{ open: false, selectedValue: '{{ addslashes($initialVal) }}', label: '{{ addslashes($selectedLabel) }}' }" @click.outside="open = false" @keydown.escape.window="open = false" class="relative">
-                                                            <button type="button" @click="open = !open" class="w-full flex items-center justify-between bg-content-bg border border-content-border text-text-primary text-sm rounded-lg px-3 py-2 h-9 cursor-pointer transition-all duration-150 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary">
-                                                                <span class="truncate font-medium text-text-heading" x-text="label"></span>
-                                                                <svg class="size-4 text-text-muted shrink-0 transition-transform duration-150" :class="open ? 'rotate-180' : ''" viewBox="0 0 20 20" fill="currentColor">
-                                                                    <path fill-rule="evenodd" d="M5.22 8.22a.75.75 0 0 1 1.06 0L10 11.94l3.72-3.72a.75.75 0 1 1 1.06 1.06l-4.25 4.25a.75.75 0 0 1-1.06 0L5.22 9.28a.75.75 0 0 1 0-1.06Z" clip-rule="evenodd" />
-                                                                </svg>
-                                                            </button>
-                                                            <div x-show="open" class="absolute z-50 top-full mt-1 left-0 right-0 bg-content-bg border border-content-border rounded-lg shadow-lg p-1 max-h-80 overflow-y-auto [scrollbar-width:thin] space-y-0.5" style="display: none;">
-                                                                <button type="button" @click="selectedValue = ''; label = 'Select item...'; open = false" class="w-full text-left px-3 py-1.5 text-sm rounded-md transition-colors text-text-muted hover:bg-content-border/30">
-                                                                    <span>None</span>
-                                                                </button>
-                                                                @foreach ($termModels as $t)
-                                                                    @php
-                                                                        $tId = (string) $t->id;
-                                                                        $tTitle = $t->title ?? 'Untitled Item';
-                                                                    @endphp
-                                                                    <button type="button" @click="selectedValue = '{{ $tId }}'; label = '{{ addslashes($tTitle) }}'; open = false" class="w-full text-left px-3 py-1.5 text-sm rounded-md transition-colors" :class="selectedValue == '{{ $tId }}' ? 'bg-primary/10 text-primary font-medium' : 'text-text-primary hover:bg-content-border/30'">
-                                                                        <span>{{ $tTitle }}</span>
-                                                                    </button>
-                                                                @endforeach
-                                                                @if($termModels->isEmpty())
-                                                                    <div class="px-3 py-2 text-sm text-text-muted text-center">
-                                                                        No items found.
-                                                                    </div>
-                                                                @endif
-                                                            </div>
-                                                            <input type="hidden" name="data[{{ $key }}]" :value="selectedValue">
-                                                        </div>
-                                                    @endif
-                                                    @break
+        $allTaxonomiesModels = \App\Models\Taxonomy::with('terms')->orderBy('title')->get();
+        if ($allTaxonomiesModels->isEmpty()) {
+            $defaultTax = \App\Models\Taxonomy::create(['title' => 'General', 'slug' => 'general']);
+            $allTaxonomiesModels = collect([$defaultTax]);
+        }
+
+        $targetTaxonomy = null;
+        if ($taxId) {
+            $targetTaxonomy = $allTaxonomiesModels->firstWhere('id', (int)$taxId) ?? $allTaxonomiesModels->firstWhere('id', (string)$taxId);
+        }
+        if (! $targetTaxonomy) {
+            $targetTaxonomy = $allTaxonomiesModels->first();
+        }
+        $targetTaxId = $targetTaxonomy->id;
+
+        $allTaxonomiesData = $allTaxonomiesModels->map(function($tax) {
+            return [
+                'id' => (string) $tax->id,
+                'title' => $tax->title,
+                'slug' => $tax->slug,
+                'fields' => $tax->fields ?? [],
+                'terms' => $tax->terms->map(fn($t) => ['id' => (string)$t->id, 'title' => $t->title ?? 'Untitled'])->values()->all()
+            ];
+        })->values()->all();
+
+        if ($taxId && $targetTaxonomy) {
+            $termModels = $targetTaxonomy->terms()->orderBy('title')->get();
+        } else {
+            $termsFromTable = \App\Models\Term::orderBy('title')->get();
+            $termModels = $termsFromTable->unique(fn($item) => $item->title);
+        }
+
+        $itemsList = $termModels->map(fn($t) => ['id' => (string)$t->id, 'title' => $t->title ?? 'Untitled Item'])->values()->all();
+        $targetTaxFields = $targetTaxonomy->fields ?? [];
+    @endphp
+
+    @if($isMultiple)
+        @php
+            $rawSelected = is_array($value) ? $value : (is_string($value) && $value !== '' ? json_decode($value, true) ?: [$value] : []);
+            $selectedArray = array_values(array_map('strval', array_filter((array) $rawSelected, fn($v) => $v !== null && $v !== '')));
+        @endphp
+        <div x-data="{
+            open: false,
+            selected: @js($selectedArray),
+            items: @js($itemsList),
+            allTaxonomies: @js($allTaxonomiesData),
+            selectedTaxId: '{{ $targetTaxId }}',
+            isTaxonomyFixed: {{ !empty($taxId) ? 'true' : 'false' }},
+            showAddModal: false,
+            newTermTitle: '',
+            newTermSlug: '',
+            customSlug: false,
+            formData: {},
+            isSaving: false,
+            errorMessage: '',
+            get selectedTaxonomy() {
+                return this.allTaxonomies.find(t => String(t.id) === String(this.selectedTaxId)) || this.allTaxonomies[0] || null;
+            },
+            get currentTaxFields() {
+                return this.selectedTaxonomy ? (this.selectedTaxonomy.fields || []) : [];
+            },
+            toggle(val) {
+                val = String(val);
+                if (!Array.isArray(this.selected)) { this.selected = []; }
+                if (this.selected.includes(val)) {
+                    this.selected = this.selected.filter(function(i) { return i !== val; });
+                } else {
+                    this.selected.push(val);
+                }
+            },
+            get label() {
+                if (!Array.isArray(this.selected) || this.selected.length === 0) return 'Select items...';
+                return this.selected.length + ' selected';
+            },
+            slugify(text) {
+                return text
+                    .toString()
+                    .toLowerCase()
+                    .trim()
+                    .replace(/\s+/g, '-')
+                    .replace(/[^\w\-]+/g, '')
+                    .replace(/\-\-+/g, '-')
+                    .replace(/^-+/, '')
+                    .replace(/-+$/, '');
+            },
+            onTitleInput() {
+                if (!this.customSlug) {
+                    this.newTermSlug = this.slugify(this.newTermTitle);
+                }
+            },
+            onSlugInput(val) {
+                this.customSlug = true;
+                this.newTermSlug = this.slugify(val);
+            },
+            openAssetPicker(fieldKey) {
+                window.dispatchEvent(new CustomEvent('open-asset-picker', {
+                    detail: {
+                        callback: (url) => {
+                            this.formData[fieldKey] = url;
+                        }
+                    }
+                }));
+            },
+            getImageName(url) {
+                if (!url) return '';
+                try {
+                    const path = url.split('?')[0];
+                    return decodeURIComponent(path.split('/').pop() || path);
+                } catch (e) {
+                    return url;
+                }
+            },
+            resetModal() {
+                this.newTermTitle = '';
+                this.newTermSlug = '';
+                this.customSlug = false;
+                this.formData = {};
+                this.errorMessage = '';
+            },
+            async createTerm() {
+                if (!this.newTermTitle.trim() || this.isSaving) return;
+                this.isSaving = true;
+                this.errorMessage = '';
+                const dataPayload = {};
+                for (const [k, v] of Object.entries(this.formData)) {
+                    if (v !== '' && v !== null) {
+                        dataPayload[k] = v;
+                    }
+                }
+                try {
+                    const res = await fetch(`/admin/taxonomies/${this.selectedTaxId}/terms`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Accept': 'application/json',
+                            'X-CSRF-TOKEN': document.querySelector('meta[name=csrf-token]').content
+                        },
+                        body: JSON.stringify({
+                            title: this.newTermTitle.trim(),
+                            slug: this.newTermSlug.trim() || this.slugify(this.newTermTitle),
+                            data: dataPayload
+                        })
+                    });
+                    const data = await res.json();
+                    if (res.ok && data.success && data.term) {
+                        const newId = String(data.term.id);
+                        const newTitle = data.term.title;
+                        this.items.push({ id: newId, title: newTitle });
+                        if (!this.selected.includes(newId)) {
+                            this.selected.push(newId);
+                        }
+                        this.resetModal();
+                        this.showAddModal = false;
+                    } else {
+                        this.errorMessage = data.message || 'Failed to create item';
+                    }
+                } catch (e) {
+                    this.errorMessage = 'An error occurred while creating item.';
+                } finally {
+                    this.isSaving = false;
+                }
+            }
+        }" @click.outside="open = false" @keydown.escape.window="open = false" class="relative">
+            <div class="flex items-center gap-2">
+                <div class="flex-1 min-w-0 relative">
+                    <button type="button" @click="open = !open" class="w-full flex items-center justify-between bg-content-bg border border-content-border text-text-primary text-sm rounded-lg px-3 py-2 h-9 cursor-pointer transition-all duration-150 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary">
+                        <span class="truncate font-medium text-text-heading" x-text="label"></span>
+                        <svg class="size-4 text-text-muted shrink-0 transition-transform duration-150" :class="open ? 'rotate-180' : ''" viewBox="0 0 20 20" fill="currentColor">
+                            <path fill-rule="evenodd" d="M5.22 8.22a.75.75 0 0 1 1.06 0L10 11.94l3.72-3.72a.75.75 0 1 1 1.06 1.06l-4.25 4.25a.75.75 0 0 1-1.06 0L5.22 9.28a.75.75 0 0 1 0-1.06Z" clip-rule="evenodd" />
+                        </svg>
+                    </button>
+                    <div x-show="open" class="absolute z-50 top-full mt-1 left-0 right-0 bg-content-bg border border-content-border rounded-lg shadow-lg p-1 max-h-80 overflow-y-auto [scrollbar-width:thin] space-y-0.5" style="display: none;">
+                        <template x-for="item in items" :key="item.id">
+                            <button type="button" @click="toggle(item.id)" class="w-full flex items-center justify-between px-3 py-1.5 text-sm rounded-md transition-colors" :class="Array.isArray(selected) && selected.includes(item.id) ? 'bg-primary/10 text-primary font-medium' : 'text-text-primary hover:bg-content-border/30'">
+                                <span x-text="item.title"></span>
+                                <svg x-show="Array.isArray(selected) && selected.includes(item.id)" class="size-4 text-primary shrink-0" viewBox="0 0 20 20" fill="currentColor">
+                                    <path fill-rule="evenodd" d="M16.704 4.153a.75.75 0 0 1 .143 1.052l-8 10.5a.75.75 0 0 1-1.127.075l-4.5-4.5a.75.75 0 0 1 1.06-1.06l3.894 3.893 7.48-9.817a.75.75 0 0 1 1.05-.143Z" clip-rule="evenodd" />
+                                </svg>
+                            </button>
+                        </template>
+                        <div x-show="items.length === 0" class="px-3 py-2 text-sm text-text-muted text-center">
+                            No items found.
+                        </div>
+                    </div>
+                </div>
+                <button type="button" @click="showAddModal = true; $nextTick(function() { $refs.termInput && $refs.termInput.focus(); })" title="Create new item" class="size-9 shrink-0 flex items-center justify-center bg-content-bg border border-content-border text-text-primary rounded-lg hover:border-primary hover:text-primary transition-colors cursor-pointer shadow-sm focus:outline-none focus:ring-2 focus:ring-primary/20">
+                    <svg class="size-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+                    </svg>
+                </button>
+            </div>
+            <template x-for="itemVal in (Array.isArray(selected) ? selected : [])" :key="itemVal">
+                <input type="hidden" name="data[{{ $key }}][]" :value="itemVal">
+            </template>
+            <template x-teleport="body">
+                <div x-show="showAddModal" x-cloak class="fixed inset-0 z-[9999] flex items-center justify-center p-4 bg-black/50 backdrop-blur-xs">
+                    <div @click.outside="showAddModal = false; resetModal()" @keydown.escape.window="showAddModal = false; resetModal()" class="bg-content-bg border border-content-border rounded-xl shadow-xl max-w-lg w-full max-h-[90vh] flex flex-col overflow-hidden">
+                        <div class="flex items-center justify-between border-b border-content-border px-5 py-3.5 shrink-0">
+                            <div>
+                                <h3 class="text-base font-semibold text-text-heading" x-text="'Create New ' + (selectedTaxonomy ? selectedTaxonomy.title : 'Item')"></h3>
+                            </div>
+                            <button type="button" @click="showAddModal = false; resetModal()" class="text-text-muted hover:text-text-primary cursor-pointer">
+                                <svg class="size-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+                                </svg>
+                            </button>
+                        </div>
+                        <div class="px-5 pt-3 pb-5 space-y-3.5 overflow-y-auto [scrollbar-width:thin] flex-1">
+                            <div x-show="!isTaxonomyFixed && allTaxonomies.length > 1">
+                                <label class="block text-xs font-medium text-text-heading mb-1">Taxonomy Group</label>
+                                <select x-model="selectedTaxId" class="w-full bg-content-bg border border-content-border text-text-primary text-sm rounded-lg px-3 py-2 h-9 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary">
+                                    <template x-for="tax in allTaxonomies" :key="tax.id">
+                                        <option :value="tax.id" x-text="tax.title"></option>
+                                    </template>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-xs font-medium text-text-heading mb-1">Title <span class="text-danger">*</span></label>
+                                <input type="text" x-model="newTermTitle" x-ref="termInput" @input="onTitleInput()" @keydown.enter.prevent="createTerm()" placeholder="Title..." class="w-full bg-content-bg border border-content-border text-text-primary text-sm rounded-lg px-3 py-2 h-9 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-medium text-text-heading mb-1">Slug</label>
+                                <input type="text" x-model="newTermSlug" @input="onSlugInput($event.target.value)" placeholder="auto-generated-slug" class="w-full bg-content-bg border border-content-border text-text-primary text-sm rounded-lg px-3 py-2 h-9 font-mono focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary">
+                            </div>
+
+                            <template x-for="tf in currentTaxFields" :key="tf.template || tf.title">
+                                <div>
+                                    <label class="block text-xs font-medium text-text-heading mb-1" x-text="tf.title || tf.template"></label>
+                                    <template x-if="tf.type === 'textarea'">
+                                        <textarea x-model="formData[tf.template || slugify(tf.title)]" rows="2" :placeholder="'Enter ' + (tf.title || '').toLowerCase() + '...'" class="w-full bg-content-bg border border-content-border text-text-primary text-sm rounded-lg px-3 py-1.5 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary"></textarea>
+                                    </template>
+                                    <template x-if="tf.type === 'number'">
+                                        <input type="number" x-model="formData[tf.template || slugify(tf.title)]" placeholder="0" class="w-full bg-content-bg border border-content-border text-text-primary text-sm rounded-lg px-3 py-2 h-9 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary">
+                                    </template>
+                                    <template x-if="tf.type === 'color'">
+                                        <div class="flex items-center gap-2">
+                                            <input type="color" x-model="formData[tf.template || slugify(tf.title)]" class="h-9 w-12 rounded border border-content-border p-0.5 cursor-pointer">
+                                            <input type="text" x-model="formData[tf.template || slugify(tf.title)]" placeholder="#000000" class="w-full bg-content-bg border border-content-border text-text-primary text-sm rounded-lg px-3 py-2 h-9 font-mono focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary">
+                                        </div>
+                                    </template>
+                                    <template x-if="tf.type === 'select'">
+                                        <select x-model="formData[tf.template || slugify(tf.title)]" class="w-full bg-content-bg border border-content-border text-text-primary text-sm rounded-lg px-3 py-2 h-9 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary">
+                                            <option value="">Select option...</option>
+                                            <template x-for="opt in (Array.isArray(tf.options) ? tf.options : (tf.options || '').split(',').map(s => s.trim()).filter(Boolean))" :key="opt">
+                                                <option :value="opt" x-text="opt"></option>
+                                            </template>
+                                        </select>
+                                    </template>
+                                    <template x-if="tf.type === 'image'">
+                                        <div class="w-full rounded-lg border border-content-border bg-content-bg overflow-hidden shadow-sm min-w-0">
+                                            {{-- Toolbar --}}
+                                            <div class="flex flex-wrap items-center gap-2 sm:gap-3 px-2.5 py-2.5 min-w-0">
+                                                <button type="button" @click="openAssetPicker(tf.template || slugify(tf.title))" class="inline-flex items-center justify-center gap-2 whitespace-nowrap shrink-0 font-medium cursor-pointer no-underline rounded-lg transition-colors h-8 text-xs leading-tight px-3 bg-gradient-to-b from-content-bg to-gray-50 hover:to-gray-100 text-text-primary border border-content-border shadow-sm">
+                                                    <svg viewBox="0 0 24 24" fill="none" class="size-4 shrink-0">
+                                                        <path d="M3 7a2 2 0 0 1 2-2h3.5l2 2H19a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V7Z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round" />
+                                                    </svg>
+                                                    Browse Assets
+                                                </button>
+                                                <div class="flex items-center gap-1.5 text-sm text-text-muted min-w-0">
+                                                    <svg viewBox="0 0 24 24" fill="none" class="size-4 shrink-0">
+                                                        <path d="M7 18a4 4 0 0 1-.5-7.97A5 5 0 0 1 16 8.5a3.5 3.5 0 0 1 1.5 6.7" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+                                                        <path d="M12 11.5v6m0-6 2 2m-2-2-2 2" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+                                                    </svg>
+                                                    <span class="truncate">
+                                                        Drag &amp; drop here or
+                                                        <button type="button" @click="openAssetPicker(tf.template || slugify(tf.title))" class="underline hover:text-text-primary cursor-pointer">choose a file</button>.
+                                                    </span>
+                                                </div>
+                                            </div>
+                                            {{-- Selected file row --}}
+                                            <div class="border-t border-content-border" x-show="formData[tf.template || slugify(tf.title)]" x-cloak>
+                                                <div class="flex items-center gap-3 px-2.5 py-2">
+                                                    <div class="size-8 rounded-md overflow-hidden bg-panel-bg flex items-center justify-center shrink-0 border border-content-border">
+                                                        <img :src="formData[tf.template || slugify(tf.title)]" alt="Selected image" class="size-full object-cover">
+                                                    </div>
+                                                    <span class="flex-1 min-w-0 truncate text-sm text-text-primary" x-text="getImageName(formData[tf.template || slugify(tf.title)])"></span>
+                                                    <button type="button" aria-label="Remove image" @click="formData[tf.template || slugify(tf.title)] = ''" class="shrink-0 flex size-6 items-center justify-center rounded-md text-text-muted hover:bg-text-primary/10 hover:text-text-primary transition-colors cursor-pointer">
+                                                        <svg viewBox="0 0 24 24" fill="none" class="size-4">
+                                                            <path d="M6 6l12 12M18 6L6 18" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
+                                                        </svg>
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </template>
+                                    <template x-if="!['textarea', 'number', 'color', 'select', 'image'].includes(tf.type)">
+                                        <input type="text" x-model="formData[tf.template || slugify(tf.title)]" :placeholder="'Enter ' + (tf.title || '').toLowerCase() + '...'" class="w-full bg-content-bg border border-content-border text-text-primary text-sm rounded-lg px-3 py-2 h-9 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary">
+                                    </template>
+                                </div>
+                            </template>
+
+                            <p x-show="errorMessage" class="text-xs text-danger" x-text="errorMessage"></p>
+                        </div>
+                        <div class="flex items-center justify-end gap-2 px-5 py-3 border-t border-content-border shrink-0 bg-panel-bg">
+                            <button type="button" @click="showAddModal = false; resetModal()" class="px-3 py-1.5 text-sm font-medium rounded-lg border border-content-border text-text-primary hover:bg-content-border/30 cursor-pointer">Cancel</button>
+                            <button type="button" @click="createTerm()" :disabled="isSaving" class="inline-flex items-center gap-1.5 px-3.5 py-1.5 text-sm font-medium rounded-lg bg-primary text-white hover:bg-primary-hover disabled:opacity-50 cursor-pointer shadow-xs">
+                                <span x-show="!isSaving">Create Item</span>
+                                <span x-show="isSaving">Saving...</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </template>
+        </div>
+    @else
+        @php
+            $selectedValue = is_array($value) ? ($value[0] ?? '') : (string)($value ?? '');
+            $selectedCat = $termModels->first(function ($t) use ($selectedValue) {
+                $tId = (string) $t->id;
+                $tSlug = $t->slug ?? '';
+                $tTitle = $t->title ?? '';
+                return $selectedValue == $tId || ($selectedValue !== '' && (strtolower($selectedValue) == strtolower($tTitle) || strtolower($selectedValue) == strtolower($tSlug)));
+            });
+            $selectedLabel = $selectedCat?->title ?? 'Select item...';
+            $initialVal = $selectedCat ? (string)$selectedCat->id : $selectedValue;
+        @endphp
+        <div x-data="{
+            open: false,
+            selectedValue: '{{ addslashes($initialVal) }}',
+            label: '{{ addslashes($selectedLabel) }}',
+            items: @js($itemsList),
+            allTaxonomies: @js($allTaxonomiesData),
+            selectedTaxId: '{{ $targetTaxId }}',
+            isTaxonomyFixed: {{ !empty($taxId) ? 'true' : 'false' }},
+            showAddModal: false,
+            newTermTitle: '',
+            newTermSlug: '',
+            customSlug: false,
+            formData: {},
+            isSaving: false,
+            errorMessage: '',
+            get selectedTaxonomy() {
+                return this.allTaxonomies.find(t => String(t.id) === String(this.selectedTaxId)) || this.allTaxonomies[0] || null;
+            },
+            get currentTaxFields() {
+                return this.selectedTaxonomy ? (this.selectedTaxonomy.fields || []) : [];
+            },
+            select(id, title) {
+                this.selectedValue = id;
+                this.label = title;
+                this.open = false;
+            },
+            slugify(text) {
+                return text
+                    .toString()
+                    .toLowerCase()
+                    .trim()
+                    .replace(/\s+/g, '-')
+                    .replace(/[^\w\-]+/g, '')
+                    .replace(/\-\-+/g, '-')
+                    .replace(/^-+/, '')
+                    .replace(/-+$/, '');
+            },
+            onTitleInput() {
+                if (!this.customSlug) {
+                    this.newTermSlug = this.slugify(this.newTermTitle);
+                }
+            },
+            onSlugInput(val) {
+                this.customSlug = true;
+                this.newTermSlug = this.slugify(val);
+            },
+            openAssetPicker(fieldKey) {
+                window.dispatchEvent(new CustomEvent('open-asset-picker', {
+                    detail: {
+                        callback: (url) => {
+                            this.formData[fieldKey] = url;
+                        }
+                    }
+                }));
+            },
+            getImageName(url) {
+                if (!url) return '';
+                try {
+                    const path = url.split('?')[0];
+                    return decodeURIComponent(path.split('/').pop() || path);
+                } catch (e) {
+                    return url;
+                }
+            },
+            resetModal() {
+                this.newTermTitle = '';
+                this.newTermSlug = '';
+                this.customSlug = false;
+                this.formData = {};
+                this.errorMessage = '';
+            },
+            async createTerm() {
+                if (!this.newTermTitle.trim() || this.isSaving) return;
+                this.isSaving = true;
+                this.errorMessage = '';
+                const dataPayload = {};
+                for (const [k, v] of Object.entries(this.formData)) {
+                    if (v !== '' && v !== null) {
+                        dataPayload[k] = v;
+                    }
+                }
+                try {
+                    const res = await fetch(`/admin/taxonomies/${this.selectedTaxId}/terms`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Accept': 'application/json',
+                            'X-CSRF-TOKEN': document.querySelector('meta[name=csrf-token]').content
+                        },
+                        body: JSON.stringify({
+                            title: this.newTermTitle.trim(),
+                            slug: this.newTermSlug.trim() || this.slugify(this.newTermTitle),
+                            data: dataPayload
+                        })
+                    });
+                    const data = await res.json();
+                    if (res.ok && data.success && data.term) {
+                        const newId = String(data.term.id);
+                        const newTitle = data.term.title;
+                        this.items.push({ id: newId, title: newTitle });
+                        this.select(newId, newTitle);
+                        this.resetModal();
+                        this.showAddModal = false;
+                    } else {
+                        this.errorMessage = data.message || 'Failed to create item';
+                    }
+                } catch (e) {
+                    this.errorMessage = 'An error occurred while creating item.';
+                } finally {
+                    this.isSaving = false;
+                }
+            }
+        }" @click.outside="open = false" @keydown.escape.window="open = false" class="relative">
+            <div class="flex items-center gap-2">
+                <div class="flex-1 min-w-0 relative">
+                    <button type="button" @click="open = !open" class="w-full flex items-center justify-between bg-content-bg border border-content-border text-text-primary text-sm rounded-lg px-3 py-2 h-9 cursor-pointer transition-all duration-150 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary">
+                        <span class="truncate font-medium text-text-heading" x-text="label"></span>
+                        <svg class="size-4 text-text-muted shrink-0 transition-transform duration-150" :class="open ? 'rotate-180' : ''" viewBox="0 0 20 20" fill="currentColor">
+                            <path fill-rule="evenodd" d="M5.22 8.22a.75.75 0 0 1 1.06 0L10 11.94l3.72-3.72a.75.75 0 1 1 1.06 1.06l-4.25 4.25a.75.75 0 0 1-1.06 0L5.22 9.28a.75.75 0 0 1 0-1.06Z" clip-rule="evenodd" />
+                        </svg>
+                    </button>
+                    <div x-show="open" class="absolute z-50 top-full mt-1 left-0 right-0 bg-content-bg border border-content-border rounded-lg shadow-lg p-1 max-h-80 overflow-y-auto [scrollbar-width:thin] space-y-0.5" style="display: none;">
+                        <button type="button" @click="selectedValue = ''; label = 'Select item...'; open = false" class="w-full text-left px-3 py-1.5 text-sm rounded-md transition-colors text-text-muted hover:bg-content-border/30">
+                            <span>None</span>
+                        </button>
+                        <template x-for="item in items" :key="item.id">
+                            <button type="button" @click="select(item.id, item.title)" class="w-full text-left px-3 py-1.5 text-sm rounded-md transition-colors" :class="selectedValue == item.id ? 'bg-primary/10 text-primary font-medium' : 'text-text-primary hover:bg-content-border/30'">
+                                <span x-text="item.title"></span>
+                            </button>
+                        </template>
+                        <div x-show="items.length === 0" class="px-3 py-2 text-sm text-text-muted text-center">
+                            No items found.
+                        </div>
+                    </div>
+                </div>
+                <button type="button" @click="showAddModal = true; $nextTick(function() { $refs.termInput && $refs.termInput.focus(); })" title="Create new item" class="size-9 shrink-0 flex items-center justify-center bg-content-bg border border-content-border text-text-primary rounded-lg hover:border-primary hover:text-primary transition-colors cursor-pointer shadow-sm focus:outline-none focus:ring-2 focus:ring-primary/20">
+                    <svg class="size-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+                    </svg>
+                </button>
+            </div>
+            <input type="hidden" name="data[{{ $key }}]" :value="selectedValue">
+            <template x-teleport="body">
+                <div x-show="showAddModal" x-cloak class="fixed inset-0 z-[9999] flex items-center justify-center p-4 bg-black/50 backdrop-blur-xs">
+                    <div @click.outside="showAddModal = false; resetModal()" @keydown.escape.window="showAddModal = false; resetModal()" class="bg-content-bg border border-content-border rounded-xl shadow-xl max-w-lg w-full max-h-[90vh] flex flex-col overflow-hidden">
+                        <div class="flex items-center justify-between border-b border-content-border px-5 py-3.5 shrink-0">
+                            <div>
+                                <h3 class="text-base font-semibold text-text-heading" x-text="'Create New ' + (selectedTaxonomy ? selectedTaxonomy.title : 'Item')"></h3>
+                            </div>
+                            <button type="button" @click="showAddModal = false; resetModal()" class="text-text-muted hover:text-text-primary cursor-pointer">
+                                <svg class="size-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+                                </svg>
+                            </button>
+                        </div>
+                        <div class="px-5 pt-3 pb-5 space-y-3.5 overflow-y-auto [scrollbar-width:thin] flex-1">
+                            <div x-show="!isTaxonomyFixed && allTaxonomies.length > 1">
+                                <label class="block text-xs font-medium text-text-heading mb-1">Taxonomy Group</label>
+                                <select x-model="selectedTaxId" class="w-full bg-content-bg border border-content-border text-text-primary text-sm rounded-lg px-3 py-2 h-9 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary">
+                                    <template x-for="tax in allTaxonomies" :key="tax.id">
+                                        <option :value="tax.id" x-text="tax.title"></option>
+                                    </template>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-xs font-medium text-text-heading mb-1">Title <span class="text-danger">*</span></label>
+                                <input type="text" x-model="newTermTitle" x-ref="termInput" @input="onTitleInput()" @keydown.enter.prevent="createTerm()" placeholder="Title..." class="w-full bg-content-bg border border-content-border text-text-primary text-sm rounded-lg px-3 py-2 h-9 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-medium text-text-heading mb-1">Slug</label>
+                                <input type="text" x-model="newTermSlug" @input="onSlugInput($event.target.value)" placeholder="auto-generated-slug" class="w-full bg-content-bg border border-content-border text-text-primary text-sm rounded-lg px-3 py-2 h-9 font-mono focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary">
+                            </div>
+
+                            <template x-for="tf in currentTaxFields" :key="tf.template || tf.title">
+                                <div>
+                                    <label class="block text-xs font-medium text-text-heading mb-1" x-text="tf.title || tf.template"></label>
+                                    <template x-if="tf.type === 'textarea'">
+                                        <textarea x-model="formData[tf.template || slugify(tf.title)]" rows="2" :placeholder="'Enter ' + (tf.title || '').toLowerCase() + '...'" class="w-full bg-content-bg border border-content-border text-text-primary text-sm rounded-lg px-3 py-1.5 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary"></textarea>
+                                    </template>
+                                    <template x-if="tf.type === 'number'">
+                                        <input type="number" x-model="formData[tf.template || slugify(tf.title)]" placeholder="0" class="w-full bg-content-bg border border-content-border text-text-primary text-sm rounded-lg px-3 py-2 h-9 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary">
+                                    </template>
+                                    <template x-if="tf.type === 'color'">
+                                        <div class="flex items-center gap-2">
+                                            <input type="color" x-model="formData[tf.template || slugify(tf.title)]" class="h-9 w-12 rounded border border-content-border p-0.5 cursor-pointer">
+                                            <input type="text" x-model="formData[tf.template || slugify(tf.title)]" placeholder="#000000" class="w-full bg-content-bg border border-content-border text-text-primary text-sm rounded-lg px-3 py-2 h-9 font-mono focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary">
+                                        </div>
+                                    </template>
+                                    <template x-if="tf.type === 'select'">
+                                        <select x-model="formData[tf.template || slugify(tf.title)]" class="w-full bg-content-bg border border-content-border text-text-primary text-sm rounded-lg px-3 py-2 h-9 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary">
+                                            <option value="">Select option...</option>
+                                            <template x-for="opt in (Array.isArray(tf.options) ? tf.options : (tf.options || '').split(',').map(s => s.trim()).filter(Boolean))" :key="opt">
+                                                <option :value="opt" x-text="opt"></option>
+                                            </template>
+                                        </select>
+                                    </template>
+                                    <template x-if="tf.type === 'image'">
+                                        <div class="w-full rounded-lg border border-content-border bg-content-bg overflow-hidden shadow-sm min-w-0">
+                                            {{-- Toolbar --}}
+                                            <div class="flex flex-wrap items-center gap-2 sm:gap-3 px-2.5 py-2.5 min-w-0">
+                                                <button type="button" @click="openAssetPicker(tf.template || slugify(tf.title))" class="inline-flex items-center justify-center gap-2 whitespace-nowrap shrink-0 font-medium cursor-pointer no-underline rounded-lg transition-colors h-8 text-xs leading-tight px-3 bg-gradient-to-b from-content-bg to-gray-50 hover:to-gray-100 text-text-primary border border-content-border shadow-sm">
+                                                    <svg viewBox="0 0 24 24" fill="none" class="size-4 shrink-0">
+                                                        <path d="M3 7a2 2 0 0 1 2-2h3.5l2 2H19a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V7Z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round" />
+                                                    </svg>
+                                                    Browse Assets
+                                                </button>
+                                                <div class="flex items-center gap-1.5 text-sm text-text-muted min-w-0">
+                                                    <svg viewBox="0 0 24 24" fill="none" class="size-4 shrink-0">
+                                                        <path d="M7 18a4 4 0 0 1-.5-7.97A5 5 0 0 1 16 8.5a3.5 3.5 0 0 1 1.5 6.7" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+                                                        <path d="M12 11.5v6m0-6 2 2m-2-2-2 2" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+                                                    </svg>
+                                                    <span class="truncate">
+                                                        Drag &amp; drop here or
+                                                        <button type="button" @click="openAssetPicker(tf.template || slugify(tf.title))" class="underline hover:text-text-primary cursor-pointer">choose a file</button>.
+                                                    </span>
+                                                </div>
+                                            </div>
+                                            {{-- Selected file row --}}
+                                            <div class="border-t border-content-border" x-show="formData[tf.template || slugify(tf.title)]" x-cloak>
+                                                <div class="flex items-center gap-3 px-2.5 py-2">
+                                                    <div class="size-8 rounded-md overflow-hidden bg-panel-bg flex items-center justify-center shrink-0 border border-content-border">
+                                                        <img :src="formData[tf.template || slugify(tf.title)]" alt="Selected image" class="size-full object-cover">
+                                                    </div>
+                                                    <span class="flex-1 min-w-0 truncate text-sm text-text-primary" x-text="getImageName(formData[tf.template || slugify(tf.title)])"></span>
+                                                    <button type="button" aria-label="Remove image" @click="formData[tf.template || slugify(tf.title)] = ''" class="shrink-0 flex size-6 items-center justify-center rounded-md text-text-muted hover:bg-text-primary/10 hover:text-text-primary transition-colors cursor-pointer">
+                                                        <svg viewBox="0 0 24 24" fill="none" class="size-4">
+                                                            <path d="M6 6l12 12M18 6L6 18" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
+                                                        </svg>
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </template>
+                                    <template x-if="!['textarea', 'number', 'color', 'select', 'image'].includes(tf.type)">
+                                        <input type="text" x-model="formData[tf.template || slugify(tf.title)]" :placeholder="'Enter ' + (tf.title || '').toLowerCase() + '...'" class="w-full bg-content-bg border border-content-border text-text-primary text-sm rounded-lg px-3 py-2 h-9 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary">
+                                    </template>
+                                </div>
+                            </template>
+
+                            <p x-show="errorMessage" class="text-xs text-danger" x-text="errorMessage"></p>
+                        </div>
+                        <div class="flex items-center justify-end gap-2 px-5 py-3 border-t border-content-border shrink-0 bg-panel-bg">
+                            <button type="button" @click="showAddModal = false; resetModal()" class="px-3 py-1.5 text-sm font-medium rounded-lg border border-content-border text-text-primary hover:bg-content-border/30 cursor-pointer">Cancel</button>
+                            <button type="button" @click="createTerm()" :disabled="isSaving" class="inline-flex items-center gap-1.5 px-3.5 py-1.5 text-sm font-medium rounded-lg bg-primary text-white hover:bg-primary-hover disabled:opacity-50 cursor-pointer shadow-xs">
+                                <span x-show="!isSaving">Create Item</span>
+                                <span x-show="isSaving">Saving...</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </template>
+        </div>
+    @endif
+    @break
                                                 @case('tags')
                                                     @php
-                                                        $selectedTags = is_array($value) ? $value : (is_string($value) ? json_decode($value, true) ?: [] : []);
-                                                        $selectedTags = array_filter($selectedTags);
+                                                        $rawTags = is_array($value) ? $value : (is_string($value) && $value !== '' ? json_decode($value, true) ?: [$value] : []);
+                                                        $selectedTags = array_values(array_map('strval', array_filter((array) $rawTags, fn($v) => $v !== null && $v !== '')));
                                                     @endphp
                                                     <div x-data="{
-                                                        tags: @json($selectedTags),
+                                                        tags: @js($selectedTags),
                                                         newTag: '',
                                                         addTag() {
+                                                            if (!Array.isArray(this.tags)) { this.tags = []; }
                                                             const val = this.newTag.trim();
                                                             if (val && !this.tags.includes(val)) {
                                                                 this.tags.push(val);
@@ -482,7 +948,9 @@
                                                             this.newTag = '';
                                                         },
                                                         removeTag(index) {
-                                                            this.tags.splice(index, 1);
+                                                            if (Array.isArray(this.tags)) {
+                                                                this.tags.splice(index, 1);
+                                                            }
                                                         }
                                                     }" class="w-full">
                                                         <div class="flex flex-wrap items-center gap-1.5 p-1.5 w-full bg-content-bg border border-content-border rounded-lg min-h-[36px] transition-all focus-within:ring-2 focus-within:ring-primary/20 focus-within:border-primary">
