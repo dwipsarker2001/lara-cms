@@ -437,26 +437,105 @@
                                     </div>
                                 </template>
 
-                                        {{-- boolean (toggle) --}}
-                                        <template x-if="field.type === 'boolean'">
-                                            <div class="flex items-center justify-between gap-3">
-                                                <label class="text-sm font-semibold text-text-primary" x-text="field.label"></label>
-                                                <button type="button" role="switch"
-                                                    :aria-checked="isChecked(getField(field.name))"
-                                                    @click="setField(field.name, isChecked(getField(field.name)) ? 'false' : 'true')"
-                                                    :class="isChecked(getField(field.name)) ? 'bg-primary' : 'bg-gray-300'"
-                                                    class="relative inline-flex h-6 w-11 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-primary/30 focus:ring-offset-1"
-                                                    :data-field-target="field.name"
-                                                >
-                                                    <span aria-hidden="true"
-                                                        :class="isChecked(getField(field.name)) ? 'translate-x-5' : 'translate-x-0'"
-                                                        class="pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out"
-                                                    ></span>
-                                                </button>
+                                {{-- boolean (toggle) --}}
+                                <template x-if="field.type === 'boolean'">
+                                    <div class="flex items-center justify-between gap-3">
+                                        <label class="text-sm font-semibold text-text-primary" x-text="field.label"></label>
+                                        <button type="button" role="switch"
+                                            :aria-checked="isChecked(getField(field.name))"
+                                            @click="setField(field.name, isChecked(getField(field.name)) ? 'false' : 'true')"
+                                            :class="isChecked(getField(field.name)) ? 'bg-primary' : 'bg-gray-300'"
+                                            class="relative inline-flex h-6 w-11 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-primary/30 focus:ring-offset-1"
+                                            :data-field-target="field.name"
+                                        >
+                                            <span aria-hidden="true"
+                                                :class="isChecked(getField(field.name)) ? 'translate-x-5' : 'translate-x-0'"
+                                                class="pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out"
+                                            ></span>
+                                        </button>
                                     </div>
                                 </template>
 
-                                {{-- select --}}
+                                {{-- devices (responsive visibility) --}}
+                                <template x-if="field.type === 'devices'">
+                                    <div x-data="{
+                                        getDevVal() {
+                                            let val = getField(field.name);
+                                            if (typeof val === 'string') {
+                                                try { val = JSON.parse(val); } catch(e) { val = {}; }
+                                            }
+                                            return (val && typeof val === 'object' && !Array.isArray(val)) ? val : {};
+                                        },
+                                        isDeviceActive(dev) {
+                                            const val = this.getDevVal();
+                                            return val[dev] !== false && val[dev] !== 'false';
+                                        },
+                                        toggleDevice(dev) {
+                                            const val = this.getDevVal();
+                                            const current = {
+                                                laptop: val.laptop !== false && val.laptop !== 'false',
+                                                tablet: val.tablet !== false && val.tablet !== 'false',
+                                                mobile: val.mobile !== false && val.mobile !== 'false'
+                                            };
+                                            current[dev] = !current[dev];
+                                            setField(field.name, current);
+                                        }
+                                    }">
+                                        <div class="mb-1.5">
+                                            <label class="block text-sm font-semibold text-text-primary" x-text="field.label"></label>
+                                        </div>
+                                        <div class="grid grid-cols-3 gap-2">
+                                            {{-- Laptop card --}}
+                                            <button type="button" @click="toggleDevice('laptop')"
+                                                class="flex items-center gap-2 bg-white rounded-lg border border-gray-300 px-2.5 py-2 shadow-[0_2px_3px_-2px_rgba(0,0,0,0.15)] hover:border-gray-400 transition-all select-none cursor-pointer text-left focus:outline-none"
+                                                title="Toggle visibility on Laptop (≥ 1024px)"
+                                            >
+                                                {{-- Left checkbox --}}
+                                                <div class="size-4 shrink-0 rounded border flex items-center justify-center transition-colors"
+                                                    :class="isDeviceActive('laptop') ? 'bg-primary border-primary text-white' : 'border-gray-300 bg-white'"
+                                                >
+                                                    <svg x-show="isDeviceActive('laptop')" class="size-3 text-white" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
+                                                        <polyline points="20 6 9 17 4 12" />
+                                                    </svg>
+                                                </div>
+                                                <span class="text-xs font-semibold truncate" :class="isDeviceActive('laptop') ? 'text-text-primary' : 'text-text-muted/60'">Laptop</span>
+                                            </button>
+
+                                            {{-- Tablet card --}}
+                                            <button type="button" @click="toggleDevice('tablet')"
+                                                class="flex items-center gap-2 bg-white rounded-lg border border-gray-300 px-2.5 py-2 shadow-[0_2px_3px_-2px_rgba(0,0,0,0.15)] hover:border-gray-400 transition-all select-none cursor-pointer text-left focus:outline-none"
+                                                title="Toggle visibility on Tablet (768px - 1023px)"
+                                            >
+                                                {{-- Left checkbox --}}
+                                                <div class="size-4 shrink-0 rounded border flex items-center justify-center transition-colors"
+                                                    :class="isDeviceActive('tablet') ? 'bg-primary border-primary text-white' : 'border-gray-300 bg-white'"
+                                                >
+                                                    <svg x-show="isDeviceActive('tablet')" class="size-3 text-white" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
+                                                        <polyline points="20 6 9 17 4 12" />
+                                                    </svg>
+                                                </div>
+                                                <span class="text-xs font-semibold truncate" :class="isDeviceActive('tablet') ? 'text-text-primary' : 'text-text-muted/60'">Tablet</span>
+                                            </button>
+
+                                            {{-- Mobile card --}}
+                                            <button type="button" @click="toggleDevice('mobile')"
+                                                class="flex items-center gap-2 bg-white rounded-lg border border-gray-300 px-2.5 py-2 shadow-[0_2px_3px_-2px_rgba(0,0,0,0.15)] hover:border-gray-400 transition-all select-none cursor-pointer text-left focus:outline-none"
+                                                title="Toggle visibility on Mobile (< 768px)"
+                                            >
+                                                {{-- Left checkbox --}}
+                                                <div class="size-4 shrink-0 rounded border flex items-center justify-center transition-colors"
+                                                    :class="isDeviceActive('mobile') ? 'bg-primary border-primary text-white' : 'border-gray-300 bg-white'"
+                                                >
+                                                    <svg x-show="isDeviceActive('mobile')" class="size-3 text-white" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
+                                                        <polyline points="20 6 9 17 4 12" />
+                                                    </svg>
+                                                </div>
+                                                <span class="text-xs font-semibold truncate" :class="isDeviceActive('mobile') ? 'text-text-primary' : 'text-text-muted/60'">Mobile</span>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </template>
+
                                 <template x-if="field.type === 'select'">
                                     <div>
                                         <label class="block text-sm font-semibold text-text-primary mb-1" x-text="field.label"></label>
@@ -1918,7 +1997,12 @@
 
                 const fields = this.currentFields();
                 const fieldDef = fields?.find(f => f.name === name);
-                if (fieldDef && (fieldDef.type === 'object' || fieldDef.type === 'location')) {
+                if (fieldDef && (fieldDef.type === 'object' || fieldDef.type === 'location' || fieldDef.type === 'devices')) {
+                    if (fieldDef.type === 'devices') {
+                        if (!val || typeof val !== 'object' || Object.keys(val).length === 0) {
+                            return { laptop: true, tablet: true, mobile: true };
+                        }
+                    }
                     return val;
                 }
 
@@ -2109,6 +2193,11 @@
                 }
 
                 // ──────────────────────────────────────────────────────────────────
+
+                if (name === 'devices') {
+                    this.schedulePreview();
+                    return true;
+                }
 
                 if (this.crumbs && this.crumbs.length > 0) {
                     for (const crumb of this.crumbs) {

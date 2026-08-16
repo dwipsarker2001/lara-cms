@@ -120,6 +120,20 @@ class Field
         return $field;
     }
 
+    public static function devices(string $name = 'devices', string $label = 'Screen Visibility'): array
+    {
+        return [
+            'name' => $name,
+            'label' => $label,
+            'type' => 'devices',
+            'defaultValue' => [
+                'laptop' => true,
+                'tablet' => true,
+                'mobile' => true,
+            ],
+        ];
+    }
+
     public static function background(): array
     {
         return [

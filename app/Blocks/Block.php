@@ -35,6 +35,11 @@ abstract class Block
     public bool $background = true;
 
     /**
+     * Whether to auto-prepend a `devices` field (device visibility toggle: laptop, tablet, mobile).
+     */
+    public bool $devices = true;
+
+    /**
      * The block's editable fields.
      *
      * @return array<int, array>
@@ -54,18 +59,24 @@ abstract class Block
     }
 
     /**
-     * Fields as the editor and renderer see them: a `background` field prepended
+     * Fields as the editor and renderer see them: `background` and `devices` fields prepended
      * unless the block opts out or is global.
      *
      * @return array<int, array>
      */
     public function resolvedFields(): array
     {
-        if ($this->background && ! $this->global) {
-            return [Field::background(), ...$this->fields()];
+        $fields = $this->fields();
+
+        if ($this->devices && ! $this->global) {
+            $fields = [Field::devices(), ...$fields];
         }
 
-        return $this->fields();
+        if ($this->background && ! $this->global) {
+            $fields = [Field::background(), ...$fields];
+        }
+
+        return $fields;
     }
 
     public function render(array $data, string $_key = '', bool $preview = false, $page = null): string

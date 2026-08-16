@@ -7,6 +7,7 @@ use App\Blocks\custom\TravelDeals;
 use App\Blocks\Field;
 use App\Models\Admin;
 use App\Models\Collection;
+use App\Support\BlockPreview;
 use App\Support\Sections;
 
 test('Block::render returns a string for a block with a view', function () {
@@ -41,11 +42,12 @@ test('Block::render returns empty string when the view does not exist', function
     expect($block->render(data: []))->toBe('');
 });
 
-test('Block::resolvedFields prepends background for non-global blocks', function () {
+test('Block::resolvedFields prepends background and devices for non-global blocks', function () {
     $block = new TravelDeals;
 
     $names = array_column($block->resolvedFields(), 'name');
 
+    expect($names)->toContain('devices');
     expect($names)->toContain('background');
     expect($names)->toContain('headline');
 });
@@ -214,4 +216,74 @@ test('editor loads latest global block data even if entry had older snapshot', f
 
         return $nav && $nav['data']['brandName'] === 'Master Brand';
     });
+});
+
+test('Field::devices returns a devices field definition with default true for all devices', function () {
+    $devices = Field::devices();
+
+    expect($devices['type'])->toBe('devices')
+        ->and($devices['name'])->toBe('devices')
+        ->and($devices['label'])->toBe('Screen Visibility')
+        ->and($devices['defaultValue'])->toBe([
+            'laptop' => true,
+            'tablet' => true,
+            'mobile' => true,
+        ]);
+});
+
+test('BlockPreview::getDeviceVisibilityClasses generates accurate responsive Tailwind classes', function () {
+    // All active or unconfigured/empty -> empty string (shows on all screens)
+    expect(BlockPreview::getDeviceVisibilityClasses(['laptop' => true, 'tablet' => true, 'mobile' => true]))->toBe('');
+    expect(BlockPreview::getDeviceVisibilityClasses(null))->toBe('');
+    expect(BlockPreview::getDeviceVisibilityClasses(''))->toBe('');
+    expect(BlockPreview::getDeviceVisibilityClasses([]))->toBe('');
+    expect(BlockPreview::getDeviceVisibilityClasses(['laptop' => false, 'tablet' => false, 'mobile' => false]))->toBe('');
+
+    // Single device visible
+    expect(BlockPreview::getDeviceVisibilityClasses(['laptop' => true, 'tablet' => false, 'mobile' => false]))->toBe('hidden lg:block');
+    expect(BlockPreview::getDeviceVisibilityClasses(['laptop' => false, 'tablet' => true, 'mobile' => false]))->toBe('hidden md:block lg:hidden');
+    expect(BlockPreview::getDeviceVisibilityClasses(['laptop' => false, 'tablet' => false, 'mobile' => true]))->toBe('block md:hidden');
+
+    // Two devices visible (one hidden)
+    expect(BlockPreview::getDeviceVisibilityClasses(['laptop' => false, 'tablet' => true, 'mobile' => true]))->toBe('lg:hidden');
+    expect(BlockPreview::getDeviceVisibilityClasses(['laptop' => true, 'tablet' => false, 'mobile' => true]))->toBe('block md:hidden lg:block');
+    expect(BlockPreview::getDeviceVisibilityClasses(['laptop' => true, 'tablet' => true, 'mobile' => false]))->toBe('hidden md:block');
+});
+
+test('BlockPreview::render applies device visibility classes to the section wrapper', function () {
+    $sections = [
+        [
+            '_key' => 's1',
+            'name' => 'simpleText',
+            'enabled' => true,
+            'data' => [
+                'text' => 'Mobile only section',
+                'devices' => ['laptop' => false, 'tablet' => false, 'mobile' => true],
+            ],
+        ],
+    ];
+
+    $html = BlockPreview::render($sections, withGlobals: false);
+
+    expect($html)->toContain('data-section-index="0"')
+        ->and($html)->toContain('class="block md:hidden"');
+});
+
+test('BlockPreview::render ensures legacy blocks without devices setting show on all screens', function () {
+    $sections = [
+        [
+            '_key' => 's2',
+            'name' => 'simpleText',
+            'enabled' => true,
+            'data' => [
+                'text' => 'Legacy section without devices data',
+            ],
+        ],
+    ];
+
+    $html = BlockPreview::render($sections, withGlobals: false);
+
+    expect($html)->toContain('<div data-section-index="0">')
+        ->and($html)->not->toContain('class="hidden"')
+        ->and($html)->not->toContain('lg:hidden');
 });
