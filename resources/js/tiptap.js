@@ -262,6 +262,8 @@ export function mountTipTap(fieldName, wrapperEl, initialContent, onUpdate) {
         extensions: [
             StarterKit.configure({
                 heading: { levels: [1, 2, 3, 4, 5, 6] },
+                underline: false,
+                link: false,
             }),
             Underline,
             Link.configure({

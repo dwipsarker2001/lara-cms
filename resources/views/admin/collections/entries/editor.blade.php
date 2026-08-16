@@ -2221,9 +2221,16 @@
                     return true;
                 }
 
+                const text = value == null || value === undefined ? '' : String(value);
+                const looksLikeHtml = typeof text === 'string' && /<\/?[a-z][\s\S]*>/i.test(text);
+
+                const fields = this.currentFields();
+                const fieldDef = fields?.find(f => f.name === name);
+                const isRichtextField = fieldDef?.type === 'richtext' || looksLikeHtml;
+
                 const isImgTag = target.tagName === 'IMG';
-                let imgEl = isImgTag ? target : target.querySelector('img');
-                const isImageField = name.toLowerCase().includes('image') || isImgTag || !!imgEl;
+                let imgEl = isImgTag ? target : (fieldDef?.type === 'image' ? target.querySelector('img') : null);
+                const isImageField = !isRichtextField && (fieldDef?.type === 'image' || isImgTag || (name.toLowerCase().includes('image') && !looksLikeHtml));
 
                 if (isImageField) {
                     if (!imgEl && !isImgTag) {
@@ -2250,9 +2257,6 @@
                     }
                     return true;
                 }
-
-                const text = value == null || value === undefined ? '' : String(value);
-                const looksLikeHtml = typeof text === 'string' && /<\/?[a-z][\s\S]*>/i.test(text);
 
                 if (looksLikeHtml) {
                     if (window.morphdom) {
