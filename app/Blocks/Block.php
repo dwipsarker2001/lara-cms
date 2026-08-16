@@ -29,13 +29,17 @@ abstract class Block
     public bool $global = false;
 
     /**
-     * Whether to auto-prepend a `background` field (image/color/opacity wrapper).
-     * Full-bleed blocks with their own background (hero, navbar) set this false.
+     * Whether to auto-prepend a `configuration` group (containing Screen Visibility and/or Background settings).
+     */
+    public bool $configuration = true;
+
+    /**
+     * Whether to include background image/color/opacity inside the configuration group.
      */
     public bool $background = true;
 
     /**
-     * Whether to auto-prepend a `devices` field (device visibility toggle: laptop, tablet, mobile).
+     * Whether to include device visibility (laptop, tablet, mobile) inside the configuration group.
      */
     public bool $devices = true;
 
@@ -59,7 +63,7 @@ abstract class Block
     }
 
     /**
-     * Fields as the editor and renderer see them: `background` and `devices` fields prepended
+     * Fields as the editor and renderer see them: `configuration` object group prepended
      * unless the block opts out or is global.
      *
      * @return array<int, array>
@@ -68,12 +72,40 @@ abstract class Block
     {
         $fields = $this->fields();
 
-        if ($this->devices && ! $this->global) {
-            $fields = [Field::devices(), ...$fields];
-        }
+        if ($this->configuration && ! $this->global) {
+            $configFields = [];
 
-        if ($this->background && ! $this->global) {
-            $fields = [Field::background(), ...$fields];
+            if ($this->devices) {
+                $configFields[] = Field::devices('devices', 'Screen Visibility');
+            }
+
+            if ($this->background) {
+                $configFields = array_merge($configFields, [
+                    Field::image('image', 'Background Image'),
+                    Field::select('color', 'Background Color', [
+                        ['value' => '#ffffff', 'label' => 'White'],
+                        ['value' => '#000000', 'label' => 'Black'],
+                        ['value' => '#f3f4f6', 'label' => 'Light Gray'],
+                        ['value' => '#e5e7eb', 'label' => 'Gray'],
+                        ['value' => '#eff6ff', 'label' => 'Light Blue'],
+                        ['value' => '#dbeafe', 'label' => 'Blue'],
+                        ['value' => '#f0fdf4', 'label' => 'Light Green'],
+                        ['value' => '#dcfce7', 'label' => 'Green'],
+                        ['value' => '#fef2f2', 'label' => 'Light Red'],
+                        ['value' => '#fefce8', 'label' => 'Light Yellow'],
+                        ['value' => '#f5f3ff', 'label' => 'Light Purple'],
+                        ['value' => '#fff7ed', 'label' => 'Light Orange'],
+                    ], default: '#ffffff'),
+                    Field::number('opacity', 'Opacity', default: 100),
+                ]);
+            }
+
+            if (! empty($configFields)) {
+                $fields = [
+                    Field::group('configuration', 'Configuration', $configFields),
+                    ...$fields,
+                ];
+            }
         }
 
         return $fields;

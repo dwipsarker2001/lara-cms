@@ -42,14 +42,24 @@ test('Block::render returns empty string when the view does not exist', function
     expect($block->render(data: []))->toBe('');
 });
 
-test('Block::resolvedFields prepends background and devices for non-global blocks', function () {
+test('Block::resolvedFields prepends configuration group for non-global blocks', function () {
     $block = new TravelDeals;
 
-    $names = array_column($block->resolvedFields(), 'name');
+    $fields = $block->resolvedFields();
+    $names = array_column($fields, 'name');
 
-    expect($names)->toContain('devices');
-    expect($names)->toContain('background');
+    expect($names)->toContain('configuration');
     expect($names)->toContain('headline');
+
+    $configField = collect($fields)->firstWhere('name', 'configuration');
+    expect($configField['type'])->toBe('object')
+        ->and($configField['label'])->toBe('Configuration');
+
+    $subNames = array_column($configField['fields'], 'name');
+    expect($subNames)->toContain('devices')
+        ->and($subNames)->toContain('image')
+        ->and($subNames)->toContain('color')
+        ->and($subNames)->toContain('opacity');
 });
 
 test('Block::toArray exposes name, label, global and fields', function () {
@@ -71,11 +81,12 @@ test('BlockRegistry discovers concrete block subclasses', function () {
         ->and($all['heroBanner'])->toBeInstanceOf(HeroBanner::class);
 });
 
-test('Field::background returns a structured object field with image, color, opacity', function () {
-    $bg = Field::background();
+test('Field::configuration returns a structured object field with devices, image, color, opacity', function () {
+    $config = Field::configuration();
 
-    expect($bg['type'])->toBe('object');
-    expect(array_column($bg['fields'], 'name'))->toBe(['image', 'color', 'opacity']);
+    expect($config['type'])->toBe('object')
+        ->and($config['label'])->toBe('Configuration');
+    expect(array_column($config['fields'], 'name'))->toBe(['devices', 'image', 'color', 'opacity']);
 });
 
 test('Field::map returns a map field array', function () {
@@ -258,7 +269,9 @@ test('BlockPreview::render applies device visibility classes to the section wrap
             'enabled' => true,
             'data' => [
                 'text' => 'Mobile only section',
-                'devices' => ['laptop' => false, 'tablet' => false, 'mobile' => true],
+                'configuration' => [
+                    'devices' => ['laptop' => false, 'tablet' => false, 'mobile' => true],
+                ],
             ],
         ],
     ];

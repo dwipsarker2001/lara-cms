@@ -113,7 +113,11 @@ class BlockPreview
                 page: $page,
             );
 
-            $deviceClasses = self::getDeviceVisibilityClasses($section['data']['devices'] ?? null);
+            $devicesData = $section['data']['configuration']['devices']
+                ?? $section['data']['devices']
+                ?? $section['data']['background']['devices']
+                ?? null;
+            $deviceClasses = self::getDeviceVisibilityClasses($devicesData);
             $classes = array_filter([$deviceClasses, $isEditor ? 'p-0.5' : '']);
             $classAttr = ! empty($classes) ? ' class="'.implode(' ', $classes).'"' : '';
 

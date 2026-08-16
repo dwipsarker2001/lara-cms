@@ -134,13 +134,14 @@ class Field
         ];
     }
 
-    public static function background(): array
+    public static function configuration(): array
     {
         return [
-            'name' => 'background',
-            'label' => 'Background',
+            'name' => 'configuration',
+            'label' => 'Configuration',
             'type' => 'object',
             'fields' => [
+                self::devices('devices', 'Screen Visibility'),
                 self::image('image', 'Background Image'),
                 self::select('color', 'Background Color', [
                     ['value' => '#ffffff', 'label' => 'White'],
@@ -159,6 +160,11 @@ class Field
                 self::number('opacity', 'Opacity', default: 100),
             ],
         ];
+    }
+
+    public static function background(): array
+    {
+        return self::configuration();
     }
 
     public static function select(string $name, string $label, array $options, string $default = '', string $source = ''): array

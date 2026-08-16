@@ -1,6 +1,9 @@
-@php $d = $data; @endphp
 @php
-    $bg = is_array($d['background'] ?? null) ? $d['background'] : [];
+    $d = $data;
+    $bg = is_array($d['configuration'] ?? null) ? $d['configuration'] : (is_array($d['background'] ?? null) ? $d['background'] : []);
+    if (empty($bg) && isset($d['configuration']) && is_string($d['configuration'])) {
+        try { $bg = json_decode($d['configuration'], true) ?? []; } catch (\Exception) { $bg = []; }
+    }
     if (empty($bg) && isset($d['background']) && is_string($d['background'])) {
         try { $bg = json_decode($d['background'], true) ?? []; } catch (\Exception) { $bg = []; }
     }

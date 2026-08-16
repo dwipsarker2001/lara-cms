@@ -1,13 +1,17 @@
 @php
     $d = $data;
-    $btn = $d['button'] ?? [];
-    $bg = is_array($d['background'] ?? null) ? $d['background'] : [];
+    $deals = is_array($d['deals'] ?? null) ? $d['deals'] : [];
+    $bg = is_array($d['configuration'] ?? null) ? $d['configuration'] : (is_array($d['background'] ?? null) ? $d['background'] : []);
+    if (empty($bg) && isset($d['configuration']) && is_string($d['configuration'])) {
+        try { $bg = json_decode($d['configuration'], true) ?? []; } catch (\Exception) { $bg = []; }
+    }
     if (empty($bg) && isset($d['background']) && is_string($d['background'])) {
         try { $bg = json_decode($d['background'], true) ?? []; } catch (\Exception) { $bg = []; }
     }
     $bgImg = $bg['image'] ?? '';
     $bgColor = $bg['color'] ?? '';
     $bgOpacity = $bg['opacity'] ?? 100;
+    $btn = $d['button'] ?? [];
     $currencySymbol = \App\Models\Setting::getCurrencySymbol();
 @endphp
 <section data-block="travelDeals" class="py-20 relative overflow-hidden">

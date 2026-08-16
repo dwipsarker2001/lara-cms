@@ -2073,17 +2073,19 @@
                     context = container.children[this.active];
                 }
 
-                // ── Background group special handling ──────────────────────────────
-                // When we are editing inside the 'background' group (crumbs contain
-                // {key:'background'} with no index), the block templates render the
-                // background as inline CSS styles on plain divs — NOT as data-edit
-                // attributes. So we must update CSS directly instead of hunting for
-                // [data-edit="image"] which would land on the first list-item image.
-                const isInsideBackgroundGroup = this.crumbs.length > 0 &&
-                    this.crumbs[this.crumbs.length - 1].key === 'background' &&
+                // ── Configuration / Background group special handling ──────────────
+                // When we are editing inside the 'configuration' or 'background' group (crumbs contain
+                // {key:'configuration'} or {key:'background'} with no index)...
+                const isInsideConfigGroup = this.crumbs.length > 0 &&
+                    (this.crumbs[this.crumbs.length - 1].key === 'configuration' || this.crumbs[this.crumbs.length - 1].key === 'background') &&
                     this.crumbs[this.crumbs.length - 1].index === undefined;
 
-                if (isInsideBackgroundGroup) {
+                if (isInsideConfigGroup) {
+                    if (name === 'devices') {
+                        this.schedulePreview();
+                        return true;
+                    }
+
                     // context = the outer [data-section-index] wrapper div.
                     // We need the actual block element ([data-block]) inside it.
                     const sectionWrapper = (context !== doc) ? context : null;
