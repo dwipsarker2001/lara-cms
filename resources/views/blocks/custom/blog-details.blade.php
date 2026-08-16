@@ -52,35 +52,6 @@
         $categoryNames = ['Travel'];
     }
 
-    $tags = $d['tag'] ?? ['International', 'Adventure', 'Heritage'];
-    if (is_string($tags)) {
-        $tags = json_decode($tags, true) ?: array_map('trim', explode(',', $tags));
-    }
-    $tags = is_array($tags) ? array_filter($tags) : [];
-
-    $showRelatedPosts = filter_var($d['showRelatedPosts'] ?? true, FILTER_VALIDATE_BOOLEAN);
-    $relatedTitle = $d['relatedTitle'] ?? 'Related Posts';
-    $relatedPosts = $d['relatedPosts'] ?? [
-        [
-            'image' => 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=600&q=80',
-            'date' => 'Jun 1, 2026',
-            'title' => 'বান্দরবান ট্র্যাকিং: পাহাড়ের চূড়ায় মেঘের সাথে খেলা',
-            'link' => '#',
-        ],
-        [
-            'image' => 'https://images.unsplash.com/photo-1519681393784-d120267933ba?auto=format&fit=crop&w=600&q=80',
-            'date' => 'Apr 10, 2026',
-            'title' => 'বান্দরবান ট্র্যাকিং: ২০২৩ সালের চ্যালেঞ্জ ও পাহাড়চূড়ার পার্টি',
-            'link' => '#',
-        ],
-        [
-            'image' => 'https://images.unsplash.com/photo-1544735716-392fe2489ffa?auto=format&fit=crop&w=600&q=80',
-            'date' => 'Apr 22, 2026',
-            'title' => 'হামহাম জলপ্রপাতে এক দিন: বাংলাদেশের সবচেয়ে উঁচু ঝরনা',
-            'link' => '#',
-        ],
-    ];
-
     $contactTitle = $d['contactTitle'] ?? 'Join the conversation';
     $contactSubtitle = $d['contactSubtitle'] ?? 'Comments are coming soon. Have a question or story to share? Reach out via our contact page.';
     $contactButtonText = $d['contactButtonText'] ?? 'Contact us';
@@ -108,23 +79,8 @@
                     {!! $content !!}
                 </div>
 
-                {{-- Bottom Tags & Share Bar --}}
-                <div class="border-t border-b border-gray-100 py-4 flex flex-wrap items-center justify-between gap-4">
-                    {{-- Tags --}}
-                    <div class="flex flex-wrap items-center gap-2">
-                        <span class="text-xs font-bold text-gray-500 uppercase tracking-wider flex items-center gap-1">
-                            <svg class="size-3.5 text-gray-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                                <path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/>
-                                <line x1="7" y1="7" x2="7.01" y2="7"/>
-                            </svg>
-                            Tags:
-                        </span>
-                        @foreach($tags as $t)
-                            <a href="?tag={{ urlencode($t) }}" class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-gray-100 text-gray-600 hover:bg-emerald-50 hover:text-emerald-600 transition-colors">{{ $t }}</a>
-                        @endforeach
-                    </div>
-
-                    {{-- Social Share --}}
+                {{-- Social Share Bar --}}
+                <div class="border-t border-b border-gray-100 py-4 flex items-center justify-end gap-4">
                     <div class="flex items-center gap-2">
                         <span class="text-xs font-bold text-gray-500 uppercase tracking-wider flex items-center gap-1">
                             <svg class="size-3.5 text-gray-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
@@ -148,48 +104,6 @@
                     </div>
                 </div>
 
-                {{-- Related Posts Section --}}
-                @if($showRelatedPosts)
-                    <div class="pt-6 border-t border-gray-100">
-                        <div class="flex items-center justify-between mb-6">
-                            <h3 class="text-lg sm:text-xl font-bold text-gray-900" data-edit="relatedTitle">{{ $relatedTitle }}</h3>
-                            <a href="/blog" class="text-xs font-semibold text-emerald-600 hover:text-emerald-700 flex items-center gap-1 group transition-colors">
-                                <span>View all</span>
-                                <svg class="size-3.5 group-hover:translate-x-0.5 transition-transform" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
-                            </a>
-                        </div>
-
-                        <div class="grid grid-cols-1 sm:grid-cols-3 gap-6">
-                            @foreach($relatedPosts as $index => $item)
-                                @php
-                                    $rImg = $item['image'] ?? 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=600&q=80';
-                                    $rDate = $item['date'] ?? 'Jun 1, 2026';
-                                    $rTitle = $item['title'] ?? 'Untitled Post';
-                                    $rLink = $item['link'] ?? '#';
-                                @endphp
-                                <div class="bg-white border border-gray-100 rounded-2xl overflow-hidden shadow-xs hover:shadow-md transition-shadow group flex flex-col">
-                                    <div class="aspect-[4/3] w-full overflow-hidden bg-gray-100">
-                                        <img src="{{ $rImg }}" alt="{{ $rTitle }}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">
-                                    </div>
-                                    <div class="p-4 flex flex-col flex-1">
-                                        <div class="text-[11px] text-gray-400 font-medium flex items-center gap-1 mb-1.5">
-                                            <svg class="size-3 text-gray-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
-                                            <span>{{ $rDate }}</span>
-                                        </div>
-                                        <h4 class="text-xs font-bold text-gray-900 group-hover:text-emerald-600 transition-colors line-clamp-2 mb-3 flex-1 leading-snug">
-                                            {{ $rTitle }}
-                                        </h4>
-                                        <a href="{{ $rLink }}" class="text-[11px] font-semibold text-emerald-600 flex items-center gap-1 group-hover:translate-x-1 transition-transform">
-                                            <span>Read more</span>
-                                            <svg class="size-3" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
-                                        </a>
-                                    </div>
-                                </div>
-                            @endforeach
-                        </div>
-                    </div>
-                @endif
-
             </div>
 
             {{-- ════════════════════════════════════════════════════════════ --}}
@@ -197,9 +111,9 @@
             {{-- ════════════════════════════════════════════════════════════ --}}
             @php
                 $selectedCollection = $d['postCollection'] ?? null;
+                $categoryTaxonomy = $d['categoryTaxonomy'] ?? $d['category_taxonomy'] ?? null;
                 $sidebarRecentPosts = \App\Support\BlogSidebarData::getRecentPosts(3, $selectedCollection);
-                $sidebarCategories = \App\Support\BlogSidebarData::getCategories($selectedCollection);
-                $sidebarTags = \App\Support\BlogSidebarData::getTags($selectedCollection);
+                $sidebarCategories = \App\Support\BlogSidebarData::getCategories($selectedCollection, $categoryTaxonomy);
             @endphp
             <div class="lg:col-span-4 space-y-8">
                 
@@ -279,28 +193,9 @@
                     </div>
                 </div>
 
-                {{-- 4. Tags Cloud Widget --}}
-                <div class="bg-white border border-gray-100 rounded-2xl p-5 shadow-xs">
-                    <div class="flex items-center gap-2 text-xs font-bold text-gray-900 uppercase tracking-wider mb-4">
-                        <svg class="size-4 text-emerald-600" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                            <path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/>
-                            <line x1="7" y1="7" x2="7.01" y2="7"/>
-                        </svg>
-                        <span>Tags</span>
-                    </div>
-
-                    <div class="flex flex-wrap gap-2">
-                        @foreach($sidebarTags as $index => $tag)
-                            @php $isTagActive = $index < 3 || request('tag') === $tag; @endphp
-                            <a href="?tag={{ urlencode($tag) }}" class="px-3 py-1 text-xs font-semibold rounded-full shadow-xs transition-colors {{ $isTagActive ? 'bg-emerald-600 text-white' : 'bg-gray-100 text-gray-600 hover:bg-emerald-50 hover:text-emerald-600 font-medium' }}">
-                                {{ $tag }}
-                            </a>
-                        @endforeach
-                    </div>
-                </div>
-
             </div>
 
         </div>
     </div>
 </div>
+

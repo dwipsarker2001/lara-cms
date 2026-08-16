@@ -185,7 +185,7 @@ class BlogList extends ListBlock
             $card->author = $eData['created_by'] ?? $eData['author'] ?? ($entry->meta['author'] ?? (auth('admin')->user()->name ?? 'Admin'));
         }
         if (empty($card->category)) {
-            $card->category = $eData['category'] ?? $eData['category_id'] ?? null;
+            $card->category = $eData['category'] ?? $eData['category_id'] ?? $eData['categories'] ?? null;
         }
 
         foreach (get_object_vars($card) as $key => $val) {
@@ -203,6 +203,13 @@ class BlogList extends ListBlock
      */
     public static function formatSlotValue(mixed $value): mixed
     {
+        if (is_string($value) && (str_starts_with(trim($value), '[') || str_starts_with(trim($value), '{'))) {
+            $decoded = json_decode($value, true);
+            if (is_array($decoded)) {
+                $value = $decoded;
+            }
+        }
+
         if (is_numeric($value) && Schema::hasTable('terms')) {
             $term = Term::find((int) $value);
             if ($term) {
@@ -210,12 +217,28 @@ class BlogList extends ListBlock
             }
         }
 
+        if (is_string($value) && Schema::hasTable('terms')) {
+            $term = Term::where('slug', $value)->orWhere('title', $value)->first();
+            if ($term) {
+                return $term->title;
+            }
+        }
+
         if (is_array($value)) {
-            $numericIds = array_filter($value, fn ($v) => is_numeric($v));
-            if (! empty($numericIds) && Schema::hasTable('terms')) {
-                $terms = Term::whereIn('id', $numericIds)->pluck('title')->toArray();
-                if (! empty($terms)) {
-                    return implode(', ', $terms);
+            if (Schema::hasTable('terms')) {
+                $numericIds = array_map('intval', array_filter($value, fn ($v) => is_numeric($v)));
+                $stringVals = array_filter($value, fn ($v) => is_string($v) && ! is_numeric($v));
+
+                $termTitles = [];
+                if (! empty($numericIds)) {
+                    $termTitles = array_merge($termTitles, Term::whereIn('id', $numericIds)->pluck('title')->toArray());
+                }
+                if (! empty($stringVals)) {
+                    $termTitles = array_merge($termTitles, Term::whereIn('slug', $stringVals)->orWhereIn('title', $stringVals)->pluck('title')->toArray());
+                }
+
+                if (! empty($termTitles)) {
+                    return implode(', ', array_unique($termTitles));
                 }
             }
 

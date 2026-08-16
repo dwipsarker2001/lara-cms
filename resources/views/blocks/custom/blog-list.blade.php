@@ -21,32 +21,40 @@
             $query->whereHas('collection', fn ($q) => $q->where('slug', $selectedCollection));
         } else {
             $query->whereHas('collection', function ($q) {
-                $q->whereIn('slug', ['posts', 'blog', 'news', 'articles'])
-                    ->orWhere('slug', '!=', 'pages');
+                $q->whereIn('slug', ['posts', 'blog', 'blogs', 'news', 'articles'])
+                    ->orWhereNotIn('slug', ['pages', 'layouts']);
             });
         }
 
         if ($categoryTag) {
-            $matchedTaxonomy = \App\Models\Taxonomy::where('slug', $categoryTag)->orWhere('title', $categoryTag)->first();
-            $matchedTerm = \App\Models\Term::where('slug', $categoryTag)->orWhere('title', $categoryTag)->first();
-            $matchedValues = array_filter([
-                $categoryTag,
-                $matchedTaxonomy?->id,
-                (string) $matchedTaxonomy?->id,
-                $matchedTaxonomy?->title,
-                $matchedTaxonomy?->slug,
-                $matchedTerm?->id,
-                (string) $matchedTerm?->id,
-                $matchedTerm?->title,
-                $matchedTerm?->slug,
-            ]);
+            $matchedTaxonomies = \App\Models\Taxonomy::where('slug', $categoryTag)->orWhere('title', $categoryTag)->get();
+            $matchedTerms = \App\Models\Term::where('slug', $categoryTag)
+                ->orWhere('title', $categoryTag)
+                ->orWhere('id', is_numeric($categoryTag) ? (int) $categoryTag : 0)
+                ->get();
+
+            $matchedValues = array_filter(array_unique(array_merge(
+                [$categoryTag],
+                $matchedTaxonomies->pluck('id')->toArray(),
+                $matchedTaxonomies->pluck('id')->map(fn ($id) => (string) $id)->toArray(),
+                $matchedTaxonomies->pluck('title')->toArray(),
+                $matchedTaxonomies->pluck('slug')->toArray(),
+                $matchedTerms->pluck('id')->toArray(),
+                $matchedTerms->pluck('id')->map(fn ($id) => (string) $id)->toArray(),
+                $matchedTerms->pluck('title')->toArray(),
+                $matchedTerms->pluck('slug')->toArray(),
+            )));
 
             $query->where(function ($qry) use ($matchedValues) {
                 foreach ($matchedValues as $val) {
                     $qry->orWhereJsonContains('data->category', $val)
                         ->orWhere('data->category', $val)
+                        ->orWhereJsonContains('data->categories', $val)
+                        ->orWhere('data->categories', $val)
                         ->orWhereJsonContains('data->tags', $val)
-                        ->orWhere('data->tags', 'like', "%{$val}%");
+                        ->orWhere('data->tags', 'like', "%{$val}%")
+                        ->orWhereJsonContains('data->tag', $val)
+                        ->orWhere('data->tag', 'like', "%{$val}%");
                 }
             });
         }
@@ -76,7 +84,19 @@
             $card->id = $entry->id;
             $card->slug = $entry->slug;
             $card->link = $entry->route();
-            $card->dt = $entry->created_at ?? now();
+
+            $cardDt = now();
+            if (! empty($card->date)) {
+                try {
+                    $cardDt = \Illuminate\Support\Carbon::parse($card->date);
+                } catch (\Throwable $e) {
+                    $cardDt = $entry->created_at ? \Illuminate\Support\Carbon::parse($entry->created_at) : now();
+                }
+            } elseif ($entry->created_at) {
+                $cardDt = \Illuminate\Support\Carbon::parse($entry->created_at);
+            }
+            $card->dt = $cardDt instanceof \DateTimeInterface ? $cardDt : now();
+
             $card->date = ! empty($card->date) ? $card->date : ($entry->created_at ? $entry->created_at->format('M d, Y') : 'Recent');
             $card->categoryName = $card->category ?: null;
             $card->body = $entry->data['content'] ?? $card->excerpt ?? '';
@@ -84,8 +104,11 @@
             return $card;
         });
 
-        $sidebarCategories = \App\Support\BlogSidebarData::getCategories($selectedCollection);
-        $sidebarTags = \App\Support\BlogSidebarData::getTags($selectedCollection);
+        $categoryTaxonomy = $d['categoryTaxonomy'] ?? $d['category_taxonomy'] ?? null;
+        $tagTaxonomy = $d['tagTaxonomy'] ?? $d['tag_taxonomy'] ?? null;
+
+        $sidebarCategories = \App\Support\BlogSidebarData::getCategories($selectedCollection, $categoryTaxonomy);
+        $sidebarTags = \App\Support\BlogSidebarData::getTags($selectedCollection, $tagTaxonomy);
         $sidebarRecentPosts = \App\Support\BlogSidebarData::getRecentPosts(3, $selectedCollection);
     }
 
@@ -131,9 +154,9 @@
 <section data-block="blogList"
          x-data="{
              fetchBlogResults(targetUrl) {
-                 const container = document.getElementById('blog-posts-container');
-                 if (container) {
-                     container.classList.add('opacity-50', 'pointer-events-none');
+                 const root = document.getElementById('blog-block-root');
+                 if (root) {
+                     root.classList.add('opacity-50', 'pointer-events-none');
                  }
                  window.history.replaceState({}, '', targetUrl);
                  fetch(targetUrl, {
@@ -143,21 +166,22 @@
                  .then(html => {
                      const parser = new DOMParser();
                      const doc = parser.parseFromString(html, 'text/html');
-                     const newContainer = doc.getElementById('blog-posts-container');
-                     if (container && newContainer) {
-                         container.innerHTML = newContainer.innerHTML;
+                     const newRoot = doc.getElementById('blog-block-root');
+                     if (root && newRoot) {
+                         root.innerHTML = newRoot.innerHTML;
+                         root.scrollIntoView({ behavior: 'smooth', block: 'start' });
                      }
                  })
                  .catch(err => console.error('Blog fetch error:', err))
                  .finally(() => {
-                     if (container) {
-                         container.classList.remove('opacity-50', 'pointer-events-none');
+                     if (root) {
+                         root.classList.remove('opacity-50', 'pointer-events-none');
                      }
                  });
              }
          }">
     {{-- Content --}}
-    <div class="mx-auto max-w-7xl px-6 py-16">
+    <div id="blog-block-root" class="mx-auto max-w-7xl px-6 py-16">
         @if($categoryTag)
             <div class="mb-6 flex items-center gap-2">
                 <span class="text-gray-600">Filtering by:</span>
@@ -228,7 +252,6 @@
                                                 Read more
                                                 <svg class="h-4 w-4 transition-transform duration-200 group-hover:rotate-45" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M7 17l9.2-9.2M17 17V7H7"/></svg>
                                             </span>
-                                            <span class="text-xs font-medium text-gray-400">{{ $estReadTime($post->body) }}</span>
                                         </div>
                                     </div>
                                 </a>
@@ -286,7 +309,6 @@
                                                 Read more
                                                 <svg class="h-3.5 w-3.5 transition-transform duration-200 group-hover:rotate-45" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M7 17l9.2-9.2M17 17V7H7"/></svg>
                                             </span>
-                                            <span class="text-[11px] font-medium text-gray-400 sm:text-xs">{{ $estReadTime($post->body) }}</span>
                                         </div>
                                     </div>
                                 </a>
@@ -400,7 +422,7 @@
                         <svg class="h-4 w-4 text-brand" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 16 14"/></svg>
                         Recent Post
                     </h3>
-                    <div class="space-y-4 rounded-xl border border-gray-100 bg-white p-4 shadow-sm">
+                    <div class="space-y-2 rounded-xl border border-gray-100 bg-white p-2 shadow-sm">
                         @forelse($sidebarRecentPosts as $rPost)
                             <a href="{{ $rPost['link'] ?? '#' }}"
                                class="group flex gap-3 rounded-lg p-1.5 transition-colors hover:bg-gray-50">
@@ -413,14 +435,23 @@
                                         <svg class="h-5 w-5 text-gray-300" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6.042A8.967 8.967 0 006 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 016 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 016-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0018 18a8.967 8.967 0 00-6 2.292m0-14.25v14.25"/></svg>
                                     </div>
                                 @endif
-                                <div class="flex-1">
-                                    @if($rPost['date'] ?? null)
-                                        <p class="mb-1 inline-flex items-center gap-1 text-[11px] font-medium text-gray-400">
-                                            <svg class="h-3 w-3" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><rect width="18" height="18" x="3" y="4" rx="2" ry="2"/><line x1="16" x2="16" y1="2" y2="6"/><line x1="8" x2="8" y1="2" y2="6"/><line x1="3" x2="21" y1="10" y2="10"/></svg>
-                                            {{ $rPost['date'] }}
-                                        </p>
+                                <div class="flex-1 min-w-0">
+                                    <div class="mb-1 flex flex-wrap items-center gap-1.5 text-[11px] font-medium text-gray-400">
+                                        @if($rPost['category'] ?? null)
+                                            <span class="font-semibold text-brand">{{ $rPost['category'] }}</span>
+                                            <span>•</span>
+                                        @endif
+                                        @if($rPost['date'] ?? null)
+                                            <span class="inline-flex items-center gap-0.5">
+                                                <svg class="h-3 w-3" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><rect width="18" height="18" x="3" y="4" rx="2" ry="2"/><line x1="16" x2="16" y1="2" y2="6"/><line x1="8" x2="8" y1="2" y2="6"/><line x1="3" x2="21" y1="10" y2="10"/></svg>
+                                                {{ $rPost['date'] }}
+                                            </span>
+                                        @endif
+                                    </div>
+                                    <p class="line-clamp-2 text-xs font-semibold leading-snug text-gray-800 transition-colors group-hover:text-brand">{{ $rPost['title'] }}</p>
+                                    @if($rPost['author'] ?? null)
+                                        <p class="mt-0.5 text-[10px] text-gray-400">By {{ $rPost['author'] }}</p>
                                     @endif
-                                    <p class="line-clamp-2 text-sm font-semibold leading-snug text-gray-800 transition-colors group-hover:text-brand">{{ $rPost['title'] }}</p>
                                 </div>
                             </a>
                         @empty

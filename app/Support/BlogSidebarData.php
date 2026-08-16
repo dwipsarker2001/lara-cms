@@ -85,14 +85,27 @@ class BlogSidebarData
      *
      * @return array<int, array<string, mixed>>
      */
-    public static function getCategories(?string $collectionSlug = null): array
+    public static function getCategories(?string $collectionSlug = null, ?string $taxonomySlug = null): array
     {
         if ((! Schema::hasTable('terms') && ! Schema::hasTable('taxonomies')) || ! Schema::hasTable('collection_entries')) {
             return self::defaultCategories();
         }
 
         try {
-            $categories = Term::orderBy('title')->get();
+            $categories = collect();
+
+            if (! empty($taxonomySlug)) {
+                $tax = Taxonomy::where('slug', $taxonomySlug)
+                    ->orWhere('id', is_numeric($taxonomySlug) ? (int) $taxonomySlug : 0)
+                    ->first();
+                if ($tax) {
+                    $categories = $tax->terms()->orderBy('title')->get();
+                }
+            }
+
+            if ($categories->isEmpty()) {
+                $categories = Term::orderBy('title')->get();
+            }
             if ($categories->isEmpty()) {
                 $categories = Taxonomy::orderBy('title')->get();
             }
@@ -113,7 +126,7 @@ class BlogSidebarData
             foreach ($categories as $cat) {
                 $count = 0;
                 foreach ($entries as $entry) {
-                    $catVal = $entry->data['category'] ?? null;
+                    $catVal = $entry->data['category'] ?? $entry->data['categories'] ?? null;
                     if ($catVal) {
                         $catIds = is_array($catVal)
                             ? $catVal
@@ -149,22 +162,31 @@ class BlogSidebarData
     }
 
     /**
-     * Get tags dynamically from blog entries.
+     * Get tags dynamically from blog entries or tag taxonomy.
      *
      * @return array<int, string>
      */
-    public static function getTags(?string $collectionSlug = null): array
+    public static function getTags(?string $collectionSlug = null, ?string $taxonomySlug = null): array
     {
         if (! Schema::hasTable('collection_entries')) {
             return self::defaultTags();
         }
 
         try {
+            if (! empty($taxonomySlug) && Schema::hasTable('taxonomies')) {
+                $tax = Taxonomy::where('slug', $taxonomySlug)
+                    ->orWhere('id', is_numeric($taxonomySlug) ? (int) $taxonomySlug : 0)
+                    ->first();
+                if ($tax && $tax->terms()->exists()) {
+                    return $tax->terms()->orderBy('title')->pluck('title')->toArray();
+                }
+            }
+
             $query = CollectionEntry::where('published', true);
             if (! empty($collectionSlug)) {
                 $query->whereHas('collection', fn ($q) => $q->where('slug', $collectionSlug));
             } else {
-                $query->whereHas('collection', fn ($q) => $q->whereIn('slug', ['posts', 'blog', 'news']));
+                $query->whereHas('collection', fn ($q) => $q->whereIn('slug', ['posts', 'blog', 'news', 'articles'])->orWhere('slug', '!=', 'pages'));
             }
             $entries = $query->get();
 
