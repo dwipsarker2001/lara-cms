@@ -62,10 +62,11 @@ class Seo
         $html[] = '<title>'.e($titleText).'</title>';
 
         // Favicon
-        $favicon = trim($globalSeo['favicon'] ?? '');
-        if ($favicon !== '') {
+        $favicon = static::favicon();
+        if ($favicon) {
             $html[] = '<link rel="icon" href="'.e($favicon).'">';
             $html[] = '<link rel="shortcut icon" href="'.e($favicon).'">';
+            $html[] = '<link rel="apple-touch-icon" href="'.e($favicon).'">';
         }
 
         // 2. Meta Description
@@ -224,5 +225,28 @@ class Seo
         }
 
         return implode("\n    ", $html);
+    }
+
+    /**
+     * Get the resolved URL of the site favicon, or null if none set.
+     */
+    public static function favicon(): ?string
+    {
+        try {
+            $settings = Setting::first();
+            $raw = trim($settings?->seo['favicon'] ?? '');
+
+            if ($raw === '') {
+                return null;
+            }
+
+            if (str_starts_with($raw, 'http://') || str_starts_with($raw, 'https://') || str_starts_with($raw, '//') || str_starts_with($raw, '/')) {
+                return $raw;
+            }
+
+            return '/'.$raw;
+        } catch (\Throwable $e) {
+            return null;
+        }
     }
 }

@@ -3,6 +3,7 @@
 use App\Http\Controllers\Admin\SeoController;
 use App\Models\Admin;
 use App\Models\Setting;
+use App\Support\Seo;
 
 use function Pest\Laravel\actingAs;
 use function Pest\Laravel\get;
@@ -147,4 +148,34 @@ it('exposes the default SEO contract on the controller', function () {
         ->and(SeoController::DEFAULT_SEO['searchEnginesEnabled'])->toBeTrue()
         ->and(SeoController::DEFAULT_SEO['searchEnginesIndexing'])->toBeTrue()
         ->and(SeoController::DEFAULT_SEO['extraMetaTags'])->toBe('');
+});
+
+it('renders favicon in admin panel and public pages when configured', function () {
+    Setting::updateOrCreate(['id' => 1], [
+        'seo' => [
+            'favicon' => '/uploads/custom-favicon.ico',
+        ],
+    ]);
+
+    expect(Seo::favicon())->toBe('/uploads/custom-favicon.ico');
+
+    // Admin layout
+    $admin = Admin::factory()->create();
+    $this->actingAs($admin, 'admin')
+        ->get(route('admin.seo'))
+        ->assertOk()
+        ->assertSee('<link rel="icon" href="/uploads/custom-favicon.ico">', false)
+        ->assertSee('<link rel="shortcut icon" href="/uploads/custom-favicon.ico">', false)
+        ->assertSee('<link rel="apple-touch-icon" href="/uploads/custom-favicon.ico">', false);
+
+    // Login page
+    $this->get(route('login'))
+        ->assertOk()
+        ->assertSee('<link rel="icon" href="/uploads/custom-favicon.ico">', false);
+
+    // Public SEO render
+    $html = Seo::render();
+    expect($html)
+        ->toContain('<link rel="icon" href="/uploads/custom-favicon.ico">')
+        ->toContain('<link rel="apple-touch-icon" href="/uploads/custom-favicon.ico">');
 });

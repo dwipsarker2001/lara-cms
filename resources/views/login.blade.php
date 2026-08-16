@@ -5,6 +5,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>{{ config('app.name', 'Statamic') }} - Sign in</title>
+    @php
+        $loginFavicon = \App\Support\Seo::favicon();
+    @endphp
+    @if($loginFavicon)
+        <link rel="icon" href="{{ $loginFavicon }}">
+        <link rel="shortcut icon" href="{{ $loginFavicon }}">
+        <link rel="apple-touch-icon" href="{{ $loginFavicon }}">
+    @endif
 
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
