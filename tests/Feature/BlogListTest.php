@@ -86,3 +86,25 @@ test('blog list resolves map_author slot mapping to created_by when configured',
 
     $view->assertSee('John Doe');
 });
+
+test('public collection entry route /blogs/first-blog renders successfully', function () {
+    $collection = Collection::create(['name' => 'Blogs', 'slug' => 'blogs']);
+    $entry = CollectionEntry::create([
+        'collection_id' => $collection->id,
+        'slug' => 'first-blog',
+        'data' => [
+            'title' => 'First Blog Post',
+            'content' => 'Hello World Content',
+        ],
+        'published' => true,
+        'sections' => [],
+    ]);
+
+    $response = $this->get('/blogs/first-blog');
+
+    $response->assertOk();
+    $response->assertViewIs('public.page');
+    $response->assertViewHas('page', function ($page) use ($entry) {
+        return $page->id === $entry->id;
+    });
+});

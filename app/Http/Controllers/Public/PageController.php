@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Public;
 use App\Http\Controllers\Controller;
 use App\Models\Collection;
 use App\Models\CollectionEntry;
+use Illuminate\Http\Request;
 
 class PageController extends Controller
 {
@@ -40,5 +41,24 @@ class PageController extends Controller
             ->firstOrFail();
 
         return view('public.page', ['page' => $entry]);
+    }
+
+    public function resolve(Request $request)
+    {
+        $segments = array_values(array_filter(explode('/', trim($request->path(), '/'))));
+
+        if (empty($segments)) {
+            return $this->home();
+        }
+
+        if (count($segments) === 1) {
+            return $this->show($segments[0]);
+        }
+
+        if (count($segments) === 2) {
+            return $this->showCollectionEntry($segments[0], $segments[1]);
+        }
+
+        abort(404);
     }
 }
