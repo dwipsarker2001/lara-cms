@@ -61,20 +61,43 @@ class Sections
         $registry = app(BlockRegistry::class);
 
         $homeGlobals = collect($home->sections)
-            ->filter(fn ($s) => $registry->get($s['name'])?->global)
+            ->filter(fn ($s) => $registry->get($s['name'] ?? '')?->global)
             ->keyBy('name');
 
-        $merged = collect($sections)->map(function ($s) use ($homeGlobals) {
+        if ($homeGlobals->isEmpty()) {
+            return $sections ?? [];
+        }
+
+        $merged = collect($sections ?? [])->map(function ($s) use ($homeGlobals) {
             $global = $homeGlobals->get($s['name'] ?? '');
 
             return $global ? [...$s, 'data' => $global['data']] : $s;
         });
 
-        $present = $merged->pluck('name');
+        $presentNames = $merged->pluck('name')->all();
 
-        $missing = $homeGlobals->reject(fn ($g, $name) => $present->contains($name));
+        $headerGlobals = collect();
+        $footerGlobals = collect();
 
-        return $missing->values()->merge($merged)->all();
+        $seenNonGlobal = false;
+        foreach ($home->sections as $s) {
+            $name = $s['name'] ?? '';
+            $block = $registry->get($name);
+
+            if ($block?->global) {
+                if (! in_array($name, $presentNames)) {
+                    if ($seenNonGlobal) {
+                        $footerGlobals->push($s);
+                    } else {
+                        $headerGlobals->push($s);
+                    }
+                }
+            } else {
+                $seenNonGlobal = true;
+            }
+        }
+
+        return $headerGlobals->merge($merged)->merge($footerGlobals)->values()->all();
     }
 
     public static function injectGlobals(): array

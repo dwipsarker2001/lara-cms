@@ -138,10 +138,18 @@ class CollectionEntryController extends Controller
                 );
             }
 
-            return [...$item, 'previewHtml' => $html];
+            return [...$item, 'global' => (bool) $block?->global, 'previewHtml' => $html];
         })->all();
 
         $homeGlobals = Sections::injectGlobals();
+        $homeGlobalsMap = collect($homeGlobals)->keyBy('name');
+
+        // Ensure entry sections have latest global block data synchronized from home
+        $syncedSections = collect($entry->sections ?? [])->map(function ($s) use ($homeGlobalsMap) {
+            $global = $homeGlobalsMap->get($s['name'] ?? '');
+
+            return $global ? [...$s, 'data' => $global['data']] : $s;
+        })->values()->all();
 
         $pages = collect();
         if (Schema::hasTable('collection_entries')) {
@@ -331,6 +339,7 @@ class CollectionEntryController extends Controller
             'collection' => $collection,
             'entry' => $entry,
             'entryData' => $entryData,
+            'syncedSections' => $syncedSections,
             'blockSchemas' => $registry->schemas(),
             'homeGlobals' => $homeGlobals,
             'blockList' => $blockList,
@@ -363,13 +372,50 @@ class CollectionEntryController extends Controller
             $home = CollectionEntry::where('slug', 'home')->first();
 
             if ($home) {
-                $homeSections = collect($home->sections)->map(function ($s) use ($propagated) {
-                    $match = collect($propagated)->firstWhere('name', $s['name']);
+                $homeSections = collect($home->sections ?? []);
 
-                    return $match ? [...$s, 'data' => $match['data']] : $s;
-                })->all();
+                foreach ($propagated as $prop) {
+                    $existingIndex = $homeSections->search(fn ($s) => ($s['name'] ?? '') === $prop['name']);
+                    if ($existingIndex !== false) {
+                        $item = $homeSections->get($existingIndex);
+                        $item['data'] = $prop['data'];
+                        $homeSections->put($existingIndex, $item);
+                    } else {
+                        $homeSections->push([
+                            '_key' => (string) Str::uuid(),
+                            'name' => $prop['name'],
+                            'enabled' => true,
+                            'data' => $prop['data'],
+                        ]);
+                    }
+                }
 
-                $home->update(['sections' => $homeSections]);
+                $home->update(['sections' => $homeSections->values()->all()]);
+            }
+
+            // Also keep all other entries containing these global blocks synchronized
+            $otherEntries = CollectionEntry::where('id', '!=', $entry->id)
+                ->where('slug', '!=', 'home')
+                ->whereNotNull('sections')
+                ->get();
+
+            foreach ($otherEntries as $otherEntry) {
+                $otherSections = collect($otherEntry->sections ?? []);
+                $hasGlobal = false;
+                $updatedOtherSections = $otherSections->map(function ($s) use ($propagated, &$hasGlobal) {
+                    $match = collect($propagated)->firstWhere('name', $s['name'] ?? '');
+                    if ($match) {
+                        $hasGlobal = true;
+
+                        return [...$s, 'data' => $match['data']];
+                    }
+
+                    return $s;
+                })->values()->all();
+
+                if ($hasGlobal) {
+                    $otherEntry->update(['sections' => $updatedOtherSections]);
+                }
             }
         }
 

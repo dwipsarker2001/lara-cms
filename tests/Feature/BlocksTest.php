@@ -5,6 +5,9 @@ use App\Blocks\BlockRegistry;
 use App\Blocks\custom\HeroBanner;
 use App\Blocks\custom\TravelDeals;
 use App\Blocks\Field;
+use App\Models\Admin;
+use App\Models\Collection;
+use App\Support\Sections;
 
 test('Block::render returns a string for a block with a view', function () {
     $block = new HeroBanner;
@@ -103,4 +106,112 @@ test('Block::parseMapValue resolves iframe tags, share links, embed URLs and ima
     $parsedImage = Block::parseMapValue($imagePath);
     expect($parsedImage['type'])->toBe('image');
     expect($parsedImage['url'])->toBe($imagePath);
+});
+
+test('Sections::withGlobals places header globals at top and footer globals at bottom', function () {
+    $pages = Collection::create(['name' => 'Pages', 'slug' => 'pages']);
+    $pages->entries()->create([
+        'slug' => 'home',
+        'published' => true,
+        'sections' => [
+            ['_key' => '1', 'name' => 'siteNavbar', 'enabled' => true, 'data' => ['brandName' => 'Home Nav']],
+            ['_key' => '2', 'name' => 'heroBanner', 'enabled' => true, 'data' => ['headline' => 'Home Hero']],
+            ['_key' => '3', 'name' => 'siteFooter', 'enabled' => true, 'data' => ['copyright' => 'Home Footer']],
+        ],
+    ]);
+
+    $sections = [
+        ['_key' => '10', 'name' => 'simpleText', 'enabled' => true, 'data' => ['text' => 'Page Text']],
+    ];
+
+    $resolved = Sections::withGlobals($sections);
+    $names = array_column($resolved, 'name');
+
+    expect($names)->toBe(['siteNavbar', 'simpleText', 'siteFooter']);
+});
+
+test('updating global block from about page synchronizes home and all other pages', function () {
+    $admin = Admin::factory()->create();
+    $pages = Collection::create(['name' => 'Pages', 'slug' => 'pages']);
+
+    $home = $pages->entries()->create([
+        'slug' => 'home',
+        'title' => 'Home',
+        'published' => true,
+        'sections' => [
+            ['_key' => '1', 'name' => 'siteNavbar', 'enabled' => true, 'data' => ['brandName' => 'Original Brand']],
+            ['_key' => '2', 'name' => 'heroBanner', 'enabled' => true, 'data' => ['headline' => 'Home Hero']],
+        ],
+    ]);
+
+    $contact = $pages->entries()->create([
+        'slug' => 'contact',
+        'title' => 'Contact',
+        'published' => true,
+        'sections' => [
+            ['_key' => '10', 'name' => 'siteNavbar', 'enabled' => true, 'data' => ['brandName' => 'Original Brand']],
+            ['_key' => '11', 'name' => 'simpleText', 'enabled' => true, 'data' => ['text' => 'Contact Form']],
+        ],
+    ]);
+
+    $about = $pages->entries()->create([
+        'slug' => 'about',
+        'title' => 'About',
+        'published' => true,
+        'sections' => [
+            ['_key' => '20', 'name' => 'siteNavbar', 'enabled' => true, 'data' => ['brandName' => 'Updated Global Brand']],
+            ['_key' => '21', 'name' => 'simpleText', 'enabled' => true, 'data' => ['text' => 'About Us']],
+        ],
+    ]);
+
+    $response = $this->actingAs($admin, 'admin')->patchJson(
+        route('admin.collections.entries.update-sections', [$pages, $about]),
+        ['sections' => $about->sections]
+    );
+
+    $response->assertOk();
+
+    // Home entry sections should be updated
+    $home->refresh();
+    $homeNav = collect($home->sections)->firstWhere('name', 'siteNavbar');
+    expect($homeNav['data']['brandName'])->toBe('Updated Global Brand');
+
+    // Contact entry sections should also be updated
+    $contact->refresh();
+    $contactNav = collect($contact->sections)->firstWhere('name', 'siteNavbar');
+    expect($contactNav['data']['brandName'])->toBe('Updated Global Brand');
+});
+
+test('editor loads latest global block data even if entry had older snapshot', function () {
+    $admin = Admin::factory()->create();
+    $pages = Collection::create(['name' => 'Pages', 'slug' => 'pages']);
+
+    $home = $pages->entries()->create([
+        'slug' => 'home',
+        'title' => 'Home',
+        'published' => true,
+        'sections' => [
+            ['_key' => '1', 'name' => 'siteNavbar', 'enabled' => true, 'data' => ['brandName' => 'Master Brand']],
+        ],
+    ]);
+
+    $about = $pages->entries()->create([
+        'slug' => 'about',
+        'title' => 'About',
+        'published' => true,
+        'sections' => [
+            ['_key' => '20', 'name' => 'siteNavbar', 'enabled' => true, 'data' => ['brandName' => 'Stale Brand']],
+        ],
+    ]);
+
+    $response = $this->actingAs($admin, 'admin')->get(
+        route('admin.collections.entries.editor', [$pages, $about])
+    );
+
+    $response->assertOk();
+    $response->assertViewHas('syncedSections', function ($synced) {
+        $nav = collect($synced)->firstWhere('name', 'siteNavbar');
+
+        return $nav && $nav['data']['brandName'] === 'Master Brand';
+    });
 });
