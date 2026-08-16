@@ -2228,9 +2228,11 @@
                 const fieldDef = fields?.find(f => f.name === name);
                 const isRichtextField = fieldDef?.type === 'richtext' || looksLikeHtml;
 
+                const isLikelyImageSrc = typeof value === 'string' && !looksLikeHtml && !value.includes('<') && !value.includes('>') && (value.startsWith('/') || value.startsWith('http://') || value.startsWith('https://') || value.startsWith('data:image/'));
+
                 const isImgTag = target.tagName === 'IMG';
                 let imgEl = isImgTag ? target : (fieldDef?.type === 'image' ? target.querySelector('img') : null);
-                const isImageField = !isRichtextField && (fieldDef?.type === 'image' || isImgTag || (name.toLowerCase().includes('image') && !looksLikeHtml));
+                const isImageField = !isRichtextField && isLikelyImageSrc && (fieldDef?.type === 'image' || isImgTag || (name.toLowerCase().includes('image') && !looksLikeHtml));
 
                 if (isImageField) {
                     if (!imgEl && !isImgTag) {
