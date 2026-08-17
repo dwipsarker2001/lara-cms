@@ -20,9 +20,9 @@
     window.editorPostId = null;
     window.editorForms = @json($availableForms ?? []);
 </script>
-<div class="flex h-full gap-3 p-3 relative" x-data="pageEditor()"     x-init="init(window.editorSections, window.editorSchemas, window.editorBlockList, window.editorSlug, window.editorPages, window.editorHomeGlobals)" x-on:section-selected.window="addSection($event.detail.name)">
+<div class="flex h-full p-3 relative" id="page-editor-root" style="--sb-w: 420px;" x-data="pageEditor()"     x-init="init(window.editorSections, window.editorSchemas, window.editorBlockList, window.editorSlug, window.editorPages, window.editorHomeGlobals)" x-on:section-selected.window="addSection($event.detail.name)">
     {{-- Editor panel --}}
-    <div class="w-[420px] min-w-[320px] shrink-0 bg-white h-full flex flex-col rounded-2xl border border-[#e8eaed] shadow-[0_1px_2px_rgba(16,24,40,0.04),0_8px_24px_-12px_rgba(16,24,40,0.12)] overflow-hidden" x-show="sidebarOpen">
+    <div class="shrink-0 bg-white h-full flex flex-col rounded-2xl border border-[#e8eaed] shadow-[0_1px_2px_rgba(16,24,40,0.04),0_8px_24px_-12px_rgba(16,24,40,0.12)] overflow-hidden" style="width: var(--sb-w); min-width: 280px;" x-show="sidebarOpen">
         <div class="flex-1 overflow-y-auto px-3 pt-3 pb-4 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
             <div class="bg-gray-100 rounded-2xl p-[7px]">
                 {{-- Section list mode --}}
@@ -1496,44 +1496,33 @@
         </div>
     </div>
 
+    {{-- Sidebar ↔ Preview resize handle --}}
+    <div x-show="sidebarOpen"
+        class="relative shrink-0 h-full flex items-center justify-center cursor-col-resize select-none group z-10"
+        style="width: 10px;"
+        @mousedown="startSidebarResize($event)"
+    >
+        {{-- Hover line --}}
+        <div class="absolute inset-y-0 left-1/2 -translate-x-1/2 w-px bg-transparent group-hover:bg-gray-300 transition-colors duration-150 pointer-events-none"></div>
+        {{-- Grip dots — only visible on hover --}}
+        <div class="opacity-0 group-hover:opacity-100 transition-opacity duration-150 pointer-events-none flex flex-col gap-[4px] items-center justify-center bg-white border border-gray-200 rounded-full px-[3px] py-[6px] shadow-sm">
+            <span class="block w-[3px] h-[3px] rounded-full bg-gray-400"></span>
+            <span class="block w-[3px] h-[3px] rounded-full bg-gray-400"></span>
+            <span class="block w-[3px] h-[3px] rounded-full bg-gray-400"></span>
+            <span class="block w-[3px] h-[3px] rounded-full bg-gray-400"></span>
+        </div>
+    </div>
+
     {{-- Preview pane --}}
     <div class="flex-1 flex flex-col min-w-0 h-full relative items-center justify-start overflow-visible">
         {{-- Frame wrapper --}}
         <div class="relative flex-1 w-full h-full flex justify-center overflow-visible">
             <div
-                class="relative flex flex-col"
-                :class="{ 'transition-none select-none': isResizing, 'transition-[width] duration-150 ease-out': !isResizing }"
-                style="width: 100%; max-width: 100%; min-width: 320px;"
-                :style="{ width: previewWidth, maxWidth: '100%', minWidth: '320px' }"
+                class="relative flex flex-col w-full h-full"
                 x-ref="previewFrame"
             >
-                {{-- Drag Handle Grid in Center-Left --}}
-                <div
-                    class="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-1/2 z-50 cursor-ew-resize group flex items-center justify-center"
-                    @mousedown="startResize($event)"
-                    @touchstart="startResize($event)"
-                    title="Drag left/right to resize screen to mobile or desktop"
-                >
-                    <div class="w-[16px] h-[96px] rounded-md bg-white border border-gray-300 shadow-md group-hover:bg-gray-100 group-hover:border-gray-400 transition-all flex items-center justify-center cursor-ew-resize">
-                        <svg class="w-2.5 h-10 text-gray-400 group-hover:text-gray-600 transition-colors" fill="currentColor" viewBox="0 0 10 38">
-                            <circle cx="3" cy="4" r="1" />
-                            <circle cx="7" cy="4" r="1" />
-                            <circle cx="3" cy="10" r="1" />
-                            <circle cx="7" cy="10" r="1" />
-                            <circle cx="3" cy="16" r="1" />
-                            <circle cx="7" cy="16" r="1" />
-                            <circle cx="3" cy="22" r="1" />
-                            <circle cx="7" cy="22" r="1" />
-                            <circle cx="3" cy="28" r="1" />
-                            <circle cx="7" cy="28" r="1" />
-                            <circle cx="3" cy="34" r="1" />
-                            <circle cx="7" cy="34" r="1" />
-                        </svg>
-                    </div>
-                </div>
-
                 <div class="flex-1 overflow-hidden preview-shell h-full bg-white rounded-2xl border border-[#e8eaed] shadow-[0_1px_2px_rgba(16,24,40,0.04),0_8px_24px_-12px_rgba(16,24,40,0.12)]">
-                    <iframe id="preview-iframe" class="w-full h-full min-h-full border-0 block bg-white" :class="{ 'pointer-events-none': isResizing }"></iframe>
+                    <iframe id="preview-iframe" class="w-full h-full min-h-full border-0 block bg-white"></iframe>
                 </div>
             </div>
         </div>
@@ -1580,56 +1569,40 @@
             iconLoading: false,
             faIcons: window.FA_ICONS || [],
             sidebarOpen: true,
-            previewWidth: '100%',
-            isResizing: false,
+            sidebarWidth: 420,
 
-            get previewWidthStyle() {
-                return this.previewWidth === '100%' ? '100%' : this.previewWidth;
-            },
-
-            setPreviewWidth(width) {
-                this.previewWidth = width;
-            },
-
-            startResize(e) {
+            startSidebarResize(e) {
                 e.preventDefault();
-                this.isResizing = true;
-                document.body.style.userSelect = 'none';
-                document.body.style.cursor = 'ew-resize';
 
-                const startX = e.touches ? e.touches[0].clientX : e.clientX;
-                const container = this.$refs.previewFrame ? this.$refs.previewFrame.parentElement : null;
-                if (!container) return;
-                const containerRect = container.getBoundingClientRect();
-                const initialWidth = this.$refs.previewFrame.offsetWidth;
+                const root = document.getElementById('page-editor-root');
+                const iframe = document.getElementById('preview-iframe');
+                const startX = e.clientX;
+                const startWidth = this.sidebarWidth;
+                const maxSidebarWidth = root.offsetWidth - 320 - 10; // keep 320px for preview + 10px handle
+
+                document.body.style.userSelect = 'none';
+                document.body.style.cursor = 'col-resize';
+                if (iframe) { iframe.style.pointerEvents = 'none'; }
 
                 const onMove = (moveEvt) => {
-                    if (!this.isResizing) return;
-                    const currentX = moveEvt.touches ? moveEvt.touches[0].clientX : moveEvt.clientX;
-                    const deltaX = startX - currentX;
-                    let newWidth = initialWidth + (deltaX * 2);
-                    if (newWidth >= containerRect.width - 25) {
-                        this.previewWidth = '100%';
-                    } else {
-                        newWidth = Math.max(320, Math.min(containerRect.width, newWidth));
-                        this.previewWidth = Math.round(newWidth) + 'px';
-                    }
+                    const w = Math.max(280, Math.min(maxSidebarWidth, startWidth + moveEvt.clientX - startX));
+                    root.style.setProperty('--sb-w', w + 'px');
                 };
 
-                const onEnd = () => {
-                    this.isResizing = false;
+                const onEnd = (moveEvt) => {
+                    const w = Math.max(280, Math.min(maxSidebarWidth, startWidth + moveEvt.clientX - startX));
+                    this.sidebarWidth = Math.round(w);
+                    root.style.setProperty('--sb-w', w + 'px');
+
                     document.body.style.userSelect = '';
                     document.body.style.cursor = '';
+                    if (iframe) { iframe.style.pointerEvents = ''; }
                     window.removeEventListener('mousemove', onMove);
                     window.removeEventListener('mouseup', onEnd);
-                    window.removeEventListener('touchmove', onMove);
-                    window.removeEventListener('touchend', onEnd);
                 };
 
-                window.addEventListener('mousemove', onMove);
+                window.addEventListener('mousemove', onMove, { passive: true });
                 window.addEventListener('mouseup', onEnd);
-                window.addEventListener('touchmove', onMove);
-                window.addEventListener('touchend', onEnd);
             },
 
             init(sections, schemas, blockList, slug, pages, homeGlobals) {
