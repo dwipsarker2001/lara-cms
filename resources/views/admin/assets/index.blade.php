@@ -797,80 +797,16 @@
     </div>
 
     {{-- Delete Dialog --}}
-    <div
-        x-show="deletingAsset"
-        x-cloak
-        class="fixed inset-0 z-[100] flex items-center justify-center p-4"
-        @keydown.escape.window="deletingAsset = null"
+    <x-admin::delete-modal
+        show="deletingAsset"
+        title-expression="deletingAsset?.is_directory ? 'Delete folder' : 'Delete asset'"
+        confirm-action="confirmDelete()"
     >
-        <div
-            x-show="deletingAsset"
-            x-transition:enter="transition-opacity ease-linear duration-150"
-            x-transition:enter-start="opacity-0"
-            x-transition:enter-end="opacity-100"
-            x-transition:leave="transition-opacity ease-linear duration-100"
-            x-transition:leave-start="opacity-100"
-            x-transition:leave-end="opacity-0"
-            class="fixed inset-0 bg-black/40"
-            @click="deletingAsset = null"
-        ></div>
-
-        <div
-            x-show="deletingAsset"
-            x-transition:enter="transition ease-out duration-150"
-            x-transition:enter-start="opacity-0 scale-95"
-            x-transition:enter-end="opacity-100 scale-100"
-            x-transition:leave="transition ease-in duration-100"
-            x-transition:leave-start="opacity-100 scale-100"
-            x-transition:leave-end="opacity-0 scale-95"
-            class="relative w-full max-w-[400px] bg-content-bg rounded-2xl border border-content-border shadow-2xl p-6 z-10"
-        >
-            {{-- Close Button --}}
-            <button
-                type="button"
-                @click="deletingAsset = null"
-                class="absolute top-5 right-5 size-7 flex items-center justify-center rounded-lg text-text-muted hover:text-text-heading hover:bg-body-bg transition-colors cursor-pointer"
-                title="Close"
-            >
-                <svg viewBox="0 0 20 20" fill="currentColor" class="size-4">
-                    <path d="M6.28 5.22a.75.75 0 00-1.06 1.06L8.94 10l-3.72 3.72a.75.75 0 101.06 1.06L10 11.06l3.72 3.72a.75.75 0 101.06-1.06L11.06 10l3.72-3.72a.75.75 0 00-1.06-1.06L10 8.94 6.28 5.22z" />
-                </svg>
-            </button>
-
-            {{-- Top Red Icon Badge --}}
-            <div class="mb-4">
-                <div class="size-12 rounded-2xl bg-red-500/10 border border-red-500/20 flex items-center justify-center text-red-600 shrink-0">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-trash-2">
-                        <path d="M3 6h18"/>
-                        <path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/>
-                        <path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/>
-                        <line x1="10" y1="11" x2="10" y2="17"/>
-                        <line x1="14" y1="11" x2="14" y2="17"/>
-                    </svg>
-                </div>
-            </div>
-
-            {{-- Title & Description --}}
-            <div class="mb-6">
-                <h3 class="text-lg font-bold text-text-heading leading-tight">Delete asset</h3>
-                <p class="text-sm text-text-muted mt-1">Are you sure you want to delete this asset?</p>
-            </div>
-
-            {{-- Footer Side-by-Side Action Buttons --}}
-            <div class="flex items-center gap-3">
-                <button
-                    type="button"
-                    @click="deletingAsset = null"
-                    class="flex-1 py-3 rounded-xl border border-content-border bg-content-bg text-sm font-semibold text-text-heading hover:bg-body-bg transition-colors cursor-pointer text-center"
-                >Cancel</button>
-                <button
-                    type="button"
-                    @click="confirmDelete()"
-                    class="flex-1 py-3 rounded-xl bg-red-600 text-sm font-semibold text-white hover:bg-red-700 active:scale-[0.98] shadow-sm shadow-red-500/20 transition-all cursor-pointer text-center"
-                >Delete</button>
-            </div>
-        </div>
-    </div>
+        Are you sure you want to delete <span class="font-medium text-text-heading" x-text="'“' + (deletingAsset?.name || 'this item') + '”'"></span>?
+        <template x-if="deletingAsset?.is_directory">
+            <span class="block text-xs text-red-500 mt-1">This will permanently delete all contents inside this folder.</span>
+        </template>
+    </x-admin::delete-modal>
 
     {{-- Full-screen AssetPreview --}}
     <div
