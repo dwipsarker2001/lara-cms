@@ -633,6 +633,7 @@
                                 <span class="text-red-600">*</span>
                             </template>
                         </label>
+                        {{-- Textarea --}}
                         <template x-if="field.type === 'textarea'">
                             <textarea 
                                 :name="'data[' + field.name + ']'" 
@@ -642,25 +643,130 @@
                                 class="w-full rounded-lg border border-content-border bg-content-bg p-2.5 text-xs text-text-heading focus:outline-none focus:ring-2 focus:ring-primary/20 shadow-sm"
                             ></textarea>
                         </template>
+
+                        {{-- Select --}}
                         <template x-if="field.type === 'select'">
                             <select
                                 :name="'data[' + field.name + ']'"
                                 x-model="formData[field.name]"
                                 :required="field.required"
-                                class="w-full rounded-lg border border-content-border bg-content-bg px-3 py-2 text-xs text-text-heading focus:outline-none focus:ring-2 focus:ring-primary/20 shadow-sm"
+                                class="w-full rounded-lg border border-content-border bg-content-bg px-3 py-2 text-xs text-text-heading focus:outline-none focus:ring-2 focus:ring-primary/20 shadow-sm cursor-pointer"
                             >
                                 <option value="">Select an option...</option>
-                                <template x-for="opt in (field.options || [])" :key="opt">
+                                <template x-for="opt in (Array.isArray(field.options) ? field.options : (field.options ? field.options.split(',').map(s => s.trim()).filter(Boolean) : []))" :key="opt">
                                     <option :value="opt" x-text="opt"></option>
                                 </template>
                             </select>
                         </template>
-                        <template x-if="!['textarea', 'select'].includes(field.type)">
+
+                        {{-- Checkbox --}}
+                        <template x-if="field.type === 'checkbox'">
+                            <div class="space-y-1.5 pt-1">
+                                <template x-if="(Array.isArray(field.options) ? field.options : (field.options ? field.options.split(',').map(s => s.trim()).filter(Boolean) : [])).length > 0">
+                                    <div class="space-y-1.5">
+                                        <template x-for="opt in (Array.isArray(field.options) ? field.options : (field.options ? field.options.split(',').map(s => s.trim()).filter(Boolean) : []))" :key="opt">
+                                            <label class="flex items-center gap-2 text-xs text-text-heading cursor-pointer">
+                                                <input
+                                                    type="checkbox"
+                                                    :name="'data[' + field.name + '][]'"
+                                                    :value="opt"
+                                                    :checked="Array.isArray(formData[field.name]) ? formData[field.name].includes(opt) : formData[field.name] == opt"
+                                                    @change="
+                                                        if (!Array.isArray(formData[field.name])) {
+                                                            formData[field.name] = formData[field.name] ? [formData[field.name]] : [];
+                                                        }
+                                                        if ($event.target.checked) {
+                                                            if (!formData[field.name].includes(opt)) formData[field.name].push(opt);
+                                                        } else {
+                                                            formData[field.name] = formData[field.name].filter(v => v !== opt);
+                                                        }
+                                                    "
+                                                    class="size-3.5 rounded border-content-border text-primary focus:ring-primary/20 cursor-pointer"
+                                                >
+                                                <span x-text="opt"></span>
+                                            </label>
+                                        </template>
+                                    </div>
+                                </template>
+                                <template x-if="(Array.isArray(field.options) ? field.options : (field.options ? field.options.split(',').map(s => s.trim()).filter(Boolean) : [])).length === 0">
+                                    <label class="flex items-center gap-2 text-xs text-text-heading cursor-pointer">
+                                        <input
+                                            type="checkbox"
+                                            :name="'data[' + field.name + ']'"
+                                            value="1"
+                                            x-model="formData[field.name]"
+                                            class="size-3.5 rounded border-content-border text-primary focus:ring-primary/20 cursor-pointer"
+                                        >
+                                        <span class="text-text-muted">Enabled</span>
+                                    </label>
+                                </template>
+                            </div>
+                        </template>
+
+                        {{-- Radio --}}
+                        <template x-if="field.type === 'radio'">
+                            <div class="space-y-1.5 pt-1">
+                                <template x-for="opt in (Array.isArray(field.options) ? field.options : (field.options ? field.options.split(',').map(s => s.trim()).filter(Boolean) : []))" :key="opt">
+                                    <label class="flex items-center gap-2 text-xs text-text-heading cursor-pointer">
+                                        <input
+                                            type="radio"
+                                            :name="'data[' + field.name + ']'"
+                                            :value="opt"
+                                            x-model="formData[field.name]"
+                                            :required="field.required"
+                                            class="size-3.5 border-content-border text-primary focus:ring-primary/20 cursor-pointer"
+                                        >
+                                        <span x-text="opt"></span>
+                                    </label>
+                                </template>
+                            </div>
+                        </template>
+
+                        {{-- Color --}}
+                        <template x-if="field.type === 'color'">
+                            <div class="flex items-center gap-2">
+                                <input
+                                    type="color"
+                                    x-model="formData[field.name]"
+                                    class="size-8 rounded-lg border border-content-border p-0.5 bg-content-bg cursor-pointer"
+                                >
+                                <input
+                                    type="text"
+                                    :name="'data[' + field.name + ']'"
+                                    x-model="formData[field.name]"
+                                    :required="field.required"
+                                    placeholder="#000000"
+                                    class="w-full rounded-lg font-mono border border-content-border bg-content-bg px-3 py-2 text-xs text-text-heading focus:outline-none focus:ring-2 focus:ring-primary/20 shadow-sm"
+                                >
+                            </div>
+                        </template>
+
+                        {{-- File / Asset --}}
+                        <template x-if="field.type === 'file'">
+                            <div class="space-y-1.5">
+                                <input 
+                                    type="text" 
+                                    :name="'data[' + field.name + ']'" 
+                                    x-model="formData[field.name]" 
+                                    :required="field.required"
+                                    placeholder="File URL or path..."
+                                    class="w-full rounded-lg border border-content-border bg-content-bg px-3 py-2 text-xs text-text-heading focus:outline-none focus:ring-2 focus:ring-primary/20 shadow-sm"
+                                >
+                                <div class="flex items-center gap-2 text-xs text-text-muted" x-show="formData[field.name]">
+                                    <span>Current:</span>
+                                    <a :href="formData[field.name]" target="_blank" class="text-primary hover:underline truncate max-w-xs" x-text="formData[field.name]"></a>
+                                </div>
+                            </div>
+                        </template>
+
+                        {{-- Standard Inputs (text, number, email, date, time, phone, url, etc.) --}}
+                        <template x-if="!['textarea', 'select', 'checkbox', 'radio', 'color', 'file'].includes(field.type)">
                             <input 
-                                :type="field.type === 'number' ? 'number' : (field.type === 'email' ? 'email' : (field.type === 'date' ? 'date' : (field.type === 'time' ? 'time' : 'text')))" 
+                                :type="['number', 'email', 'date', 'time', 'tel', 'url', 'password'].includes(field.type) ? field.type : 'text'" 
                                 :name="'data[' + field.name + ']'" 
                                 x-model="formData[field.name]" 
                                 :required="field.required"
+                                :placeholder="field.placeholder || ''"
                                 class="w-full rounded-lg border border-content-border bg-content-bg px-3 py-2 text-xs text-text-heading focus:outline-none focus:ring-2 focus:ring-primary/20 shadow-sm"
                             >
                         </template>

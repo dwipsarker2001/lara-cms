@@ -181,8 +181,19 @@ class FormController extends Controller
     {
         abort_if((int) $entry->form_id !== (int) $form->id, 404);
 
+        $data = $request->input('data', []);
+
+        if ($request->hasFile('data')) {
+            foreach ($request->file('data') as $key => $file) {
+                if ($file && $file->isValid()) {
+                    $path = $file->store('form-uploads', 'public');
+                    $data[$key] = '/storage/'.$path;
+                }
+            }
+        }
+
         $entry->update([
-            'data' => $request->input('data', []),
+            'data' => array_merge($entry->data ?? [], $data),
         ]);
 
         return redirect()->route('admin.forms.entries', $form)->with('success', 'Submission updated successfully.');
@@ -195,9 +206,20 @@ class FormController extends Controller
 
     public function storeEntry(Request $request, Form $form)
     {
+        $data = $request->input('data', []);
+
+        if ($request->hasFile('data')) {
+            foreach ($request->file('data') as $key => $file) {
+                if ($file && $file->isValid()) {
+                    $path = $file->store('form-uploads', 'public');
+                    $data[$key] = '/storage/'.$path;
+                }
+            }
+        }
+
         FormEntry::create([
             'form_id' => $form->id,
-            'data' => $request->input('data', []),
+            'data' => $data,
             'ip_address' => $request->ip(),
             'user_agent' => $request->userAgent(),
             'status' => 0,
