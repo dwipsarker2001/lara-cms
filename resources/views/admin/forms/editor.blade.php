@@ -232,7 +232,7 @@
                                 <div>
                                     <template x-for="(opt, oi) in (field.options || [])" :key="oi">
                                         <label class="flex items-center gap-2 py-1 text-sm text-text-primary cursor-pointer">
-                                            <input :type="field.type" disabled class="accent-primary">
+                                            <input :type="field.type" disabled class="accent-primary" :checked="field.default_value === opt">
                                             <span x-text="opt"></span>
                                         </label>
                                     </template>
@@ -243,19 +243,19 @@
                                     <select disabled class="w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm text-text-primary shadow-[0_2px_3px_-2px_rgba(0,0,0,0.15)]">
                                         <option value="" x-text="field.placeholder || 'Select...'"></option>
                                         <template x-for="(opt, oi) in (field.options || [])" :key="oi">
-                                            <option x-text="opt"></option>
+                                            <option x-text="opt" :selected="field.default_value === opt"></option>
                                         </template>
                                     </select>
                                 </div>
                             </template>
                             <template x-if="field.type === 'textarea'">
                                 <div>
-                                    <textarea disabled :placeholder="field.placeholder || ''" class="w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm text-text-primary shadow-[0_2px_3px_-2px_rgba(0,0,0,0.15)] resize-none" rows="3"></textarea>
+                                    <textarea disabled :placeholder="field.placeholder || ''" x-text="field.default_value || ''" class="w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm text-text-primary shadow-[0_2px_3px_-2px_rgba(0,0,0,0.15)] resize-none" rows="3"></textarea>
                                 </div>
                             </template>
                             <template x-if="!['checkbox','radio','select','textarea'].includes(field.type)">
                                 <div>
-                                    <input :type="field.type" disabled :placeholder="field.placeholder || ''" class="w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm text-text-primary shadow-[0_2px_3px_-2px_rgba(0,0,0,0.15)]">
+                                    <input :type="field.type" disabled :placeholder="field.placeholder || ''" :value="field.default_value || ''" class="w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm text-text-primary shadow-[0_2px_3px_-2px_rgba(0,0,0,0.15)]">
                                 </div>
                             </template>
                         </div>
@@ -296,6 +296,7 @@
                     { name: 'column_name', type: 'string', label: 'Column Name' },
                     { name: 'name', type: 'string', label: 'Field Key' },
                     { name: 'placeholder', type: 'string', label: 'Placeholder' },
+                    { name: 'default_value', type: 'string', label: 'Default Value' },
                     { name: 'required', type: 'boolean', label: 'Required' },
                 ],
                 email: [
@@ -303,13 +304,7 @@
                     { name: 'column_name', type: 'string', label: 'Column Name' },
                     { name: 'name', type: 'string', label: 'Field Key' },
                     { name: 'placeholder', type: 'string', label: 'Placeholder' },
-                    { name: 'required', type: 'boolean', label: 'Required' },
-                ],
-                phone: [
-                    { name: 'label', type: 'string', label: 'Label' },
-                    { name: 'column_name', type: 'string', label: 'Column Name' },
-                    { name: 'name', type: 'string', label: 'Field Key' },
-                    { name: 'placeholder', type: 'string', label: 'Placeholder' },
+                    { name: 'default_value', type: 'string', label: 'Default Value' },
                     { name: 'required', type: 'boolean', label: 'Required' },
                 ],
                 number: [
@@ -317,6 +312,7 @@
                     { name: 'column_name', type: 'string', label: 'Column Name' },
                     { name: 'name', type: 'string', label: 'Field Key' },
                     { name: 'placeholder', type: 'string', label: 'Placeholder' },
+                    { name: 'default_value', type: 'string', label: 'Default Value' },
                     { name: 'required', type: 'boolean', label: 'Required' },
                 ],
                 textarea: [
@@ -324,6 +320,7 @@
                     { name: 'column_name', type: 'string', label: 'Column Name' },
                     { name: 'name', type: 'string', label: 'Field Key' },
                     { name: 'placeholder', type: 'string', label: 'Placeholder' },
+                    { name: 'default_value', type: 'string', label: 'Default Value' },
                     { name: 'required', type: 'boolean', label: 'Required' },
                 ],
                 select: [
@@ -331,6 +328,7 @@
                     { name: 'column_name', type: 'string', label: 'Column Name' },
                     { name: 'name', type: 'string', label: 'Field Key' },
                     { name: 'options', type: 'tags', label: 'Options' },
+                    { name: 'default_value', type: 'string', label: 'Default Value' },
                     { name: 'required', type: 'boolean', label: 'Required' },
                 ],
                 checkbox: [
@@ -338,6 +336,7 @@
                     { name: 'column_name', type: 'string', label: 'Column Name' },
                     { name: 'name', type: 'string', label: 'Field Key' },
                     { name: 'options', type: 'tags', label: 'Options' },
+                    { name: 'default_value', type: 'string', label: 'Default Value' },
                     { name: 'required', type: 'boolean', label: 'Required' },
                 ],
                 radio: [
@@ -345,6 +344,7 @@
                     { name: 'column_name', type: 'string', label: 'Column Name' },
                     { name: 'name', type: 'string', label: 'Field Key' },
                     { name: 'options', type: 'tags', label: 'Options' },
+                    { name: 'default_value', type: 'string', label: 'Default Value' },
                     { name: 'required', type: 'boolean', label: 'Required' },
                 ],
                 date: [
@@ -352,6 +352,7 @@
                     { name: 'column_name', type: 'string', label: 'Column Name' },
                     { name: 'name', type: 'string', label: 'Field Key' },
                     { name: 'placeholder', type: 'string', label: 'Placeholder' },
+                    { name: 'default_value', type: 'string', label: 'Default Value' },
                     { name: 'required', type: 'boolean', label: 'Required' },
                 ],
                 time: [
@@ -359,6 +360,7 @@
                     { name: 'column_name', type: 'string', label: 'Column Name' },
                     { name: 'name', type: 'string', label: 'Field Key' },
                     { name: 'placeholder', type: 'string', label: 'Placeholder' },
+                    { name: 'default_value', type: 'string', label: 'Default Value' },
                     { name: 'required', type: 'boolean', label: 'Required' },
                 ],
                 file: [
@@ -373,6 +375,7 @@
                 this.fields = (fields || []).map(f => ({
                     ...f,
                     column_name: f.column_name || f.label || '',
+                    default_value: f.default_value || '',
                     _nameEdited: true,
                     _columnEdited: true,
                     _placeholderEdited: true,
@@ -440,7 +443,6 @@
                 const defaults = {
                     text: { label: 'Text', type: 'text', placeholder: 'Enter text…' },
                     email: { label: 'Email', type: 'email', placeholder: 'you@example.com' },
-                    phone: { label: 'Phone', type: 'phone', placeholder: '+1 (555) 000-0000' },
                     number: { label: 'Number', type: 'number', placeholder: '0' },
                     textarea: { label: 'Textarea', type: 'textarea', placeholder: 'Write something…' },
                     select: { label: 'Select', type: 'select', options: ['Option 1', 'Option 2', 'Option 3'] },
@@ -461,10 +463,12 @@
                     column_name: def.label,
                     name: def.type + '_' + Math.random().toString(36).slice(2, 6),
                     placeholder: def.placeholder || '',
+                    default_value: '',
                     required: false,
                     _nameEdited: false,
                     _columnEdited: false,
                     _placeholderEdited: false,
+                    _defaultValueEdited: false,
                 };
 
                 if (def.options) {
@@ -516,6 +520,8 @@
                     field._columnEdited = true;
                 } else if (name === 'placeholder') {
                     field._placeholderEdited = true;
+                } else if (name === 'default_value') {
+                    field._defaultValueEdited = true;
                 } else if (name === 'label') {
                     const cleanLabel = (value || '').trim();
                     const lower = cleanLabel.toLowerCase();
@@ -539,8 +545,6 @@
                     if (!field._placeholderEdited) {
                         if (field.type === 'email' || lower.includes('email')) {
                             field.placeholder = 'you@example.com';
-                        } else if (field.type === 'phone' || lower.includes('phone') || lower.includes('tel') || lower.includes('mobile')) {
-                            field.placeholder = '+1 (555) 000-0000';
                         } else if (field.type === 'date' || lower.includes('date') || lower.includes('dob') || lower.includes('birthday')) {
                             field.placeholder = 'YYYY-MM-DD';
                         } else if (field.type === 'time' || lower.includes('time')) {

@@ -21,17 +21,18 @@ it('renders icon selector on form create page', function () {
 });
 
 it('creates a form with a selected icon', function () {
-    post(route('admin.forms.store'), [
+    $response = post(route('admin.forms.store'), [
         'title' => 'Feedback Form',
         'icon' => 'fa-solid fa-comments',
         'description' => 'Give us feedback',
         'submit_text' => 'Submit',
         'success_message' => 'Thanks!',
-    ])->assertRedirect(route('admin.forms.index'));
+    ]);
 
     $form = Form::where('title', 'Feedback Form')->first();
     expect($form)->not->toBeNull();
     expect($form->icon)->toBe('fa-solid fa-comments');
+    $response->assertRedirect(route('admin.forms.editor', $form));
 });
 
 it('updates a form icon', function () {
@@ -78,4 +79,18 @@ it('displays a red circular badge for forms with entries and hides it when openi
     \Pest\Laravel\get(route('admin.forms.entries', $form))
         ->assertStatus(200)
         ->assertDontSee('<span class="ml-auto flex size-5 shrink-0 items-center justify-center rounded-full bg-red-500 text-[11px] font-semibold leading-none text-white">1</span>', false);
+});
+
+it('renders Form Builder, Edit, and Submissions links in form list actions menu', function () {
+    $form = Form::factory()->create(['title' => 'Contact Inquiries']);
+
+    \Pest\Laravel\get(route('admin.forms.index'))
+        ->assertStatus(200)
+        ->assertSee('Contact Inquiries')
+        ->assertSee('Form Builder')
+        ->assertSee('Edit')
+        ->assertSee('Submissions')
+        ->assertSee(route('admin.forms.editor', $form))
+        ->assertSee(route('admin.forms.edit', $form))
+        ->assertSee(route('admin.forms.entries', $form));
 });

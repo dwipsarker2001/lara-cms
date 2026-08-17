@@ -8,6 +8,10 @@
     'clickRoute' => null,
     'deleteRoute',
     'updateRoute' => null,
+    'builderRoute' => null,
+    'builderLabel' => 'Form Builder',
+    'entriesRoute' => null,
+    'entriesLabel' => 'Submissions',
     'emptyText',
     'emptyLinkText' => null,
     'emptyLinkRoute' => null,
@@ -102,6 +106,19 @@
                                     style="z-index: 9999;"
                                     class="absolute right-0 top-full mt-1 min-w-[12rem] rounded-xl border border-content-border bg-content-bg shadow-xl p-1.5"
                                 >
+                                    @if ($builderRoute)
+                                        <a href="{{ route($builderRoute, $item) }}" role="menuitem"
+                                            class="flex w-full items-center justify-start gap-2.5 px-3 py-2 rounded-lg text-sm no-underline transition-colors text-text-primary hover:bg-body-bg"
+                                        >
+                                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" class="size-4 shrink-0 text-text-muted">
+                                                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+                                                <polyline points="14 2 14 8 20 8" />
+                                                <line x1="12" y1="18" x2="12" y2="12" />
+                                                <line x1="9" y1="15" x2="15" y2="15" />
+                                            </svg>
+                                            <span>{{ $builderLabel }}</span>
+                                        </a>
+                                    @endif
                                     <a href="{{ route($updateRoute ?? $editRoute, $item) }}" role="menuitem"
                                         class="flex w-full items-center justify-start gap-2.5 px-3 py-2 rounded-lg text-sm no-underline transition-colors text-text-primary hover:bg-body-bg"
                                     >
@@ -111,6 +128,18 @@
                                         </svg>
                                         <span>Edit</span>
                                     </a>
+                                    @if ($entriesRoute)
+                                        <a href="{{ route($entriesRoute, $item) }}" role="menuitem"
+                                            class="flex w-full items-center justify-start gap-2.5 px-3 py-2 rounded-lg text-sm no-underline transition-colors text-text-primary hover:bg-body-bg"
+                                        >
+                                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" class="size-4 shrink-0 text-text-muted">
+                                                <rect x="3" y="3" width="18" height="18" rx="2" />
+                                                <path d="M3 9h18" />
+                                                <path d="M9 21V9" />
+                                            </svg>
+                                            <span>{{ $entriesLabel }}</span>
+                                        </a>
+                                    @endif
                                     @if ($showSettings && $settingsRoute)
                                         <a href="{{ route($settingsRoute, $item) }}" role="menuitem"
                                             class="flex w-full items-center justify-start gap-2.5 px-3 py-2 rounded-lg text-sm no-underline transition-colors text-text-primary hover:bg-body-bg"

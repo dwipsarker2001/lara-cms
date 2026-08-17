@@ -16,6 +16,9 @@ return new class extends Migration
             $table->text('user_agent')->nullable();
             $table->tinyInteger('status')->default(1);
             $table->timestamps();
+
+            $table->index(['form_id', 'created_at']);
+            $table->index(['form_id', 'status']);
         });
     }
 

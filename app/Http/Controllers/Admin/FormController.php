@@ -35,9 +35,9 @@ class FormController extends Controller
         ]);
         $data['per_page'] = $data['per_page'] ?? 15;
         $data['position'] = Form::max('position') + 1;
-        Form::create($data);
+        $form = Form::create($data);
 
-        return redirect()->route('admin.forms.index')->with('success', 'Form created successfully.');
+        return redirect()->route('admin.forms.editor', $form)->with('success', 'Form created successfully.');
     }
 
     public function edit(Form $form)
@@ -89,8 +89,18 @@ class FormController extends Controller
             $perPage = 10;
         }
 
+        $query = $form->entries()->latest();
+
+        if ($search = trim((string) request('search'))) {
+            $query->where(function ($q) use ($search) {
+                $q->where('data', 'like', "%{$search}%")
+                    ->orWhere('id', $search)
+                    ->orWhere('ip_address', 'like', "%{$search}%");
+            });
+        }
+
         $entries = Schema::hasTable('form_entries')
-            ? $form->entries()->latest()->paginate($perPage)->withQueryString()
+            ? $query->paginate($perPage)->withQueryString()
             : new LengthAwarePaginator([], 0, $perPage);
 
         $savedColumns = WidgetLayout::where('admin_id', auth('admin')->id())
@@ -112,8 +122,6 @@ class FormController extends Controller
             return redirect()->route('admin.forms.entries', $form);
         }
 
-        $entries = $form->entries()->latest()->get();
-
         $fields = collect($form->fields ?? [])->mapWithKeys(function ($field) {
             $name = $field['name'] ?? null;
             if (! $name) {
@@ -125,24 +133,24 @@ class FormController extends Controller
             return [$name => $column];
         });
 
-        $csv = fopen('php://temp', 'r+');
-        fputcsv($csv, ['ID', 'Submitted', ...$fields->values()->toArray()]);
+        $filename = str($form->title)->slug()->append('-entries.csv')->toString();
 
-        foreach ($entries as $entry) {
-            $row = [$entry->id, $entry->created_at->format('Y-m-d H:i:s')];
-            foreach ($fields->keys() as $name) {
-                $row[] = $entry->data[$name] ?? '';
-            }
-            fputcsv($csv, $row);
-        }
+        return response()->streamDownload(function () use ($form, $fields) {
+            $handle = fopen('php://output', 'w');
+            fputcsv($handle, ['ID', 'Submitted', ...$fields->values()->toArray()]);
 
-        rewind($csv);
-        $output = stream_get_contents($csv);
-        fclose($csv);
+            $form->entries()->latest()->lazyById(500)->each(function (FormEntry $entry) use ($handle, $fields) {
+                $row = [$entry->id, $entry->created_at->format('Y-m-d H:i:s')];
+                foreach ($fields->keys() as $name) {
+                    $val = $entry->data[$name] ?? '';
+                    $row[] = is_array($val) ? implode(', ', $val) : (string) $val;
+                }
+                fputcsv($handle, $row);
+            });
 
-        return response($output, 200, [
-            'Content-Type' => 'text/csv',
-            'Content-Disposition' => 'attachment; filename="'.$form->title.'-entries.csv"',
+            fclose($handle);
+        }, $filename, [
+            'Content-Type' => 'text/csv; charset=UTF-8',
         ]);
     }
 

@@ -393,7 +393,7 @@
                                 @endforeach
 
                                 <td x-show="visibleColumns['created'] !== false" class="px-4 py-3 text-text-primary whitespace-nowrap min-w-[160px] border-b border-content-border group-last:border-b-0">
-                                    <span class="font-medium">{{ $entry->created_at->format('M j, Y g:i A') }}</span>
+                                    <span>{{ $entry->created_at->format('M j, Y g:i A') }}</span>
                                 </td>
                                 <td x-show="visibleColumns['actions'] !== false" class="group-last:rounded-br-xl px-4 py-3 text-right whitespace-nowrap transition-colors border-b border-content-border group-last:border-b-0">
                                     <div class="flex items-center justify-end gap-1.5">

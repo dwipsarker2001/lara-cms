@@ -50,3 +50,49 @@ it('allows deleting a form submission entry', function () {
 
     expect(FormEntry::find($entry->id))->toBeNull();
 });
+
+it('streams CSV export for form entries efficiently', function () {
+    $form = Form::factory()->create([
+        'title' => 'Contact Inquiries',
+        'fields' => [
+            ['_key' => 'k1', 'type' => 'text', 'label' => 'Full Name', 'name' => 'name'],
+            ['_key' => 'k2', 'type' => 'email', 'label' => 'Email', 'name' => 'email'],
+        ],
+    ]);
+
+    FormEntry::create([
+        'form_id' => $form->id,
+        'data' => ['name' => 'Alice Smith', 'email' => 'alice@example.com'],
+    ]);
+
+    FormEntry::create([
+        'form_id' => $form->id,
+        'data' => ['name' => 'Bob Jones', 'email' => 'bob@example.com'],
+    ]);
+
+    $response = \Pest\Laravel\get(route('admin.forms.export', $form));
+
+    $response->assertSuccessful();
+    $response->assertHeader('Content-Type', 'text/csv; charset=UTF-8');
+    expect($response->streamedContent())->toContain('Full Name');
+    expect($response->streamedContent())->toContain('Alice Smith');
+    expect($response->streamedContent())->toContain('Bob Jones');
+});
+
+it('filters form entries by search query', function () {
+    $form = Form::factory()->create();
+
+    FormEntry::create([
+        'form_id' => $form->id,
+        'data' => ['name' => 'UniqueSearchTarget', 'email' => 'unique@example.com'],
+    ]);
+
+    FormEntry::create([
+        'form_id' => $form->id,
+        'data' => ['name' => 'Other Person', 'email' => 'other@example.com'],
+    ]);
+
+    $response = \Pest\Laravel\get(route('admin.forms.entries', ['form' => $form, 'search' => 'UniqueSearchTarget']));
+    $response->assertSuccessful();
+    $response->assertSee('UniqueSearchTarget');
+});

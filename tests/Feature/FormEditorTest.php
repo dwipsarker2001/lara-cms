@@ -104,6 +104,28 @@ it('saves field key and custom error message', function () {
     expect($form->fields[0]['error_message'])->toBe('Customer Name is required!');
 });
 
+it('saves default value for form fields', function () {
+    $form = Form::factory()->create();
+
+    $fields = [
+        [
+            '_key' => 'key-default-1',
+            'type' => 'text',
+            'label' => 'Country',
+            'name' => 'country',
+            'default_value' => 'United States',
+            'required' => false,
+        ],
+    ];
+
+    patch(route('admin.forms.update-fields', $form), [
+        'fields' => $fields,
+    ])->assertSuccessful()->assertJson(['message' => 'Form fields saved.']);
+
+    $form->refresh();
+    expect($form->fields[0]['default_value'])->toBe('United States');
+});
+
 it('validates fields structure', function () {
     $form = Form::factory()->create();
 

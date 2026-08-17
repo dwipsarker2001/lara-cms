@@ -33,6 +33,13 @@
     }
     $headers[] = ['key' => 'created', 'label' => 'Submitted'];
     $headers[] = ['key' => 'actions', 'label' => 'Actions'];
+
+    $isColumnVisible = function (string $columnKey) use ($savedColumns): bool {
+        if (! is_array($savedColumns)) {
+            return true;
+        }
+        return ($savedColumns[$columnKey] ?? true) !== false;
+    };
 @endphp
 
 <div class="max-w-5xl mx-auto px-2 sm:px-0" x-data="formEntriesPage()">
@@ -52,6 +59,18 @@
             {{ $form->title }}
         </h1>
         <div class="flex flex-wrap items-center gap-2 sm:gap-3">
+            <a href="{{ route('admin.forms.editor', $form) }}"
+                class="inline-flex items-center justify-center gap-2 whitespace-nowrap shrink-0 font-medium cursor-pointer no-underline rounded-lg transition-colors h-10 text-sm leading-tight px-4 bg-white hover:bg-gray-50 text-text-primary border border-content-border shadow-sm"
+                title="Form Editor"
+            >
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" class="size-4 text-text-muted">
+                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+                    <polyline points="14 2 14 8 20 8" />
+                    <line x1="12" y1="18" x2="12" y2="12" />
+                    <line x1="9" y1="15" x2="15" y2="15" />
+                </svg>
+                <span>Editor</span>
+            </a>
             <a href="{{ route('admin.forms.edit', $form) }}"
                 class="size-10 flex items-center justify-center rounded-lg border border-content-border bg-white text-text-primary hover:bg-gray-50 transition-colors shadow-sm"
                 title="Form Settings"
@@ -233,14 +252,14 @@
                                         >
                                     </th>
                                     @foreach ($fields as $field)
-                                        <th x-show="visibleColumns['{{ $field['name'] }}'] !== false" class="whitespace-nowrap px-4 py-3 font-medium text-text-muted text-[12px] border-b border-content-border">
+                                        <th x-show="visibleColumns['{{ $field['name'] }}'] !== false" @if(!$isColumnVisible($field['name'])) style="display: none;" @endif class="whitespace-nowrap px-4 py-3 font-medium text-text-muted text-[12px] border-b border-content-border">
                                             <button @click="sortColumn = '{{ $field['name'] }}'; sortRows()" class="cursor-pointer hover:text-text-heading">{{ $field['label'] }}</button>
                                         </th>
                                     @endforeach
-                                    <th x-show="visibleColumns['created'] !== false" class="whitespace-nowrap px-4 py-3 font-medium text-text-muted text-[12px] border-b border-content-border">
+                                    <th x-show="visibleColumns['created'] !== false" @if(!$isColumnVisible('created')) style="display: none;" @endif class="whitespace-nowrap px-4 py-3 font-medium text-text-muted text-[12px] border-b border-content-border">
                                         <button @click="sortColumn = 'created'; sortRows()" class="cursor-pointer hover:text-text-heading">Submitted</button>
                                     </th>
-                                    <th x-show="visibleColumns['actions'] !== false" class="whitespace-nowrap px-3 py-3 font-medium text-text-muted text-[12px] border-b border-content-border sticky right-0 bg-[#f9fafb] z-20 text-right rounded-tr-xl w-14">Actions</th>
+                                    <th x-show="visibleColumns['actions'] !== false" @if(!$isColumnVisible('actions')) style="display: none;" @endif class="whitespace-nowrap px-3 py-3 font-medium text-text-muted text-[12px] border-b border-content-border sticky right-0 bg-[#f9fafb] z-20 text-right rounded-tr-xl w-14">Actions</th>
                                 </tr>
                             </thead>
                             <tbody x-ref="tbody">
@@ -274,17 +293,18 @@
                                                     $value = str_replace(["\r\n", "\r", "\n"], ' ', $value);
                                                 }
                                             @endphp
-                                            <td x-show="visibleColumns['{{ $field['name'] }}'] !== false" class="px-4 py-3 text-text-primary max-w-[200px] whitespace-nowrap overflow-hidden border-b border-content-border group-last:border-b-0">
+                                            <td x-show="visibleColumns['{{ $field['name'] }}'] !== false" @if(!$isColumnVisible($field['name'])) style="display: none;" @endif class="px-4 py-3 text-text-primary max-w-[200px] whitespace-nowrap overflow-hidden border-b border-content-border group-last:border-b-0">
                                                 <span class="block max-w-[200px] truncate" title="{{ is_scalar($value) ? $value : '' }}">
                                                     {{ filled($value) || $value === 0 || $value === '0' ? $value : '—' }}
                                                 </span>
                                             </td>
                                         @endforeach
 
-                                        <td x-show="visibleColumns['created'] !== false" class="px-4 py-3 text-text-primary whitespace-nowrap min-w-[160px] border-b border-content-border group-last:border-b-0">
-                                            <span class="font-medium">{{ $entry->created_at->format('M j, Y g:i A') }}</span>
+                                        <td x-show="visibleColumns['created'] !== false" @if(!$isColumnVisible('created')) style="display: none;" @endif class="px-4 py-3 text-text-primary whitespace-nowrap min-w-[160px] border-b border-content-border group-last:border-b-0">
+                                            <span>{{ $entry->created_at->format('M j, Y g:i A') }}</span>
                                         </td>
                                         <td x-show="visibleColumns['actions'] !== false"
+                                            @if(!$isColumnVisible('actions')) style="display: none;" @endif
                                             x-data="{ open: false }"
                                             @click.outside="open = false"
                                             @keydown.escape.window="open = false"
@@ -485,7 +505,7 @@
         x-transition:leave-start="opacity-100 translate-y-0 scale-100"
         x-transition:leave-end="opacity-0 translate-y-4 scale-95"
         @keydown.escape.window="selectedEntries = []"
-        class="sticky bottom-6 mx-auto w-fit z-[9999] flex items-center bg-white/95 backdrop-blur-md border border-gray-200/90 shadow-[0_10px_35px_rgba(0,0,0,0.14)] rounded-xl overflow-hidden divide-x divide-gray-200 text-xs font-medium"
+        class="sticky bottom-6 mx-auto w-fit z-[9999] flex items-center bg-white/95 backdrop-blur-md border border-content-border shadow-sm rounded-xl overflow-hidden divide-x divide-content-border text-xs font-medium"
     >
         {{-- Deselect Segment --}}
         <button type="button"
@@ -616,9 +636,22 @@
                                 class="w-full rounded-lg border border-content-border bg-content-bg p-2.5 text-xs text-text-heading focus:outline-none focus:ring-2 focus:ring-primary/20 shadow-sm"
                             ></textarea>
                         </template>
-                        <template x-if="field.type !== 'textarea'">
+                        <template x-if="field.type === 'select'">
+                            <select
+                                :name="'data[' + field.name + ']'"
+                                x-model="formData[field.name]"
+                                :required="field.required"
+                                class="w-full rounded-lg border border-content-border bg-content-bg px-3 py-2 text-xs text-text-heading focus:outline-none focus:ring-2 focus:ring-primary/20 shadow-sm"
+                            >
+                                <option value="">Select an option...</option>
+                                <template x-for="opt in (field.options || [])" :key="opt">
+                                    <option :value="opt" x-text="opt"></option>
+                                </template>
+                            </select>
+                        </template>
+                        <template x-if="!['textarea', 'select'].includes(field.type)">
                             <input 
-                                :type="field.type === 'number' ? 'number' : (field.type === 'email' ? 'email' : 'text')" 
+                                :type="field.type === 'number' ? 'number' : (field.type === 'email' ? 'email' : (field.type === 'date' ? 'date' : (field.type === 'time' ? 'time' : 'text')))" 
                                 :name="'data[' + field.name + ']'" 
                                 x-model="formData[field.name]" 
                                 :required="field.required"

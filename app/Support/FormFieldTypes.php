@@ -38,6 +38,7 @@ class FormFieldTypes
             'label' => $def['label'],
             'name' => $def['name'].'_'.Str::lower(Str::random(4)),
             'placeholder' => $def['placeholder'] ?? '',
+            'default_value' => '',
             'required' => false,
         ];
 
@@ -78,15 +79,6 @@ HTML),
                 'previewHtml' => $preview(<<<'HTML'
 <label style="display:block;font-size:14px;font-weight:600;color:#1f2937;margin-bottom:8px;">Email address</label>
 <div style="height:44px;border:1px solid #d1d5db;border-radius:8px;background:#fff;display:flex;align-items:center;padding:0 14px;color:#9ca3af;font-size:14px;">you@example.com</div>
-HTML),
-            ],
-            [
-                'name' => 'phone',
-                'label' => 'Phone',
-                'placeholder' => '+1 (555) 000-0000',
-                'previewHtml' => $preview(<<<'HTML'
-<label style="display:block;font-size:14px;font-weight:600;color:#1f2937;margin-bottom:8px;">Phone number</label>
-<div style="height:44px;border:1px solid #d1d5db;border-radius:8px;background:#fff;display:flex;align-items:center;padding:0 14px;color:#9ca3af;font-size:14px;">+1 (555) 000-0000</div>
 HTML),
             ],
             [

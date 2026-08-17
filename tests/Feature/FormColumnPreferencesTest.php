@@ -64,5 +64,6 @@ it('loads saved column preferences on the entries page', function () {
     get(route('admin.forms.entries', $form))
         ->assertSuccessful()
         ->assertSee('Feedback Form')
-        ->assertSee('saveColumnPreferences', false);
+        ->assertSee('saveColumnPreferences', false)
+        ->assertSee('style="display: none;"', false);
 });
