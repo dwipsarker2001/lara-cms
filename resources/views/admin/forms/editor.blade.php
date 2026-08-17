@@ -278,7 +278,6 @@
                     { name: 'column_name', type: 'string', label: 'Column Name' },
                     { name: 'name', type: 'string', label: 'Field Key' },
                     { name: 'placeholder', type: 'string', label: 'Placeholder' },
-                    { name: 'error_message', type: 'string', label: 'Custom Error Message' },
                     { name: 'required', type: 'boolean', label: 'Required' },
                 ],
                 email: [
@@ -286,7 +285,6 @@
                     { name: 'column_name', type: 'string', label: 'Column Name' },
                     { name: 'name', type: 'string', label: 'Field Key' },
                     { name: 'placeholder', type: 'string', label: 'Placeholder' },
-                    { name: 'error_message', type: 'string', label: 'Custom Error Message' },
                     { name: 'required', type: 'boolean', label: 'Required' },
                 ],
                 phone: [
@@ -294,7 +292,6 @@
                     { name: 'column_name', type: 'string', label: 'Column Name' },
                     { name: 'name', type: 'string', label: 'Field Key' },
                     { name: 'placeholder', type: 'string', label: 'Placeholder' },
-                    { name: 'error_message', type: 'string', label: 'Custom Error Message' },
                     { name: 'required', type: 'boolean', label: 'Required' },
                 ],
                 number: [
@@ -302,7 +299,6 @@
                     { name: 'column_name', type: 'string', label: 'Column Name' },
                     { name: 'name', type: 'string', label: 'Field Key' },
                     { name: 'placeholder', type: 'string', label: 'Placeholder' },
-                    { name: 'error_message', type: 'string', label: 'Custom Error Message' },
                     { name: 'required', type: 'boolean', label: 'Required' },
                 ],
                 textarea: [
@@ -310,7 +306,6 @@
                     { name: 'column_name', type: 'string', label: 'Column Name' },
                     { name: 'name', type: 'string', label: 'Field Key' },
                     { name: 'placeholder', type: 'string', label: 'Placeholder' },
-                    { name: 'error_message', type: 'string', label: 'Custom Error Message' },
                     { name: 'required', type: 'boolean', label: 'Required' },
                 ],
                 select: [
@@ -318,7 +313,6 @@
                     { name: 'column_name', type: 'string', label: 'Column Name' },
                     { name: 'name', type: 'string', label: 'Field Key' },
                     { name: 'options', type: 'tags', label: 'Options' },
-                    { name: 'error_message', type: 'string', label: 'Custom Error Message' },
                     { name: 'required', type: 'boolean', label: 'Required' },
                 ],
                 checkbox: [
@@ -326,7 +320,6 @@
                     { name: 'column_name', type: 'string', label: 'Column Name' },
                     { name: 'name', type: 'string', label: 'Field Key' },
                     { name: 'options', type: 'tags', label: 'Options' },
-                    { name: 'error_message', type: 'string', label: 'Custom Error Message' },
                     { name: 'required', type: 'boolean', label: 'Required' },
                 ],
                 radio: [
@@ -334,7 +327,6 @@
                     { name: 'column_name', type: 'string', label: 'Column Name' },
                     { name: 'name', type: 'string', label: 'Field Key' },
                     { name: 'options', type: 'tags', label: 'Options' },
-                    { name: 'error_message', type: 'string', label: 'Custom Error Message' },
                     { name: 'required', type: 'boolean', label: 'Required' },
                 ],
                 date: [
@@ -342,14 +334,19 @@
                     { name: 'column_name', type: 'string', label: 'Column Name' },
                     { name: 'name', type: 'string', label: 'Field Key' },
                     { name: 'placeholder', type: 'string', label: 'Placeholder' },
-                    { name: 'error_message', type: 'string', label: 'Custom Error Message' },
+                    { name: 'required', type: 'boolean', label: 'Required' },
+                ],
+                time: [
+                    { name: 'label', type: 'string', label: 'Label' },
+                    { name: 'column_name', type: 'string', label: 'Column Name' },
+                    { name: 'name', type: 'string', label: 'Field Key' },
+                    { name: 'placeholder', type: 'string', label: 'Placeholder' },
                     { name: 'required', type: 'boolean', label: 'Required' },
                 ],
                 file: [
                     { name: 'label', type: 'string', label: 'Label' },
                     { name: 'column_name', type: 'string', label: 'Column Name' },
                     { name: 'name', type: 'string', label: 'Field Key' },
-                    { name: 'error_message', type: 'string', label: 'Custom Error Message' },
                     { name: 'required', type: 'boolean', label: 'Required' },
                 ],
             },
@@ -361,7 +358,6 @@
                     _nameEdited: true,
                     _columnEdited: true,
                     _placeholderEdited: true,
-                    _errorEdited: true,
                 }));
                 this.originalFields = JSON.parse(JSON.stringify(this.fields));
                 this.$nextTick(() => this.initFieldSortable());
@@ -413,6 +409,7 @@
                     checkbox: { label: 'Checkbox', type: 'checkbox', options: ['Option 1', 'Option 2', 'Option 3'] },
                     radio: { label: 'Radio', type: 'radio', options: ['Option 1', 'Option 2', 'Option 3'] },
                     date: { label: 'Date', type: 'date', placeholder: 'YYYY-MM-DD' },
+                    time: { label: 'Time', type: 'time', placeholder: 'HH:MM' },
                     file: { label: 'File upload', type: 'file' },
                 };
 
@@ -426,12 +423,10 @@
                     column_name: def.label,
                     name: def.type + '_' + Math.random().toString(36).slice(2, 6),
                     placeholder: def.placeholder || '',
-                    error_message: '',
                     required: false,
                     _nameEdited: false,
                     _columnEdited: false,
                     _placeholderEdited: false,
-                    _errorEdited: false,
                 };
 
                 if (def.options) {
@@ -482,8 +477,6 @@
                     field._columnEdited = true;
                 } else if (name === 'placeholder') {
                     field._placeholderEdited = true;
-                } else if (name === 'error_message') {
-                    field._errorEdited = true;
                 } else if (name === 'label') {
                     const cleanLabel = (value || '').trim();
                     const lower = cleanLabel.toLowerCase();
@@ -511,23 +504,12 @@
                             field.placeholder = '+1 (555) 000-0000';
                         } else if (field.type === 'date' || lower.includes('date') || lower.includes('dob') || lower.includes('birthday')) {
                             field.placeholder = 'YYYY-MM-DD';
+                        } else if (field.type === 'time' || lower.includes('time')) {
+                            field.placeholder = 'HH:MM';
                         } else if (field.type === 'number' || lower.includes('quantity') || lower.includes('amount') || lower.includes('age')) {
                             field.placeholder = '0';
                         } else if (cleanLabel) {
                             field.placeholder = 'Enter ' + lower + '…';
-                        }
-                    }
-
-                    // Smart auto-generation of Custom Error Message if not manually locked
-                    if (!field._errorEdited) {
-                        if (cleanLabel) {
-                            if (field.type === 'email' || lower.includes('email')) {
-                                field.error_message = 'Please enter a valid email address';
-                            } else if (field.type === 'phone' || lower.includes('phone') || lower.includes('tel')) {
-                                field.error_message = 'Please enter a valid phone number';
-                            } else {
-                                field.error_message = 'Please enter ' + lower;
-                            }
                         }
                     }
                 }

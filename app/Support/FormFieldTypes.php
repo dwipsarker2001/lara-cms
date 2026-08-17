@@ -153,6 +153,15 @@ HTML),
 HTML),
             ],
             [
+                'name' => 'time',
+                'label' => 'Time',
+                'placeholder' => 'HH:MM',
+                'previewHtml' => $preview(<<<'HTML'
+<label style="display:block;font-size:14px;font-weight:600;color:#1f2937;margin-bottom:8px;">Time</label>
+<div style="height:44px;border:1px solid #d1d5db;border-radius:8px;background:#fff;display:flex;align-items:center;padding:0 14px;color:#9ca3af;font-size:14px;">HH:MM</div>
+HTML),
+            ],
+            [
                 'name' => 'file',
                 'label' => 'File upload',
                 'previewHtml' => $preview(<<<'HTML'

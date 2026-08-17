@@ -24,7 +24,8 @@ it('loads the form editor page', function () {
         ->assertSee('open-field-picker', false)
         ->assertSee('fieldPicker', false)
         ->assertSee('Text')
-        ->assertSee('Email');
+        ->assertSee('Email')
+        ->assertSee('Time');
 });
 
 it('renders existing fields on the editor page', function () {

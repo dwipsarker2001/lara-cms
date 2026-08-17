@@ -28,6 +28,14 @@ class CheckoutForm extends Block
             Field::number('childPrice', 'Child Price ($)', default: 49.50),
             Field::number('extraService', 'Extra Service ($)', default: 0.00),
             Field::string('buttonText', 'Button Text', default: 'Confirm Booking'),
+            Field::form('mapFullName', 'Full Name Form Key', formFieldKey: 'formId', default: 'full_name'),
+            Field::form('mapEmail', 'Email Form Key', formFieldKey: 'formId', default: 'email'),
+            Field::form('mapPhone', 'Phone Form Key', formFieldKey: 'formId', default: 'phone'),
+            Field::form('mapTravelDate', 'Travel Date Form Key', formFieldKey: 'formId', default: 'travel_date'),
+            Field::form('mapPreferredTime', 'Preferred Time Form Key', formFieldKey: 'formId', default: 'preferred_time'),
+            Field::form('mapAdults', 'Adults Form Key', formFieldKey: 'formId', default: 'adults'),
+            Field::form('mapChildren', 'Children Form Key', formFieldKey: 'formId', default: 'children'),
+            Field::form('mapMessage', 'Message Form Key', formFieldKey: 'formId', default: 'additional_message'),
         ];
     }
 

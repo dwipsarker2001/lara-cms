@@ -18,7 +18,7 @@
     window.editorSettingsCustomValues = @json($settingsCustomValues ?? (object)[]);
     window.editorSaveRoute = '{{ route('admin.collections.entries.update-sections', [$collection, $entry]) }}';
     window.editorPostId = null;
-
+    window.editorForms = @json($availableForms ?? []);
 </script>
 <div class="flex h-full gap-3 p-3 relative" x-data="pageEditor()"     x-init="init(window.editorSections, window.editorSchemas, window.editorBlockList, window.editorSlug, window.editorPages, window.editorHomeGlobals)" x-on:section-selected.window="addSection($event.detail.name)">
     {{-- Editor panel --}}
@@ -566,6 +566,37 @@
                                                     </button>
                                                 </template>
                                             </div>
+                                        </div>
+                                    </div>
+                                </template>
+
+                                {{-- form key picker --}}
+                                <template x-if="field.type === 'form'">
+                                    <div>
+                                        <div class="flex items-center justify-between mb-1">
+                                            <label class="block text-sm font-semibold text-text-primary" x-text="field.label"></label>
+                                            <span class="text-[10px] uppercase font-mono text-primary bg-primary/10 px-1.5 py-0.5 rounded font-medium">Form Key</span>
+                                        </div>
+                                        <div>
+                                            <template x-if="getFormKeyOptions(field).length > 0">
+                                                <select :value="getField(field.name)" @change="setField(field.name, $event.target.value)"
+                                                    :data-field-target="field.name"
+                                                    class="w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm text-text-primary shadow-[0_2px_3px_-2px_rgba(0,0,0,0.15)] focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary">
+                                                    <option value="">-- Select Form Key --</option>
+                                                    <template x-for="opt in getFormKeyOptions(field)" :key="opt.value">
+                                                        <option :value="opt.value" x-text="opt.label" :selected="getField(field.name) === opt.value"></option>
+                                                    </template>
+                                                </select>
+                                            </template>
+                                            <template x-if="getFormKeyOptions(field).length === 0">
+                                                <div class="space-y-1">
+                                                    <input type="text" :value="getField(field.name)" @input="setField(field.name, $event.target.value)"
+                                                        :placeholder="field.defaultValue || 'e.g. full_name'"
+                                                        :data-field-target="field.name"
+                                                        class="w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm text-text-primary shadow-[0_2px_3px_-2px_rgba(0,0,0,0.15)] focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary">
+                                                    <p class="text-[11px] text-text-muted">Select a Form in the block settings to pick from its keys.</p>
+                                                </div>
+                                            </template>
                                         </div>
                                     </div>
                                 </template>
@@ -1532,6 +1563,7 @@
             siteSettings: window.editorSettingsCustomValues || {},
             collectionFields: window.editorCollectionFields || [],
             groupedCollectionFields: window.editorGroupedCollectionFields || [],
+            availableForms: window.editorForms || [],
             selectedCollectionGroup: (window.editorGroupedCollectionFields && window.editorGroupedCollectionFields.length > 0) ? window.editorGroupedCollectionFields[0].collection_id : null,
             linkModes: {},
             active: null,
@@ -1893,6 +1925,18 @@
 
                 // Show options belonging to the selected collection + universal options (collection === '')
                 return opts.filter(o => o.collection === '' || o.collection === selectedCol);
+            },
+
+            getFormKeyOptions(field) {
+                const formFieldKey = field.formFieldKey || 'formId';
+                const selectedFormId = this.getField(formFieldKey);
+                if (!selectedFormId) return [];
+                const form = (this.availableForms || []).find(f => String(f.id) === String(selectedFormId));
+                if (!form || !Array.isArray(form.fields)) return [];
+                return form.fields.map(f => ({
+                    value: f.name,
+                    label: (f.label ? (f.label + ' (' + f.name + ')') : f.name) + (f.type ? ' [' + f.type + ']' : ''),
+                }));
             },
 
             currentData() {

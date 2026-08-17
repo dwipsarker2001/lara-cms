@@ -60,6 +60,26 @@ class Field
         return $field;
     }
 
+    public static function date(string $name, string $label, string $default = '', string $source = ''): array
+    {
+        $field = compact('name', 'label') + ['type' => 'date', 'defaultValue' => $default];
+        if ($source !== '') {
+            $field['source'] = $source;
+        }
+
+        return $field;
+    }
+
+    public static function time(string $name, string $label, string $default = '', string $source = ''): array
+    {
+        $field = compact('name', 'label') + ['type' => 'time', 'defaultValue' => $default];
+        if ($source !== '') {
+            $field['source'] = $source;
+        }
+
+        return $field;
+    }
+
     public static function image(string $name, string $label, string $default = '', string $source = ''): array
     {
         $field = compact('name', 'label') + ['type' => 'image', 'defaultValue' => $default];
@@ -175,6 +195,27 @@ class Field
         }
 
         return $field;
+    }
+
+    /**
+     * Input field that lets the user select a field key from a selected Form (e.g. formId).
+     */
+    public static function form(string $name, string $label, string $formFieldKey = 'formId', string $default = '', string $source = ''): array
+    {
+        $field = compact('name', 'label', 'formFieldKey') + ['type' => 'form', 'defaultValue' => $default];
+        if ($source !== '') {
+            $field['source'] = $source;
+        }
+
+        return $field;
+    }
+
+    /**
+     * Alias for Field::form()
+     */
+    public static function formField(string $name, string $label, string $formFieldKey = 'formId', string $default = '', string $source = ''): array
+    {
+        return self::form($name, $label, $formFieldKey, $default, $source);
     }
 
     /**

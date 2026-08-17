@@ -186,6 +186,44 @@
                                                 @case('number')
                                                     <input type="number" id="field-{{ $loop->index }}" name="data[{{ $key }}]" value="{{ $value }}" class="w-full block bg-content-bg border border-content-border text-text-primary placeholder:text-text-muted text-sm rounded-lg px-3 py-2 h-9 transition-all duration-150 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary">
                                                     @break
+                                                 @case('time')
+                                                      <div class="relative flex items-center w-full"
+                                                          x-data="{
+                                                              fp: null,
+                                                              initFlatpickr() {
+                                                                  const self = this;
+                                                                  const run = function() {
+                                                                      if (typeof flatpickr !== 'undefined' && self.$refs.pickerInput) {
+                                                                          self.fp = flatpickr(self.$refs.pickerInput, {
+                                                                              enableTime: true,
+                                                                              noCalendar: true,
+                                                                              dateFormat: 'H:i',
+                                                                              altInput: true,
+                                                                              altFormat: 'h:i K',
+                                                                              altInputClass: 'w-full block bg-content-bg border border-content-border text-text-primary placeholder:text-text-muted text-sm rounded-lg px-3 py-2 h-9 transition-all duration-150 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary cursor-pointer',
+                                                                              allowInput: true
+                                                                          });
+                                                                      } else {
+                                                                          setTimeout(run, 50);
+                                                                      }
+                                                                  };
+                                                                  run();
+                                                              }
+                                                          }"
+                                                          x-init="initFlatpickr()"
+                                                      >
+                                                          <input type="text"
+                                                              id="field-{{ $loop->index }}"
+                                                              name="data[{{ $key }}]"
+                                                              value="{{ $value }}"
+                                                              x-ref="pickerInput"
+                                                              placeholder="Select time..."
+                                                              class="w-full block bg-content-bg border border-content-border text-text-primary placeholder:text-text-muted text-sm rounded-lg px-3 py-2 h-9 transition-all duration-150 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary cursor-pointer">
+                                                          <div class="absolute right-2.5 pointer-events-none text-text-muted">
+                                                              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" class="size-4"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                                                          </div>
+                                                      </div>
+                                                      @break
                                                  @case('date')
                                                  @case('datetime')
                                                  @case('datetime-local')

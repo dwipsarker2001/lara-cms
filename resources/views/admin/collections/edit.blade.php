@@ -315,6 +315,12 @@
                                             <span class="font-medium" x-text="fieldForm.enable_time ? 'Date & Time' : 'Date'"></span>
                                         </div>
                                     </template>
+                                    <template x-if="fieldForm.type === 'time'">
+                                        <div class="flex items-center gap-2">
+                                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" class="size-4 text-primary shrink-0"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                                            <span class="font-medium">Time</span>
+                                        </div>
+                                    </template>
                                 </div>
                                 <svg :class="open ? 'rotate-180 text-primary' : 'text-gray-400'" class="size-4 transition-transform duration-150 shrink-0" viewBox="0 0 20 20" fill="currentColor">
                                     <path fill-rule="evenodd" d="M5.22 8.22a.75.75 0 0 1 1.06 0L10 11.94l3.72-3.72a.75.75 0 1 1 1.06 1.06l-4.25 4.25a.75.75 0 0 1-1.06 0L5.22 9.28a.75.75 0 0 1 0-1.06Z" clip-rule="evenodd" />
@@ -380,6 +386,17 @@
                                         <span>Date</span>
                                     </div>
                                     <svg x-show="fieldForm.type === 'date'" class="size-4 text-primary shrink-0" viewBox="0 0 20 20" fill="currentColor">
+                                        <path fill-rule="evenodd" d="M16.704 4.153a.75.75 0 0 1 .143 1.052l-8 10.5a.75.75 0 0 1-1.127.075l-4.5-4.5a.75.75 0 0 1 1.06-1.06l3.894 3.893 7.48-9.817a.75.75 0 0 1 1.05-.143Z" clip-rule="evenodd" />
+                                    </svg>
+                                </button>
+                                <button type="button" @click="fieldForm.type = 'time'; open = false"
+                                    class="flex items-center justify-between w-full px-3 py-2 text-sm rounded-lg text-text-primary hover:bg-gray-100/80 transition-colors"
+                                    :class="fieldForm.type === 'time' ? 'bg-primary/10 text-primary font-medium' : ''">
+                                    <div class="flex items-center gap-2.5">
+                                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" class="size-4 shrink-0" :class="fieldForm.type === 'time' ? 'text-primary' : 'text-text-muted'"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                                        <span>Time</span>
+                                    </div>
+                                    <svg x-show="fieldForm.type === 'time'" class="size-4 text-primary shrink-0" viewBox="0 0 20 20" fill="currentColor">
                                         <path fill-rule="evenodd" d="M16.704 4.153a.75.75 0 0 1 .143 1.052l-8 10.5a.75.75 0 0 1-1.127.075l-4.5-4.5a.75.75 0 0 1 1.06-1.06l3.894 3.893 7.48-9.817a.75.75 0 0 1 1.05-.143Z" clip-rule="evenodd" />
                                     </svg>
                                 </button>

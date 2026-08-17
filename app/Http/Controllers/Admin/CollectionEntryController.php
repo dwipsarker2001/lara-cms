@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Admin;
 use App\Models\Collection;
 use App\Models\CollectionEntry;
+use App\Models\Form;
 use App\Models\Layout;
 use App\Models\Setting;
 use App\Support\Sections;
@@ -335,6 +336,21 @@ class CollectionEntryController extends Controller
             'created_by' => $entry->data['created_by'] ?? $entry->data['author'] ?? ($entry->meta['author'] ?? (auth('admin')->check() ? auth('admin')->user()->name : 'Admin')),
         ], is_array($entry->data) ? $entry->data : []);
 
+        $availableForms = [];
+        if (Schema::hasTable('forms')) {
+            $availableForms = Form::select('id', 'title', 'fields')->orderBy('position')->get()->map(function ($f) {
+                return [
+                    'id' => (string) $f->id,
+                    'title' => $f->title,
+                    'fields' => collect($f->fields ?? [])->map(fn ($field) => [
+                        'name' => $field['name'] ?? '',
+                        'label' => $field['label'] ?? ($field['column_name'] ?? $field['name'] ?? ''),
+                        'type' => $field['type'] ?? 'text',
+                    ])->filter(fn ($field) => ! empty($field['name']))->values()->all(),
+                ];
+            })->all();
+        }
+
         return view('admin.collections.entries.editor', [
             'collection' => $collection,
             'entry' => $entry,
@@ -347,6 +363,7 @@ class CollectionEntryController extends Controller
             'collectionFields' => $collectionFields,
             'groupedCollectionFields' => $groupedCollectionFields,
             'settingsCustomValues' => $settingsCustomValues,
+            'availableForms' => $availableForms,
         ]);
     }
 

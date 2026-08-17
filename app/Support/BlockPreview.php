@@ -109,7 +109,7 @@ class BlockPreview
             $inner = $block->render(
                 data: $section['data'] ?? [],
                 _key: $section['_key'] ?? '',
-                preview: true,
+                preview: $isEditor,
                 page: $page,
             );
 
