@@ -4,7 +4,7 @@
 @section('breadcrumb', 'Taxonomies')
 
 @section('content')
-<div class="max-w-5xl mx-auto px-2 sm:px-0">
+<div class="max-w-5xl mx-auto px-2 sm:px-0" x-data="{ deletingTaxonomy: null }">
     <header class="relative flex flex-wrap items-center justify-between gap-4 py-6 md:py-8">
         <h1 class="flex items-center gap-2.5 text-[25px] leading-[1.25] font-medium text-text-heading">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" class="size-6 shrink-0 text-text-muted">
@@ -122,19 +122,20 @@
                                             <span>Settings</span>
                                         </a>
                                         <hr class="my-1 border-content-border">
-                                        <form method="POST" action="{{ route('admin.taxonomies.destroy', $taxonomy) }}" class="w-full mb-0">
-                                            @csrf @method('DELETE')
-                                            <button type="submit" role="menuitem"
-                                                onclick="return confirm('Delete this taxonomy group?')"
-                                                class="flex w-full items-center justify-start gap-2.5 px-3 py-2 rounded-lg text-sm transition-colors text-red-600 hover:bg-red-50 cursor-pointer"
-                                            >
-                                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" class="size-4 shrink-0 text-red-500">
-                                                    <path d="M3 6h18" />
-                                                    <path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6" />
-                                                    <path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2" />
-                                                </svg>
-                                                <span>Delete</span>
-                                            </button>
+                                        <button type="button" role="menuitem"
+                                            @click="deletingTaxonomy = { id: '{{ $taxonomy->id }}', title: @js($taxonomy->title) }; open = false"
+                                            class="flex w-full items-center justify-start gap-2.5 px-3 py-2 rounded-lg text-sm transition-colors text-red-600 hover:bg-red-50 cursor-pointer"
+                                        >
+                                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" class="size-4 shrink-0 text-red-500">
+                                                <path d="M3 6h18" />
+                                                <path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6" />
+                                                <path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2" />
+                                            </svg>
+                                            <span>Delete</span>
+                                        </button>
+                                        <form id="delete-taxonomy-form-{{ $taxonomy->id }}" method="POST" action="{{ route('admin.taxonomies.destroy', $taxonomy) }}" class="hidden">
+                                            @csrf
+                                            @method('DELETE')
                                         </form>
                                     </div>
                                 </div>
@@ -146,6 +147,16 @@
             @endif
         </div>
     </div>
+
+    {{-- Delete Taxonomy Confirmation Modal --}}
+    <x-admin::delete-modal
+        show="deletingTaxonomy"
+        title="Delete Taxonomy"
+        title-expression="'Delete ' + (deletingTaxonomy?.title ? '“' + deletingTaxonomy.title + '”' : 'Taxonomy')"
+        confirm-action="document.getElementById('delete-taxonomy-form-' + deletingTaxonomy?.id)?.submit()"
+    >
+        Are you sure you want to delete <span class="font-medium text-text-heading" x-text="deletingTaxonomy?.title ? '“' + deletingTaxonomy.title + '”' : 'this taxonomy'"></span>? All associated items and term data will be permanently deleted.
+    </x-admin::delete-modal>
 </div>
 
 <style>

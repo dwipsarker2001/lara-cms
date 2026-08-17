@@ -4,7 +4,7 @@
 @section('breadcrumb', $taxonomy->title)
 
 @section('content')
-<div class="max-w-5xl mx-auto px-2 sm:px-0">
+<div class="max-w-5xl mx-auto px-2 sm:px-0" x-data="{ showDeleteTaxonomyModal: false, deletingTerm: null }">
     <header class="relative flex flex-wrap items-center justify-between gap-4 py-6 md:py-8">
         <h1 class="flex items-center gap-2.5 text-[25px] leading-[1.25] font-medium text-text-heading">
             @if($taxonomy->icon)
@@ -19,15 +19,64 @@
             {{ $taxonomy->title }}
         </h1>
         <div class="flex flex-wrap items-center gap-2 sm:gap-3">
-            <a href="{{ route('admin.taxonomies.edit', $taxonomy) }}"
-                class="size-10 flex items-center justify-center rounded-lg border border-content-border bg-white text-text-primary hover:bg-gray-50 transition-colors shadow-sm"
-                title="Taxonomy Settings & Fields"
-            >
-                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-settings">
-                    <circle cx="12" cy="12" r="3" />
-                    <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z" />
-                </svg>
-            </a>
+            {{-- Settings Dropdown --}}
+            <div class="relative" x-data="{ settingsOpen: false }" @click.outside="settingsOpen = false" @keydown.escape.window="settingsOpen = false">
+                <button
+                    type="button"
+                    @click="settingsOpen = !settingsOpen"
+                    :aria-expanded="settingsOpen"
+                    class="size-10 flex items-center justify-center rounded-lg border border-content-border bg-white text-text-primary hover:bg-gray-50 transition-colors shadow-sm cursor-pointer"
+                    title="Settings"
+                >
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-settings">
+                        <circle cx="12" cy="12" r="3" />
+                        <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z" />
+                    </svg>
+                </button>
+
+                <div
+                    x-show="settingsOpen"
+                    x-cloak
+                    x-transition:enter="transition ease-out duration-100"
+                    x-transition:enter-start="opacity-0 scale-95"
+                    x-transition:enter-end="opacity-100 scale-100"
+                    x-transition:leave="transition ease-in duration-75"
+                    x-transition:leave-start="opacity-100 scale-100"
+                    x-transition:leave-end="opacity-0 scale-95"
+                    role="menu"
+                    style="z-index: 9999;"
+                    class="absolute right-0 top-full mt-1 min-w-[12rem] rounded-xl border border-content-border bg-content-bg shadow-xl p-1.5"
+                >
+                    <a
+                        href="{{ route('admin.taxonomies.edit', $taxonomy) }}"
+                        role="menuitem"
+                        class="flex w-full items-center justify-start gap-2.5 px-3 py-2 rounded-lg text-sm font-medium no-underline transition-colors text-text-primary hover:bg-body-bg cursor-pointer"
+                    >
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-pencil size-4 shrink-0 text-text-muted">
+                            <path d="M21.174 6.812a1 1 0 0 0-3.986-3.987L3.842 16.174a2 2 0 0 0-.5.83l-1.321 4.352a.5.5 0 0 0 .623.622l4.353-1.32a2 2 0 0 0 .83-.497z"/>
+                            <path d="m15 5 4 4"/>
+                        </svg>
+                        <span>Edit Config</span>
+                    </a>
+                    <hr class="my-1 border-content-border">
+                    <button
+                        type="button"
+                        role="menuitem"
+                        @click="settingsOpen = false; showDeleteTaxonomyModal = true"
+                        class="flex w-full items-center justify-start gap-2.5 px-3 py-2 rounded-lg text-sm font-medium transition-colors text-red-600 hover:bg-red-50 cursor-pointer"
+                    >
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-trash-2 size-4 shrink-0 text-red-500">
+                            <path d="M3 6h18"/>
+                            <path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/>
+                            <path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/>
+                            <line x1="10" y1="11" x2="10" y2="17"/>
+                            <line x1="14" y1="11" x2="14" y2="17"/>
+                        </svg>
+                        <span>Delete All</span>
+                    </button>
+                </div>
+            </div>
+
             <a href="{{ route('admin.taxonomies.terms.create', $taxonomy) }}"
                 class="inline-flex items-center justify-center gap-2 whitespace-nowrap shrink-0 font-medium cursor-pointer no-underline rounded-lg transition-colors h-10 text-sm leading-tight px-4 bg-primary hover:opacity-90 text-white shadow-sm"
             >
@@ -111,32 +160,36 @@
                                         x-transition:leave-end="opacity-0 scale-95"
                                         role="menu"
                                         style="z-index: 9999;"
-                                        class="absolute right-0 top-full mt-1 min-w-[12rem] rounded-xl border border-content-border bg-content-bg shadow-xl p-1.5"
+                                        class="absolute right-0 top-full mt-1 min-w-[12.5rem] rounded-xl border border-content-border bg-content-bg shadow-xl p-1.5"
                                     >
                                         <a
                                             href="{{ route('admin.taxonomies.terms.edit', [$taxonomy, $term]) }}"
                                             role="menuitem"
-                                            class="flex w-full items-center justify-start gap-2.5 px-3 py-2 rounded-lg text-sm no-underline transition-colors text-text-primary hover:bg-body-bg cursor-pointer"
+                                            class="flex w-full items-center justify-start gap-2.5 px-3 py-2 rounded-lg text-sm font-medium no-underline transition-colors text-text-primary hover:bg-body-bg cursor-pointer"
                                         >
-                                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" class="size-4 shrink-0 text-text-muted">
-                                                <path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7" />
-                                                <path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z" />
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-pencil size-4 shrink-0 text-text-muted">
+                                                <path d="M21.174 6.812a1 1 0 0 0-3.986-3.987L3.842 16.174a2 2 0 0 0-.5.83l-1.321 4.352a.5.5 0 0 0 .623.622l4.353-1.32a2 2 0 0 0 .83-.497z"/>
+                                                <path d="m15 5 4 4"/>
                                             </svg>
-                                            <span>Edit</span>
+                                            <span>Edit {{ $taxonomy->title }}</span>
                                         </a>
                                         <hr class="my-1 border-content-border">
-                                        <form method="POST" action="{{ route('admin.taxonomies.terms.destroy', [$taxonomy, $term]) }}" class="w-full mb-0">
-                                            @csrf @method('DELETE')
-                                            <button type="submit" role="menuitem"
-                                                onclick="return confirm('Delete this item?')"
-                                                class="flex w-full items-center justify-start gap-2.5 px-3 py-2 rounded-lg text-sm transition-colors text-red-600 hover:bg-red-50 cursor-pointer"
-                                            >
-                                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" class="size-4 shrink-0 text-red-500">
-                                                    <polyline points="3 6 5 6 21 6" />
-                                                    <path d="M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2" />
-                                                </svg>
-                                                <span>Delete</span>
-                                            </button>
+                                        <button type="button" role="menuitem"
+                                            @click="deletingTerm = { id: '{{ $term->id }}', title: @js($term->title) }; open = false"
+                                            class="flex w-full items-center justify-start gap-2.5 px-3 py-2 rounded-lg text-sm font-medium transition-colors text-red-600 hover:bg-red-50 cursor-pointer"
+                                        >
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-trash-2 size-4 shrink-0 text-red-500">
+                                                <path d="M3 6h18"/>
+                                                <path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/>
+                                                <path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/>
+                                                <line x1="10" y1="11" x2="10" y2="17"/>
+                                                <line x1="14" y1="11" x2="14" y2="17"/>
+                                            </svg>
+                                            <span>Delete {{ $taxonomy->title }}</span>
+                                        </button>
+                                        <form id="delete-term-form-{{ $term->id }}" method="POST" action="{{ route('admin.taxonomies.terms.destroy', [$taxonomy, $term]) }}" class="hidden">
+                                            @csrf
+                                            @method('DELETE')
                                         </form>
                                     </div>
                                 </div>
@@ -147,6 +200,29 @@
             @endif
         </div>
     </div>
+
+    {{-- Delete Taxonomy Confirmation Modal --}}
+    <form id="delete-taxonomy-form" method="POST" action="{{ route('admin.taxonomies.destroy', $taxonomy) }}" class="hidden">
+        @csrf
+        @method('DELETE')
+    </form>
+    <x-admin::delete-modal
+        show="showDeleteTaxonomyModal"
+        title="Delete Taxonomy"
+        confirm-action="document.getElementById('delete-taxonomy-form')?.submit()"
+    >
+        Are you sure you want to delete <span class="font-medium text-text-heading">“{{ $taxonomy->title }}”</span>? All associated items and term data will be permanently deleted.
+    </x-admin::delete-modal>
+
+    {{-- Delete Term Confirmation Modal --}}
+    <x-admin::delete-modal
+        show="deletingTerm"
+        title="Delete Item"
+        title-expression="'Delete ' + (deletingTerm?.title ? '“' + deletingTerm.title + '”' : 'item')"
+        confirm-action="document.getElementById('delete-term-form-' + deletingTerm?.id)?.submit()"
+    >
+        Are you sure you want to delete <span class="font-medium text-text-heading" x-text="deletingTerm?.title ? '“' + deletingTerm.title + '”' : 'this item'"></span>? This action cannot be undone.
+    </x-admin::delete-modal>
 </div>
 @endsection
 

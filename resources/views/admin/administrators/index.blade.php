@@ -314,26 +314,30 @@
                                                             class="fixed min-w-[12rem] rounded-xl border border-content-border bg-content-bg shadow-xl p-1.5 z-[9999]"
                                                             :style="`top: ${menuTop}px; right: ${menuRight}px;`">
                                                             <a href="{{ route('admin.administrators.edit', $admin) }}"
-                                                                class="flex w-full items-center justify-start gap-2.5 px-3 py-2 rounded-lg text-sm no-underline transition-colors text-text-primary hover:bg-body-bg cursor-pointer">
-                                                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" class="size-4 shrink-0 text-text-muted">
-                                                                    <path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7" />
-                                                                    <path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z" />
+                                                                class="flex w-full items-center justify-start gap-2.5 px-3 py-2 rounded-lg text-sm font-medium no-underline transition-colors text-text-primary hover:bg-body-bg cursor-pointer">
+                                                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-pencil size-4 shrink-0 text-text-muted">
+                                                                    <path d="M21.174 6.812a1 1 0 0 0-3.986-3.987L3.842 16.174a2 2 0 0 0-.5.83l-1.321 4.352a.5.5 0 0 0 .623.622l4.353-1.32a2 2 0 0 0 .83-.497z"/>
+                                                                    <path d="m15 5 4 4"/>
                                                                 </svg>
                                                                 <span>Edit</span>
                                                             </a>
                                                             @if ($admin->id !== auth('admin')->id())
-                                                                <form method="POST" action="{{ route('admin.administrators.destroy', $admin) }}" class="w-full">
+                                                                <hr class="my-1 border-content-border">
+                                                                <button type="button"
+                                                                    @click="open = false; deletingAdmin = { id: '{{ $admin->id }}', name: @js($admin->name) }"
+                                                                    class="flex w-full items-center justify-start gap-2.5 px-3 py-2 rounded-lg text-sm font-medium transition-colors text-red-600 hover:bg-red-50 cursor-pointer">
+                                                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-trash-2 size-4 shrink-0 text-red-500">
+                                                                        <path d="M3 6h18"/>
+                                                                        <path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/>
+                                                                        <path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/>
+                                                                        <line x1="10" y1="11" x2="10" y2="17"/>
+                                                                        <line x1="14" y1="11" x2="14" y2="17"/>
+                                                                    </svg>
+                                                                    <span>Delete</span>
+                                                                </button>
+                                                                <form id="delete-admin-form-{{ $admin->id }}" method="POST" action="{{ route('admin.administrators.destroy', $admin) }}" class="hidden">
                                                                     @csrf
                                                                     @method('DELETE')
-                                                                    <button type="submit"
-                                                                        onclick="return confirm('Are you sure you want to delete this administrator?')"
-                                                                        class="flex w-full items-center justify-start gap-2.5 px-3 py-2 rounded-lg text-sm transition-colors text-red-600 hover:bg-red-50 cursor-pointer">
-                                                                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" class="size-4 shrink-0 text-red-500">
-                                                                            <polyline points="3 6 5 6 21 6" />
-                                                                            <path d="M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2" />
-                                                                        </svg>
-                                                                        <span>Delete</span>
-                                                                    </button>
                                                                 </form>
                                                             @endif
                                                         </div>
@@ -350,6 +354,16 @@
             </div>
         </div>
     </div>
+
+    {{-- Delete Administrator Confirmation Modal --}}
+    <x-admin::delete-modal
+        show="deletingAdmin"
+        title="Delete Administrator"
+        title-expression="'Delete ' + (deletingAdmin?.name ? '“' + deletingAdmin.name + '”' : 'Administrator')"
+        confirm-action="document.getElementById('delete-admin-form-' + deletingAdmin?.id)?.submit()"
+    >
+        Are you sure you want to delete <span class="font-medium text-text-heading" x-text="deletingAdmin?.name ? '“' + deletingAdmin.name + '”' : 'this administrator'"></span>? This administrator will permanently lose access to the admin panel.
+    </x-admin::delete-modal>
 </div>
 
 @push('scripts')
@@ -359,6 +373,7 @@
 <script>
     function adminPage() {
         return {
+            deletingAdmin: null,
             search: '',
             filterColumn: 'all',
             sortColumn: 'name',

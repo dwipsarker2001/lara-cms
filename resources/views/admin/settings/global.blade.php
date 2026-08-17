@@ -350,6 +350,7 @@
                                                     </button>
                                                     <div
                                                         x-show="open"
+                                                        x-cloak
                                                         x-transition:enter="transition ease-out duration-100"
                                                         x-transition:enter-start="opacity-0 scale-95"
                                                         x-transition:enter-end="opacity-100 scale-100"
@@ -357,27 +358,31 @@
                                                         x-transition:leave-start="opacity-100 scale-100"
                                                         x-transition:leave-end="opacity-0 scale-95"
                                                         style="z-index: 9999; display: none;"
-                                                        class="absolute right-0 top-full mt-1 min-w-[8.5rem] rounded-xl border border-gray-200 bg-white shadow-xl p-1.5 space-y-0.5"
+                                                        class="absolute right-0 top-full mt-1 min-w-[12rem] rounded-xl border border-content-border bg-content-bg shadow-xl p-1.5"
                                                     >
                                                         <button
                                                             type="button"
                                                             @click="open = false; editField(index)"
-                                                            class="flex w-full items-center gap-2 px-2.5 py-1.5 rounded-lg text-xs font-medium transition-colors text-text-primary hover:bg-gray-100 cursor-pointer"
+                                                            class="flex w-full items-center justify-start gap-2.5 px-3 py-2 rounded-lg text-sm font-medium transition-colors text-text-primary hover:bg-body-bg cursor-pointer"
                                                         >
-                                                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" class="size-3.5 shrink-0 text-text-muted">
-                                                                <path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7" />
-                                                                <path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z" />
+                                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-pencil size-4 shrink-0 text-text-muted">
+                                                                <path d="M21.174 6.812a1 1 0 0 0-3.986-3.987L3.842 16.174a2 2 0 0 0-.5.83l-1.321 4.352a.5.5 0 0 0 .623.622l4.353-1.32a2 2 0 0 0 .83-.497z"/>
+                                                                <path d="m15 5 4 4"/>
                                                             </svg>
                                                             <span>Edit</span>
                                                         </button>
+                                                        <hr class="my-1 border-content-border">
                                                         <button
                                                             type="button"
                                                             @click="open = false; promptDeleteField(index)"
-                                                            class="flex w-full items-center gap-2 px-2.5 py-1.5 rounded-lg text-xs font-medium transition-colors text-red-600 hover:bg-red-50 cursor-pointer"
+                                                            class="flex w-full items-center justify-start gap-2.5 px-3 py-2 rounded-lg text-sm font-medium transition-colors text-red-600 hover:bg-red-50 cursor-pointer"
                                                         >
-                                                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" class="size-3.5 shrink-0 text-red-500">
-                                                                <polyline points="3 6 5 6 21 6" />
-                                                                <path d="M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2" />
+                                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-trash-2 size-4 shrink-0 text-red-500">
+                                                                <path d="M3 6h18"/>
+                                                                <path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/>
+                                                                <path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/>
+                                                                <line x1="10" y1="11" x2="10" y2="17"/>
+                                                                <line x1="14" y1="11" x2="14" y2="17"/>
                                                             </svg>
                                                             <span>Delete</span>
                                                         </button>
@@ -747,35 +752,18 @@
                         class="inline-flex items-center justify-center gap-2 shrink-0 font-medium cursor-pointer no-underline rounded-lg transition-colors h-9 text-sm leading-tight px-4 bg-primary hover:opacity-90 text-white shadow-xs">
                         <span x-text="editingFieldIndex !== null ? 'Update Field' : 'Add Field'"></span>
                     </button>
-        {{-- ==================== DELETE CUSTOM FIELD CONFIRMATION MODAL ==================== --}}
-        <div x-show="showDeleteModal" class="fixed inset-0 z-[9999] flex items-center justify-center bg-black/40"
-            @click.self="showDeleteModal = false" style="display: none;">
-            <div class="bg-white rounded-2xl shadow-xl w-full max-w-md mx-4 relative overflow-hidden">
-                <div class="p-6 text-center space-y-4">
-                    <div class="size-12 rounded-full bg-red-100 text-red-600 flex items-center justify-center mx-auto shrink-0">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="size-6">
-                            <path d="M3 6h18M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2M10 11v6M14 11v6" stroke-linecap="round" stroke-linejoin="round" />
-                        </svg>
-                    </div>
-                    <div>
-                        <h3 class="text-lg font-semibold text-text-heading">Delete Custom Input</h3>
-                        <p class="text-sm text-text-muted mt-1.5 leading-relaxed">
-                            Are you sure you want to delete <strong class="text-text-heading font-semibold" x-text="deletingFieldIndex !== null && fields[deletingFieldIndex] ? fields[deletingFieldIndex].title : 'this input'"></strong>? This action will remove the field from your settings.
-                        </p>
-                    </div>
-                </div>
-                <div class="flex items-center justify-end gap-3 px-6 py-4 bg-gray-50 border-t border-gray-100 rounded-b-2xl">
-                    <button type="button" @click="showDeleteModal = false"
-                        class="inline-flex items-center justify-center gap-2 shrink-0 font-medium cursor-pointer no-underline rounded-lg transition-colors h-9 text-sm leading-tight px-4 bg-white hover:bg-gray-50 text-text-primary shadow-xs border border-gray-200">
-                        Cancel
-                    </button>
-                    <button type="button" @click="confirmDeleteField()"
-                        class="inline-flex items-center justify-center gap-2 shrink-0 font-medium cursor-pointer no-underline rounded-lg transition-colors h-9 text-sm leading-tight px-4 bg-red-600 hover:bg-red-700 text-white shadow-xs">
-                        Delete Input
-                    </button>
                 </div>
             </div>
         </div>
+
+        {{-- ==================== DELETE CUSTOM FIELD CONFIRMATION MODAL ==================== --}}
+        <x-admin::delete-modal
+            show="showDeleteModal"
+            title="Delete Custom Input"
+            confirm-action="confirmDeleteField()"
+        >
+            Are you sure you want to delete <span class="font-medium text-text-heading" x-text="deletingFieldIndex !== null && fields[deletingFieldIndex] ? '“' + fields[deletingFieldIndex].title + '”' : 'this input'"></span>? This action will remove the field from your settings.
+        </x-admin::delete-modal>
     </div>
 @endsection
 

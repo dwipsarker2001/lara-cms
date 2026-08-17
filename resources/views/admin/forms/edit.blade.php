@@ -167,15 +167,16 @@
                                 <div class="text-sm text-text-muted">Permanently delete this form and all its entries.</div>
                             </div>
                             <div class="flex items-center justify-end gap-2">
-                                <form method="POST" action="{{ route('admin.forms.destroy', $form) }}" onsubmit="return confirm('Are you sure you want to delete this form? All entries will be lost.')">
+                                <button type="button"
+                                    @click="showDeleteModal = true"
+                                    class="inline-flex items-center justify-center gap-2 whitespace-nowrap shrink-0 font-medium cursor-pointer no-underline rounded-lg transition-colors h-9 text-sm leading-tight px-3 bg-red-500 hover:bg-red-600 text-white shadow-sm"
+                                >
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><line x1="10" y1="11" x2="10" y2="17"/><line x1="14" y1="11" x2="14" y2="17"/></svg>
+                                    <span>Delete form</span>
+                                </button>
+                                <form id="delete-form" method="POST" action="{{ route('admin.forms.destroy', $form) }}" class="hidden">
                                     @csrf
                                     @method('DELETE')
-                                    <button type="submit"
-                                        class="inline-flex items-center justify-center gap-2 whitespace-nowrap shrink-0 font-medium cursor-pointer no-underline rounded-lg transition-colors h-9 text-sm leading-tight px-3 bg-red-500 hover:bg-red-600 text-white shadow-sm"
-                                    >
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><line x1="10" y1="11" x2="10" y2="17"/><line x1="14" y1="11" x2="14" y2="17"/></svg>
-                                        <span>Delete form</span>
-                                    </button>
                                 </form>
                             </div>
                         </div>
@@ -183,6 +184,15 @@
                 </div>
             </div>
         </div>
+
+        {{-- Delete Confirmation Modal --}}
+        <x-admin::delete-modal
+            show="showDeleteModal"
+            title="Delete Form"
+            confirm-action="document.getElementById('delete-form')?.submit()"
+        >
+            Are you sure you want to delete <span class="font-medium text-text-heading">“{{ $form->title }}”</span>? All form entries and submissions will be permanently lost.
+        </x-admin::delete-modal>
     </div>
 @endsection
 
@@ -190,6 +200,7 @@
     <script>
         function formBuilderForm() {
             return {
+                showDeleteModal: false,
                 selectedIcon: @js(old('icon', $form->icon ?? '')),
                 iconPickerOpen: false,
                 iconSearch: '',

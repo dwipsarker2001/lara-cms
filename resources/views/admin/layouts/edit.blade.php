@@ -4,7 +4,7 @@
 @section('breadcrumb', 'Edit Layout')
 
 @section('content')
-    <div class="max-w-5xl mx-auto px-2 sm:px-0">
+    <div class="max-w-5xl mx-auto px-2 sm:px-0" x-data="{ showDeleteLayoutModal: false }">
         <form method="POST" action="{{ route('admin.layouts.update', $layout) }}">
             @csrf @method('PATCH')
 
@@ -21,17 +21,19 @@
                     @if ($errors->any())
                         <span class="text-sm font-medium text-danger" role="alert">{{ $errors->first() }}</span>
                     @endif
-                    <form method="POST" action="{{ route('admin.layouts.destroy', $layout) }}" onsubmit="return confirm('Delete this layout permanently?')">
-                        @csrf @method('DELETE')
-                        <button type="submit"
-                            class="inline-flex items-center justify-center gap-2 whitespace-nowrap shrink-0 font-medium cursor-pointer no-underline rounded-lg transition-colors h-10 text-sm leading-tight px-4 bg-red-600 hover:bg-red-700 text-white shadow-sm"
-                        >
-                            <svg viewBox="0 0 20 20" fill="currentColor" class="size-4">
-                                <path fill-rule="evenodd" d="M8.75 1A2.75 2.75 0 006 3.75v.443c-.795.077-1.584.176-2.365.298a.75.75 0 10.23 1.482l.149-.022.841 10.518A2.75 2.75 0 007.596 19h4.807a2.75 2.75 0 002.742-2.53l.841-10.52.149.023a.75.75 0 00.23-1.482A41.03 41.03 0 0014 4.193V3.75A2.75 2.75 0 0011.25 1h-2.5zM10 4c-.84 0-1.673.025-2.5.075V3.75c0-.69.56-1.25 1.25-1.25h2.5c.69 0 1.25.56 1.25 1.25v.325C11.673 4.025 10.84 4 10 4zM8.58 7.72a.75.75 0 00-1.5.06l.3 7.5a.75.75 0 101.5-.06l-.3-7.5zm4.34.06a.75.75 0 10-1.5-.06l-.3 7.5a.75.75 0 101.5.06l.3-7.5z" clip-rule="evenodd" />
-                            </svg>
-                            Delete
-                        </button>
-                    </form>
+                    <button type="button"
+                        @click="showDeleteLayoutModal = true"
+                        class="inline-flex items-center justify-center gap-2 whitespace-nowrap shrink-0 font-medium cursor-pointer no-underline rounded-lg transition-colors h-10 text-sm leading-tight px-4 bg-red-600 hover:bg-red-700 text-white shadow-sm"
+                    >
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-trash-2 size-4 shrink-0 text-white">
+                            <path d="M3 6h18"/>
+                            <path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/>
+                            <path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/>
+                            <line x1="10" y1="11" x2="10" y2="17"/>
+                            <line x1="14" y1="11" x2="14" y2="17"/>
+                        </svg>
+                        <span>Delete</span>
+                    </button>
                     <button type="submit"
                         class="inline-flex items-center justify-center gap-2 whitespace-nowrap shrink-0 font-medium cursor-pointer no-underline rounded-lg transition-colors h-10 text-sm leading-tight px-4 bg-primary hover:opacity-90 text-white shadow-sm"
                     >
@@ -132,6 +134,17 @@
             </div>
         </form>
 
-
+        {{-- Delete Layout Confirmation Modal --}}
+        <form id="delete-layout-form" method="POST" action="{{ route('admin.layouts.destroy', $layout) }}" class="hidden">
+            @csrf
+            @method('DELETE')
+        </form>
+        <x-admin::delete-modal
+            show="showDeleteLayoutModal"
+            title="Delete Layout"
+            confirm-action="document.getElementById('delete-layout-form')?.submit()"
+        >
+            Are you sure you want to delete <span class="font-medium text-text-heading">“{{ $layout->name }}”</span>? This action cannot be undone.
+        </x-admin::delete-modal>
     </div>
 @endsection

@@ -195,43 +195,6 @@
             </div>
         </form>
 
-        <div class="bg-panel-bg rounded-2xl mb-8 p-[7px]">
-            <div class="px-1.5 pb-2 pt-2">
-                <div class="bg-content-bg rounded-xl ring-1 ring-content-border shadow-sm px-3 py-3">
-                    <div class="divide-y divide-content-border">
-                        <div class="grid md:grid-cols-2 items-center px-[18px] py-4 gap-y-3 md:gap-y-0 md:gap-x-5">
-                            <div class="flex flex-col justify-center gap-1.5">
-                                <div class="text-sm font-medium text-text-heading">Delete Collection</div>
-                                <div class="text-sm text-text-muted">Permanently delete this collection and all its
-                                    entries.</div>
-                            </div>
-                            <div class="flex items-center justify-end gap-2">
-                                <form method="POST" action="{{ route('admin.collections.destroy', $collection) }}"
-                                    onsubmit="return confirm('Are you sure you want to delete this collection? All entries will be lost.')"
-                                    class="inline-flex">
-                                    @csrf
-                                    @method('DELETE')
-                                    <button type="submit"
-                                        class="inline-flex items-center justify-center gap-2 whitespace-nowrap shrink-0 font-medium cursor-pointer no-underline rounded-lg transition-colors h-9 text-sm leading-tight px-3 bg-red-500 hover:bg-red-600 text-white shadow-sm">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14"
-                                            viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                                            stroke-linecap="round" stroke-linejoin="round">
-                                            <polyline points="3 6 5 6 21 6" />
-                                            <path
-                                                d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />
-                                            <line x1="10" y1="11" x2="10" y2="17" />
-                                            <line x1="14" y1="11" x2="14" y2="17" />
-                                        </svg>
-                                        <span>Delete collection</span>
-                                    </button>
-                                </form>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
         <div x-show="showFieldModal" class="fixed inset-0 z-[9999] flex items-center justify-center bg-black/40"
             @click.self="showFieldModal = false" style="display: none;">
             <div class="bg-white rounded-2xl shadow-xl w-full max-w-lg mx-4 relative">
@@ -636,6 +599,7 @@
         const initialFields = JSON.parse(JSON.stringify(existingFields || []));
 
         return {
+            showDeleteModal: false,
             collectionsMap: collectionsMap,
             name: initialName,
             selectedIcon: initialIcon,

@@ -26,7 +26,7 @@
     'defaultItemId' => null,
 ])
 
-<div class="bg-panel-bg rounded-2xl mb-8 p-[7px]">
+<div class="bg-panel-bg rounded-2xl mb-8 p-[7px]" x-data="{ deletingItem: null }">
     <div class="px-[18px] py-3 text-sm font-medium text-text-heading flex items-center justify-between">
         <div>{{ $title }}</div>
     </div>
@@ -153,18 +153,19 @@
                                     @endif
                                     @if (!in_array($item->slug ?? $item->id, $protectedItems))
                                         <hr class="my-1 border-content-border">
-                                        <form method="POST" action="{{ route($deleteRoute, $item) }}" class="w-full mb-0">
-                                            @csrf @method('DELETE')
-                                            <button type="submit" role="menuitem"
-                                                onclick="return confirm('Delete this item?')"
-                                                class="flex w-full items-center justify-start gap-2.5 px-3 py-2 rounded-lg text-sm transition-colors text-red-600 hover:bg-red-50 cursor-pointer"
-                                            >
-                                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" class="size-4 shrink-0 text-red-500">
-                                                    <polyline points="3 6 5 6 21 6" />
-                                                    <path d="M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2" />
-                                                </svg>
-                                                <span>Delete</span>
-                                            </button>
+                                        <button type="button" role="menuitem"
+                                            @click="deletingItem = { id: '{{ $item->id }}', title: @js($item->title ?? $item->name ?? 'item') }; open = false"
+                                            class="flex w-full items-center justify-start gap-2.5 px-3 py-2 rounded-lg text-sm transition-colors text-red-600 hover:bg-red-50 cursor-pointer"
+                                        >
+                                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" class="size-4 shrink-0 text-red-500">
+                                                <polyline points="3 6 5 6 21 6" />
+                                                <path d="M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2" />
+                                            </svg>
+                                            <span>Delete</span>
+                                        </button>
+                                        <form id="delete-item-form-{{ $item->id }}" method="POST" action="{{ route($deleteRoute, $item) }}" class="hidden">
+                                            @csrf
+                                            @method('DELETE')
                                         </form>
                                     @endif
                                 </div>
@@ -175,4 +176,14 @@
             @endforeach
         @endif
     </div>
+
+    {{-- Delete Confirmation Modal --}}
+    <x-admin::delete-modal
+        show="deletingItem"
+        title="Delete Item"
+        title-expression="'Delete ' + (deletingItem?.title ? '“' + deletingItem.title + '”' : 'item')"
+        confirm-action="document.getElementById('delete-item-form-' + deletingItem?.id)?.submit()"
+    >
+        Are you sure you want to delete <span class="font-medium text-text-heading" x-text="deletingItem?.title ? '“' + deletingItem.title + '”' : 'this item'"></span>? This action cannot be undone.
+    </x-admin::delete-modal>
 </div>

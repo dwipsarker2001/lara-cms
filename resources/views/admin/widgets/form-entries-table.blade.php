@@ -2,6 +2,7 @@
     data-form-title="{{ $form?->title ?? '' }}"
     x-data="{
         selectedFormId: {{ $selectedFormId ? (int) $selectedFormId : 'null' }},
+        deletingEntryId: null,
         saving: false,
         search: '',
         filterColumn: 'all',
@@ -407,19 +408,23 @@
                                                 <path fill-rule="evenodd" d="M.664 10.59a1.651 1.651 0 010-1.186A10.004 10.004 0 0110 3c4.257 0 7.893 2.66 9.336 6.41.147.381.146.804 0 1.186A10.004 10.004 0 0110 17c-4.257 0-7.893-2.66-9.336-6.41zM14 10a4 4 0 11-8 0 4 4 0 018 0z" clip-rule="evenodd" />
                                             </svg>
                                         </a>
-                                        <form method="POST" action="{{ route('admin.forms.entries.destroy', [$form, $entry]) }}" class="inline mb-0">
+                                        <button type="button"
+                                            @click="deletingEntryId = '{{ $entry->id }}'"
+                                            class="size-8 inline-flex items-center justify-center rounded-lg border border-content-border bg-white text-text-muted hover:text-red-600 hover:border-red-200 hover:bg-red-50 transition-colors shadow-sm cursor-pointer"
+                                            title="Delete Entry"
+                                            aria-label="Delete Entry"
+                                        >
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-trash-2 text-text-muted hover:text-red-500">
+                                                <path d="M3 6h18"/>
+                                                <path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/>
+                                                <path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/>
+                                                <line x1="10" y1="11" x2="10" y2="17"/>
+                                                <line x1="14" y1="11" x2="14" y2="17"/>
+                                            </svg>
+                                        </button>
+                                        <form id="delete-widget-entry-form-{{ $entry->id }}" method="POST" action="{{ route('admin.forms.entries.destroy', [$form, $entry]) }}" class="hidden">
                                             @csrf
                                             @method('DELETE')
-                                            <button type="submit"
-                                                onclick="return confirm('Are you sure you want to delete this submission?')"
-                                                class="size-8 inline-flex items-center justify-center rounded-lg border border-content-border bg-white text-text-muted hover:text-red-600 hover:border-red-200 hover:bg-red-50 transition-colors shadow-sm cursor-pointer"
-                                                title="Delete Entry"
-                                                aria-label="Delete Entry"
-                                            >
-                                                <svg viewBox="0 0 20 20" fill="currentColor" class="size-4">
-                                                    <path fill-rule="evenodd" d="M8.75 1A2.75 2.75 0 006 3.75v.443c-.795.077-1.584.176-2.365.298a.75.75 0 10.23 1.482l.149-.022.841 10.518A2.75 2.75 0 007.596 19h4.807a2.75 2.75 0 002.742-2.53l.841-10.52.149.023a.75.75 0 00.23-1.482A41.03 41.03 0 0014 4.193V3.75A2.75 2.75 0 0011.25 1h-2.5zM10 4c.84 0 1.673.025 2.5.075V3.75c0-.69.56-1.25-1.25-1.25h-2.5c-.69 0-1.25.56-1.25 1.25v.325C8.327 4.025 9.16 4 10 4zM8.58 7.72a.75.75 0 01.75.72v5.25a.75.75 0 01-1.5 0V8.44a.75.75 0 01.75-.72zm3.34 0a.75.75 0 01.75.72v5.25a.75.75 0 01-1.5 0V8.44a.75.75 0 01.75-.72z" clip-rule="evenodd" />
-                                                </svg>
-                                            </button>
                                         </form>
                                     </div>
                                 </td>
@@ -470,5 +475,14 @@
             </div>
             <div class="text-sm text-text-muted">Per Page <span class="px-2 py-1 border border-content-border rounded text-text-heading">6</span></div>
         </footer>
+
+        {{-- Delete Submission Confirmation Modal --}}
+        <x-admin::delete-modal
+            show="deletingEntryId"
+            title="Delete Submission"
+            confirm-action="document.getElementById('delete-widget-entry-form-' + deletingEntryId)?.submit()"
+        >
+            Are you sure you want to delete this submission? This action cannot be undone.
+        </x-admin::delete-modal>
     @endif
 </div>
