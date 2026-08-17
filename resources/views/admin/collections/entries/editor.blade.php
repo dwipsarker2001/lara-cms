@@ -1503,6 +1503,7 @@
             <div
                 class="relative flex flex-col"
                 :class="{ 'transition-none select-none': isResizing, 'transition-[width] duration-150 ease-out': !isResizing }"
+                style="width: 100%; max-width: 100%; min-width: 320px;"
                 :style="{ width: previewWidth, maxWidth: '100%', minWidth: '320px' }"
                 x-ref="previewFrame"
             >
