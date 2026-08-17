@@ -359,22 +359,22 @@
                                                         </button>
                                                     </form>
                                                     <hr class="my-1 border-content-border">
-                                                    <form method="POST" action="{{ route('admin.forms.entries.destroy', [$form, $entry]) }}" class="w-full mb-0">
+                                                    <button type="button" role="menuitem"
+                                                        @click="deletingEntry = {{ $entry->id }}; open = false"
+                                                        class="flex w-full items-center justify-start gap-2.5 px-2.5 py-1.5 rounded-lg text-xs font-medium transition-colors text-red-600 hover:bg-red-50 cursor-pointer"
+                                                    >
+                                                        <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-trash-2 shrink-0 text-red-500">
+                                                            <path d="M3 6h18"/>
+                                                            <path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/>
+                                                            <path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/>
+                                                            <line x1="10" y1="11" x2="10" y2="17"/>
+                                                            <line x1="14" y1="11" x2="14" y2="17"/>
+                                                        </svg>
+                                                        <span>Delete</span>
+                                                    </button>
+                                                    <form id="delete-entry-form-{{ $entry->id }}" method="POST" action="{{ route('admin.forms.entries.destroy', [$form, $entry]) }}" class="hidden">
                                                         @csrf
                                                         @method('DELETE')
-                                                        <button type="submit" role="menuitem"
-                                                            onclick="return confirm('Are you sure you want to delete this submission?')"
-                                                            class="flex w-full items-center justify-start gap-2.5 px-2.5 py-1.5 rounded-lg text-xs font-medium transition-colors text-red-600 hover:bg-red-50 cursor-pointer"
-                                                        >
-                                                            <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-trash-2 shrink-0 text-red-500">
-                                                                <path d="M3 6h18"/>
-                                                                <path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/>
-                                                                <path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/>
-                                                                <line x1="10" x2="10" y1="11" y2="17"/>
-                                                                <line x1="14" x2="14" y1="11" y2="17"/>
-                                                            </svg>
-                                                            <span>Delete</span>
-                                                        </button>
                                                     </form>
                                                 </div>
                                             </div>
@@ -519,14 +519,14 @@
         </form>
 
         {{-- Delete Segment --}}
-        <form method="POST" action="{{ route('admin.forms.entries.bulk-destroy', $form) }}" class="mb-0 flex items-center">
+        <form id="bulk-delete-form" method="POST" action="{{ route('admin.forms.entries.bulk-destroy', $form) }}" class="mb-0 flex items-center">
             @csrf
             @method('DELETE')
             <template x-for="id in selectedEntries" :key="id">
                 <input type="hidden" name="ids[]" :value="id">
             </template>
-            <button type="submit"
-                onclick="return confirm('Are you sure you want to delete the selected submission(s)?')"
+            <button type="button"
+                @click="showBulkDeleteModal = true"
                 class="flex items-center gap-2 px-4 py-2.5 text-red-600 hover:bg-red-50/90 hover:text-red-700 transition-colors duration-150 cursor-pointer group"
             >
                 <span>Delete</span>
@@ -539,6 +539,24 @@
             </button>
         </form>
     </div>
+
+    {{-- Single Entry Delete Modal --}}
+    <x-admin::delete-modal
+        show="deletingEntry"
+        title="Delete Submission"
+        confirm-action="confirmDeleteEntry()"
+    >
+        Are you sure you want to delete this submission? This action cannot be undone.
+    </x-admin::delete-modal>
+
+    {{-- Bulk Entries Delete Modal --}}
+    <x-admin::delete-modal
+        show="showBulkDeleteModal"
+        title="Delete Submissions"
+        confirm-action="confirmBulkDelete()"
+    >
+        Are you sure you want to delete <span class="font-medium text-text-heading" x-text="selectedEntries.length"></span> selected submission<span x-show="selectedEntries.length > 1">s</span>? This action cannot be undone.
+    </x-admin::delete-modal>
 </div>
 
 {{-- Entry detail modal --}}
@@ -688,6 +706,23 @@
             fieldLabels: @js($fields->pluck('label', 'name')->toArray()),
             selectedEntries: [],
             allEntryIds: @js($entries->pluck('id')->toArray()),
+            deletingEntry: null,
+            showBulkDeleteModal: false,
+
+            confirmDeleteEntry() {
+                if (!this.deletingEntry) return;
+                const form = document.getElementById('delete-entry-form-' + this.deletingEntry);
+                if (form) {
+                    form.submit();
+                }
+            },
+
+            confirmBulkDelete() {
+                const form = document.getElementById('bulk-delete-form');
+                if (form) {
+                    form.submit();
+                }
+            },
 
             get allSelected() {
                 return this.allEntryIds.length > 0 && this.selectedEntries.length === this.allEntryIds.length;
