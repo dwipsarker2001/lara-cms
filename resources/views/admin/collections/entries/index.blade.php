@@ -4,7 +4,7 @@
 @section('breadcrumb', 'Entries')
 
 @section('content')
-<div class="max-w-5xl mx-auto px-2 sm:px-0" x-data="{ showDeleteCollectionModal: false, deletingEntry: null }">
+<div class="max-w-5xl mx-auto px-2 sm:px-0" x-data="{ showDeleteAllModal: false, deletingEntry: null }">
     <header class="relative flex flex-wrap items-center justify-between gap-4 py-6 md:py-8">
         <h1 class="flex items-center gap-2.5 text-[25px] leading-[1.25] font-medium text-text-heading">
             @if($collection->icon)
@@ -57,13 +57,13 @@
                             <path d="M21.174 6.812a1 1 0 0 0-3.986-3.987L3.842 16.174a2 2 0 0 0-.5.83l-1.321 4.352a.5.5 0 0 0 .623.622l4.353-1.32a2 2 0 0 0 .83-.497z"/>
                             <path d="m15 5 4 4"/>
                         </svg>
-                        <span>Edit Config</span>
+                        <span>Edit {{ $collection->name }}</span>
                     </a>
                     <hr class="my-1 border-content-border">
                     <button
                         type="button"
                         role="menuitem"
-                        @click="settingsOpen = false; showDeleteCollectionModal = true"
+                        @click="settingsOpen = false; showDeleteAllModal = true"
                         class="flex w-full items-center justify-start gap-2.5 px-3 py-2 rounded-lg text-sm font-medium transition-colors text-red-600 hover:bg-red-50 cursor-pointer"
                     >
                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-trash-2 size-4 shrink-0 text-red-500">
@@ -125,11 +125,6 @@
                                 </a>
                             </div>
                             <div class="flex items-center gap-2 sm:gap-3 shrink-0">
-                                @if($entry->slug)
-                                    <span class="text-xs text-text-muted select-all bg-panel-bg px-2 py-0.5 rounded border border-content-border">
-                                        {{ $entry->route() }}
-                                    </span>
-                                @endif
                                 <div class="relative" x-data="{ open: false }" @click.outside="open = false" @keydown.escape.window="open = false">
                             <button
                                 type="button"
@@ -178,6 +173,20 @@
                                     <span>Edit Fields</span>
                                 </a>
                                 @if($entry->slug)
+                                <button type="button" role="menuitem"
+                                    @click="
+                                        navigator.clipboard?.writeText('{{ url($entry->route()) }}');
+                                        window.dispatchEvent(new CustomEvent('toast', { detail: { message: 'URL copied to clipboard!', type: 'success' } }));
+                                        open = false;
+                                    "
+                                    class="flex w-full items-center justify-start gap-2.5 px-3 py-2 rounded-lg text-sm font-medium transition-colors text-text-primary hover:bg-body-bg cursor-pointer"
+                                >
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" class="size-4 shrink-0 text-text-muted">
+                                        <rect width="14" height="14" x="8" y="8" rx="2" ry="2"/>
+                                        <path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/>
+                                    </svg>
+                                    <span>Copy URL</span>
+                                </button>
                                 <a href="{{ $entry->route() }}" role="menuitem" target="_blank"
                                     class="flex w-full items-center justify-start gap-2.5 px-3 py-2 rounded-lg text-sm font-medium no-underline transition-colors text-text-primary hover:bg-body-bg"
                                 >
@@ -218,17 +227,17 @@
         </div>
     </div>
 
-    {{-- Delete Collection Confirmation Modal --}}
-    <form id="delete-collection-form" method="POST" action="{{ route('admin.collections.destroy', $collection) }}" class="hidden">
+    {{-- Delete All Entries Confirmation Modal --}}
+    <form id="delete-all-entries-form" method="POST" action="{{ route('admin.collections.entries.destroy-all', $collection) }}" class="hidden">
         @csrf
         @method('DELETE')
     </form>
     <x-admin::delete-modal
-        show="showDeleteCollectionModal"
-        title="Delete Collection"
-        confirm-action="document.getElementById('delete-collection-form')?.submit()"
+        show="showDeleteAllModal"
+        title="Delete All Entries"
+        confirm-action="document.getElementById('delete-all-entries-form')?.submit()"
     >
-        Are you sure you want to delete <span class="font-medium text-text-heading">“{{ $collection->name }}”</span>? All associated entries will be permanently deleted.
+        Are you sure you want to delete all entries in <span class="font-medium text-text-heading">“{{ $collection->name }}”</span>? All associated entries will be permanently deleted.
     </x-admin::delete-modal>
 
     {{-- Delete Entry Confirmation Modal --}}

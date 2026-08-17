@@ -111,7 +111,7 @@ class UpdateController extends Controller
     {
         $forceRefresh = $request->boolean('force') || $request->boolean('refresh');
         $settings = Setting::firstOrCreate(['id' => 1]);
-        $current = $settings->cms_version ?? '1.0.0';
+        $current = $this->getCurrentVersion($settings);
         $latestInfo = $this->getLatestReleaseInfo($forceRefresh);
 
         if ($latestInfo['source'] === 'failed') {
@@ -146,7 +146,7 @@ class UpdateController extends Controller
     public function run(): JsonResponse
     {
         $settings = Setting::firstOrCreate(['id' => 1]);
-        $current = $settings->cms_version ?? '1.0.0';
+        $current = $this->getCurrentVersion($settings);
         $latestInfo = $this->getLatestReleaseInfo();
         $latest = $latestInfo['version'];
         $updateUrl = $latestInfo['download_url'];
@@ -320,5 +320,22 @@ class UpdateController extends Controller
                 'error' => $e->getMessage(),
             ], 500);
         }
+    }
+
+    protected function getCurrentVersion(?Setting $settings = null): string
+    {
+        if (app()->runningUnitTests() && $settings?->cms_version) {
+            return $settings->cms_version;
+        }
+
+        $versionFile = base_path('version.json');
+        if (file_exists($versionFile)) {
+            $content = json_decode(@file_get_contents($versionFile), true);
+            if (! empty($content['version'])) {
+                return (string) $content['version'];
+            }
+        }
+
+        return $settings?->cms_version ?? '1.0.0';
     }
 }

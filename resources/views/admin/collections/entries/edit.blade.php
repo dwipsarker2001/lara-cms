@@ -296,10 +296,10 @@
                                                                  }
                                                              }
                                                          }"
-                                                         @dragover.prevent="$event.currentTarget.classList.add('border-primary', 'bg-primary/5')"
-                                                         @dragleave.prevent="$event.currentTarget.classList.remove('border-primary', 'bg-primary/5')"
+                                                         @dragover.prevent="$event.currentTarget.classList.add('border-gray-400', 'bg-gray-50')"
+                                                         @dragleave.prevent="$event.currentTarget.classList.remove('border-gray-400', 'bg-gray-50')"
                                                          @drop.prevent="
-                                                             $event.currentTarget.classList.remove('border-primary', 'bg-primary/5');
+                                                             $event.currentTarget.classList.remove('border-gray-400', 'bg-gray-50');
                                                              const file = $event.dataTransfer.files[0];
                                                              if (file && file.type.startsWith('image/')) {
                                                                  const reader = new FileReader();

@@ -187,7 +187,7 @@
         {{-- Drop Zone --}}
         <div
             class="flex-1 overflow-y-auto transition-colors relative"
-            :class="dragOver ? 'bg-primary/5' : ''"
+            :class="dragOver ? 'bg-gray-50/50' : ''"
             style="scrollbar-width: none;"
             @dragenter.prevent="onDragEnter"
             @dragleave.prevent="onDragLeave"
@@ -213,7 +213,7 @@
                                     @dragover.prevent
                                     @drop.prevent="crumbDrop($event, crumb.path)"
                                     class="px-2 py-1 rounded-md text-xs transition-colors whitespace-nowrap cursor-pointer"
-                                    :class="crumbDragActive === crumb.path ? 'bg-primary/15 ring-2 ring-primary/60 outline-2 outline-dashed outline-primary/40 outline-offset-[-2px]' : (i === breadcrumbs.length - 1 ? 'text-gray-900 font-bold' : 'text-gray-500 hover:text-primary hover:bg-primary/5')"
+                                    :class="crumbDragActive === crumb.path ? 'bg-zinc-800 text-white font-semibold' : (i === breadcrumbs.length - 1 ? 'text-gray-900 font-bold' : 'text-gray-500 hover:text-zinc-900 hover:bg-zinc-100')"
                                     x-text="crumb.name"
                                 ></button>
                             </div>
@@ -236,7 +236,7 @@
                             <div
                                 draggable="true"
                                 class="group relative flex flex-col rounded-lg border bg-white shadow-sm transition-all duration-150 cursor-pointer"
-                                :class="openMenuId === item.id ? 'z-[80] relative border-primary shadow-md' : (dragTargetId === item.id ? 'border-primary ring-2 ring-primary/40 bg-primary/5 relative z-0' : 'border-gray-100 hover:border-primary/30 relative z-0')"
+                                :class="openMenuId === item.id ? 'z-[80] relative border-gray-300 shadow-md bg-white' : (dragTargetId === item.id ? 'shadow-md scale-[1.02] bg-white border-transparent relative z-10' : 'border-gray-100 bg-white hover:border-gray-200 relative z-0')"
                                 @dragstart="onCardDragStart($event, item)"
                                 @dragend="onCardDragEnd()"
                                 @dragenter.prevent="onCardDragEnter(item)"
@@ -245,7 +245,7 @@
                                 @drop.prevent="onCardDrop($event, item)"
                             >
                                 {{-- Thumbnail --}}
-                                <div class="relative aspect-[1/1] bg-[#F3F4F6] overflow-hidden rounded-t-lg">
+                                <div class="relative aspect-[1/1] bg-white border-b border-gray-100 overflow-hidden rounded-t-lg">
                                     <button @click="selectItem(item)" class="size-full flex items-center justify-center">
                                         <template x-if="item.is_directory">
                                             <svg viewBox="0 0 48 48" class="size-16" fill="none">

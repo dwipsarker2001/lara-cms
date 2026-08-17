@@ -126,8 +126,19 @@ class BlogList extends ListBlock
         $card = parent::resolveCard($entry, $mappings);
         $eData = $entry->data ?? [];
 
-        if (empty($card->title)) {
-            $card->title = $eData['title'] ?? $entry->title ?? 'Untitled Post';
+        if (empty($card->title) || $card->title === 'Untitled Post') {
+            $card->title = $eData['title'] ?? $entry->title ?? null;
+            if ((empty($card->title) || $card->title === 'Entry #'.$entry->id) && ! empty($entry->sections) && is_array($entry->sections)) {
+                foreach ($entry->sections as $sec) {
+                    if (! empty($sec['data']['title'])) {
+                        $card->title = $sec['data']['title'];
+                        break;
+                    }
+                }
+            }
+            if (empty($card->title)) {
+                $card->title = $entry->title ?? 'Untitled Post';
+            }
         }
         if (empty($card->image)) {
             $card->image = $eData['featured_image']
@@ -142,7 +153,7 @@ class BlogList extends ListBlock
                 ?? $entry->meta['image']
                 ?? null;
 
-            if (empty($card->image) && ! empty($entry->sections)) {
+            if (empty($card->image) && ! empty($entry->sections) && is_array($entry->sections)) {
                 foreach ($entry->sections as $sec) {
                     $secImg = $sec['data']['featured_image']
                         ?? $sec['data']['image']
@@ -164,7 +175,7 @@ class BlogList extends ListBlock
                 ?? $entry->meta['metaDescription']
                 ?? null;
 
-            if (empty($rawDescription) && ! empty($entry->sections)) {
+            if (empty($rawDescription) && ! empty($entry->sections) && is_array($entry->sections)) {
                 foreach ($entry->sections as $sec) {
                     if (! empty($sec['data']['content'])) {
                         $rawDescription = $sec['data']['content'];
@@ -172,6 +183,10 @@ class BlogList extends ListBlock
                     }
                     if (! empty($sec['data']['description'])) {
                         $rawDescription = $sec['data']['description'];
+                        break;
+                    }
+                    if (! empty($sec['data']['excerpt'])) {
+                        $rawDescription = $sec['data']['excerpt'];
                         break;
                     }
                 }
@@ -182,10 +197,41 @@ class BlogList extends ListBlock
                 : '';
         }
         if (empty($card->author)) {
-            $card->author = $eData['created_by'] ?? $eData['author'] ?? ($entry->meta['author'] ?? (auth('admin')->user()->name ?? 'Admin'));
+            $card->author = $eData['created_by'] ?? $eData['author'] ?? ($entry->meta['author'] ?? null);
+            if (empty($card->author) && ! empty($entry->sections) && is_array($entry->sections)) {
+                foreach ($entry->sections as $sec) {
+                    if (! empty($sec['data']['author'])) {
+                        $card->author = $sec['data']['author'];
+                        break;
+                    }
+                }
+            }
+            if (empty($card->author)) {
+                $card->author = auth('admin')->user()->name ?? 'Admin';
+            }
         }
         if (empty($card->category)) {
-            $card->category = $eData['category'] ?? $eData['category_id'] ?? $eData['categories'] ?? null;
+            $card->category = $eData['category'] ?? $eData['category_id'] ?? $eData['categories'] ?? $eData['cat'] ?? null;
+            if (empty($card->category) && ! empty($entry->sections) && is_array($entry->sections)) {
+                foreach ($entry->sections as $sec) {
+                    $secCat = $sec['data']['category'] ?? $sec['data']['categories'] ?? $sec['data']['category_id'] ?? $sec['data']['cat'] ?? null;
+                    if (! empty($secCat)) {
+                        $card->category = $secCat;
+                        break;
+                    }
+                }
+            }
+        }
+        if (empty($card->date)) {
+            $card->date = $eData['date'] ?? $eData['publish_date'] ?? null;
+            if (empty($card->date) && ! empty($entry->sections) && is_array($entry->sections)) {
+                foreach ($entry->sections as $sec) {
+                    if (! empty($sec['data']['date'])) {
+                        $card->date = $sec['data']['date'];
+                        break;
+                    }
+                }
+            }
         }
 
         foreach (get_object_vars($card) as $key => $val) {

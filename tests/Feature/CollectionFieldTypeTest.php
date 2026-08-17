@@ -10,6 +10,7 @@ use App\Models\Term;
 use function Pest\Laravel\actingAs;
 use function Pest\Laravel\get;
 use function Pest\Laravel\post;
+use function Pest\Laravel\put;
 
 beforeEach(function () {
     $this->admin = Admin::factory()->create();
@@ -492,4 +493,21 @@ it('supports custom sub-field checkboxes (country, state, city) on location cust
         ->assertSee('data[city_location][city]', false)
         ->assertDontSee('data[city_location][country]', false)
         ->assertDontSee('data[city_location][state]', false);
+});
+
+it('redirects to entries index when a collection is updated', function () {
+    $collection = Collection::create([
+        'name' => 'Original Name',
+        'slug' => 'original-name',
+        'position' => 1,
+    ]);
+
+    put(route('admin.collections.update', $collection), [
+        'name' => 'Updated Name',
+        'icon' => 'fa-folder',
+        'enable_seo' => '1',
+    ])->assertRedirect(route('admin.collections.entries.index', $collection))
+        ->assertSessionHas('success', 'Collection updated successfully.');
+
+    expect($collection->fresh()->name)->toBe('Updated Name');
 });

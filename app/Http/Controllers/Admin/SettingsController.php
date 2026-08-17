@@ -45,7 +45,15 @@ class SettingsController extends Controller
         $this->ensureSchemaColumns();
 
         $settings = Setting::firstOrCreate(['id' => 1]);
-        $currentVersion = $settings->cms_version ?? '1.0.0';
+
+        $versionFile = base_path('version.json');
+        $currentVersion = null;
+        if (file_exists($versionFile)) {
+            $content = json_decode(@file_get_contents($versionFile), true);
+            $currentVersion = ! empty($content['version']) ? (string) $content['version'] : null;
+        }
+
+        $currentVersion = $currentVersion ?? $settings->cms_version ?? '1.0.0';
 
         return view('admin.settings.global', [
             'settings' => $settings,

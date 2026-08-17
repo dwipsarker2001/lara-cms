@@ -118,3 +118,61 @@ test('form controller actions allow access when form_id matches as string or int
         ->delete(route('admin.forms.entries.destroy', [$form, $entry]));
     $response->assertRedirect(route('admin.forms.entries', $form));
 });
+
+test('destroyAll deletes only collection entries and keeps collection intact', function () {
+    $admin = Admin::factory()->create();
+
+    $collection = Collection::create([
+        'name' => 'Blog Posts',
+        'slug' => 'blog-posts',
+    ]);
+
+    CollectionEntry::create([
+        'collection_id' => $collection->id,
+        'slug' => 'post-1',
+        'data' => ['title' => 'Post 1'],
+        'published' => true,
+    ]);
+
+    CollectionEntry::create([
+        'collection_id' => $collection->id,
+        'slug' => 'post-2',
+        'data' => ['title' => 'Post 2'],
+        'published' => true,
+    ]);
+
+    expect($collection->entries()->count())->toBe(2);
+
+    $response = $this->actingAs($admin, 'admin')
+        ->delete(route('admin.collections.entries.destroy-all', $collection));
+
+    $response->assertRedirect(route('admin.collections.entries.index', $collection));
+    expect($collection->fresh())->not->toBeNull();
+    expect($collection->entries()->count())->toBe(0);
+});
+
+test('collection entries index page displays Edit Collection Name, Delete All and Copy URL option', function () {
+    $admin = Admin::factory()->create();
+
+    $collection = Collection::create([
+        'name' => 'Destinations',
+        'slug' => 'destinations',
+    ]);
+
+    CollectionEntry::create([
+        'collection_id' => $collection->id,
+        'slug' => 'paris',
+        'data' => ['title' => 'Paris'],
+        'published' => true,
+    ]);
+
+    $response = $this->actingAs($admin, 'admin')
+        ->get(route('admin.collections.entries.index', $collection));
+
+    $response->assertSuccessful();
+    $response->assertSee('Edit Destinations');
+    $response->assertDontSee('Edit Config');
+    $response->assertSee(route('admin.collections.entries.destroy-all', $collection));
+    $response->assertSee('Copy URL');
+    $response->assertSee(url('/destinations/paris'));
+});

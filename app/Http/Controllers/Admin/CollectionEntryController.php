@@ -449,6 +449,14 @@ class CollectionEntryController extends Controller
             ->with('success', 'Entry deleted successfully.');
     }
 
+    public function destroyAll(Collection $collection)
+    {
+        $collection->entries()->delete();
+
+        return redirect()->route('admin.collections.entries.index', $collection)
+            ->with('success', "All {$collection->name} entries deleted successfully.");
+    }
+
     public function reorder(Request $request, Collection $collection)
     {
         foreach ($request->entry_ids ?? [] as $i => $id) {

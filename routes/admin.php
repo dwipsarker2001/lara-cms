@@ -55,6 +55,7 @@ Route::middleware(['web', 'auth:admin'])->prefix('admin')->name('admin.')->group
     Route::resource('collections', CollectionController::class)->except(['show']);
 
     Route::patch('collections/{collection}/entries/reorder', [CollectionEntryController::class, 'reorder'])->name('collections.entries.reorder');
+    Route::delete('collections/{collection}/entries/delete-all', [CollectionEntryController::class, 'destroyAll'])->name('collections.entries.destroy-all');
     Route::get('collections/{collection}/entries/{entry}/editor', [CollectionEntryController::class, 'editor'])->name('collections.entries.editor');
     Route::patch('collections/{collection}/entries/{entry}/update-sections', [CollectionEntryController::class, 'updateSections'])->name('collections.entries.update-sections');
     Route::resource('collections.entries', CollectionEntryController::class);

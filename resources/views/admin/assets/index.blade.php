@@ -4,7 +4,7 @@
 @section('breadcrumb', 'Assets')
 
 @section('content')
-<div x-data="assetsPage()" x-init="init()">
+<div x-data="assetsPage()" x-init="init()" @dragend.window="onDragEnd()" @drop.window="onDragEnd()">
     <div class="max-w-5xl mx-auto">
 
         {{-- PageHeader --}}
@@ -28,50 +28,40 @@
                     @click="showCreateDir = true"
                     class="inline-flex items-center justify-center whitespace-nowrap shrink-0 font-medium text-sm px-4 py-2 rounded-lg border border-content-border bg-white hover:bg-gray-50 text-text-heading shadow-sm cursor-pointer transition-colors"
                 >
-                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-folder-plus size-[18px] mr-1.5 shrink-0 text-text-muted">
-                        <path d="M12 10v6"/>
-                        <path d="M9 13h6"/>
-                        <path d="M20 20a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-7.9a2 2 0 0 1-1.69-.9L8.6 3.3A2 2 0 0 0 7.1 3H4a2 2 0 0 0-2 2v13a2 2 0 0 0 2 2z"/>
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="size-4 mr-2">
+                        <path d="M12 5v14M5 12h14" stroke-linecap="round" />
                     </svg>
                     Create Directory
                 </button>
-                <label
-                    for="asset-upload-input"
-                    class="inline-flex items-center justify-center whitespace-nowrap shrink-0 font-medium text-sm px-4 py-2 rounded-lg bg-primary text-white hover:opacity-90 shadow-sm transition-all cursor-pointer select-none"
-                    :class="uploading ? 'opacity-75 pointer-events-none cursor-wait' : ''"
-                >
-                    <template x-if="!uploading">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="size-[18px] mr-1.5 shrink-0" stroke-linecap="round" stroke-linejoin="round">
-                            <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4" />
-                            <polyline points="17 8 12 3 7 8" />
-                            <line x1="12" y1="3" x2="12" y2="15" />
+                <div class="relative">
+                    <input
+                        type="file"
+                        id="bulkFileInput"
+                        multiple
+                        class="hidden"
+                        @change="handleFileUpload($event)"
+                    >
+                    <button
+                        type="button"
+                        @click="document.getElementById('bulkFileInput').click()"
+                        class="inline-flex items-center justify-center whitespace-nowrap shrink-0 font-medium text-sm px-4 py-2 rounded-lg bg-primary hover:opacity-90 text-white shadow-sm cursor-pointer transition-opacity"
+                    >
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="size-4 mr-2">
+                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M17 8l-5-5-5 5M12 3v12" stroke-linecap="round" stroke-linejoin="round" />
                         </svg>
-                    </template>
-                    <template x-if="uploading">
-                        <svg class="animate-spin size-[18px] mr-1.5 shrink-0 text-white" viewBox="0 0 24 24" fill="none">
-                            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-                            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                        </svg>
-                    </template>
-                    <span x-text="uploading ? 'Uploading...' : 'Upload'"></span>
-                </label>
-                <input
-                    id="asset-upload-input"
-                    type="file"
-                    accept="image/*,.pdf,.doc,.docx,.zip"
-                    class="hidden"
-                    :disabled="uploading"
-                    @change="uploadFile($event)"
-                >
+                        Upload Files
+                    </button>
+                </div>
             </div>
         </header>
 
-        {{-- DataTable --}}
-        <div class="bg-panel-bg rounded-2xl p-[7px] mb-8">
-            <div class="flex flex-wrap items-center justify-between gap-3 px-2 pb-2.5 pt-1">
-                <div class="flex items-center gap-2 text-[14px] font-medium text-text-heading">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="size-4 shrink-0 text-text-muted" stroke-linecap="round" stroke-linejoin="round">
-                        <path d="M14.5 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V7.5L14.5 2z" />
+        {{-- Top Navigation & Stats Bar --}}
+        <div class="bg-panel-bg rounded-2xl p-[7px] mb-6">
+            <div class="flex flex-wrap items-center justify-between gap-4 px-4 py-3 border-b border-content-border text-sm font-medium text-text-heading">
+                {{-- Breadcrumbs Navigation --}}
+                <div class="flex items-center gap-2 text-sm">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="size-4 text-text-muted shrink-0">
+                        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
                         <polyline points="14 2 14 8 20 8" />
                     </svg>
                     <nav class="flex items-center gap-1.5 flex-wrap">
@@ -81,9 +71,8 @@
                             @dragleave="crumbDragLeave()"
                             @dragover.prevent
                             @drop.prevent="crumbDrop($event, '')"
-                            class="transition-colors cursor-pointer"
-                            :class="currentDirectory ? 'text-text-muted hover:text-primary font-medium' : 'text-text-heading font-semibold'"
-                            :style="dragOverCrumb === '' ? 'background: var(--color-primary); border-radius: 4px; padding: 0 4px; color: white;' : ''"
+                            class="transition-colors cursor-pointer rounded px-1.5 py-0.5"
+                            :class="dragOverCrumb === '' ? 'bg-zinc-800 text-white font-semibold' : (currentDirectory ? 'text-text-muted hover:text-primary font-medium' : 'text-text-heading font-semibold')"
                         >All Assets</button>
 
                         <template x-for="(crumb, idx) in breadcrumbs" :key="idx">
@@ -99,9 +88,8 @@
                                         @dragleave="crumbDragLeave()"
                                         @dragover.prevent
                                         @drop.prevent="crumbDrop($event, crumb.path)"
-                                        class="transition-colors cursor-pointer"
-                                        :class="idx < breadcrumbs.length - 1 ? 'text-text-muted hover:text-primary font-medium' : 'text-text-heading font-semibold'"
-                                        :style="dragOverCrumb === crumb.path ? 'background: var(--color-primary); border-radius: 4px; padding: 0 4px; color: white;' : ''"
+                                        class="transition-colors cursor-pointer rounded px-1.5 py-0.5"
+                                        :class="dragOverCrumb === crumb.path ? 'bg-zinc-800 text-white font-semibold' : (idx < breadcrumbs.length - 1 ? 'text-text-muted hover:text-primary font-medium' : 'text-text-heading font-semibold')"
                                         x-text="crumb.name"
                                     ></button>
                                 </template>
@@ -415,11 +403,12 @@
                                             class="group hover:bg-[#f9fafb] transition-colors"
                                             draggable="true"
                                             @dragstart="onDragStart($event, asset)"
+                                            @dragend="onDragEnd()"
                                             @dragenter="onDragEnter($event, asset, rowIndex)"
                                             @dragleave="onDragLeave($event, asset)"
                                             @dragover="onDragOver($event, asset)"
                                             @drop="onDrop($event, asset)"
-                                            :class="dragOverFolderId === asset.id ? 'bg-primary/5 ring-2 ring-primary/30' : ''"
+                                            :class="dragOverFolderId === asset.id ? 'bg-gray-100 shadow-sm' : ''"
                                         >
                                             <td x-show="visibleColumns['checkbox'] !== false" class="px-4 py-3 text-text-muted text-xs whitespace-nowrap min-w-[50px] border-b border-content-border group-last:border-b-0 group-last:rounded-bl-xl">
                                                 <input type="checkbox" class="size-4 rounded border-gray-300 accent-zinc-900 focus:ring-0 cursor-pointer">
@@ -427,13 +416,15 @@
                                             <td x-show="visibleColumns['name'] !== false" class="px-4 py-3 text-text-primary whitespace-nowrap border-b border-content-border group-last:border-b-0">
                                                 <div class="flex items-center gap-3">
                                                     <template x-if="asset.is_directory">
-                                                        <svg viewBox="0 0 20 20" fill="#F59E0B" class="size-8 shrink-0">
-                                                            <path d="M3.5 4.5A1.5 1.5 0 015 3h3.086a1.5 1.5 0 011.06.44l1.415 1.414A1.5 1.5 0 0011.586 5H14.5A1.5 1.5 0 0116 6.5v.378a.5.5 0 01-.5.5H4a.5.5 0 01-.5-.5V4.5z" />
-                                                            <path d="M3.5 7.878V14.5A1.5 1.5 0 005 16h10a1.5 1.5 0 001.5-1.5V7.878a.5.5 0 00-.5-.5H4a.5.5 0 00-.5.5z" />
-                                                        </svg>
+                                                        <div class="size-8 rounded-lg bg-white shrink-0 flex items-center justify-center border border-gray-100 shadow-2xs">
+                                                            <svg viewBox="0 0 20 20" fill="#F59E0B" class="size-7 shrink-0">
+                                                                <path d="M3.5 4.5A1.5 1.5 0 015 3h3.086a1.5 1.5 0 011.06.44l1.415 1.414A1.5 1.5 0 0011.586 5H14.5A1.5 1.5 0 0116 6.5v.378a.5.5 0 01-.5.5H4a.5.5 0 01-.5-.5V4.5z" />
+                                                                <path d="M3.5 7.878V14.5A1.5 1.5 0 005 16h10a1.5 1.5 0 001.5-1.5V7.878a.5.5 0 00-.5-.5H4a.5.5 0 00-.5.5z" />
+                                                            </svg>
+                                                        </div>
                                                     </template>
                                                     <template x-if="!asset.is_directory && getAssetCategory(asset) === 'image'">
-                                                        <div class="size-8 rounded-lg overflow-hidden bg-gray-100 shrink-0 border border-gray-200 shadow-2xs">
+                                                        <div class="size-8 rounded-lg overflow-hidden bg-white shrink-0 border border-gray-200 shadow-2xs">
                                                             <img
                                                                 :src="`/admin/assets/${asset.id}/file`"
                                                                 :alt="asset.name"
@@ -1377,12 +1368,19 @@
             },
 
             onDragStart(event, asset) {
+                this.dragOverFolderId = null;
+                this.dragOverCrumb = null;
                 event.dataTransfer.setData('text/plain', JSON.stringify({
                     assetId: asset.id,
                     isDir: asset.is_directory,
                     dirPath: asset.directory_path || asset.name
                 }));
                 event.dataTransfer.effectAllowed = 'move';
+            },
+
+            onDragEnd() {
+                this.dragOverFolderId = null;
+                this.dragOverCrumb = null;
             },
 
             onDragEnter(event, asset) {

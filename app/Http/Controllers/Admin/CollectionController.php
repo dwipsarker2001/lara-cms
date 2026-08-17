@@ -82,7 +82,7 @@ class CollectionController extends Controller
 
         $collection->update($data);
 
-        return redirect()->route('admin.collections.edit', $collection)->with('success', 'Collection updated successfully.');
+        return redirect()->route('admin.collections.entries.index', $collection)->with('success', 'Collection updated successfully.');
     }
 
     public function destroy(Collection $collection)

@@ -108,3 +108,36 @@ test('public collection entry route /blogs/first-blog renders successfully', fun
         return $page->id === $entry->id;
     });
 });
+
+test('blog list view renders accurate category count from entry sections', function () {
+    $collection = Collection::create(['name' => 'Blogs', 'slug' => 'blogs']);
+
+    CollectionEntry::create([
+        'collection_id' => $collection->id,
+        'slug' => 'trekking-bandarban',
+        'data' => [],
+        'published' => true,
+        'sections' => [
+            [
+                'name' => 'blogDetails',
+                'enabled' => true,
+                'data' => [
+                    'title' => 'Trekking the Hills of Bandarban',
+                    'category' => 'Adventure',
+                    'author' => 'Rafi Hasan',
+                    'date' => '18 Aug 2026',
+                    'content' => '<p>Some content</p>',
+                    'postCollection' => 'blogs',
+                ],
+            ],
+        ],
+    ]);
+
+    $view = $this->view('blocks.custom.blog-list', [
+        'data' => ['postCollection' => 'blogs'],
+    ]);
+
+    $view->assertSee('Adventure');
+    $view->assertSee('Trekking the Hills of Bandarban');
+    $view->assertSee('Rafi Hasan');
+});

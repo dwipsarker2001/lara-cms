@@ -49,12 +49,23 @@
                 foreach ($matchedValues as $val) {
                     $qry->orWhereJsonContains('data->category', $val)
                         ->orWhere('data->category', $val)
+                        ->orWhere('data->category', 'like', "%{$val}%")
                         ->orWhereJsonContains('data->categories', $val)
-                        ->orWhere('data->categories', $val)
+                        ->orWhere('data->categories', 'like', "%{$val}%")
                         ->orWhereJsonContains('data->tags', $val)
                         ->orWhere('data->tags', 'like', "%{$val}%")
                         ->orWhereJsonContains('data->tag', $val)
-                        ->orWhere('data->tag', 'like', "%{$val}%");
+                        ->orWhere('data->tag', 'like', "%{$val}%")
+                        ->orWhere('data', 'like', '%"category":"'.$val.'"%')
+                        ->orWhere('data', 'like', '%"categories":%"'.$val.'"%')
+                        ->orWhere('data', 'like', '%"tag":%"'.$val.'"%')
+                        ->orWhere('data', 'like', '%"tags":%"'.$val.'"%')
+                        ->orWhere('sections', 'like', '%"category":"'.$val.'"%')
+                        ->orWhere('sections', 'like', '%"category": "'.$val.'"%')
+                        ->orWhere('sections', 'like', '%"categories":%"'.$val.'"%')
+                        ->orWhere('sections', 'like', '%"tag":%"'.$val.'"%')
+                        ->orWhere('sections', 'like', '%"tags":%"'.$val.'"%')
+                        ->orWhere('sections', 'like', "%{$val}%");
                 }
             });
         }
@@ -65,7 +76,9 @@
                 $qry->where('slug', 'like', "%{$q}%")
                     ->orWhere('data->title', 'like', "%{$q}%")
                     ->orWhere('data->content', 'like', "%{$q}%")
-                    ->orWhere('data->excerpt', 'like', "%{$q}%");
+                    ->orWhere('data->excerpt', 'like', "%{$q}%")
+                    ->orWhere('data', 'like', "%{$q}%")
+                    ->orWhere('sections', 'like', "%{$q}%");
             });
         }
 

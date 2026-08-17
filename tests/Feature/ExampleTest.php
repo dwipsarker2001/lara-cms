@@ -1,5 +1,6 @@
+<?php
+
 use App\Models\Collection;
-use App\Models\CollectionEntry;
 
 it('returns a successful response', function () {
     $collection = Collection::create(['name' => 'Pages', 'slug' => 'pages']);
