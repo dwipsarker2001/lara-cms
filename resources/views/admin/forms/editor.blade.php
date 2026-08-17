@@ -48,29 +48,47 @@
                     </div>
                     <div x-show="fields.length > 0" class="space-y-0.5" x-ref="fieldList">
                         <template x-for="(field, i) in fields" :key="field._key">
-                            <x-admin::sortable-item @click="editField(i)">
-                                <x-slot:label>
-                                    <div @click="editField(i)" class="flex items-center gap-2 min-w-0 cursor-pointer">
+                            <div class="flex rounded-lg shadow-sm bg-content-bg mb-0.5 group overflow-hidden">
+                                <div class="w-6 shrink-0 flex items-center justify-center cursor-grab active:cursor-grabbing opacity-70 hover:opacity-100 touch-none transition-opacity text-text-muted/70">
+                                    <svg viewBox="0 0 24 24" fill="currentColor" class="size-[14px]">
+                                        <circle cx="8" cy="6" r="2.5" />
+                                        <circle cx="16" cy="6" r="2.5" />
+                                        <circle cx="8" cy="12" r="2.5" />
+                                        <circle cx="16" cy="12" r="2.5" />
+                                        <circle cx="8" cy="18" r="2.5" />
+                                        <circle cx="16" cy="18" r="2.5" />
+                                    </svg>
+                                </div>
+                                <div class="flex flex-1 min-w-0 flex-col px-1.5 py-2 cursor-pointer" @click="editField(i)">
+                                    <div class="flex items-center gap-2 min-w-0">
                                         <span class="text-[11px] font-medium text-text-muted bg-panel-bg px-1.5 py-0.5 rounded shrink-0" x-text="field.type"></span>
                                         <span class="text-sm font-semibold text-text-heading group-hover:text-primary truncate leading-normal transition-colors" x-text="field.label"></span>
                                     </div>
-                                </x-slot:label>
-                                <x-slot:edit>
-                                    <button type="button" @click.stop="editField(i)" class="p-1 text-text-muted/60 hover:text-primary transition-colors rounded hover:bg-text-primary/10" title="Edit field">
-                                        <svg viewBox="0 0 20 20" fill="currentColor" class="size-4">
-                                            <path d="M17.414 2.586a2 2 0 00-2.828 0L7 10.172V13h2.828l7.586-7.586a2 2 0 000-2.828z" />
-                                            <path fill-rule="evenodd" d="M2 6a2 2 0 012-2h4a1 1 0 010 2H4v10h10v-4a1 1 0 112 0v4a2 2 0 01-2 2H4a2 2 0 01-2-2V6z" clip-rule="evenodd" />
+                                </div>
+                                <div class="flex items-center gap-0.5 shrink-0 ml-auto pr-1">
+                                    <button
+                                        type="button"
+                                        @click.stop="editField(i)"
+                                        class="p-1 text-text-muted/60 hover:text-primary group-hover:text-primary transition-colors rounded hover:bg-text-primary/10"
+                                        title="Edit field"
+                                    >
+                                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" class="size-4">
+                                            <path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7" />
+                                            <path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z" />
                                         </svg>
                                     </button>
-                                </x-slot:edit>
-                                <x-slot:remove>
-                                    <button type="button" @click.stop="removeField(i)" class="p-1 text-text-muted/60 hover:text-danger transition-colors rounded hover:bg-text-primary/10" title="Remove field">
+                                    <button
+                                        type="button"
+                                        @click.stop="removeField(i)"
+                                        class="p-1 text-text-muted/60 hover:text-danger transition-colors rounded hover:bg-text-primary/10"
+                                        title="Remove field"
+                                    >
                                         <svg viewBox="0 0 20 20" fill="currentColor" class="size-4">
                                             <path fill-rule="evenodd" d="M8.75 1A2.75 2.75 0 006 3.75v.443c-.795.077-1.584.176-2.365.298a.75.75 0 10.23 1.482l.149-.022.841 10.518A2.75 2.75 0 007.596 19h4.807a2.75 2.75 0 002.742-2.53l.841-10.52.149.023a.75.75 0 00.23-1.482A41.03 41.03 0 0014 4.193V3.75A2.75 2.75 0 0011.25 1h-2.5zM10 4c-.84 0-1.673.025-2.5.075V3.75c0-.69.56-1.25 1.25-1.25h2.5c.69 0 1.25.56 1.25 1.25v.325C11.673 4.025 10.84 4 10 4zM8.58 7.72a.75.75 0 00-1.5.06l.3 7.5a.75.75 0 101.5-.06l-.3-7.5zm4.34.06a.75.75 0 10-1.5-.06l-.3 7.5a.75.75 0 101.5.06l.3-7.5z" clip-rule="evenodd" />
                                         </svg>
                                     </button>
-                                </x-slot:remove>
-                            </x-admin::sortable-item>
+                                </div>
+                            </div>
                         </template>
                     </div>
                 </div>
@@ -375,25 +393,45 @@
                     animation: 200,
                     easing: 'cubic-bezier(0.25, 0.1, 0.25, 1)',
                     ghostClass: 'sortable-ghost',
+                    onStart: (evt) => {
+                        evt.item._prevSibling = evt.item.previousElementSibling;
+                    },
                     onEnd: (evt) => {
-                        if (evt.oldIndex === evt.newIndex) return;
+                        const cleanup = () => {
+                            delete evt.item._prevSibling;
+                            setTimeout(() => this.initFieldSortable(), 0);
+                        };
+
+                        if (evt.oldIndex === evt.newIndex || evt.oldIndex === undefined || evt.newIndex === undefined) {
+                            cleanup();
+                            return;
+                        }
 
                         // Revert Sortable DOM changes so Alpine can handle the DOM update
                         const itemEl = evt.item;
-                        const nextSibling = evt.from.children[evt.oldIndex > evt.newIndex ? evt.oldIndex + 1 : evt.oldIndex];
-                        evt.from.insertBefore(itemEl, nextSibling);
+                        if (itemEl._prevSibling && itemEl._prevSibling.parentElement === evt.from) {
+                            itemEl._prevSibling.after(itemEl);
+                        } else if (evt.from) {
+                            evt.from.prepend(itemEl);
+                        }
 
-                        const offset = (evt.from.children[0] && evt.from.children[0].tagName === 'TEMPLATE') ? 1 : 0;
-                        const oldIdx = evt.oldIndex - offset;
-                        const newIdx = evt.newIndex - offset;
+                        let oldIdx = evt.oldDraggableIndex;
+                        let newIdx = evt.newDraggableIndex;
+                        if (oldIdx === undefined || newIdx === undefined) {
+                            const offset = (evt.from.children[0] && evt.from.children[0].tagName === 'TEMPLATE') ? 1 : 0;
+                            oldIdx = evt.oldIndex - offset;
+                            newIdx = evt.newIndex - offset;
+                        }
 
                         if (oldIdx >= 0 && oldIdx < this.fields.length && newIdx >= 0 && newIdx < this.fields.length) {
                             const item = this.fields.splice(oldIdx, 1)[0];
                             if (item !== undefined) {
                                 this.fields.splice(newIdx, 0, item);
+                                this.fields = [...this.fields];
                                 this.dirty = true;
                             }
                         }
+                        cleanup();
                     },
                 });
             },
@@ -463,6 +501,7 @@
 
             exitField() {
                 this.activeField = null;
+                this.$nextTick(() => this.initFieldSortable());
             },
 
             setFieldProp(name, value) {
