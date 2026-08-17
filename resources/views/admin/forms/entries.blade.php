@@ -505,7 +505,7 @@
         x-transition:leave-start="opacity-100 translate-y-0 scale-100"
         x-transition:leave-end="opacity-0 translate-y-4 scale-95"
         @keydown.escape.window="selectedEntries = []"
-        class="sticky bottom-6 mx-auto w-fit z-[9999] flex items-center bg-white/95 backdrop-blur-md border border-content-border shadow-sm rounded-xl overflow-hidden divide-x divide-content-border text-xs font-medium"
+        class="sticky bottom-6 mx-auto w-fit z-[9999] flex items-center bg-white/95 backdrop-blur-md border border-content-border shadow-md rounded-xl overflow-hidden divide-x divide-content-border text-xs font-medium"
     >
         {{-- Deselect Segment --}}
         <button type="button"
