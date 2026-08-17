@@ -4,39 +4,46 @@
 @section('breadcrumb', 'Edit ' . $collection->name)
 
 @section('content')
+@php
+    $entryTitle = (string) old('data.title', $entry->data['title'] ?? '');
+    $entrySlug = (string) ($entry->slug ?? '');
+    $isPublished = (bool) old('published', $entry->published ?? true);
+
+    $metaData = [
+        'author' => (string) old('meta.author', $entry->meta['author'] ?? $admins->first()?->name ?? 'Admin'),
+        'metaTitle' => (string) old('meta.metaTitle', $entry->meta['metaTitle'] ?? ''),
+        'metaDescription' => (string) old('meta.metaDescription', $entry->meta['metaDescription'] ?? ''),
+        'canonicalUrl' => (string) old('meta.canonicalUrl', $entry->meta['canonicalUrl'] ?? ''),
+        'schema' => (string) old('meta.schema', $entry->meta['schema'] ?? ''),
+        'robots' => (string) old('meta.robots', $entry->meta['robots'] ?? 'Inherit'),
+        'indexing' => (string) old('meta.indexing', $entry->meta['indexing'] ?? 'Inherit'),
+        'linkFollowing' => (string) old('meta.linkFollowing', $entry->meta['linkFollowing'] ?? 'Inherit'),
+        'noArchive' => (string) old('meta.noArchive', $entry->meta['noArchive'] ?? 'Inherit'),
+        'noImageIndex' => (string) old('meta.noImageIndex', $entry->meta['noImageIndex'] ?? 'Inherit'),
+        'noSnippet' => (string) old('meta.noSnippet', $entry->meta['noSnippet'] ?? 'Inherit'),
+        'noTranslate' => (string) old('meta.noTranslate', $entry->meta['noTranslate'] ?? 'Inherit'),
+        'noSiteLinksSearchBox' => (string) old('meta.noSiteLinksSearchBox', $entry->meta['noSiteLinksSearchBox'] ?? 'Inherit'),
+        'maxSnippet' => (string) old('meta.maxSnippet', $entry->meta['maxSnippet'] ?? ''),
+        'maxVideoPreview' => (string) old('meta.maxVideoPreview', $entry->meta['maxVideoPreview'] ?? ''),
+        'maxImagePreview' => (string) old('meta.maxImagePreview', $entry->meta['maxImagePreview'] ?? 'Inherit'),
+        'ogType' => (string) old('meta.ogType', $entry->meta['ogType'] ?? 'Inherit'),
+        'ogTitle' => (string) old('meta.ogTitle', $entry->meta['ogTitle'] ?? ''),
+        'socialImage' => (string) old('meta.socialImage', $entry->meta['socialImage'] ?? ''),
+        'xHandle' => (string) old('meta.xHandle', $entry->meta['xHandle'] ?? ''),
+        'xCardTitle' => (string) old('meta.xCardTitle', $entry->meta['xCardTitle'] ?? ''),
+        'xCardDescription' => (string) old('meta.xCardDescription', $entry->meta['xCardDescription'] ?? ''),
+        'sitemap' => (string) old('meta.sitemap', $entry->meta['sitemap'] ?? 'Inherit'),
+        'sitemapPriority' => (string) old('meta.sitemapPriority', $entry->meta['sitemapPriority'] ?? ''),
+        'sitemapFrequency' => (string) old('meta.sitemapFrequency', $entry->meta['sitemapFrequency'] ?? 'Inherit'),
+    ];
+@endphp
 <div class="max-w-5xl mx-auto px-2 sm:px-0"
     x-data="{
         activeTab: 'basic',
-        title: '{{ old('data.title', $entry->data['title'] ?? '') }}',
-        effectiveSlug: '{{ $entry->slug ?? '' }}',
-        published: {{ old('published', $entry->published ?? true) ? 'true' : 'false' }},
-        meta: {
-            author: '{{ old('meta.author', $entry->meta['author'] ?? $admins->first()?->name ?? 'Admin') }}',
-            metaTitle: '{{ old('meta.metaTitle', $entry->meta['metaTitle'] ?? '') }}',
-            metaDescription: '{{ old('meta.metaDescription', $entry->meta['metaDescription'] ?? '') }}',
-            canonicalUrl: '{{ old('meta.canonicalUrl', $entry->meta['canonicalUrl'] ?? '') }}',
-            schema: '{{ old('meta.schema', $entry->meta['schema'] ?? '') }}',
-            robots: '{{ old('meta.robots', $entry->meta['robots'] ?? 'Inherit') }}',
-            indexing: '{{ old('meta.indexing', $entry->meta['indexing'] ?? 'Inherit') }}',
-            linkFollowing: '{{ old('meta.linkFollowing', $entry->meta['linkFollowing'] ?? 'Inherit') }}',
-            noArchive: '{{ old('meta.noArchive', $entry->meta['noArchive'] ?? 'Inherit') }}',
-            noImageIndex: '{{ old('meta.noImageIndex', $entry->meta['noImageIndex'] ?? 'Inherit') }}',
-            noSnippet: '{{ old('meta.noSnippet', $entry->meta['noSnippet'] ?? 'Inherit') }}',
-            noTranslate: '{{ old('meta.noTranslate', $entry->meta['noTranslate'] ?? 'Inherit') }}',
-            noSiteLinksSearchBox: '{{ old('meta.noSiteLinksSearchBox', $entry->meta['noSiteLinksSearchBox'] ?? 'Inherit') }}',
-            maxSnippet: '{{ old('meta.maxSnippet', $entry->meta['maxSnippet'] ?? '') }}',
-            maxVideoPreview: '{{ old('meta.maxVideoPreview', $entry->meta['maxVideoPreview'] ?? '') }}',
-            maxImagePreview: '{{ old('meta.maxImagePreview', $entry->meta['maxImagePreview'] ?? 'Inherit') }}',
-            ogType: '{{ old('meta.ogType', $entry->meta['ogType'] ?? 'Inherit') }}',
-            ogTitle: '{{ old('meta.ogTitle', $entry->meta['ogTitle'] ?? '') }}',
-            socialImage: '{{ old('meta.socialImage', $entry->meta['socialImage'] ?? '') }}',
-            xHandle: '{{ old('meta.xHandle', $entry->meta['xHandle'] ?? '') }}',
-            xCardTitle: '{{ old('meta.xCardTitle', $entry->meta['xCardTitle'] ?? '') }}',
-            xCardDescription: '{{ old('meta.xCardDescription', $entry->meta['xCardDescription'] ?? '') }}',
-            sitemap: '{{ old('meta.sitemap', $entry->meta['sitemap'] ?? 'Inherit') }}',
-            sitemapPriority: '{{ old('meta.sitemapPriority', $entry->meta['sitemapPriority'] ?? '') }}',
-            sitemapFrequency: '{{ old('meta.sitemapFrequency', $entry->meta['sitemapFrequency'] ?? 'Inherit') }}'
-        },
+        title: @js($entryTitle),
+        effectiveSlug: @js($entrySlug),
+        published: @js($isPublished),
+        meta: @js($metaData),
         updateMeta(key, val) {
             this.meta[key] = val;
         }
@@ -236,7 +243,7 @@
                                                      <div
                                                          class="w-full rounded-lg border border-content-border bg-content-bg overflow-hidden shadow-sm min-w-0"
                                                          x-data="{
-                                                             imageUrl: '{{ addslashes($imgVal) }}',
+                                                             imageUrl: @js($imgVal),
                                                              altOpen: false,
                                                              alt: '',
                                                              size: null,
@@ -373,7 +380,7 @@
                                                         $selectedEntry = $targetEntries->firstWhere('id', $value);
                                                         $selectedLabel = $selectedEntry?->title ?? $selectedEntry?->data['title'] ?? 'Choose entry...';
                                                     @endphp
-                                                    <div x-data="{ open: false, selectedValue: '{{ $value }}', label: '{{ addslashes($selectedLabel) }}' }" @click.outside="open = false" @keydown.escape.window="open = false" class="relative">
+                                                    <div x-data="{ open: false, selectedValue: @js((string)$value), label: @js((string)$selectedLabel) }" @click.outside="open = false" @keydown.escape.window="open = false" class="relative">
                                                         <button type="button" @click="open = !open" class="w-full flex items-center justify-between bg-content-bg border border-content-border text-text-primary text-sm rounded-lg px-3 py-2 h-9 cursor-pointer transition-all duration-150 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary">
                                                             <span class="truncate" x-text="label"></span>
                                                             <svg class="size-4 text-text-muted shrink-0 transition-transform duration-150" :class="open ? 'rotate-180' : ''" viewBox="0 0 20 20" fill="currentColor">
@@ -386,7 +393,7 @@
                                                             </button>
                                                             @foreach ($targetEntries as $te)
                                                                 @php $teTitle = $te->data['title'] ?? $te->page?->title ?? 'Untitled Entry'; @endphp
-                                                                <button type="button" @click="selectedValue = '{{ $te->id }}'; label = '{{ addslashes($teTitle) }}'; open = false" class="w-full text-left px-3 py-1.5 text-sm rounded-md transition-colors" :class="selectedValue == '{{ $te->id }}' ? 'bg-primary/10 text-primary font-medium' : 'text-text-primary hover:bg-content-border/30'">
+                                                                <button type="button" @click="selectedValue = @js((string)$te->id); label = @js((string)$teTitle); open = false" class="w-full text-left px-3 py-1.5 text-sm rounded-md transition-colors" :class="selectedValue == @js((string)$te->id) ? 'bg-primary/10 text-primary font-medium' : 'text-text-primary hover:bg-content-border/30'">
                                                                     <span>{{ $teTitle }}</span>
                                                                 </button>
                                                             @endforeach
@@ -445,7 +452,7 @@
             selected: @js($selectedArray),
             items: @js($itemsList),
             allTaxonomies: @js($allTaxonomiesData),
-            selectedTaxId: '{{ $targetTaxId }}',
+            selectedTaxId: @js((string)$targetTaxId),
             isTaxonomyFixed: {{ !empty($taxId) ? 'true' : 'false' }},
             showAddModal: false,
             newTermTitle: '',
@@ -717,11 +724,11 @@
         @endphp
         <div x-data="{
             open: false,
-            selectedValue: '{{ addslashes($initialVal) }}',
-            label: '{{ addslashes($selectedLabel) }}',
+            selectedValue: @js((string)$initialVal),
+            label: @js((string)$selectedLabel),
             items: @js($itemsList),
             allTaxonomies: @js($allTaxonomiesData),
-            selectedTaxId: '{{ $targetTaxId }}',
+            selectedTaxId: @js((string)$targetTaxId),
             isTaxonomyFixed: {{ !empty($taxId) ? 'true' : 'false' }},
             showAddModal: false,
             newTermTitle: '',
@@ -1392,12 +1399,13 @@
                                                 <div x-data="{
                                                     size: null,
                                                     get imageName() {
-                                                        if (!meta.socialImage) return '';
+                                                        const img = (this.meta && this.meta.socialImage) || '';
+                                                        if (!img) return '';
                                                         try {
-                                                            const path = meta.socialImage.split('?')[0];
+                                                            const path = img.split('?')[0];
                                                             return decodeURIComponent(path.split('/').pop() || path);
                                                         } catch (e) {
-                                                            return meta.socialImage;
+                                                            return img;
                                                         }
                                                     },
                                                     formatSize(bytes) {
@@ -1410,14 +1418,14 @@
                                                         window.dispatchEvent(new CustomEvent('open-asset-picker', {
                                                             detail: {
                                                                 callback: (url) => {
-                                                                    updateMeta('socialImage', url);
+                                                                    this.updateMeta('socialImage', url);
                                                                     this.fetchSize(url);
                                                                 }
                                                             }
                                                         }));
                                                     },
                                                     clearImage() {
-                                                        updateMeta('socialImage', '');
+                                                        this.updateMeta('socialImage', '');
                                                         this.size = null;
                                                     },
                                                     fetchSize(url) {
@@ -1430,7 +1438,7 @@
                                                             .catch(() => { this.size = null; });
                                                     },
                                                     init() {
-                                                        if (meta.socialImage) { this.fetchSize(meta.socialImage); }
+                                                        if (this.meta && this.meta.socialImage) { this.fetchSize(this.meta.socialImage); }
                                                     }
                                                 }">
                                                     <input type="hidden" name="meta[socialImage]" :value="meta.socialImage">

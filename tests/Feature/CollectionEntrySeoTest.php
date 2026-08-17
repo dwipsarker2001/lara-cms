@@ -50,3 +50,29 @@ it('saves custom SEO metadata on collection entry update and renders it in publi
         ->assertSee('<link rel="canonical" href="https://example.com/blog/my-first-post">', false)
         ->assertSee('<meta property="og:image" content="/uploads/post-og.jpg">', false);
 });
+
+it('safely renders collection entry edit and create pages with complex strings, single quotes, newlines and json schema without syntax errors', function () {
+    $complexEntry = CollectionEntry::create([
+        'collection_id' => $this->collection->id,
+        'slug' => 'complex-travel-post',
+        'published' => true,
+        'data' => [
+            'title' => "World's Best \"Secret\" Destinations & Tips",
+        ],
+        'meta' => [
+            'metaTitle' => "World's Best \"Secret\" Destinations",
+            'metaDescription' => "Here's an in-depth review of traveler's favorites:\n1. Island's hidden bay\n2. \"Paradise\" resort",
+            'schema' => "{\n  \"@context\": \"https://schema.org\",\n  \"@type\": \"BlogPosting\",\n  \"headline\": \"World's Best\"\n}",
+            'ogTitle' => "World's Best",
+            'xCardDescription' => "It's awesome!",
+        ],
+    ]);
+
+    get(route('admin.collections.entries.edit', [$this->collection, $complexEntry]))
+        ->assertStatus(200)
+        ->assertSee('x-data="{', false);
+
+    get(route('admin.collections.entries.create', $this->collection))
+        ->assertStatus(200)
+        ->assertSee('x-data="{', false);
+});
