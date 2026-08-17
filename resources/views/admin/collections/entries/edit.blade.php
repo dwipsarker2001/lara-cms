@@ -95,7 +95,7 @@
             {{-- Card Body --}}
             <div class="px-1.5 pb-2">
                 {{-- Basic Tab --}}
-                <div x-show="activeTab === 'basic'">
+                <div x-show="activeTab === 'basic'" x-cloak>
                     <div class="bg-content-bg rounded-xl ring-1 ring-content-border shadow-sm px-3 py-3">
                         <div class="divide-y divide-content-border">
                             {{-- Title --}}
@@ -1163,7 +1163,7 @@
 
                 {{-- SEO & SEO Pro Tabs Content --}}
                 @if($collection->enable_seo)
-                    <div x-show="activeTab === 'seo' || activeTab === 'seo_pro'">
+                    <div x-show="activeTab === 'seo' || activeTab === 'seo_pro'" x-cloak>
                     <div class="grid grid-cols-1 lg:grid-cols-3 gap-4 items-start">
                         {{-- Left Fields Column (2/3 width) --}}
                         <div class="lg:col-span-2">

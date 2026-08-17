@@ -262,7 +262,11 @@
     {{-- Shell: light gray container with rounded top, holds sidebar + content --}}
     <div class="fixed top-14 left-0 right-0 bottom-0 bg-body-bg rounded-t-[16px] overflow-hidden flex">
         {{-- NavClient sidebar --}}
+        @php
+            $isEditorRoute = request()->routeIs('admin.forms.editor') || request()->routeIs('admin.collections.entries.editor');
+        @endphp
         <aside
+            style="width: {{ $isEditorRoute ? '0px' : '208px' }}"
             :style="'width: ' + (navCollapsed ? '0px' : '208px')"
             class="shrink-0 overflow-hidden transition-all duration-300 ease-in-out"
         >
