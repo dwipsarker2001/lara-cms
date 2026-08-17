@@ -59,18 +59,6 @@
             {{ $form->title }}
         </h1>
         <div class="flex flex-wrap items-center gap-2 sm:gap-3">
-            <a href="{{ route('admin.forms.editor', $form) }}"
-                class="inline-flex items-center justify-center gap-2 whitespace-nowrap shrink-0 font-medium cursor-pointer no-underline rounded-lg transition-colors h-10 text-sm leading-tight px-4 bg-white hover:bg-gray-50 text-text-primary border border-content-border shadow-sm"
-                title="Form Editor"
-            >
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" class="size-4 text-text-muted">
-                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
-                    <polyline points="14 2 14 8 20 8" />
-                    <line x1="12" y1="18" x2="12" y2="12" />
-                    <line x1="9" y1="15" x2="15" y2="15" />
-                </svg>
-                <span>Editor</span>
-            </a>
             <a href="{{ route('admin.forms.edit', $form) }}"
                 class="size-10 flex items-center justify-center rounded-lg border border-content-border bg-white text-text-primary hover:bg-gray-50 transition-colors shadow-sm"
                 title="Form Settings"
