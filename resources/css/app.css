@@ -162,13 +162,7 @@ input[type="time"].custom-picker::-webkit-calendar-picker-indicator {
 
 .tt-editor .ProseMirror,
 .tt-editor .ProseMirror p,
-.tt-editor .ProseMirror *,
-[data-edit="dayDescription"],
-[data-edit="dayDescription"] p,
-[data-edit="dayDescription"] *,
-[data-edit="aboutDescription"],
-[data-edit="aboutDescription"] p,
-[data-edit="aboutDescription"] * {
+.tt-editor .ProseMirror * {
     color: #111827 !important;
 }
 
