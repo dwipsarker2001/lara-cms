@@ -50,9 +50,47 @@ abstract class Block
      */
     abstract public function fields(): array;
 
-    /** Blade view name. Defaults to blocks.custom.{kebab-name} if it exists, otherwise blocks.{kebab-name}. */
+    /** Custom blade view name if specified (e.g. "plugin-slug::blocks.my-block"). */
+    public ?string $viewName = null;
+
+    /** Blade view name. Defaults to custom viewName if set, otherwise checks co-located view.blade.php, blocks.custom.{kebab-name} or blocks.{kebab-name}. */
     public function view(): string
     {
+        if (! empty($this->viewName)) {
+            return $this->viewName;
+        }
+
+        // Check for co-located view in the same directory as the block class
+        try {
+            $ref = new \ReflectionClass($this);
+            $dir = dirname($ref->getFileName() ?: '');
+            if ($dir && is_dir($dir)) {
+                $coLocatedView = $dir.DIRECTORY_SEPARATOR.'view.blade.php';
+                $kebab = Str::kebab($this->name);
+                $namedCoLocatedView = $dir.DIRECTORY_SEPARATOR.$kebab.'.blade.php';
+
+                if (file_exists($coLocatedView)) {
+                    $slug = 'block_'.md5($dir);
+                    if (! view()->exists($slug.'::view')) {
+                        app('view')->addNamespace($slug, $dir);
+                    }
+
+                    return $slug.'::view';
+                }
+
+                if (file_exists($namedCoLocatedView)) {
+                    $slug = 'block_'.md5($dir);
+                    if (! view()->exists($slug.'::'.$kebab)) {
+                        app('view')->addNamespace($slug, $dir);
+                    }
+
+                    return $slug.'::'.$kebab;
+                }
+            }
+        } catch (\Throwable $e) {
+            // Fallback to standard view naming
+        }
+
         $kebab = Str::kebab($this->name);
 
         if (view()->exists('blocks.custom.'.$kebab)) {

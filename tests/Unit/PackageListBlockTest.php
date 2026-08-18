@@ -1,11 +1,11 @@
 <?php
 
-use App\Blocks\custom\PackageList;
+use App\Blocks\CardSlot;
 use App\Blocks\ListBlock;
-use App\Blocks\Support\CardSlot;
 use App\Models\Collection;
 use App\Models\Taxonomy;
 use App\Models\Term;
+use Plugins\CustomBlocks\Blocks\PackageList\PackageList;
 
 test('CardSlot creates correct instances for each type', function () {
     $text = CardSlot::text('title', 'Card Title');

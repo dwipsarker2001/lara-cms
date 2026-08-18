@@ -3,7 +3,7 @@
 use App\Models\Collection;
 use App\Models\CollectionEntry;
 use App\Models\Taxonomy;
-use App\Support\BlogSidebarData;
+use Plugins\CustomBlocks\Support\BlogSidebarData;
 
 it('returns recent posts array from BlogSidebarData', function () {
     $posts = BlogSidebarData::getRecentPosts();

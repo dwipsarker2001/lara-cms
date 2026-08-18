@@ -24,6 +24,12 @@ class BlockRegistry
         return $this->blocks ??= $this->discover();
     }
 
+    /** Flush the cached blocks so discovery runs again. */
+    public function flush(): void
+    {
+        $this->blocks = null;
+    }
+
     public function get(string $name): ?Block
     {
         return $this->all()[$name] ?? null;
@@ -57,21 +63,52 @@ class BlockRegistry
     {
         $blocks = [];
 
-        foreach (Finder::create()->files()->in(app_path('Blocks'))->name('*.php')->notName(['TemplateBlock.php', 'JsonBlock.php']) as $file) {
-            $class = $this->classFromPath($file->getRealPath());
+        if (is_dir(app_path('Blocks'))) {
+            foreach (Finder::create()->files()->in(app_path('Blocks'))->name('*.php')->notName(['TemplateBlock.php', 'JsonBlock.php']) as $file) {
+                $class = $this->classFromPath($file->getRealPath());
 
-            if (! $class || ! class_exists($class)) {
-                continue;
+                if (! $class || ! class_exists($class)) {
+                    continue;
+                }
+
+                $ref = new \ReflectionClass($class);
+                if (! $ref->isSubclassOf(Block::class) || $ref->isAbstract()) {
+                    continue;
+                }
+
+                /** @var Block $block */
+                $block = $ref->newInstance();
+                $blocks[$block->name] = $block;
             }
+        }
 
-            $ref = new \ReflectionClass($class);
-            if (! $ref->isSubclassOf(Block::class) || $ref->isAbstract()) {
-                continue;
+        $pluginsPath = base_path('plugins');
+        if (is_dir($pluginsPath)) {
+            foreach (Finder::create()->files()->in($pluginsPath)->name('*.php')->notName(['TemplateBlock.php', 'JsonBlock.php']) as $file) {
+                $path = $file->getRealPath();
+                $class = $this->getClassFromFile($path);
+
+                if (! $class) {
+                    continue;
+                }
+
+                if (! class_exists($class)) {
+                    require_once $path;
+                }
+
+                if (! class_exists($class)) {
+                    continue;
+                }
+
+                $ref = new \ReflectionClass($class);
+                if (! $ref->isSubclassOf(Block::class) || $ref->isAbstract()) {
+                    continue;
+                }
+
+                /** @var Block $block */
+                $block = $ref->newInstance();
+                $blocks[$block->name] = $block;
             }
-
-            /** @var Block $block */
-            $block = $ref->newInstance();
-            $blocks[$block->name] = $block;
         }
 
         foreach (DynamicBlock::all() as $dbBlock) {
@@ -87,5 +124,66 @@ class BlockRegistry
         $relative = str_replace([app_path().DIRECTORY_SEPARATOR, '.php'], '', $path);
 
         return 'App\\'.str_replace(DIRECTORY_SEPARATOR, '\\', $relative);
+    }
+
+    /** Extract class FQCN from a PHP file via PHP tokens. */
+    protected function getClassFromFile(string $path): ?string
+    {
+        $contents = @file_get_contents($path);
+        if (! $contents) {
+            return null;
+        }
+
+        $tokens = token_get_all($contents);
+        $namespace = '';
+        $class = '';
+        $count = count($tokens);
+
+        for ($i = 0; $i < $count; $i++) {
+            $token = $tokens[$i];
+
+            if (is_array($token)) {
+                if ($token[0] === T_NAMESPACE) {
+                    $namespace = '';
+                    for ($j = $i + 1; $j < $count; $j++) {
+                        if ($tokens[$j] === ';') {
+                            $i = $j;
+                            break;
+                        }
+                        if (is_array($tokens[$j]) && in_array($tokens[$j][0], [T_STRING, T_NAME_QUALIFIED, T_NAME_FULLY_QUALIFIED, T_NS_SEPARATOR], true)) {
+                            $namespace .= $tokens[$j][1];
+                        }
+                    }
+                } elseif ($token[0] === T_CLASS) {
+                    // Check that it is not ::class
+                    $prevToken = null;
+                    for ($k = $i - 1; $k >= 0; $k--) {
+                        if (is_array($tokens[$k]) && in_array($tokens[$k][0], [T_WHITESPACE, T_COMMENT, T_DOC_COMMENT], true)) {
+                            continue;
+                        }
+                        $prevToken = is_array($tokens[$k]) ? $tokens[$k][0] : $tokens[$k];
+                        break;
+                    }
+
+                    if ($prevToken === T_DOUBLE_COLON) {
+                        continue;
+                    }
+
+                    // Find class name
+                    for ($j = $i + 1; $j < $count; $j++) {
+                        if (is_array($tokens[$j]) && $tokens[$j][0] === T_STRING) {
+                            $class = $tokens[$j][1];
+                            break 2;
+                        }
+                    }
+                }
+            }
+        }
+
+        if (! $class) {
+            return null;
+        }
+
+        return $namespace ? $namespace.'\\'.$class : $class;
     }
 }

@@ -2,7 +2,8 @@
 
 use App\Models\Collection;
 use App\Models\CollectionEntry;
-use App\Support\BlogSidebarData;
+use Plugins\CustomBlocks\Blocks\BlogList\BlogList;
+use Plugins\CustomBlocks\Support\BlogSidebarData;
 
 test('blog list resolves featured_image from entry data', function () {
     $collection = Collection::create(['name' => 'Blog', 'slug' => 'blog']);
@@ -16,7 +17,7 @@ test('blog list resolves featured_image from entry data', function () {
         'published' => true,
     ]);
 
-    $view = $this->view('blocks.custom.blog-list', [
+    $view = $this->view((new BlogList)->view(), [
         'data' => ['postCollection' => 'blog'],
     ]);
 
@@ -37,7 +38,7 @@ test('blog list handles empty thumbnail when entry has no image', function () {
     $recent = BlogSidebarData::getRecentPosts(1, 'blog');
     expect($recent[0]['image'])->toBeNull();
 
-    $view = $this->view('blocks.custom.blog-list', [
+    $view = $this->view((new BlogList)->view(), [
         'data' => ['postCollection' => 'blog'],
     ]);
 
@@ -55,7 +56,7 @@ test('blog list resolves map_title slot mapping to slug when configured', functi
         'published' => true,
     ]);
 
-    $view = $this->view('blocks.custom.blog-list', [
+    $view = $this->view((new BlogList)->view(), [
         'data' => [
             'postCollection' => 'blog',
             'map_title' => 'slug',
@@ -77,7 +78,7 @@ test('blog list resolves map_author slot mapping to created_by when configured',
         'published' => true,
     ]);
 
-    $view = $this->view('blocks.custom.blog-list', [
+    $view = $this->view((new BlogList)->view(), [
         'data' => [
             'postCollection' => 'blog',
             'map_author' => 'created_by',
@@ -133,7 +134,7 @@ test('blog list view renders accurate category count from entry sections', funct
         ],
     ]);
 
-    $view = $this->view('blocks.custom.blog-list', [
+    $view = $this->view((new BlogList)->view(), [
         'data' => ['postCollection' => 'blogs'],
     ]);
 

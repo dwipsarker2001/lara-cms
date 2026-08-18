@@ -483,6 +483,42 @@
                         </li>
                     </ul>
                 </div>
+
+                {{-- Extensions / Plugins --}}
+                @if(!empty($sidebarPluginMenuItems))
+                    <div class="mt-5">
+                        <div class="px-2.5 pb-1.5 text-xs font-semibold uppercase tracking-wider text-text-muted/70">Extensions</div>
+                        <ul class="space-y-0.5">
+                            @foreach($sidebarPluginMenuItems as $pluginItem)
+                                @php
+                                    $itemUrl = $pluginItem['route'] && \Illuminate\Support\Facades\Route::has($pluginItem['route'])
+                                        ? route($pluginItem['route'])
+                                        : ($pluginItem['url'] ? url($pluginItem['url']) : '#');
+                                    $isActive = $pluginItem['route'] && request()->routeIs($pluginItem['route']);
+                                @endphp
+                                <li>
+                                    <a href="{{ $itemUrl }}"
+                                        class="flex items-center gap-2.5 px-2.5 py-1.5 rounded-md text-sm no-underline transition-colors {{ $isActive ? 'text-text-heading bg-gray-200 font-semibold' : 'text-text-primary hover:bg-gray-100 hover:text-text-heading font-medium' }}"
+                                    >
+                                        <span class="flex w-4 shrink-0 items-center justify-center">
+                                            @if(!empty($pluginItem['icon']))
+                                                <i class="{{ $pluginItem['icon'] }} text-xs"></i>
+                                            @else
+                                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" class="size-4">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" d="M14.25 6.087c0-.355.186-.676.401-.959.221-.29.349-.634.349-1.003 0-1.036-1.007-1.875-2.25-1.875s-2.25.84-2.25 1.875c0 .369.128.713.349 1.003.215.283.401.604.401.959v0a.64.64 0 01-.657.643 48.39 48.39 0 01-4.163-.3c.186 1.613.46 3.197.818 4.738a.64.64 0 01-.482.766c-.337.086-.66.216-.963.385-1.03.578-1.553 1.637-1.553 2.768 0 1.13.523 2.19 1.553 2.768.303.17.626.3.963.385.344.088.552.441.482.766-.358 1.541-.632 3.125-.818 4.738 1.372-.11 2.763-.211 4.163-.3a.64.64 0 01.657.643v0c0 .355-.186.676-.401.959-.221.29-.349.634-.349 1.003 0 1.035 1.008 1.875 2.25 1.875 1.243 0 2.25-.84 2.25-1.875 0-.369-.128-.713-.349-1.003-.215-.283-.401-.604-.401-.959v0a.64.64 0 01.657-.643c1.4.089 2.791.19 4.163.3-.186-1.613-.46-3.197-.818-4.738a.64.64 0 01.482-.766c.337-.086.66-.216.963-.385 1.03-.578 1.553-1.637 1.553-2.768 0-1.13-.523-2.19-1.553-2.768a4.887 4.887 0 00-.963-.385.64.64 0 01-.482-.766c.358-1.541.632-3.125.818-4.738-1.372.11-2.763.211-4.163.3a.64.64 0 01-.657-.643v0z" />
+                                                </svg>
+                                            @endif
+                                        </span>
+                                        <span class="truncate">{{ $pluginItem['label'] }}</span>
+                                        @if(!empty($pluginItem['badge']))
+                                            <span class="ml-auto flex px-1.5 py-0.5 items-center justify-center rounded bg-gray-200 text-[10px] font-semibold text-text-muted">{{ $pluginItem['badge'] }}</span>
+                                        @endif
+                                    </a>
+                                </li>
+                            @endforeach
+                        </ul>
+                    </div>
+                @endif
             </div>
         </aside>
 

@@ -128,129 +128,101 @@
 
 ---
 
-## 🏗️ Content Block System Architecture
+## 🔌 Modular Plugin & Extension Architecture
 
-Every section on a page is represented by a **Block** — a PHP class defining schema fields, and a corresponding Blade view for HTML rendering. Blocks are auto-discovered from `app/Blocks/`.
+Lara-CMS enforces **Zero-Core-Modification**. All custom features, client portals, custom admin pages, database migrations, and content blocks live in the `plugins/` directory.
+
+### Why It Matters:
+- **Protected from Core Updates:** Running `git pull upstream main` updates the CMS core without touching or overwriting client work in `plugins/`.
+- **Self-Contained Modules:** Move a feature (e.g. `plugins/blog-comments`) between projects simply by copying its folder.
+- **Isolated Database Schema:** Custom migrations live in `plugins/{plugin}/database/migrations/` and run automatically with `php artisan migrate`.
+
+---
+
+## ⚡ Developer Artisan Commands
+
+Lara-CMS provides built-in commands to scaffold modules and blocks in 1 second:
+
+```bash
+# 1. Create a complete new plugin scaffold (admin routes, views, PSR-4 setup)
+php artisan make:plugin "Blog Comments"
+
+# 2. Create an isolated migration inside a plugin
+php artisan make:plugin-migration blog-comments create_blog_comments_table
+
+# 3. Create a single-directory co-located content block (PHP + Blade template together)
+php artisan make:plugin-block blog-comments CommentSection
+```
+
+---
+
+## 🏗️ Content Block System (Co-Located Views)
+
+Every content section is represented by a **Block** — a PHP class defining schema fields, and a matching `view.blade.php` template sitting right beside it in the same directory. Blocks are auto-discovered from `plugins/*/Blocks/` and `app/Blocks/`.
 
 ### Directory Structure
 
 ```
-app/Blocks/                     → PHP Block Schema Definitions (auto-discovered)
-├── Block.php                   → Abstract Base Block Class
-├── Field.php                   → Field Definition Factory Helpers
-├── BlockRegistry.php           → Auto-discovery Singleton
-└── Home/
-    ├── TravelDeals.php         → Example Block Schema Class
-    ├── HeroBanner.php
-    └── ...
-resources/views/blocks/         → Blade Templates for Each Block
-└── travel-deals.blade.php      → Blade View (auto-mapped to travelDeals)
+plugins/custom-blocks/Blocks/
+├── HeroBanner/
+│   ├── HeroBanner.php          → Block Schema & Field Definitions
+│   └── view.blade.php          → Co-Located Blade Template
+├── BlogDetails/
+│   ├── BlogDetails.php
+│   └── view.blade.php
+└── TravelDeals/
+    ├── TravelDeals.php
+    └── view.blade.php
 ```
 
 ---
 
 ### Creating a Custom Content Block
 
-#### 1. Define the PHP Block Class
+#### 1. Define the Co-Located Block (PHP + Blade)
 
-Create a PHP file under `app/Blocks/` (e.g., `app/Blocks/Home/TravelDeals.php`):
+Create `plugins/custom-blocks/Blocks/HeroBanner/HeroBanner.php`:
 
 ```php
 <?php
 
-namespace App\Blocks\Home;
+namespace Plugins\CustomBlocks\Blocks\HeroBanner;
 
 use App\Blocks\Block;
 use App\Blocks\Field;
 
-class TravelDeals extends Block
+class HeroBanner extends Block
 {
-    public string $name = 'travelDeals';       // Machine identifier (camelCase)
-    public string $label = 'Travel Deals';      // Display title in block picker
-
-    // Optional settings:
-    // public bool $global = true;              // Global block (site-wide header/footer)
-    // public bool $background = false;         // Set false if block manages custom backgrounds
+    public string $name = 'heroBanner';       // Machine identifier (camelCase)
+    public string $label = 'Hero Banner';     // Display title in editor picker
 
     public function fields(): array
     {
         return [
-            Field::string('headline', 'Headline', default: 'Travel Deals'),
-            Field::text('description', 'Description', default: 'Find Your Perfect Escape'),
-            Field::group('button', 'Button', [
-                Field::string('label', 'Label'),
-                Field::link('link', 'Link'),
-            ]),
-            Field::list('cards', 'Cards', [
-                Field::image('image', 'Image', default: '/placeholder-image.png'),
-                Field::string('badge', 'Badge', default: 'Popular'),
-                Field::string('title', 'Title', default: 'Paris Getaway'),
-                Field::text('description', 'Description', default: 'Explore the city of lights...'),
-                Field::string('priceLabel', 'Price Label', default: 'Per Person'),
-                Field::number('price', 'Price', default: 299),
-                Field::number('originalPrice', 'Original Price', default: 499),
-                Field::string('buttonLabel', 'Button Label', default: 'Book Now'),
-                Field::list('features', 'Features', [
-                    Field::icon('icon', 'Icon', default: 'fa-solid fa-check'),
-                    Field::string('text', 'Text', default: 'Included'),
-                    Field::richText('tooltip', 'Tooltip'),
-                ]),
-            ], count: 3),
+            Field::string('headline', 'Headline', default: 'Discover New Places'),
+            Field::text('description', 'Description', default: 'Book your next adventure.'),
+            Field::image('backgroundImage', 'Background Image'),
+            Field::link('searchUrl', 'Search URL', default: '/tours'),
         ];
     }
 }
 ```
 
-*Note: The machine name `travelDeals` automatically maps to the Blade view template `resources/views/blocks/travel-deals.blade.php`.*
+#### 2. Create the Co-Located Blade Template
 
-#### 2. Create the Blade View Template
-
-Create `resources/views/blocks/travel-deals.blade.php`:
+In the exact same folder, create `plugins/custom-blocks/Blocks/HeroBanner/view.blade.php`:
 
 ```blade
-@php $d = $data; @endphp
-@php
-    $bg = is_array($d['background'] ?? null) ? $d['background'] : [];
-    if (empty($bg) && isset($d['background']) && is_string($d['background'])) {
-        try { $bg = json_decode($d['background'], true) ?? []; } catch (\Exception) { $bg = []; }
-    }
-    $bgImg = $bg['image'] ?? '';
-    $bgColor = $bg['color'] ?? '';
-    $bgOpacity = $bg['opacity'] ?? 100;
-@endphp
-<section data-block="travelDeals" class="py-20 relative overflow-hidden">
-    @if($bgColor)
-        <div class="absolute inset-0" style="background-color: {{ $bgColor }}"></div>
+<section data-block="heroBanner" class="py-20 text-center max-w-5xl mx-auto">
+    <h1 data-edit="headline" class="text-4xl font-bold">{{ $data['headline'] ?? '' }}</h1>
+    <p data-edit="description" class="mt-4 text-gray-600">{{ $data['description'] ?? '' }}</p>
+    @if(!empty($data['backgroundImage']))
+        <img data-edit="backgroundImage" src="{{ $data['backgroundImage'] }}" class="mt-6 rounded-xl mx-auto" />
     @endif
-    @if($bgImg)
-        <div class="absolute inset-0 bg-cover bg-center bg-no-repeat" style="background-image: url({{ $bgImg }}); opacity: {{ $bgOpacity / 100 }}"></div>
-    @endif
-    <div class="relative">
-        <div class="max-w-6xl mx-auto px-6">
-            @if($d['headline'] ?? false)
-                <h2 data-edit="headline" class="text-3xl font-bold">{{ $d['headline'] }}</h2>
-            @endif
-            @if($d['description'] ?? false)
-                <p data-edit="description" class="mt-2 text-gray-600">{{ $d['description'] }}</p>
-            @endif
-            <div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 mt-8">
-                @foreach(($d['cards'] ?? []) as $i => $card)
-                    @if($card)
-                        <div data-list="cards" class="bg-white p-4 rounded-xl shadow">
-                            <div data-edit="image" class="relative h-52 overflow-hidden rounded-xl">
-                                @if($card['image'] ?? false)
-                                    <img src="{{ $card['image'] }}" alt="" class="w-full h-full object-cover" />
-                                @endif
-                            </div>
-                            <h3 data-edit="title" class="font-semibold text-lg mt-3">{{ $card['title'] ?? '' }}</h3>
-                        </div>
-                    @endif
-                @endforeach
-            </div>
-        </div>
-    </div>
 </section>
 ```
+
+*(See [docs/MODULAR_ARCHITECTURE.md](docs/MODULAR_ARCHITECTURE.md) for full plugin documentation and custom admin page tutorials).*
 
 ---
 

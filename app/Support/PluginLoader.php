@@ -3,6 +3,7 @@
 namespace App\Support;
 
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Str;
 
 /**
  * PluginLoader
@@ -71,6 +72,37 @@ class PluginLoader
             return;
         }
 
+        // Register PSR-4 class autoloader for plugin classes (e.g. Plugins\Slug\...)
+        $srcPath = $pluginPath.DIRECTORY_SEPARATOR.'src';
+        $blocksPath = $pluginPath.DIRECTORY_SEPARATOR.'Blocks';
+
+        $studlySlug = Str::studly($slug);
+        $baseNamespace = $manifest['namespace'] ?? "Plugins\\{$studlySlug}\\";
+        $baseNamespace = rtrim($baseNamespace, '\\').'\\';
+
+        if (is_dir($srcPath) || is_dir($blocksPath)) {
+            spl_autoload_register(function (string $class) use ($baseNamespace, $srcPath, $blocksPath): void {
+                if (! str_starts_with($class, $baseNamespace)) {
+                    return;
+                }
+
+                $relativeClass = substr($class, strlen($baseNamespace));
+                $relativePath = str_replace('\\', DIRECTORY_SEPARATOR, $relativeClass).'.php';
+
+                if (is_dir($srcPath) && file_exists($srcPath.DIRECTORY_SEPARATOR.$relativePath)) {
+                    require_once $srcPath.DIRECTORY_SEPARATOR.$relativePath;
+
+                    return;
+                }
+
+                if (is_dir($blocksPath) && file_exists($blocksPath.DIRECTORY_SEPARATOR.$relativePath)) {
+                    require_once $blocksPath.DIRECTORY_SEPARATOR.$relativePath;
+
+                    return;
+                }
+            });
+        }
+
         // Register blade views namespace: "slug::view-name"
         $viewsPath = $pluginPath.DIRECTORY_SEPARATOR.'views';
         if (is_dir($viewsPath)) {
@@ -93,6 +125,12 @@ class PluginLoader
         $adminRoutesFile = $pluginPath.DIRECTORY_SEPARATOR.'routes'.DIRECTORY_SEPARATOR.'admin.php';
         if (file_exists($adminRoutesFile)) {
             Route::middleware(['web', 'auth:admin'])->prefix('admin')->name('admin.')->group($adminRoutesFile);
+        }
+
+        // Auto-load plugin database migrations (e.g. plugins/comments/database/migrations)
+        $migrationsPath = $pluginPath.DIRECTORY_SEPARATOR.'database'.DIRECTORY_SEPARATOR.'migrations';
+        if (is_dir($migrationsPath)) {
+            app('migrator')->path($migrationsPath);
         }
 
         // Track loaded plugins
@@ -126,5 +164,42 @@ class PluginLoader
     public function has(string $slug): bool
     {
         return isset($this->loaded[$slug]);
+    }
+
+    /**
+     * Return all dynamic admin menu items provided by loaded plugins.
+     *
+     * @return array<int, array<string, mixed>>
+     */
+    public function getAdminMenuItems(): array
+    {
+        $items = [];
+
+        foreach ($this->loaded as $plugin) {
+            $menu = $plugin['admin_menu'] ?? [];
+            if (! is_array($menu)) {
+                continue;
+            }
+
+            foreach ($menu as $item) {
+                if (! is_array($item) || empty($item['label'])) {
+                    continue;
+                }
+
+                $items[] = [
+                    'label' => $item['label'],
+                    'route' => $item['route'] ?? null,
+                    'url' => $item['url'] ?? null,
+                    'icon' => $item['icon'] ?? null,
+                    'badge' => $item['badge'] ?? null,
+                    'group' => $item['group'] ?? 'Extensions',
+                    'order' => $item['order'] ?? 10,
+                ];
+            }
+        }
+
+        usort($items, fn ($a, $b) => ($a['order'] ?? 10) <=> ($b['order'] ?? 10));
+
+        return $items;
     }
 }

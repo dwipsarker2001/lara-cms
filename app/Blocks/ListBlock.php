@@ -2,8 +2,9 @@
 
 namespace App\Blocks;
 
-use App\Blocks\Support\CardSlot;
 use App\Models\Collection;
+use App\Models\CollectionEntry;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Str;
 
@@ -85,24 +86,43 @@ abstract class ListBlock extends Block
     }
 
     /**
-     * Resolves a card object from a CollectionEntry using the admin-configured slot mappings.
-     *
-     * For each slot defined in cardSchema(), it looks up:
-     *   1. The mapped collection input key from $mappings (e.g. $data['map_title'] = 'custom_name').
-     *   2. Falls back to `$entry->title` for the first 'text' slot if value is empty.
-     *
-     * Returns a plain object with a property for each card slot key.
+     * Resolves a card object from a CollectionEntry using the admin-configured slot mappings
+     * while providing full dynamic access to all collection entry data, meta, and model instance.
      *
      * @param  object  $entry  CollectionEntry model instance.
      * @param  array  $mappings  The block's saved $data array.
      */
     public function resolveCard(object $entry, array $mappings): object
     {
-        $eData = $entry->data ?? [];
-        $sections = $entry->sections ?? [];
+        $eData = is_array($entry->data ?? null) ? $entry->data : [];
+        $meta = is_array($entry->meta ?? null) ? $entry->meta : [];
+        $sections = is_array($entry->sections ?? null) ? $entry->sections : [];
+        $link = method_exists($entry, 'route') ? $entry->route() : null;
 
-        $card = ['_entry' => $entry];
+        // 1. Initialize card with full collection data, metadata, and Eloquent model
+        $card = [
+            'id' => $entry->id ?? null,
+            'title' => $entry->title ?? ($eData['title'] ?? null),
+            'slug' => $entry->slug ?? null,
+            'link' => $link,
+            'data' => $eData,
+            'raw_data' => $eData,
+            'meta' => $meta,
+            'sections' => $sections,
+            'entry' => $entry,
+            '_entry' => $entry,
+            '_link' => $link,
+            '_slug' => $entry->slug ?? null,
+        ];
 
+        // 2. Direct attribute fallback: allow $card->custom_field for any key in $entry->data
+        foreach ($eData as $key => $val) {
+            if (! isset($card[$key])) {
+                $card[$key] = $val;
+            }
+        }
+
+        // 3. Process explicit CardSlot mappings (highest layout priority)
         foreach ($this->cardSchema() as $slot) {
             $mappedKey = $mappings['map_'.$slot->key] ?? '';
 
@@ -114,7 +134,7 @@ abstract class ListBlock extends Block
                 } elseif ($mappedKey === 'updated_at') {
                     $value = $entry->updated_at ? (is_string($entry->updated_at) ? $entry->updated_at : $entry->updated_at->format('M d, Y')) : null;
                 } elseif ($mappedKey === 'created_by') {
-                    $value = $eData['created_by'] ?? $eData['author'] ?? ($entry->meta['author'] ?? ($entry->created_by ?? ($entry->author ?? (auth('admin')->user()->name ?? 'Admin'))));
+                    $value = $eData['created_by'] ?? $eData['author'] ?? ($meta['author'] ?? ($entry->created_by ?? ($entry->author ?? (auth('admin')->user()->name ?? 'Admin'))));
                 } elseif ($mappedKey === 'slug') {
                     $value = $entry->slug ?? null;
                 } else {
@@ -124,7 +144,7 @@ abstract class ListBlock extends Block
                     // Then search section data
                     if ($value === null || $value === '') {
                         foreach ($sections as $sec) {
-                            $secData = $sec['data'] ?? [];
+                            $secData = is_array($sec['data'] ?? null) ? $sec['data'] : [];
                             if (! empty($secData[$mappedKey])) {
                                 $value = $secData[$mappedKey];
                                 break;
@@ -134,7 +154,7 @@ abstract class ListBlock extends Block
                 }
             }
 
-            // For unmapped text slots, fall back to title if this is the first text slot
+            // For unmapped text slots, fall back to title if this is the title slot
             if (($value === null || $value === '') && $slot->type === 'text' && $slot->key === 'title') {
                 $value = $eData['title'] ?? $entry->title ?? null;
             }
@@ -142,11 +162,23 @@ abstract class ListBlock extends Block
             $card[$slot->key] = $value;
         }
 
-        // Always attach entry metadata for Blade convenience
-        $card['_link'] = $entry->route();
-        $card['_slug'] = $entry->slug;
-
         return (object) $card;
+    }
+
+    /**
+     * Helper to dynamically query published entries for any collection slug.
+     *
+     * @return Builder
+     */
+    public static function queryEntries(?string $collectionSlug = null)
+    {
+        $query = CollectionEntry::where('published', true);
+
+        if (! empty($collectionSlug)) {
+            $query->whereHas('collection', fn ($q) => $q->where('slug', $collectionSlug));
+        }
+
+        return $query;
     }
 
     /**
@@ -242,5 +274,40 @@ abstract class ListBlock extends Block
         }
 
         return $options;
+    }
+}
+
+/**
+ * CardSlot
+ *
+ * Defines a single mappable slot on a list block's card (e.g. Title, Image, Price).
+ * Types: 'text' | 'image' | 'price' | 'url'
+ */
+class CardSlot
+{
+    public function __construct(
+        public readonly string $key,
+        public readonly string $label,
+        public readonly string $type = 'text',
+    ) {}
+
+    public static function text(string $key, string $label): self
+    {
+        return new self($key, $label, 'text');
+    }
+
+    public static function image(string $key, string $label): self
+    {
+        return new self($key, $label, 'image');
+    }
+
+    public static function price(string $key, string $label): self
+    {
+        return new self($key, $label, 'price');
+    }
+
+    public static function url(string $key, string $label): self
+    {
+        return new self($key, $label, 'url');
     }
 }

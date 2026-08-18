@@ -5,6 +5,7 @@ use App\Models\Collection;
 use App\Models\Form;
 use App\Models\FormEntry;
 use Illuminate\Support\ViewErrorBag;
+use Plugins\CustomBlocks\Blocks\CheckoutForm\CheckoutForm;
 
 it('submits a public form entry and saves to database', function () {
     $form = Form::factory()->create([
@@ -76,7 +77,7 @@ it('renders mapped form fields from selected form in checkout-form and submits c
         ],
     ]);
 
-    $view = $this->view('blocks.custom.checkout-form', [
+    $view = $this->view((new CheckoutForm)->view(), [
         'data' => [
             'formId' => $form->id,
             'formTitle' => 'Traveler Details',
@@ -113,7 +114,7 @@ it('renders mapped form fields from selected form in checkout-form and submits c
 });
 
 it('shows error alert and disables booking confirm button when no package is selected in checkout-form', function () {
-    $view = $this->view('blocks.custom.checkout-form', [
+    $view = $this->view((new CheckoutForm)->view(), [
         'data' => [
             'formTitle' => 'Traveler Details',
             'buttonText' => 'Confirm Booking',
