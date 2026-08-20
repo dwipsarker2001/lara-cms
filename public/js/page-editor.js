@@ -9,9 +9,11 @@ function pageEditor() {
             siteSettings: window.editorSettingsCustomValues || {},
             collectionFields: window.editorCollectionFields || [],
             groupedCollectionFields: window.editorGroupedCollectionFields || [],
+            allCollections: window.editorAllCollections || [],
             availableForms: window.editorForms || [],
             selectedCollectionGroup: (window.editorGroupedCollectionFields && window.editorGroupedCollectionFields.length > 0) ? window.editorGroupedCollectionFields[0].collection_id : null,
             linkModes: {},
+            colModes: {},
             active: null,
             crumbs: [],
             homeGlobals: {},
@@ -75,6 +77,7 @@ function pageEditor() {
                 this.blockList = blockList;
                 this.slug = slug;
                 this.pages = pages;
+                this.allCollections = window.editorAllCollections || [];
                 this.homeGlobals = homeGlobals;
                 this.entryData = window.editorEntryData || {};
                 this.$nextTick(() => this.initSectionSortable());
@@ -452,18 +455,96 @@ function pageEditor() {
                 return String(val);
             },
 
+            getSourceKeyLabel(name) {
+                const sourceKey = this.getSourceKey(name);
+                if (!sourceKey) return '';
+                if (sourceKey.startsWith('entry:')) {
+                    const parts = sourceKey.split(':');
+                    const key = parts[2] || 'field';
+                    return key.replace(/[_-]+/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
+                }
+                return sourceKey;
+            },
+
+            getSourceKeyTitle(name) {
+                const sourceKey = this.getSourceKey(name);
+                if (!sourceKey) return '';
+                if (sourceKey.startsWith('entry:')) {
+                    const parts = sourceKey.split(':');
+                    const entryId = parts[1];
+                    const key = parts[2];
+                    const entry = (this.pages || []).find(p => String(p.id) === String(entryId));
+                    return 'Linked to ' + (entry ? entry.title : 'Item') + ' > ' + key;
+                }
+                return 'Linked to field: ' + sourceKey;
+            },
+
+            getEntrySourceFields(entryId) {
+                if (!entryId) return [];
+                const entry = (this.pages || []).find(p => String(p.id) === String(entryId));
+                if (!entry) return [];
+
+                const fields = [
+                    { key: 'title', label: 'Title' },
+                    { key: 'slug', label: 'Slug' },
+                    { key: 'link', label: 'Link / URL' },
+                    { key: 'created_at', label: 'Created At' },
+                    { key: 'author', label: 'Author' },
+                ];
+
+                // 1. Add all fields defined on this collection schema
+                const col = (this.allCollections || []).find(c => c.slug === entry.collection_slug || String(c.id) === String(entry.collection_id));
+                if (col && Array.isArray(col.fields)) {
+                    for (const f of col.fields) {
+                        const key = f.template || f.key || f.name || '';
+                        if (key && !fields.some(existing => existing.key === key)) {
+                            const label = f.title || f.label || key.replace(/[_-]+/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
+                            fields.push({ key: key, label: label });
+                        }
+                    }
+                }
+
+                // 2. Add any additional keys present in entry.data
+                const ed = entry.data || {};
+                for (const [k, v] of Object.entries(ed)) {
+                    if (k && !k.startsWith('_') && !fields.some(existing => existing.key === k)) {
+                        const cleanLabel = k.replace(/[_-]+/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
+                        fields.push({ key: k, label: cleanLabel });
+                    }
+                }
+                return fields;
+            },
+
             getField(name) {
                 const sourceKey = this.getSourceKey(name);
                 let val;
                 if (sourceKey) {
-                    if (this.entryData && this.entryData[sourceKey] !== undefined && this.entryData[sourceKey] !== null && this.entryData[sourceKey] !== '') {
-                        val = this.entryData[sourceKey];
-                    } else if (this.siteSettings && this.siteSettings[sourceKey] !== undefined && this.siteSettings[sourceKey] !== null && this.siteSettings[sourceKey] !== '') {
-                        val = this.siteSettings[sourceKey];
-                    } else if (this.homeGlobals && this.homeGlobals[sourceKey] !== undefined && this.homeGlobals[sourceKey] !== null && this.homeGlobals[sourceKey] !== '') {
-                        val = this.homeGlobals[sourceKey];
+                    if (sourceKey.startsWith('entry:')) {
+                        const parts = sourceKey.split(':');
+                        const entryId = parts[1];
+                        const key = parts[2];
+                        const entry = (this.pages || []).find(p => String(p.id) === String(entryId));
+                        if (entry) {
+                            if (key === 'title') {
+                                val = entry.title;
+                            } else if (key === 'link' || key === 'route') {
+                                val = entry.route;
+                            } else if (key === 'slug') {
+                                val = entry.slug;
+                            } else if (entry.data && entry.data[key] !== undefined && entry.data[key] !== null) {
+                                val = entry.data[key];
+                            }
+                        }
                     } else {
-                        val = '';
+                        if (this.entryData && this.entryData[sourceKey] !== undefined && this.entryData[sourceKey] !== null && this.entryData[sourceKey] !== '') {
+                            val = this.entryData[sourceKey];
+                        } else if (this.siteSettings && this.siteSettings[sourceKey] !== undefined && this.siteSettings[sourceKey] !== null && this.siteSettings[sourceKey] !== '') {
+                            val = this.siteSettings[sourceKey];
+                        } else if (this.homeGlobals && this.homeGlobals[sourceKey] !== undefined && this.homeGlobals[sourceKey] !== null && this.homeGlobals[sourceKey] !== '') {
+                            val = this.homeGlobals[sourceKey];
+                        } else {
+                            val = '';
+                        }
                     }
                 } else {
                     val = this.currentData()[name] ?? '';
@@ -541,6 +622,13 @@ function pageEditor() {
             },
 
             getLinkCollections() {
+                if (this.allCollections && this.allCollections.length > 0) {
+                    return this.allCollections.filter(c => {
+                        const slug = (c.slug || '').toLowerCase();
+                        const name = (c.name || '').toLowerCase();
+                        return slug !== 'layout' && slug !== 'layouts' && name !== 'layout';
+                    });
+                }
                 const map = new Map();
                 (this.pages || []).forEach(p => {
                     const slug = p.collection_slug || 'pages';
@@ -567,6 +655,58 @@ function pageEditor() {
 
             linkFieldValue(name, linkValue) {
                 this.setField(name, linkValue);
+            },
+
+            getCollectionFieldMode(name, field) {
+                if (field && field.collection) return field.collection;
+                if (!(name in this.colModes)) {
+                    const val = this.getField(name);
+                    if (val) {
+                        const matched = (this.pages || []).find(p => String(p.id) === String(val));
+                        if (matched && matched.collection_slug) {
+                            this.colModes[name] = matched.collection_slug;
+                        }
+                    }
+                    if (!this.colModes[name]) {
+                        const firstCol = this.getLinkCollections()[0]?.slug;
+                        this.colModes[name] = firstCol || '';
+                    }
+                }
+                return this.colModes[name];
+            },
+
+            setCollectionFieldMode(name, mode) {
+                this.colModes[name] = mode;
+            },
+
+            getCollectionModeLabel(slug) {
+                if (!slug) return 'Collection';
+                const col = this.getLinkCollections().find(c => c.slug === slug);
+                return col ? col.name : (slug.charAt(0).toUpperCase() + slug.slice(1));
+            },
+
+            getCollectionEntryTitle(field) {
+                const val = this.getField(field.name);
+                if (!val) return '';
+                const matched = (this.pages || []).find(p => String(p.id) === String(val));
+                return matched ? matched.title : String(val);
+            },
+
+            selectCollectionEntry(field, item) {
+                if (!item) {
+                    this.clearCollectionEntry(field);
+                    return;
+                }
+
+                this.setField(field.name, item.id);
+                this.dirty = true;
+                this.schedulePreview();
+            },
+
+            clearCollectionEntry(field) {
+                this.setField(field.name, '');
+                this.dirty = true;
+                this.schedulePreview();
             },
 
             syncPreviewField(name, value) {

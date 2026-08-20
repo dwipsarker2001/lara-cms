@@ -167,6 +167,7 @@ class CollectionEntryController extends Controller
                     'route' => $p->route(),
                     'collection_name' => $p->collection?->name ?? 'Page',
                     'collection_slug' => $p->collection?->slug ?? '',
+                    'data' => is_array($p->data) ? $p->data : [],
                 ]);
         }
 
@@ -357,6 +358,21 @@ class CollectionEntryController extends Controller
             })->all();
         }
 
+        $allCollections = Collection::whereRaw('LOWER(name) != ?', ['layout'])
+            ->whereRaw('LOWER(slug) != ?', ['layout'])
+            ->whereRaw('LOWER(slug) != ?', ['layouts'])
+            ->orderBy('position')
+            ->orderBy('name')
+            ->get()
+            ->map(fn ($c) => [
+                'id' => $c->id,
+                'name' => $c->name,
+                'slug' => $c->slug,
+                'fields' => is_array($c->fields) ? $c->fields : [],
+            ])
+            ->values()
+            ->all();
+
         return view('admin.collections.entries.editor', [
             'collection' => $collection,
             'entry' => $entry,
@@ -366,6 +382,7 @@ class CollectionEntryController extends Controller
             'homeGlobals' => $homeGlobals,
             'blockList' => $blockList,
             'pages' => $pages,
+            'allCollections' => $allCollections,
             'collectionFields' => $collectionFields,
             'groupedCollectionFields' => $groupedCollectionFields,
             'settingsCustomValues' => $settingsCustomValues,

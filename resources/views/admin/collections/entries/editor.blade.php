@@ -12,6 +12,7 @@
     window.editorBlockList              = @json($blockList);
     window.editorSlug                   = '{{ Str::slug($entry->title) }}';
     window.editorPages                  = @json($pages);
+    window.editorAllCollections         = @json($allCollections ?? []);
     window.editorHomeGlobals            = @json($homeGlobals);
     window.editorEntryData              = @json($entryData ?? (object)[]);
     window.editorCollectionFields       = @json($collectionFields ?? []);

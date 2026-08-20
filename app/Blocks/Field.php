@@ -219,6 +219,33 @@ class Field
     }
 
     /**
+     * Input field that lets the user select an entry from a collection (e.g. Packages, Tours, Destinations).
+     *
+     * @param  string|null  $collection  Collection slug to restrict to (e.g. 'packages'). Null allows picking from any collection.
+     */
+    public static function collection(string $name, string $label, ?string $collection = null, string $default = '', string $source = ''): array
+    {
+        $field = compact('name', 'label') + [
+            'type' => 'collection',
+            'collection' => $collection,
+            'defaultValue' => $default,
+        ];
+        if ($source !== '') {
+            $field['source'] = $source;
+        }
+
+        return $field;
+    }
+
+    /**
+     * Alias for Field::collection()
+     */
+    public static function collectionEntry(string $name, string $label, ?string $collection = null, string $default = '', string $source = ''): array
+    {
+        return self::collection($name, $label, $collection, $default, $source);
+    }
+
+    /**
      * A single nested group of fields.
      *
      * @param  array<int, array>  $fields

@@ -2,7 +2,10 @@
 
 namespace App\Blocks;
 
+use App\Models\CollectionEntry;
 use App\Models\Setting;
+use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Str;
 
 /**
@@ -155,10 +158,26 @@ abstract class Block
             return '';
         }
 
-        if ($page) {
-            $sectionSources = is_array($data['_sources'] ?? null) ? $data['_sources'] : [];
-            $data = self::mergeSourceData($data, $this->resolvedFields(), $page, $sectionSources);
+        $resolvedFields = $this->resolvedFields();
+        $sectionSources = is_array($data['_sources'] ?? null) ? $data['_sources'] : [];
+
+        // Preload any collection entries referenced by entry:id:key sources
+        $referencedEntryIds = [];
+        foreach ($sectionSources as $src) {
+            if (is_string($src) && str_starts_with($src, 'entry:')) {
+                $parts = explode(':', $src);
+                if (! empty($parts[1]) && is_numeric($parts[1])) {
+                    $referencedEntryIds[] = (int) $parts[1];
+                }
+            }
         }
+
+        $sourceEntries = empty($referencedEntryIds)
+            ? collect()
+            : CollectionEntry::with('collection')->whereIn('id', array_unique($referencedEntryIds))->get()->keyBy('id');
+
+        $data = self::mergeSourceData($data, $resolvedFields, $page, $sectionSources, '', $sourceEntries);
+        $data = self::hydrateCollectionReferences($data, $resolvedFields);
 
         return view($this->view(), compact('data', '_key', 'preview', 'page'))->render();
     }
@@ -172,7 +191,7 @@ abstract class Block
      * @param  array<string, string>  $sectionSources
      * @return array<string, mixed>
      */
-    public static function mergeSourceData(array $data, array $fields, object $page, array $sectionSources = [], string $prefix = ''): array
+    public static function mergeSourceData(array $data, array $fields, ?object $page = null, array $sectionSources = [], string $prefix = '', $sourceEntries = null): array
     {
         $entryData = is_array($page->data ?? null) ? $page->data : [];
 
@@ -190,13 +209,13 @@ abstract class Block
                         foreach ($data[$name] as $index => &$item) {
                             if (is_array($item)) {
                                 $itemPath = $fullPath.'.'.$index;
-                                $item = self::mergeSourceData($item, $field['fields'] ?? [], $page, $sectionSources, $itemPath);
+                                $item = self::mergeSourceData($item, $field['fields'] ?? [], $page, $sectionSources, $itemPath, $sourceEntries);
                             }
                         }
                     }
                 } else {
                     if (isset($data[$name]) && is_array($data[$name])) {
-                        $data[$name] = self::mergeSourceData($data[$name], $field['fields'] ?? [], $page, $sectionSources, $fullPath);
+                        $data[$name] = self::mergeSourceData($data[$name], $field['fields'] ?? [], $page, $sectionSources, $fullPath, $sourceEntries);
                     }
                 }
             } else {
@@ -217,22 +236,42 @@ abstract class Block
                 }
 
                 if ($source !== '') {
-                    $entryValue = $entryData[$source] ?? ($page->$source ?? null);
-                    if ($entryValue === null || $entryValue === '') {
-                        if ($source === 'created_by') {
-                            $eData = is_array($entryData) ? $entryData : [];
-                            $entryValue = $eData['created_by'] ?? $eData['author'] ?? (is_object($page) ? ($page->data['created_by'] ?? $page->data['author'] ?? ($page->meta['author'] ?? ($page->created_by ?? ($page->author ?? null)))) : null);
-                            if (empty($entryValue)) {
-                                $entryValue = auth('admin')->user()->name ?? 'Admin';
+                    $entryValue = null;
+                    if (str_starts_with($source, 'entry:')) {
+                        $parts = explode(':', $source, 3);
+                        $entryId = isset($parts[1]) ? (int) $parts[1] : null;
+                        $key = $parts[2] ?? '';
+                        $referencedEntry = $sourceEntries ? $sourceEntries->get($entryId) : ($entryId ? CollectionEntry::with('collection')->find($entryId) : null);
+                        if ($referencedEntry) {
+                            if ($key === 'title') {
+                                $entryValue = $referencedEntry->title;
+                            } elseif ($key === 'link' || $key === 'route') {
+                                $entryValue = $referencedEntry->route();
+                            } elseif ($key === 'slug') {
+                                $entryValue = $referencedEntry->slug;
+                            } else {
+                                $rData = is_array($referencedEntry->data) ? $referencedEntry->data : [];
+                                $entryValue = $rData[$key] ?? null;
                             }
-                        } else {
-                            $settings = Setting::first();
-                            if ($settings) {
-                                $customValues = is_array($settings->custom_values) ? $settings->custom_values : [];
-                                if (array_key_exists($source, $customValues)) {
-                                    $entryValue = $customValues[$source];
-                                } elseif (isset($settings->$source)) {
-                                    $entryValue = $settings->$source;
+                        }
+                    } elseif ($page) {
+                        $entryValue = $entryData[$source] ?? ($page->$source ?? null);
+                        if ($entryValue === null || $entryValue === '') {
+                            if ($source === 'created_by') {
+                                $eData = is_array($entryData) ? $entryData : [];
+                                $entryValue = $eData['created_by'] ?? $eData['author'] ?? (is_object($page) ? ($page->data['created_by'] ?? $page->data['author'] ?? ($page->meta['author'] ?? ($page->created_by ?? ($page->author ?? null)))) : null);
+                                if (empty($entryValue)) {
+                                    $entryValue = auth('admin')->user()->name ?? 'Admin';
+                                }
+                            } else {
+                                $settings = Setting::first();
+                                if ($settings) {
+                                    $customValues = is_array($settings->custom_values) ? $settings->custom_values : [];
+                                    if (array_key_exists($source, $customValues)) {
+                                        $entryValue = $customValues[$source];
+                                    } elseif (isset($settings->$source)) {
+                                        $entryValue = $settings->$source;
+                                    }
                                 }
                             }
                         }
@@ -303,6 +342,179 @@ abstract class Block
 
         // 4. Fallback to image URL or asset
         return ['type' => 'image', 'url' => $value];
+    }
+
+    /**
+     * Dynamically hydrate linked collection entries (e.g. package, destination, or collection entry pickers in cards/lists).
+     *
+     * @param  array<string, mixed>  $data
+     * @param  array<int, array>  $fields
+     * @return array<string, mixed>
+     */
+    public static function hydrateCollectionReferences(array $data, array $fields): array
+    {
+        if (! Schema::hasTable('collection_entries')) {
+            return $data;
+        }
+
+        // 1. Gather all collection entry IDs across the data hierarchy
+        $entryIds = self::extractCollectionEntryIds($data, $fields);
+        if (empty($entryIds)) {
+            return $data;
+        }
+
+        // 2. Single batch load of all referenced entries
+        $entries = CollectionEntry::with('collection')->whereIn('id', $entryIds)->get()->keyBy('id');
+        if ($entries->isEmpty()) {
+            return $data;
+        }
+
+        // 3. Hydrate data tree with live entry attributes
+        return self::applyCollectionEntries($data, $fields, $entries);
+    }
+
+    /**
+     * Recursively collect all referenced collection entry IDs.
+     *
+     * @param  array<string, mixed>  $data
+     * @param  array<int, array>  $fields
+     * @return array<int, int>
+     */
+    protected static function extractCollectionEntryIds(array $data, array $fields): array
+    {
+        $ids = [];
+
+        foreach ($fields as $field) {
+            $name = $field['name'] ?? '';
+            $type = $field['type'] ?? '';
+
+            if ($type === 'object') {
+                $subFields = $field['fields'] ?? [];
+                if (! empty($field['list']) && isset($data[$name]) && is_array($data[$name])) {
+                    foreach ($data[$name] as $item) {
+                        if (is_array($item)) {
+                            $ids = array_merge($ids, self::extractCollectionEntryIds($item, $subFields));
+                            if (! empty($item['entry_id']) && is_numeric($item['entry_id'])) {
+                                $ids[] = (int) $item['entry_id'];
+                            }
+                            if (! empty($item['collection_entry_id']) && is_numeric($item['collection_entry_id'])) {
+                                $ids[] = (int) $item['collection_entry_id'];
+                            }
+                        }
+                    }
+                } elseif (isset($data[$name]) && is_array($data[$name])) {
+                    $ids = array_merge($ids, self::extractCollectionEntryIds($data[$name], $subFields));
+                }
+            } elseif ($type === 'collection' || $type === 'collectionEntry') {
+                $val = $data[$name] ?? null;
+                if (! empty($val)) {
+                    if (is_numeric($val)) {
+                        $ids[] = (int) $val;
+                    } elseif (is_array($val) && ! empty($val['id']) && is_numeric($val['id'])) {
+                        $ids[] = (int) $val['id'];
+                    } elseif (is_array($val) && ! empty($val['entry_id']) && is_numeric($val['entry_id'])) {
+                        $ids[] = (int) $val['entry_id'];
+                    }
+                }
+            }
+        }
+
+        return array_values(array_unique(array_filter($ids)));
+    }
+
+    /**
+     * Recursively apply live collection entry attributes and attach _entry to items.
+     *
+     * @param  array<string, mixed>  $data
+     * @param  array<int, array>  $fields
+     * @param  Collection<int, CollectionEntry>  $entries
+     * @return array<string, mixed>
+     */
+    protected static function applyCollectionEntries(array $data, array $fields, $entries): array
+    {
+        $collectionFieldNames = [];
+        foreach ($fields as $f) {
+            if (($f['type'] ?? '') === 'collection' || ($f['type'] ?? '') === 'collectionEntry') {
+                $collectionFieldNames[] = $f['name'] ?? '';
+            }
+        }
+
+        // Check if current data array itself references an entry
+        $activeEntryId = null;
+        foreach ($collectionFieldNames as $cfName) {
+            if (! empty($data[$cfName])) {
+                $rawVal = $data[$cfName];
+                $activeEntryId = is_numeric($rawVal) ? (int) $rawVal : ($rawVal['id'] ?? ($rawVal['entry_id'] ?? null));
+                if ($activeEntryId) {
+                    break;
+                }
+            }
+        }
+        if (! $activeEntryId && ! empty($data['entry_id']) && is_numeric($data['entry_id'])) {
+            $activeEntryId = (int) $data['entry_id'];
+        }
+
+        if ($activeEntryId && $entries->has($activeEntryId)) {
+            $entry = $entries->get($activeEntryId);
+            $entryData = is_array($entry->data) ? $entry->data : [];
+
+            $data['_entry'] = $entry;
+            $data['_entry_data'] = $entryData;
+            $data['_entry_title'] = $entry->title;
+            $data['_entry_link'] = $entry->route();
+            $data['_entry_slug'] = $entry->slug;
+
+            // Generic overlay: Live sync any scalar attributes present in $entryData
+            foreach ($entryData as $k => $v) {
+                if (! is_scalar($v)) {
+                    continue;
+                }
+                $strVal = (string) $v;
+                if (! isset($data[$k]) || $data[$k] === '' || $data[$k] === null || $data[$k] === '/placeholder-image.png') {
+                    $data[$k] = $strVal;
+                }
+                $camelKey = Str::camel($k);
+                if (! isset($data[$camelKey]) || $data[$camelKey] === '' || $data[$camelKey] === null) {
+                    $data[$camelKey] = $strVal;
+                }
+                $snakeKey = Str::snake($k);
+                if (! isset($data[$snakeKey]) || $data[$snakeKey] === '' || $data[$snakeKey] === null) {
+                    $data[$snakeKey] = $strVal;
+                }
+            }
+
+            $data['title'] = $entry->title;
+            if (empty($data['link']) && empty($data['buttonLink']) && empty($data['url'])) {
+                if (array_key_exists('buttonLink', $data)) {
+                    $data['buttonLink'] = $entry->route();
+                } elseif (array_key_exists('link', $data)) {
+                    $data['link'] = $entry->route();
+                } elseif (array_key_exists('url', $data)) {
+                    $data['url'] = $entry->route();
+                }
+            }
+        }
+
+        // Now process subfields / object / list structures
+        foreach ($fields as $field) {
+            $name = $field['name'] ?? '';
+            $type = $field['type'] ?? '';
+
+            if ($type === 'object') {
+                $subFields = $field['fields'] ?? [];
+                if (! empty($field['list']) && isset($data[$name]) && is_array($data[$name])) {
+                    foreach ($data[$name] as $index => &$item) {
+                        if (is_array($item)) {
+                            $item = self::applyCollectionEntries($item, $subFields, $entries);
+                        }
+                    }
+                } elseif (isset($data[$name]) && is_array($data[$name])) {
+                    $data[$name] = self::applyCollectionEntries($data[$name], $subFields, $entries);
+                }
+            }
+        }
+
+        return $data;
     }
 
     /** Serializable shape handed to the admin editor (JSON). */

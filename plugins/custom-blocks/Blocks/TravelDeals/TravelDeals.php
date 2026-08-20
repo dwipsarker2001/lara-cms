@@ -29,6 +29,7 @@ class TravelDeals extends Block
                 Field::string('price', 'Price', default: '৳299'),
                 Field::string('originalPrice', 'Original Price', default: '৳499'),
                 Field::string('buttonLabel', 'Button Label', default: 'Book Now'),
+                Field::link('buttonLink', 'Button Link'),
                 Field::list('features', 'Features', [
                     Field::icon('icon', 'Icon', default: 'fa-solid fa-check'),
                     Field::string('text', 'Text', default: 'Included'),

@@ -49,18 +49,32 @@
                                     @endif
                                 </div>
                                 <div class="flex flex-1 flex-col px-2 pt-4 pb-2">
+                                    @php
+                                        $cardLink = $card['buttonLink'] ?? ($card['link'] ?? ($card['_entry_link'] ?? ''));
+                                    @endphp
                                     @if($card['title'] ?? false)
-                                        <h3 data-edit="title" class="text-lg font-bold text-gray-900 transition-colors group-hover:text-primary">{{ $card['title'] }}</h3>
+                                        @if($cardLink)
+                                            <h3 data-edit="title" class="text-lg font-bold text-gray-900 transition-colors group-hover:text-primary"><a href="{{ $cardLink }}">{{ $card['title'] }}</a></h3>
+                                        @else
+                                            <h3 data-edit="title" class="text-lg font-bold text-gray-900 transition-colors group-hover:text-primary">{{ $card['title'] }}</h3>
+                                        @endif
                                     @endif
                                     @if($card['description'] ?? false)
                                         <p data-edit="description" class="mt-1.5 text-sm text-gray-500">{{ $card['description'] }}</p>
                                     @endif
                                     <div class="mt-3 flex items-end justify-between">
                                         @if($card['buttonLabel'] ?? false)
-                                            <span data-edit="buttonLabel" data-edit-button class="inline-flex items-center gap-1.5 rounded-lg bg-primary text-white px-4 py-2.5 text-sm font-semibold transition-colors hover:bg-primary/90">
-                                                {{ $card['buttonLabel'] }}
-                                                <svg class="w-3.5 h-3.5 -rotate-45" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 12h14M12 5l7 7-7 7"/></svg>
-                                            </span>
+                                            @if($cardLink)
+                                                <a href="{{ $cardLink }}" data-edit="buttonLabel" data-edit-button class="inline-flex items-center gap-1.5 rounded-lg bg-primary text-white px-4 py-2.5 text-sm font-semibold transition-colors hover:bg-primary/90">
+                                                    {{ $card['buttonLabel'] }}
+                                                    <svg class="w-3.5 h-3.5 -rotate-45" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 12h14M12 5l7 7-7 7"/></svg>
+                                                </a>
+                                            @else
+                                                <span data-edit="buttonLabel" data-edit-button class="inline-flex items-center gap-1.5 rounded-lg bg-primary text-white px-4 py-2.5 text-sm font-semibold transition-colors hover:bg-primary/90">
+                                                    {{ $card['buttonLabel'] }}
+                                                    <svg class="w-3.5 h-3.5 -rotate-45" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 12h14M12 5l7 7-7 7"/></svg>
+                                                </span>
+                                            @endif
                                         @endif
                                         <div class="text-right">
                                             @if($card['priceLabel'] ?? false)
