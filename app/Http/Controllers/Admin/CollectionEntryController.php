@@ -154,13 +154,19 @@ class CollectionEntryController extends Controller
 
         $pages = collect();
         if (Schema::hasTable('collection_entries')) {
-            $pages = CollectionEntry::whereHas('collection', fn ($q) => $q->where('slug', 'pages'))
-                ->orderBy('position')
-                ->get(['id', 'slug', 'data'])
+            $pages = CollectionEntry::with('collection')
+                ->whereHas('collection', function ($q) {
+                    $q->whereRaw('LOWER(name) != ?', ['layout'])
+                        ->whereRaw('LOWER(slug) != ?', ['layout'])
+                        ->whereRaw('LOWER(slug) != ?', ['layouts']);
+                })
+                ->get()
                 ->map(fn ($p) => [
                     'id' => $p->id,
                     'title' => $p->title,
                     'route' => $p->route(),
+                    'collection_name' => $p->collection?->name ?? 'Page',
+                    'collection_slug' => $p->collection?->slug ?? '',
                 ]);
         }
 

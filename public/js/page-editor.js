@@ -521,13 +521,48 @@ function pageEditor() {
             getLinkMode(name) {
                 if (!(name in this.linkModes)) {
                     const val = this.getField(name);
-                    this.linkModes[name] = (!val || this.pages?.some(p => p.route === val)) ? 'page' : 'custom';
+                    if (!val) {
+                        const firstCol = this.getLinkCollections()[0]?.slug;
+                        this.linkModes[name] = firstCol || 'custom';
+                    } else {
+                        const matched = this.pages?.find(p => p.route === val);
+                        if (matched) {
+                            this.linkModes[name] = matched.collection_slug || 'pages';
+                        } else {
+                            this.linkModes[name] = 'custom';
+                        }
+                    }
                 }
                 return this.linkModes[name];
             },
 
             setLinkMode(name, mode) {
                 this.linkModes[name] = mode;
+            },
+
+            getLinkCollections() {
+                const map = new Map();
+                (this.pages || []).forEach(p => {
+                    const slug = p.collection_slug || 'pages';
+                    const name = p.collection_name || 'Pages';
+                    if (name.toLowerCase() === 'layout' || slug.toLowerCase() === 'layout' || slug.toLowerCase() === 'layouts') {
+                        return;
+                    }
+                    if (!map.has(slug)) {
+                        map.set(slug, { slug, name });
+                    }
+                });
+                return Array.from(map.values());
+            },
+
+            getLinkEntries(collectionSlug) {
+                return (this.pages || []).filter(p => (p.collection_slug || 'pages') === collectionSlug);
+            },
+
+            getLinkModeLabel(mode) {
+                if (mode === 'custom') return 'Custom';
+                const col = this.getLinkCollections().find(c => c.slug === mode);
+                return col ? col.name : 'Custom';
             },
 
             linkFieldValue(name, linkValue) {
