@@ -68,3 +68,15 @@ it('returns correct site name via getSiteName method', function () {
 
     expect(Setting::getSiteName())->toBe('My Custom Site Title');
 });
+
+it('returns logo and contact number via helper methods', function () {
+    Setting::updateOrCreate(['id' => 1], [
+        'logo_light' => '/storage/logo-light.png',
+        'logo_dark' => '/storage/logo-dark.png',
+        'contact_number' => '+123456789',
+    ]);
+
+    expect(Setting::getLogo('light'))->toBe('/storage/logo-light.png')
+        ->and(Setting::getLogo('dark'))->toBe('/storage/logo-dark.png')
+        ->and(Setting::getContactNumber())->toBe('+123456789');
+});

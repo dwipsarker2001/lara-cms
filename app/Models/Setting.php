@@ -83,4 +83,19 @@ class Setting extends Model
 
         return config('app.name', $default);
     }
+
+    public static function getLogo(string $type = 'light'): ?string
+    {
+        $setting = static::first();
+        if (! $setting) {
+            return null;
+        }
+
+        return $type === 'dark' ? $setting->logo_dark : ($setting->logo_light ?? $setting->logo_dark);
+    }
+
+    public static function getContactNumber(): ?string
+    {
+        return static::first()?->contact_number;
+    }
 }
