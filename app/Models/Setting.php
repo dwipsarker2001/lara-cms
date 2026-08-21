@@ -91,7 +91,9 @@ class Setting extends Model
             return null;
         }
 
-        return $type === 'dark' ? $setting->logo_dark : ($setting->logo_light ?? $setting->logo_dark);
+        return $type === 'dark'
+            ? ($setting->logo_dark ?? $setting->logo_light)
+            : ($setting->logo_light ?? $setting->logo_dark);
     }
 
     public static function getContactNumber(): ?string

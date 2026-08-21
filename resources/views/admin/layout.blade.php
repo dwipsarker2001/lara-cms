@@ -524,7 +524,7 @@
                     @yield('content-full')
                 @else
                     {{-- PageShell --}}
-                    <div class="bg-content-bg min-h-[calc(100%-8px)] mx-2 mt-2 px-6 lg:px-20 pt-6 rounded-t-2xl border border-content-border border-b-0 relative" style="container-type: inline-size;">
+                    <div class="bg-content-bg min-h-[calc(100%-8px)] mx-2 mt-2 px-6 lg:px-20 pt-6 pb-16 lg:pb-20 rounded-t-2xl border border-content-border border-b-0 relative" style="container-type: inline-size;">
 
                         @yield('content')
                     </div>
