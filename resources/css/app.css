@@ -108,25 +108,30 @@ input[type="time"].custom-picker::-webkit-calendar-picker-indicator {
     box-shadow: 0 4px 12px rgba(0,0,0,0.15);
 }
 
+.scrollbar-thin {
+    scrollbar-width: thin;
+    scrollbar-color: #cbd5e1 transparent;
+}
 .scrollbar-thin::-webkit-scrollbar {
-    width: 4px;
+    width: 5px;
+    height: 5px;
 }
 .scrollbar-thin::-webkit-scrollbar-track {
     background: transparent;
 }
 .scrollbar-thin::-webkit-scrollbar-thumb {
-    background: #d1d5db;
-    border-radius: 4px;
+    background: #cbd5e1;
+    border-radius: 9999px;
 }
 .scrollbar-thin::-webkit-scrollbar-thumb:hover {
-    background: #9ca3af;
+    background: #94a3b8;
 }
 
 /* TipTap Editor Styles */
 .tt-toolbar {
     position: sticky;
     top: 0;
-    z-index: 30;
+    z-index: 10;
     background-color: #ffffff;
 }
 

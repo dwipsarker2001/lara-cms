@@ -62,7 +62,7 @@ it('renders the selected form icon in the admin sidebar', function () {
     \Pest\Laravel\get(route('admin.dashboard'))
         ->assertStatus(200)
         ->assertSee('fa-solid fa-poll');
-});
+})->skip('Forms sidebar navigation is temporarily commented out');
 
 it('displays a red circular badge for forms with entries and hides it when opening the form', function () {
     $form = Form::factory()->create(['title' => 'Inquiry Form']);
@@ -79,7 +79,7 @@ it('displays a red circular badge for forms with entries and hides it when openi
     \Pest\Laravel\get(route('admin.forms.entries', $form))
         ->assertStatus(200)
         ->assertDontSee('<span class="ml-auto flex size-5 shrink-0 items-center justify-center rounded-full bg-red-500 text-[11px] font-semibold leading-none text-white">1</span>', false);
-});
+})->skip('Forms sidebar navigation is temporarily commented out');
 
 it('renders Form Builder, Edit, and Submissions links in form list actions menu', function () {
     $form = Form::factory()->create(['title' => 'Contact Inquiries']);
@@ -93,4 +93,14 @@ it('renders Form Builder, Edit, and Submissions links in form list actions menu'
         ->assertSee(route('admin.forms.editor', $form))
         ->assertSee(route('admin.forms.edit', $form))
         ->assertSee(route('admin.forms.entries', $form));
+});
+
+it('does not render the forms menu in the admin sidebar when commented out', function () {
+    $form = Form::factory()->create([
+        'title' => 'Survey Form 123',
+    ]);
+
+    \Pest\Laravel\get(route('admin.dashboard'))
+        ->assertStatus(200)
+        ->assertDontSee(route('admin.forms.entries', $form));
 });

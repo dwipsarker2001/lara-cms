@@ -186,7 +186,7 @@
                                 {{-- Dynamic Custom Inputs in General Settings --}}
                                 <div x-show="fields.length > 0" id="sortable-custom-fields">
                                     <template x-for="(field, index) in fields" :key="field._key || field.template || index">
-                                        <div class="grid md:grid-cols-2 items-start px-[18px] py-4 gap-y-3 md:gap-y-0 md:gap-x-5 group/row bg-white hover:bg-gray-50/60 transition-colors cursor-grab active:cursor-grabbing select-none"
+                                        <div data-custom-field-row class="grid md:grid-cols-2 items-start px-[18px] py-4 gap-y-3 md:gap-y-0 md:gap-x-5 group/row bg-white hover:bg-gray-50/60 transition-colors cursor-grab active:cursor-grabbing select-none"
                                             :class="index < fields.length - 1 ? 'border-b border-content-border' : ''">
                                             <div class="flex flex-col gap-1.5 min-w-0">
                                                 <label class="text-sm font-medium text-text-heading cursor-grab" x-text="field.title"></label>
@@ -940,6 +940,7 @@
                     delete this.customValues[f.template];
                 }
                 this.fields.splice(index, 1);
+                this.$nextTick(() => this.initSortable());
             },
 
             initSortable() {
@@ -950,17 +951,69 @@
                     delete el._sortable;
                 }
                 el._sortable = new Sortable(el, {
+                    draggable: '[data-custom-field-row]',
                     animation: 200,
                     easing: 'cubic-bezier(0.25, 0.1, 0.25, 1)',
-                    filter: 'input, textarea, select, button, a, [role="switch"]',
+                    filter: 'input, textarea, select, button, a, [role="switch"], .no-drag',
                     preventOnFilter: false,
+                    ghostClass: 'sortable-ghost',
+                    chosenClass: 'sortable-chosen',
+                    dragClass: 'sortable-drag',
+                    onStart: (evt) => {
+                        evt.item._prevSibling = evt.item.previousElementSibling;
+                    },
                     onEnd: (evt) => {
-                        if (evt.oldIndex === undefined || evt.newIndex === undefined || evt.oldIndex === evt.newIndex) return;
-                        const item = this.fields.splice(evt.oldIndex, 1)[0];
-                        if (item) {
-                            this.fields.splice(evt.newIndex, 0, item);
-                            this.fields = [...this.fields];
+                        const cleanup = () => {
+                            delete evt.item._prevSibling;
+                            setTimeout(() => this.initSortable(), 0);
+                        };
+
+                        if (evt.oldIndex === evt.newIndex || evt.oldIndex === undefined || evt.newIndex === undefined) {
+                            cleanup();
+                            return;
                         }
+
+                        // Revert Sortable DOM changes so Alpine can handle the DOM update cleanly
+                        const itemEl = evt.item;
+                        if (itemEl._prevSibling && itemEl._prevSibling.parentElement === evt.from) {
+                            itemEl._prevSibling.after(itemEl);
+                        } else if (evt.from) {
+                            evt.from.prepend(itemEl);
+                        }
+
+                        let oldIdx = evt.oldDraggableIndex;
+                        let newIdx = evt.newDraggableIndex;
+                        if (oldIdx === undefined || newIdx === undefined) {
+                            const offset = (evt.from.children[0] && evt.from.children[0].tagName === 'TEMPLATE') ? 1 : 0;
+                            oldIdx = evt.oldIndex - offset;
+                            newIdx = evt.newIndex - offset;
+                        }
+
+                        if (oldIdx >= 0 && oldIdx < this.fields.length && newIdx >= 0 && newIdx < this.fields.length) {
+                            const item = this.fields.splice(oldIdx, 1)[0];
+                            if (item !== undefined) {
+                                this.fields.splice(newIdx, 0, item);
+                                this.fields = [...this.fields];
+
+                                // Auto-save reordered fields immediately
+                                fetch('{{ route("admin.settings.reorder_custom_fields") }}', {
+                                    method: 'PATCH',
+                                    headers: {
+                                        'Content-Type': 'application/json',
+                                        'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                                        'Accept': 'application/json',
+                                        'X-Requested-With': 'XMLHttpRequest'
+                                    },
+                                    body: JSON.stringify({
+                                        custom_fields: this.fields.map(f => {
+                                            const { _key, ...rest } = f;
+                                            return rest;
+                                        })
+                                    })
+                                });
+                            }
+                        }
+                        cleanup();
                     }
                 });
             },

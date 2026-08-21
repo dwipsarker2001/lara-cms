@@ -3,7 +3,7 @@
     Requires `showSourcePicker` (boolean) in the parent x-data scope,
     and `field` (object with .name) in the Alpine loop context.
 --}}
-<div class="relative">
+<div class="relative" :class="{ 'z-50': showSourcePicker }">
     <button type="button" @click="showSourcePicker = !showSourcePicker"
         class="flex items-center gap-1 px-1.5 py-0.5 text-xs font-medium rounded transition-colors"
         :class="isSourceField(field.name) ? 'bg-primary/10 text-primary border border-primary/20' : 'text-gray-400 hover:text-gray-600 hover:bg-gray-100'"

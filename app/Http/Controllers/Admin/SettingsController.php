@@ -97,4 +97,21 @@ class SettingsController extends Controller
 
         return back()->with('success', 'Settings updated successfully.');
     }
+
+    public function reorderCustomFields(Request $request)
+    {
+        $this->ensureSchemaColumns();
+
+        $customFields = $request->input('custom_fields', []);
+        if (is_string($customFields)) {
+            $customFields = json_decode($customFields, true) ?? [];
+        }
+
+        $settings = Setting::firstOrCreate(['id' => 1]);
+        $settings->update([
+            'custom_fields' => is_array($customFields) ? $customFields : [],
+        ]);
+
+        return response()->noContent();
+    }
 }

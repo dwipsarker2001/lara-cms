@@ -31,6 +31,7 @@ Route::middleware(['web', 'auth:admin'])->prefix('admin')->name('admin.')->group
 
     Route::get('settings', [SettingsController::class, 'index'])->name('settings');
     Route::put('settings', [SettingsController::class, 'update'])->name('settings.update');
+    Route::patch('settings/reorder-custom-fields', [SettingsController::class, 'reorderCustomFields'])->name('settings.reorder_custom_fields');
 
     Route::get('updates/check', [UpdateController::class, 'check'])->name('updates.check');
     Route::post('updates/run', [UpdateController::class, 'run'])->name('updates.run');

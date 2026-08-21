@@ -91,7 +91,7 @@
             return list;
         }
     }"
-    class="absolute right-0 z-30 mt-1 min-w-[280px] w-72 rounded-xl border border-gray-200 bg-white py-1 shadow-xl ring-1 ring-black/5 text-xs text-left"
+    class="absolute right-0 z-50 mt-1 min-w-[280px] w-72 rounded-xl border border-gray-200 bg-white py-1 shadow-xl ring-1 ring-black/5 text-xs text-left"
     x-transition
 >
     {{-- Header: Title + Unlink button --}}
@@ -127,7 +127,7 @@
             </button>
 
             <div x-show="modePickerOpen" @click.outside="modePickerOpen = false"
-                class="absolute inset-x-0 top-full z-40 mt-1 max-h-48 overflow-y-auto rounded-lg border border-gray-200 bg-white py-1 shadow-xl ring-1 ring-black/5"
+                class="absolute inset-x-0 top-full z-50 mt-1 max-h-48 overflow-y-auto scrollbar-thin rounded-lg border border-gray-200 bg-white py-1 shadow-xl ring-1 ring-black/5"
                 x-transition
             >
                 {{-- 1. Current Page --}}
@@ -173,7 +173,7 @@
 
     {{-- Mode 1: Current Page Fields --}}
     <template x-if="pickerMode === 'current_page'">
-        <div class="max-h-56 overflow-y-auto py-1">
+        <div class="max-h-56 overflow-y-auto py-1 scrollbar-thin">
             <template x-for="cf in getCurrentPageFields()" :key="'cp_' + cf.key">
                 <button type="button" @click="setFieldSource(field.name, cf.key); showSourcePicker = false"
                     class="w-full flex items-center justify-between px-3 py-1.5 text-left text-xs transition-colors cursor-pointer hover:bg-primary/10"
@@ -191,7 +191,7 @@
 
     {{-- Mode 2: Site Settings Fields --}}
     <template x-if="pickerMode === 'site_settings'">
-        <div class="max-h-56 overflow-y-auto py-1">
+        <div class="max-h-56 overflow-y-auto py-1 scrollbar-thin">
             <template x-for="cf in getSiteSettingsFields()" :key="'ss_' + cf.key">
                 <button type="button" @click="setFieldSource(field.name, cf.key); showSourcePicker = false"
                     class="w-full flex items-center justify-between px-3 py-1.5 text-left text-xs transition-colors cursor-pointer hover:bg-primary/10"
@@ -225,14 +225,14 @@
                     </button>
 
                     <div x-show="entryPickerOpen" @click.outside="entryPickerOpen = false"
-                        class="absolute inset-x-0 top-full z-40 mt-1 max-h-52 overflow-y-auto rounded-lg border border-gray-200 bg-white shadow-xl ring-1 ring-black/5"
+                        class="absolute inset-x-0 top-full z-50 mt-1 max-h-52 overflow-y-auto scrollbar-thin rounded-lg border border-gray-200 bg-white shadow-xl ring-1 ring-black/5"
                         x-transition
                     >
                         <div class="p-1.5 border-b border-gray-100">
                             <input type="text" x-model="entrySearch" @click.stop placeholder="Search item..."
                                 class="w-full rounded border border-gray-200 px-2 py-1 text-xs text-gray-800 placeholder:text-gray-400 focus:border-primary focus:ring-0 outline-none">
                         </div>
-                        <div class="py-1 max-h-40 overflow-y-auto [scrollbar-width:thin]">
+                        <div class="py-1 max-h-40 overflow-y-auto scrollbar-thin">
                             <template x-for="item in getFilteredEntries()" :key="item.id">
                                 <button type="button" @click="selectedEntryId = item.id; entryPickerOpen = false"
                                     class="w-full flex items-center justify-between px-2.5 py-1.5 text-left text-xs transition-colors cursor-pointer hover:bg-primary/10"
@@ -253,7 +253,7 @@
             </div>
 
             {{-- Fields of selected item --}}
-            <div class="max-h-56 overflow-y-auto py-1">
+            <div class="max-h-56 overflow-y-auto py-1 scrollbar-thin">
                 <template x-if="selectedEntryId">
                     <div>
                         <div class="px-3 py-1 text-[10px] font-semibold text-gray-400 uppercase tracking-wider">Select Field to Bind</div>

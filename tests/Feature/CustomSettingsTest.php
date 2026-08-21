@@ -110,3 +110,48 @@ it('persists complex custom fields such as location and colors in settings', fun
             'city' => 'San Francisco',
         ]);
 });
+
+it('persists reordered custom fields correctly', function () {
+    $fieldA = ['title' => 'Field A', 'type' => 'text', 'template' => 'field_a'];
+    $fieldB = ['title' => 'Field B', 'type' => 'text', 'template' => 'field_b'];
+    $fieldC = ['title' => 'Field C', 'type' => 'text', 'template' => 'field_c'];
+
+    // Save initial order: A, B, C
+    put(route('admin.settings.update'), [
+        'custom_fields' => json_encode([$fieldA, $fieldB, $fieldC]),
+        'custom_values' => ['field_a' => '1', 'field_b' => '2', 'field_c' => '3'],
+    ])->assertRedirect();
+
+    $settings = Setting::first();
+    expect($settings->custom_fields[0]['template'])->toBe('field_a')
+        ->and($settings->custom_fields[1]['template'])->toBe('field_b')
+        ->and($settings->custom_fields[2]['template'])->toBe('field_c');
+
+    // Save reordered fields: C, A, B
+    put(route('admin.settings.update'), [
+        'custom_fields' => json_encode([$fieldC, $fieldA, $fieldB]),
+        'custom_values' => ['field_a' => '1', 'field_b' => '2', 'field_c' => '3'],
+    ])->assertRedirect();
+
+    $settings->refresh();
+    expect($settings->custom_fields[0]['template'])->toBe('field_c')
+        ->and($settings->custom_fields[1]['template'])->toBe('field_a')
+        ->and($settings->custom_fields[2]['template'])->toBe('field_b');
+});
+
+it('can auto-save reordered custom fields via AJAX patch request', function () {
+    $fieldA = ['title' => 'Field 1', 'type' => 'text', 'template' => 'f1'];
+    $fieldB = ['title' => 'Field 2', 'type' => 'text', 'template' => 'f2'];
+
+    Setting::firstOrCreate(['id' => 1])->update([
+        'custom_fields' => [$fieldA, $fieldB],
+    ]);
+
+    \Pest\Laravel\patch(route('admin.settings.reorder_custom_fields'), [
+        'custom_fields' => [$fieldB, $fieldA],
+    ])->assertNoContent();
+
+    $settings = Setting::first();
+    expect($settings->custom_fields[0]['template'])->toBe('f2')
+        ->and($settings->custom_fields[1]['template'])->toBe('f1');
+});

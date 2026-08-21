@@ -13,7 +13,7 @@
                 x-init="mountTipTap(field.name, $el, getField(field.name) || '', (html) => setField(field.name, html))">
 
                 {{-- Toolbar --}}
-                <div class="tt-toolbar sticky top-0 z-30 flex items-center gap-px px-3 py-2 border-b border-gray-200 bg-white select-none overflow-hidden shadow-[0_1px_2px_rgba(0,0,0,0.04)]">
+                <div class="tt-toolbar sticky top-0 z-10 flex items-center gap-px px-3 py-2 border-b border-gray-200 bg-white select-none overflow-hidden shadow-[0_1px_2px_rgba(0,0,0,0.04)]">
                     {{-- Heading dropdown --}}
                     <div class="relative tt-dropdown">
                         <button type="button" data-tt-cmd="toggle-dropdown" data-tt-dropdown="heading"
