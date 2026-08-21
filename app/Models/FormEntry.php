@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Support\NotificationCenter;
 use Database\Factories\FormEntryFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -28,14 +29,6 @@ class FormEntry extends Model
         static::created(function (FormEntry $entry) {
             $form = $entry->form;
             $formTitle = $form ? $form->title : 'Form';
-            $formIcon = $form && $form->icon ? $form->icon : 'comments';
-
-            // Remove fa prefixes from icon name if present to keep it simple
-            if (str_starts_with($formIcon, 'fa-solid ')) {
-                $formIcon = substr($formIcon, 9);
-            } elseif (str_starts_with($formIcon, 'fa-')) {
-                $formIcon = substr($formIcon, 3);
-            }
 
             $sub = '';
             if (is_array($entry->data)) {
@@ -62,12 +55,11 @@ class FormEntry extends Model
                 $sub = 'New submission received';
             }
 
-            Notification::create([
-                'title' => "New Entry: {$formTitle}",
-                'sub' => $sub,
-                'icon' => $formIcon,
-                'tone' => 'text-text-muted',
-            ]);
+            NotificationCenter::info(
+                "New Entry: {$formTitle}",
+                $sub,
+                url: route('admin.forms.entries', $entry->form_id)
+            );
         });
     }
 

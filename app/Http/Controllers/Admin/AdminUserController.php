@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Admin;
+use App\Support\NotificationCenter;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
@@ -34,7 +35,13 @@ class AdminUserController extends Controller
 
         $data['is_active'] ??= true;
 
-        Admin::create($data);
+        $admin = Admin::create($data);
+
+        NotificationCenter::success(
+            "New Admin Created: {$admin->name}",
+            "Profile created for {$admin->email}",
+            url: route('admin.administrators.edit', $admin)
+        );
 
         return redirect()->route('admin.administrators.index')->with('success', 'Administrator created.');
     }
@@ -62,6 +69,12 @@ class AdminUserController extends Controller
 
         $admin->update($data);
 
+        NotificationCenter::info(
+            "Admin Updated: {$admin->name}",
+            "Profile updated for {$admin->email}",
+            url: route('admin.administrators.edit', $admin)
+        );
+
         return redirect()->route('admin.administrators.index')->with('success', 'Administrator updated.');
     }
 
@@ -71,7 +84,16 @@ class AdminUserController extends Controller
             return redirect()->route('admin.administrators.index')->with('error', 'You cannot delete yourself.');
         }
 
+        $deletedName = $admin->name;
+        $deletedEmail = $admin->email;
+
         $admin->delete();
+
+        NotificationCenter::warning(
+            "Admin Deleted: {$deletedName}",
+            "Removed {$deletedEmail} from system",
+            url: route('admin.administrators.index')
+        );
 
         return redirect()->route('admin.administrators.index')->with('success', 'Administrator deleted.');
     }

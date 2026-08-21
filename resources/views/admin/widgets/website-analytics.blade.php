@@ -23,16 +23,17 @@
 <script>
     (function () {
         function registerWebsiteAnalytics() {
-            if (window.Alpine.components && window.Alpine.components.websiteAnalytics) {
-                return;
-            }
+            if (!window.Alpine) return;
             window.Alpine.data('websiteAnalytics', () => ({
                 selected: '7 Days',
                 periods: @json($widget->periodsData),
                 chart: null,
 
                 get current() {
-                    return this.periods[this.selected] || this.periods['7 Days'];
+                    if (!this.periods) {
+                        return { metrics: [], series: [], days: [] };
+                    }
+                    return this.periods[this.selected] || this.periods['7 Days'] || { metrics: [], series: [], days: [] };
                 },
 
                 init() {
@@ -41,10 +42,12 @@
                             this.updatePeriod(e.detail);
                         }
                     });
+
+                    const currentPeriod = this.current;
                     const options = {
                         series: [{
                             name: 'Page Views',
-                            data: this.periods[this.selected].series
+                            data: currentPeriod.series || []
                         }],
                         chart: {
                             type: 'area',
@@ -91,7 +94,7 @@
                             }
                         },
                         xaxis: {
-                            categories: this.periods[this.selected].days,
+                            categories: currentPeriod.days || [],
                             labels: {
                                 show: true,
                                 style: {
@@ -158,21 +161,25 @@
                         }
                     };
 
-                    this.chart = new ApexCharts(this.$refs.chartContainer, options);
-                    this.chart.render();
+                    if (this.$refs.chartContainer) {
+                        this.chart = new ApexCharts(this.$refs.chartContainer, options);
+                        this.chart.render();
+                    }
                 },
 
                 updatePeriod(period) {
                     this.selected = period;
-                    const data = this.periods[period];
-                    this.chart.updateOptions({
-                        xaxis: {
-                            categories: data.days
-                        }
-                    });
-                    this.chart.updateSeries([{
-                        data: data.series
-                    }]);
+                    const data = this.periods ? this.periods[period] : null;
+                    if (data && this.chart) {
+                        this.chart.updateOptions({
+                            xaxis: {
+                                categories: data.days || []
+                            }
+                        });
+                        this.chart.updateSeries([{
+                            data: data.series || []
+                        }]);
+                    }
                 }
             }));
         }

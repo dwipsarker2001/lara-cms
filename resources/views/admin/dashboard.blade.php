@@ -43,6 +43,12 @@
             activeTab: 'grid',
             panelOpen: false,
             panelClosing: false,
+            loading: true,
+            init() {
+                setTimeout(() => {
+                    this.loading = false;
+                }, 250);
+            },
             shouldShow(itemPeriod, title, sub) {
                 let matchesPeriod = false;
                 if (this.period === 'Today') {
@@ -97,6 +103,7 @@
                 }, 200);
             },
             addGridWidget(type, formId = null) {
+                this.loading = true;
                 let currentOrder = this.gridOrder
                     .filter(i => this.gridShow[i])
                     .map(i => {
@@ -128,6 +135,7 @@
                 }).then(() => location.reload());
             },
             removeGridWidget(idx) {
+                this.loading = true;
                 let currentOrder = this.gridOrder
                     .filter(i => i !== idx && this.gridShow[i])
                     .map(i => {
@@ -151,6 +159,7 @@
                 }).then(() => location.reload());
             },
             selectZoneWidget(zone, type) {
+                this.loading = true;
                 if (zone === 'grid') {
                     this.addGridWidget(type);
                     return;
@@ -175,11 +184,21 @@
                     })
                     .then(r => r.json())
                     .then(data => {
-                        document.getElementById(zone + '-widget-container').innerHTML = data.html;
-                        if (window.Alpine) Alpine.initTree(document.getElementById(zone + '-widget-container'));
+                        const container = document.getElementById(zone + '-widget-container');
+                        if (container && data.html) {
+                            container.innerHTML = data.html;
+                            container.querySelectorAll('script').forEach(oldScript => {
+                                const newScript = document.createElement('script');
+                                Array.from(oldScript.attributes).forEach(attr => newScript.setAttribute(attr.name, attr.value));
+                                newScript.appendChild(document.createTextNode(oldScript.innerHTML));
+                                oldScript.parentNode.replaceChild(newScript, oldScript);
+                            });
+                            if (window.Alpine) Alpine.initTree(container);
+                        }
                         this[zone + 'Widgets'] = [{index: 0, type: data.type, label: data.label, image: data.image || null}];
                         this[zone + 'Show'][0] = true;
                         this.closePanel();
+                        setTimeout(() => { this.loading = false; }, 200);
                     });
                 });
             },
@@ -195,6 +214,7 @@
                 this[zone + 'Show'][idx] = !hidden;
             },
             saveLayout() {
+                this.loading = true;
                 let currentGridOrder = this.gridOrder
                     .filter(i => this.gridShow[i])
                     .map(i => {
@@ -216,12 +236,14 @@
                     body: JSON.stringify(payload),
                 }).then(() => {
                     this.editing = false;
+                    setTimeout(() => { this.loading = false; }, 200);
                 });
             },
         };
     }
 </script>
     <div x-data="dashboard()">
+        <!-- Header (Always Visible at Top) -->
         <header class="mb-6 flex flex-wrap items-start justify-between gap-4">
             <div>
                 <h1 class="text-[25px] font-semibold text-text-heading">Hello, {{ Auth::guard('admin')->user()->name }} 👋</h1>
@@ -256,10 +278,96 @@
             </div>
         </header>
 
-        <div class="mb-4 grid grid-cols-1 gap-4 lg:grid-cols-4 items-stretch">
-            <div class="flex flex-col gap-4 lg:col-span-3 min-h-0">
+        <!-- Widgets Shimmer Skeleton Loading View -->
+        <div x-show="loading" class="space-y-4">
+            <div class="mb-4 flex flex-col gap-4 lg:flex-row items-stretch">
+                <div class="flex-1 min-w-0 flex flex-col gap-4">
+                    <!-- Cards Grid Shimmer -->
+                    <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-3">
+                        @for ($i = 0; $i < 3; $i++)
+                            <div class="bg-gray-100/80 rounded-2xl p-2">
+                                <div class="flex items-center justify-between px-2 pb-2.5">
+                                    <div class="h-4 w-28 rounded shimmer"></div>
+                                    <div class="h-4 w-4 rounded-full shimmer"></div>
+                                </div>
+                                <div class="bg-white rounded-xl ring-1 ring-gray-200 shadow-sm p-4 space-y-3">
+                                    <div class="h-8 w-20 rounded-md shimmer"></div>
+                                    <div class="flex items-center justify-between pt-1">
+                                        <div class="h-4 w-24 rounded shimmer"></div>
+                                        <div class="h-5 w-14 rounded-full shimmer"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        @endfor
+                    </div>
+
+                    <!-- Chart Shimmer -->
+                    <div class="bg-gray-100/80 rounded-2xl p-2">
+                        <div class="flex items-center justify-between px-2 pb-2.5">
+                            <div class="h-5 w-40 rounded shimmer"></div>
+                            <div class="flex gap-1">
+                                @for ($k = 0; $k < 4; $k++)
+                                    <div class="h-6 w-14 rounded-md shimmer"></div>
+                                @endfor
+                            </div>
+                        </div>
+                        <div class="bg-white rounded-xl ring-1 ring-gray-200 shadow-sm p-6">
+                            <div class="flex items-end justify-between gap-3 h-52 pt-4">
+                                <div class="w-full bg-gray-100 rounded-t-md h-3/5 shimmer"></div>
+                                <div class="w-full bg-gray-100 rounded-t-md h-4/5 shimmer"></div>
+                                <div class="w-full bg-gray-100 rounded-t-md h-2/5 shimmer"></div>
+                                <div class="w-full bg-gray-100 rounded-t-md h-5/5 shimmer"></div>
+                                <div class="w-full bg-gray-100 rounded-t-md h-3/4 shimmer"></div>
+                                <div class="w-full bg-gray-100 rounded-t-md h-1/2 shimmer"></div>
+                                <div class="w-full bg-gray-100 rounded-t-md h-4/5 shimmer"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Sidebar List Shimmer -->
+                <div class="w-full lg:w-[380px] shrink-0 flex flex-col gap-4">
+                    <div class="flex flex-col bg-gray-100/80 rounded-2xl p-2 flex-1 min-h-[380px]">
+                        <div class="flex items-center justify-between px-2 pb-2.5">
+                            <div class="h-5 w-32 rounded shimmer"></div>
+                            <div class="h-4 w-12 rounded shimmer"></div>
+                        </div>
+                        <div class="bg-white rounded-xl ring-1 ring-gray-200 shadow-sm p-4 flex-1 divide-y divide-gray-100 space-y-3">
+                            @for ($j = 0; $j < 4; $j++)
+                                <div class="flex items-center gap-3 pt-3 first:pt-0">
+                                    <div class="size-8 rounded-xl shrink-0 shimmer"></div>
+                                    <div class="flex-1 space-y-1.5 min-w-0">
+                                        <div class="h-4 w-3/4 rounded shimmer"></div>
+                                        <div class="h-3 w-1/2 rounded shimmer"></div>
+                                    </div>
+                                </div>
+                            @endfor
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Table Zone Shimmer -->
+            <div class="bg-gray-100/80 rounded-2xl p-2">
+                <div class="flex items-center justify-between px-2 pb-2.5">
+                    <div class="h-5 w-44 rounded shimmer"></div>
+                    <div class="h-6 w-20 rounded-lg shimmer"></div>
+                </div>
+                <div class="bg-white rounded-xl ring-1 ring-gray-200 shadow-sm p-4 space-y-3">
+                    <div class="h-8 w-full rounded-lg shimmer"></div>
+                    <div class="h-8 w-full rounded-lg shimmer"></div>
+                    <div class="h-8 w-full rounded-lg shimmer"></div>
+                    <div class="h-8 w-full rounded-lg shimmer"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Dashboard View -->
+        <div x-show="!loading" x-cloak style="display: none;">
+            <div class="mb-4 flex flex-col gap-4 lg:flex-row items-stretch">
+                <div class="flex-1 min-w-0 flex flex-col gap-4">
                 {{-- Grid zone (cards) --}}
-                <div class="grid grid-cols-1 gap-4 sm:grid-cols-3">
+                <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-3">
                     @foreach ($gridWidgets as $widget)
                         <template x-if="gridShow[{{ $loop->index }}]">
                             <div class="bg-gray-100 rounded-2xl p-2"
@@ -308,6 +416,12 @@
                                                                 const container = document.getElementById('widget-content-{{ $loop->index }}');
                                                                 if (container && data.html) {
                                                                     container.innerHTML = data.html;
+                                                                    container.querySelectorAll('script').forEach(oldScript => {
+                                                                        const newScript = document.createElement('script');
+                                                                        Array.from(oldScript.attributes).forEach(attr => newScript.setAttribute(attr.name, attr.value));
+                                                                        newScript.appendChild(document.createTextNode(oldScript.innerHTML));
+                                                                        oldScript.parentNode.replaceChild(newScript, oldScript);
+                                                                    });
                                                                     if (window.Alpine) Alpine.initTree(container);
                                                                     const labelSpan = document.getElementById('widget-label-{{ $loop->index }}');
                                                                     if (labelSpan && data.label) {
@@ -420,7 +534,7 @@
             </div>
 
             {{-- List zone (right sidebar) --}}
-            <div class="flex flex-col gap-4">
+            <div class="w-full lg:w-[380px] shrink-0 flex flex-col gap-4">
                 <div x-show="listShow[0]" class="flex flex-col bg-gray-100 rounded-2xl p-2 flex-1 min-h-0">
                     <div class="flex items-center justify-between px-2 pb-2.5 shrink-0">
                         <div class="flex items-center gap-2">
