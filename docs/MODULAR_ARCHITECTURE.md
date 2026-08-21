@@ -205,3 +205,59 @@ git pull upstream main
 php artisan migrate
 ```
 Your `plugins/` directory remains 100% untouched and conflict-free.
+
+---
+
+## 6. Plugin Widgets (Admin Dashboard)
+
+Plugins can contribute custom **dashboard widgets** without touching the CMS core.
+
+### Quick Start
+
+```bash
+# 1. Create the plugin (if it doesn't exist)
+php artisan make:plugin "My Plugin"
+
+# 2. Scaffold a widget inside the plugin
+php artisan make:plugin-widget my-plugin RevenueWidget --zone=grid
+```
+
+**Valid zones:** `grid` (stat cards) | `chart` (visual charts) | `table` (data tables) | `list` (activity feeds)
+
+### Widget File Locations
+
+```
+plugins/my-plugin/
+├── Widgets/
+│   └── RevenueWidget.php           ← Widget logic (auto-discovered)
+└── views/
+    └── widgets/
+        └── revenue-widget.blade.php ← Blade template
+```
+
+### Widget Class Pattern
+
+```php
+<?php
+
+namespace Plugins\MyPlugin\Widgets;
+
+use App\Widgets\Widget;
+
+class RevenueWidget extends Widget
+{
+    public static function zone(): string  { return 'grid'; }
+    public function label(): string        { return 'Monthly Revenue'; }
+
+    public function render()
+    {
+        return view('my-plugin::widgets.revenue-widget', [
+            'total' => 12450,
+        ]);
+    }
+}
+```
+
+Auto-discovered by `WidgetRegistry` — appears in the dashboard widget picker immediately.
+
+> 📖 See **[docs/widgets.md](widgets.md)** for the complete widget development guide.

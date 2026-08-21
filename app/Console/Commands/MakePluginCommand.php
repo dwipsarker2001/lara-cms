@@ -46,8 +46,10 @@ class MakePluginCommand extends Command
         File::makeDirectory($pluginPath.'/src/Models', 0755, true);
         File::makeDirectory($pluginPath.'/src/Support', 0755, true);
         File::makeDirectory($pluginPath.'/Blocks', 0755, true);
+        File::makeDirectory($pluginPath.'/Widgets', 0755, true);
         File::makeDirectory($pluginPath.'/database/migrations', 0755, true);
         File::makeDirectory($pluginPath.'/views/admin', 0755, true);
+        File::makeDirectory($pluginPath.'/views/widgets', 0755, true);
 
         // 2. plugin.json manifest
         $manifest = [

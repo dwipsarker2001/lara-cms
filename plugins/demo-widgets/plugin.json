@@ -1,0 +1,16 @@
+{
+    "name": "Demo Widgets",
+    "slug": "demo-widgets",
+    "version": "1.0.0",
+    "description": "Demo Widgets extension for Lara-CMS.",
+    "author": "Developer",
+    "admin_menu": [
+        {
+            "label": "Demo Widgets",
+            "route": "admin.demo-widgets.index",
+            "icon": "fa-solid fa-puzzle-piece",
+            "badge": null,
+            "order": 10
+        }
+    ]
+}

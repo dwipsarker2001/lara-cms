@@ -20,6 +20,7 @@
 - **Dockerized Environment:** Pre-configured `docker-compose` setup with automated storage directory generation, permission management, MySQL 8.0, and phpMyAdmin.
 - **Dynamic Content & Collections:** Manage pages, custom entry collections, global blocks (navbars/footers), and media assets effortlessly.
 - **Extensible Field Registry:** Supports text, rich text, images, icons (Font Awesome), repeaters/lists, nested field groups, select dropdowns, and background customization out-of-the-box.
+- **Plugin Widget System:** Build custom admin dashboard widgets (stat cards, charts, tables, activity feeds) inside plugins — auto-discovered, zero registration required.
 - **Comprehensive Test Suite:** Powered by Pest 4 for reliable feature and unit testing.
 
 ---
@@ -152,6 +153,12 @@ php artisan make:plugin-migration blog-comments create_blog_comments_table
 
 # 3. Create a single-directory co-located content block (PHP + Blade template together)
 php artisan make:plugin-block blog-comments CommentSection
+
+# 4. Create a dashboard widget inside a plugin (auto-appears in admin widget picker)
+php artisan make:plugin-widget blog-comments StatsWidget --zone=grid
+
+# 5. Create a core CMS widget in app/Widgets/
+php artisan make:widget RevenueWidget --zone=chart
 ```
 
 ---
@@ -256,6 +263,50 @@ Attach these HTML attributes to your Blade templates to connect element hover an
 | `data-edit="image"` on wrapper `<div>` | Recommended wrapper for images so drop zones are clickable even without an image loaded. |
 | `data-edit-button` | Special attribute for action buttons (retains border styling on hover without changing background). |
 | `data-list="listName"` | Identifies repeatable repeater item containers for drag-and-drop reordering. |
+
+---
+
+## 🧩 Dashboard Widget System
+
+Widgets power the `/admin` dashboard with stat cards, charts, tables, and activity feeds. Any plugin can contribute widgets — they appear automatically in the dashboard picker without touching any core file.
+
+### 4 Dashboard Zones
+
+| Zone | Purpose | Example |
+|---|---|---|
+| `grid` | KPI stat cards with sparklines | Visitor count, revenue, form submissions |
+| `chart` | Full visual charts (ApexCharts) | Page views trend, content growth |
+| `table` | Searchable data tables | Recent pages, form entries |
+| `list` | Activity feeds | Notifications, system health |
+
+### Build a Plugin Widget in 3 Steps
+
+```bash
+# 1. Scaffold
+php artisan make:plugin-widget my-plugin RevenueWidget --zone=grid
+```
+
+```php
+// 2. plugins/my-plugin/Widgets/RevenueWidget.php
+class RevenueWidget extends Widget
+{
+    public static function zone(): string { return 'grid'; }
+    public function label(): string       { return 'Monthly Revenue'; }
+    public function render()
+    {
+        return view('my-plugin::widgets.revenue-widget', ['total' => 12450]);
+    }
+}
+```
+
+```blade
+{{-- 3. plugins/my-plugin/views/widgets/revenue-widget.blade.php --}}
+<div class="text-[26px] font-semibold text-text-heading">${{ number_format($total) }}</div>
+```
+
+**That's it.** The widget appears in the Admin → Customize → widget picker immediately.
+
+> 📖 See **[docs/widgets.md](docs/widgets.md)** for the complete guide including styling patterns, config-driven widgets, and testing.
 
 ---
 
