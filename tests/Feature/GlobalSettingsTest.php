@@ -58,3 +58,13 @@ it('can store and update recaptcha keys in settings and load on login page', fun
         ->assertSuccessful()
         ->assertSee('https://www.google.com/recaptcha/api.js?render=6LtestSiteKey123', false);
 });
+
+it('returns correct site name via getSiteName method', function () {
+    expect(Setting::getSiteName())->toBe(config('app.name', 'LaraCMS'));
+
+    Setting::updateOrCreate(['id' => 1], [
+        'seo' => ['site_title' => 'My Custom Site Title'],
+    ]);
+
+    expect(Setting::getSiteName())->toBe('My Custom Site Title');
+});

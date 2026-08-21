@@ -73,4 +73,14 @@ class Setting extends Model
     {
         return static::first()?->currency ?? 'USD';
     }
+
+    public static function getSiteName(string $default = 'LaraCMS'): string
+    {
+        $setting = static::first();
+        if ($setting && is_array($setting->seo) && ! empty($setting->seo['site_title'])) {
+            return $setting->seo['site_title'];
+        }
+
+        return config('app.name', $default);
+    }
 }
