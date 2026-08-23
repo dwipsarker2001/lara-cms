@@ -33,10 +33,13 @@
                 <div class="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
                     @foreach(($d['cards'] ?? []) as $i => $card)
                         @if($card)
-                            <div data-list="cards" data-list-index="{{ $i }}" class="group flex h-full flex-col overflow-hidden rounded-xl p-3 border border-gray-100 bg-white shadow-sm">
+                            <div data-list="cards" data-list-index="{{ $i }}" class="group flex h-full flex-col overflow-hidden rounded-xl bg-white shadow-sm border border-gray-100">
                                 <div data-edit="image" class="relative h-52 overflow-hidden rounded-xl bg-gray-100">
-                                    @if($card['image'] ?? false)
-                                        <img src="{{ $card['image'] }}" alt="{{ $card['title'] ?? '' }}" class="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105" />
+                                    @php
+                                        $cardImage = $card['image'] ?? ($card['thumbnail'] ?? '');
+                                    @endphp
+                                    @if($cardImage)
+                                        <img src="{{ $cardImage }}" alt="{{ $card['title'] ?? '' }}" class="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105" />
                                     @else
                                         <div class="w-full h-full flex items-center justify-center text-gray-300 bg-gray-100">
                                             <svg class="w-12 h-12" fill="none" stroke="currentColor" viewBox="0 0 24 24">

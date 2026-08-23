@@ -375,6 +375,7 @@ class CollectionEntryController extends Controller
                     'id' => (string) $e->id,
                     'title' => $e->title ?? ($e->data['title'] ?? 'Untitled Entry'),
                     'slug' => $e->slug,
+                    'route' => ($c->slug && $c->slug !== 'pages') ? '/'.$c->slug.'/'.$e->slug : ($e->slug === 'home' ? '/' : '/'.$e->slug),
                     'data' => is_array($e->data) ? $e->data : [],
                 ])->values()->all(),
             ])

@@ -723,11 +723,24 @@ function pageEditor() {
                         const firstCol = this.getLinkCollections()[0]?.slug;
                         this.linkModes[name] = firstCol || 'custom';
                     } else {
-                        const matched = this.pages?.find(p => p.route === val);
-                        if (matched) {
-                            this.linkModes[name] = matched.collection_slug || 'pages';
+                        const collections = this.getLinkCollections();
+                        let matchedSlug = null;
+                        for (const col of collections) {
+                            const entries = this.getLinkEntries(col.slug);
+                            if (entries && entries.some(e => e.route === val || String(e.id) === String(val) || e.slug === val)) {
+                                matchedSlug = col.slug;
+                                break;
+                            }
+                        }
+                        if (matchedSlug) {
+                            this.linkModes[name] = matchedSlug;
                         } else {
-                            this.linkModes[name] = 'custom';
+                            const matched = this.pages?.find(p => p.route === val || p.slug === val);
+                            if (matched) {
+                                this.linkModes[name] = matched.collection_slug || 'pages';
+                            } else {
+                                this.linkModes[name] = 'custom';
+                            }
                         }
                     }
                 }
