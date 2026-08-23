@@ -10,7 +10,7 @@
         <div class="mt-12 flex gap-5 overflow-x-auto snap-x snap-mandatory sm:grid sm:grid-cols-2 xl:grid-cols-3 md:gap-6" style="-ms-overflow-style:none;scrollbar-width:none">
             @foreach(($d['testimonials'] ?? []) as $i => $t)
                 @if($t)
-                    <div data-list="testimonials" class="min-w-[280px] sm:min-w-0 snap-start rounded-2xl bg-gray-100/80 p-6 md:p-7 transition-shadow hover:shadow-sm">
+                    <div data-list="testimonials" data-list-index="{{ $i }}" class="min-w-[280px] sm:min-w-0 snap-start rounded-2xl bg-gray-100/80 p-6 md:p-7 transition-shadow hover:shadow-sm">
                         @if(($t['rating'] ?? 0) > 0)
                             <div class="flex items-center gap-1 text-amber-400 mb-3">
                                 @for($s = 0; $s < min($t['rating'], 5); $s++)

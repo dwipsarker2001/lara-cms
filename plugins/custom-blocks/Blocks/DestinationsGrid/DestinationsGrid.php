@@ -17,9 +17,11 @@ class DestinationsGrid extends Block
             Field::string('headline', 'Headline', default: 'All Destinations'),
             Field::text('description', 'Description', default: 'Explore our handpicked destinations for your next adventure'),
             Field::list('places', 'Places', [
+                Field::taxonomies('term_id', 'Select Destination', taxonomyId: 'destinations', routePattern: '/packages?destination={slug}'),
                 Field::image('image', 'Image', default: '/placeholder-image.png'),
                 Field::string('name', 'Name', default: 'Destination Name'),
                 Field::string('slug', 'Slug'),
+                Field::string('link', 'Custom URL Override'),
             ], count: 7),
         ];
     }

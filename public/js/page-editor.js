@@ -458,7 +458,7 @@ function pageEditor() {
             getSourceKeyLabel(name) {
                 const sourceKey = this.getSourceKey(name);
                 if (!sourceKey) return '';
-                if (sourceKey.startsWith('entry:')) {
+                if (sourceKey.startsWith('entry:') || sourceKey.startsWith('term:')) {
                     const parts = sourceKey.split(':');
                     const key = parts[2] || 'field';
                     return key.replace(/[_-]+/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
@@ -473,15 +473,47 @@ function pageEditor() {
                     const parts = sourceKey.split(':');
                     const entryId = parts[1];
                     const key = parts[2];
-                    const entry = (this.pages || []).find(p => String(p.id) === String(entryId));
+                    let entry = (this.pages || []).find(p => String(p.id) === String(entryId));
+                    if (!entry && (window.editorAllCollections || this.allCollections)) {
+                        const collections = window.editorAllCollections || this.allCollections || [];
+                        for (const c of collections) {
+                            if (c.entries) {
+                                const found = c.entries.find(e => String(e.id) === String(entryId));
+                                if (found) { entry = found; break; }
+                            }
+                        }
+                    }
                     return 'Linked to ' + (entry ? entry.title : 'Item') + ' > ' + key;
+                }
+                if (sourceKey.startsWith('term:')) {
+                    const parts = sourceKey.split(':');
+                    const termId = parts[1];
+                    const key = parts[2];
+                    let term = null;
+                    const allTaxes = window.editorAllTaxonomies || [];
+                    for (const t of allTaxes) {
+                        if (t.terms) {
+                            const found = t.terms.find(item => String(item.id) === String(termId));
+                            if (found) { term = found; break; }
+                        }
+                    }
+                    return 'Linked to ' + (term ? term.title : 'Term') + ' > ' + key;
                 }
                 return 'Linked to field: ' + sourceKey;
             },
 
             getEntrySourceFields(entryId) {
                 if (!entryId) return [];
-                const entry = (this.pages || []).find(p => String(p.id) === String(entryId));
+                let entry = (this.pages || []).find(p => String(p.id) === String(entryId));
+                if (!entry && (window.editorAllCollections || this.allCollections)) {
+                    const collections = window.editorAllCollections || this.allCollections || [];
+                    for (const c of collections) {
+                        if (c.entries) {
+                            const found = c.entries.find(e => String(e.id) === String(entryId));
+                            if (found) { entry = found; break; }
+                        }
+                    }
+                }
                 if (!entry) return [];
 
                 const fields = [
@@ -515,6 +547,46 @@ function pageEditor() {
                 return fields;
             },
 
+            getTermSourceFields(termId) {
+                if (!termId) return [];
+                let term = null;
+                let taxonomy = null;
+                const allTaxes = window.editorAllTaxonomies || [];
+                for (const t of allTaxes) {
+                    if (t.terms) {
+                        const found = t.terms.find(item => String(item.id) === String(termId));
+                        if (found) { term = found; taxonomy = t; break; }
+                    }
+                }
+                if (!term) return [];
+
+                const fields = [
+                    { key: 'title', label: 'Name / Title' },
+                    { key: 'slug', label: 'Slug' },
+                    { key: 'route', label: 'Route / Link' },
+                    { key: 'image', label: 'Image' },
+                ];
+
+                if (taxonomy && Array.isArray(taxonomy.fields)) {
+                    for (const f of taxonomy.fields) {
+                        const key = f.template || f.key || f.name || '';
+                        if (key && !fields.some(existing => existing.key === key)) {
+                            const label = f.title || f.label || key.replace(/[_-]+/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
+                            fields.push({ key: key, label: label });
+                        }
+                    }
+                }
+
+                const td = term.data || {};
+                for (const [k, v] of Object.entries(td)) {
+                    if (k && !k.startsWith('_') && !fields.some(existing => existing.key === k)) {
+                        const cleanLabel = k.replace(/[_-]+/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
+                        fields.push({ key: k, label: cleanLabel });
+                    }
+                }
+                return fields;
+            },
+
             getField(name) {
                 const sourceKey = this.getSourceKey(name);
                 let val;
@@ -523,7 +595,16 @@ function pageEditor() {
                         const parts = sourceKey.split(':');
                         const entryId = parts[1];
                         const key = parts[2];
-                        const entry = (this.pages || []).find(p => String(p.id) === String(entryId));
+                        let entry = (this.pages || []).find(p => String(p.id) === String(entryId));
+                        if (!entry && (window.editorAllCollections || this.allCollections)) {
+                            const collections = window.editorAllCollections || this.allCollections || [];
+                            for (const c of collections) {
+                                if (c.entries) {
+                                    const found = c.entries.find(e => String(e.id) === String(entryId));
+                                    if (found) { entry = found; break; }
+                                }
+                            }
+                        }
                         if (entry) {
                             if (key === 'title') {
                                 val = entry.title;
@@ -533,6 +614,40 @@ function pageEditor() {
                                 val = entry.slug;
                             } else if (entry.data && entry.data[key] !== undefined && entry.data[key] !== null) {
                                 val = entry.data[key];
+                            }
+                        }
+                    } else if (sourceKey.startsWith('term:')) {
+                        const parts = sourceKey.split(':');
+                        const termId = parts[1];
+                        const key = parts[2];
+                        let term = null;
+                        let taxonomy = null;
+                        const allTaxes = window.editorAllTaxonomies || [];
+                        for (const t of allTaxes) {
+                            if (t.terms) {
+                                const found = t.terms.find(item => String(item.id) === String(termId));
+                                if (found) { term = found; taxonomy = t; break; }
+                            }
+                        }
+                        if (term) {
+                            if (key === 'title' || key === 'name') {
+                                val = term.title;
+                            } else if (key === 'link' || key === 'route' || key === 'url') {
+                                const pattern = taxonomy?.route_pattern || '';
+                                if (pattern) {
+                                    val = pattern.replace('{slug}', term.slug).replace('{id}', term.id).replace('{title}', encodeURIComponent(term.title));
+                                } else if (term.route) {
+                                    val = term.route;
+                                } else {
+                                    const taxSlug = taxonomy?.slug || 'destinations';
+                                    val = '/' + taxSlug + '/' + term.slug;
+                                }
+                            } else if (key === 'slug') {
+                                val = term.slug;
+                            } else if (key === 'image') {
+                                val = term.data?.image || term.data?.featured_image || term.data?.cover_image || term.data?.photo || '';
+                            } else if (term.data && term.data[key] !== undefined && term.data[key] !== null) {
+                                val = term.data[key];
                             }
                         }
                     } else {
@@ -853,8 +968,13 @@ function pageEditor() {
                 if (this.crumbs && this.crumbs.length > 0) {
                     for (const crumb of this.crumbs) {
                         const listElements = Array.from(context.querySelectorAll(`[data-list="${crumb.key}"]`));
-                        if (crumb.index !== undefined && listElements[crumb.index]) {
-                            context = listElements[crumb.index];
+                        if (crumb.index !== undefined) {
+                            const byExplicitIndex = listElements.find(el => el.getAttribute('data-list-index') === String(crumb.index));
+                            if (byExplicitIndex) {
+                                context = byExplicitIndex;
+                            } else if (listElements[crumb.index]) {
+                                context = listElements[crumb.index];
+                            }
                         } else if (listElements.length > 0) {
                             context = listElements[0];
                         }
@@ -1195,6 +1315,24 @@ function pageEditor() {
 
             cardLabel(item, field, index) {
                 if (item && typeof item === 'object') {
+                    if (item.name && typeof item.name === 'string' && item.name.trim() !== '' && item.name !== 'Destination Name') {
+                        return item.name.trim().slice(0, 40);
+                    }
+                    if (item.title && typeof item.title === 'string' && item.title.trim() !== '' && item.title !== 'Paris Getaway' && item.title !== 'Untitled') {
+                        return item.title.trim().slice(0, 40);
+                    }
+                    if (item.term_id && window.editorAllTaxonomies) {
+                        for (const tax of window.editorAllTaxonomies) {
+                            const found = tax.terms?.find(t => String(t.id) === String(item.term_id));
+                            if (found) return found.title.slice(0, 40);
+                        }
+                    }
+                    if (item.package_id && window.editorAllCollections) {
+                        for (const col of window.editorAllCollections) {
+                            const found = col.entries?.find(e => String(e.id) === String(item.package_id));
+                            if (found) return found.title.slice(0, 40);
+                        }
+                    }
                     const candidates = ['title', 'label', 'name', 'heading', 'text', 'platform', 'caption', 'url', 'link', 'value'];
                     for (const c of candidates) {
                         if (item[c] && typeof item[c] === 'string' && item[c].trim() !== '') {
@@ -1372,11 +1510,18 @@ function pageEditor() {
                         if (explicitIndex !== null && explicitIndex !== '') {
                             listParts.unshift(`${listName}:${explicitIndex}`);
                         } else {
-                            const parent = current.parentElement;
-                            if (parent) {
-                                const siblings = Array.from(parent.querySelectorAll(`[data-list="${listName}"]`));
-                                const index = siblings.indexOf(current);
-                                if (index >= 0) listParts.unshift(`${listName}:${index}`);
+                            const sectionContainer = current.closest('[data-section-index]') || current.closest('[data-block]') || document.body;
+                            const allSameList = Array.from(sectionContainer.querySelectorAll(`[data-list="${listName}"]`));
+                            const index = allSameList.indexOf(current);
+                            if (index >= 0) {
+                                listParts.unshift(`${listName}:${index}`);
+                            } else {
+                                const parent = current.parentElement;
+                                if (parent) {
+                                    const siblings = Array.from(parent.querySelectorAll(`[data-list="${listName}"]`));
+                                    const sIndex = siblings.indexOf(current);
+                                    if (sIndex >= 0) listParts.unshift(`${listName}:${sIndex}`);
+                                }
                             }
                         }
                     }

@@ -1,0 +1,133 @@
+{{-- taxonomy term picker --}}
+<template x-if="field.type === 'taxonomies' || field.type === 'taxonomy'">
+    <div x-data="{
+        open: false,
+        search: '',
+        get allOptions() {
+            const targetSlugOrId = field.taxonomy_id || field.taxonomy || '';
+            const allTaxes = window.editorAllTaxonomies || [];
+            let terms = [];
+            if (targetSlugOrId) {
+                const found = allTaxes.find(t => String(t.slug) === String(targetSlugOrId) || String(t.id) === String(targetSlugOrId));
+                if (found && found.terms) {
+                    terms = found.terms;
+                }
+            } else {
+                allTaxes.forEach(t => {
+                    if (t.terms) {
+                        t.terms.forEach(term => {
+                            terms.push({ ...term, title: (t.title ? t.title + ' — ' : '') + term.title });
+                        });
+                    }
+                });
+            }
+            return terms;
+        },
+        get filteredOptions() {
+            if (!this.search.trim()) return this.allOptions;
+            const q = this.search.toLowerCase();
+            return this.allOptions.filter(o => (o.title || '').toLowerCase().includes(q) || (o.slug || '').toLowerCase().includes(q));
+        },
+        selectedLabel() {
+            const val = String(getField(field.name) || '');
+            if (!val) return 'Select item...';
+            const found = this.allOptions.find(o => String(o.id) === val);
+            return found ? found.title : 'Select item...';
+        },
+        selectItem(term) {
+            const val = term ? String(term.id) : '';
+            setField(field.name, val);
+            this.open = false;
+            this.search = '';
+
+            if (term) {
+                const termId = String(term.id);
+                const termData = term.data || {};
+
+                // Programmatically bind fields using the built-in source binding system
+                if (typeof setFieldSource === 'function') {
+                    if (findField('name')) {
+                        setFieldSource('name', 'term:' + termId + ':title');
+                    }
+                    if (findField('title')) {
+                        setFieldSource('title', 'term:' + termId + ':title');
+                    }
+                    if (findField('slug')) {
+                        setFieldSource('slug', 'term:' + termId + ':slug');
+                    }
+                    if (findField('image')) {
+                        const imgKey = ('image' in termData) ? 'image' : (('featured_image' in termData) ? 'featured_image' : (('cover_image' in termData) ? 'cover_image' : 'photo'));
+                        setFieldSource('image', 'term:' + termId + ':' + imgKey);
+                    }
+                    if (findField('link')) {
+                        setFieldSource('link', 'term:' + termId + ':route');
+                    } else if (findField('url')) {
+                        setFieldSource('url', 'term:' + termId + ':route');
+                    }
+                }
+            } else {
+                if (typeof clearFieldSource === 'function') {
+                    ['name', 'title', 'slug', 'image', 'link', 'url'].forEach(k => {
+                        if (findField(k)) clearFieldSource(k);
+                    });
+                }
+            }
+        }
+    }">
+        <div class="flex items-center justify-between mb-1">
+            <label class="block text-sm font-semibold text-text-primary" x-text="field.label"></label>
+            <span class="text-[10px] uppercase font-mono text-primary bg-primary/10 px-1.5 py-0.5 rounded font-medium">Taxonomy</span>
+        </div>
+        <div class="relative">
+            <button type="button" @click="open = !open; if (open) search = ''"
+                :data-field-target="field.name"
+                class="w-full flex items-center justify-between gap-2 rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm text-text-primary shadow-[0_2px_3px_-2px_rgba(0,0,0,0.15)] hover:border-gray-400 focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary transition-colors cursor-pointer"
+            >
+                <div class="flex items-center gap-2 truncate">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" class="size-4 text-primary shrink-0">
+                        <path d="M12 2H2v10l9.29 9.29c.94.94 2.48.94 3.42 0l6.58-6.58c.94-.94.94-2.48 0-3.42L12 2Z"/>
+                        <path d="M7 7h.01"/>
+                    </svg>
+                    <span class="truncate" :class="getField(field.name) ? 'font-medium text-text-primary' : 'text-text-muted'" x-text="selectedLabel()"></span>
+                </div>
+                <svg class="size-4 text-text-muted transition-transform shrink-0" :class="open ? 'rotate-180' : ''" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                </svg>
+            </button>
+
+            <div x-show="open" x-cloak @click.outside="open = false"
+                class="absolute z-30 mt-1 w-full rounded-xl border border-gray-200 bg-white shadow-xl ring-1 ring-black/5 max-h-72 overflow-hidden flex flex-col"
+                x-transition:enter="transition ease-out duration-100" x-transition:enter-start="opacity-0 scale-95" x-transition:enter-end="opacity-100 scale-100"
+                x-transition:leave="transition ease-in duration-75" x-transition:leave-start="opacity-100 scale-100" x-transition:leave-end="opacity-0 scale-95"
+            >
+                <div class="p-2 border-b border-gray-100 bg-gray-50/50" x-show="allOptions.length > 5">
+                    <input type="text" x-model="search" placeholder="Search..."
+                        class="w-full rounded-lg border border-gray-200 bg-white px-2.5 py-1.5 text-xs focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary">
+                </div>
+
+                <div class="p-1 space-y-0.5 overflow-y-auto max-h-56 [scrollbar-width:thin]">
+                    <button type="button" @click="selectItem(null)"
+                        class="w-full flex items-center px-3 py-2 text-xs rounded-lg text-left transition-colors text-text-muted hover:bg-gray-100">
+                        <span>-- None (Clear) --</span>
+                    </button>
+                    <template x-for="opt in filteredOptions" :key="opt.id">
+                        <button type="button" @click="selectItem(opt)"
+                            class="w-full flex items-center justify-between px-3 py-2 text-sm rounded-lg text-left transition-colors cursor-pointer"
+                            :class="String(getField(field.name)) === String(opt.id) ? 'bg-primary/10 text-primary font-semibold' : 'text-text-primary hover:bg-gray-100/80'"
+                        >
+                            <span class="truncate" x-text="opt.title"></span>
+                            <template x-if="String(getField(field.name)) === String(opt.id)">
+                                <svg class="size-4 ml-2 text-primary shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                                    <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
+                                </svg>
+                            </template>
+                        </button>
+                    </template>
+                    <template x-if="filteredOptions.length === 0">
+                        <div class="px-3 py-3 text-xs text-text-muted text-center">No items found</div>
+                    </template>
+                </div>
+            </div>
+        </div>
+    </div>
+</template>

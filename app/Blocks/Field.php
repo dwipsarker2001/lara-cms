@@ -246,6 +246,37 @@ class Field
     }
 
     /**
+     * Input field that lets the user select terms from a taxonomy group (e.g. Categories, Destinations, Tags).
+     *
+     * @param  string|int|null  $taxonomyId  Taxonomy ID or slug to restrict to. Null allows picking from any taxonomy.
+     * @param  bool  $multiple  Whether multiple terms can be selected.
+     */
+    public static function taxonomies(string $name, string $label, string|int|null $taxonomyId = null, bool $multiple = false, mixed $default = '', string $source = '', ?string $routePattern = null): array
+    {
+        $field = compact('name', 'label') + [
+            'type' => 'taxonomies',
+            'taxonomy_id' => $taxonomyId !== null ? (string) $taxonomyId : '',
+            'taxonomy' => $taxonomyId !== null ? (string) $taxonomyId : '',
+            'multiple' => $multiple,
+            'route_pattern' => $routePattern ?? '',
+            'defaultValue' => $default,
+        ];
+        if ($source !== '') {
+            $field['source'] = $source;
+        }
+
+        return $field;
+    }
+
+    /**
+     * Alias for Field::taxonomies()
+     */
+    public static function taxonomy(string $name, string $label, string|int|null $taxonomyId = null, bool $multiple = false, mixed $default = '', string $source = '', ?string $routePattern = null): array
+    {
+        return self::taxonomies($name, $label, $taxonomyId, $multiple, $default, $source, $routePattern);
+    }
+
+    /**
      * A single nested group of fields.
      *
      * @param  array<int, array>  $fields

@@ -4,6 +4,7 @@ namespace App\Blocks;
 
 use App\Models\CollectionEntry;
 use App\Models\Setting;
+use App\Models\Term;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Str;
@@ -161,13 +162,21 @@ abstract class Block
         $resolvedFields = $this->resolvedFields();
         $sectionSources = is_array($data['_sources'] ?? null) ? $data['_sources'] : [];
 
-        // Preload any collection entries referenced by entry:id:key sources
+        // Preload any collection entries and taxonomy terms referenced by sources
         $referencedEntryIds = [];
+        $referencedTermIds = [];
         foreach ($sectionSources as $src) {
-            if (is_string($src) && str_starts_with($src, 'entry:')) {
-                $parts = explode(':', $src);
-                if (! empty($parts[1]) && is_numeric($parts[1])) {
-                    $referencedEntryIds[] = (int) $parts[1];
+            if (is_string($src)) {
+                if (str_starts_with($src, 'entry:')) {
+                    $parts = explode(':', $src);
+                    if (! empty($parts[1]) && is_numeric($parts[1])) {
+                        $referencedEntryIds[] = (int) $parts[1];
+                    }
+                } elseif (str_starts_with($src, 'term:')) {
+                    $parts = explode(':', $src);
+                    if (! empty($parts[1]) && is_numeric($parts[1])) {
+                        $referencedTermIds[] = (int) $parts[1];
+                    }
                 }
             }
         }
@@ -176,8 +185,13 @@ abstract class Block
             ? collect()
             : CollectionEntry::with('collection')->whereIn('id', array_unique($referencedEntryIds))->get()->keyBy('id');
 
-        $data = self::mergeSourceData($data, $resolvedFields, $page, $sectionSources, '', $sourceEntries);
+        $sourceTerms = empty($referencedTermIds)
+            ? collect()
+            : Term::with('taxonomy')->whereIn('id', array_unique($referencedTermIds))->get()->keyBy('id');
+
+        $data = self::mergeSourceData($data, $resolvedFields, $page, $sectionSources, '', $sourceEntries, $sourceTerms);
         $data = self::hydrateCollectionReferences($data, $resolvedFields);
+        $data = self::hydrateTaxonomyReferences($data, $resolvedFields);
 
         return view($this->view(), compact('data', '_key', 'preview', 'page'))->render();
     }
@@ -191,7 +205,7 @@ abstract class Block
      * @param  array<string, string>  $sectionSources
      * @return array<string, mixed>
      */
-    public static function mergeSourceData(array $data, array $fields, ?object $page = null, array $sectionSources = [], string $prefix = '', $sourceEntries = null): array
+    public static function mergeSourceData(array $data, array $fields, ?object $page = null, array $sectionSources = [], string $prefix = '', $sourceEntries = null, $sourceTerms = null): array
     {
         $entryData = is_array($page->data ?? null) ? $page->data : [];
 
@@ -209,13 +223,13 @@ abstract class Block
                         foreach ($data[$name] as $index => &$item) {
                             if (is_array($item)) {
                                 $itemPath = $fullPath.'.'.$index;
-                                $item = self::mergeSourceData($item, $field['fields'] ?? [], $page, $sectionSources, $itemPath, $sourceEntries);
+                                $item = self::mergeSourceData($item, $field['fields'] ?? [], $page, $sectionSources, $itemPath, $sourceEntries, $sourceTerms);
                             }
                         }
                     }
                 } else {
                     if (isset($data[$name]) && is_array($data[$name])) {
-                        $data[$name] = self::mergeSourceData($data[$name], $field['fields'] ?? [], $page, $sectionSources, $fullPath, $sourceEntries);
+                        $data[$name] = self::mergeSourceData($data[$name], $field['fields'] ?? [], $page, $sectionSources, $fullPath, $sourceEntries, $sourceTerms);
                     }
                 }
             } else {
@@ -245,13 +259,33 @@ abstract class Block
                         if ($referencedEntry) {
                             if ($key === 'title') {
                                 $entryValue = $referencedEntry->title;
-                            } elseif ($key === 'link' || $key === 'route') {
+                            } elseif ($key === 'link' || $key === 'route' || $key === 'url') {
                                 $entryValue = $referencedEntry->route();
                             } elseif ($key === 'slug') {
                                 $entryValue = $referencedEntry->slug;
                             } else {
                                 $rData = is_array($referencedEntry->data) ? $referencedEntry->data : [];
                                 $entryValue = $rData[$key] ?? null;
+                            }
+                        }
+                    } elseif (str_starts_with($source, 'term:')) {
+                        $parts = explode(':', $source, 3);
+                        $termId = isset($parts[1]) ? (int) $parts[1] : null;
+                        $key = $parts[2] ?? '';
+                        $referencedTerm = $sourceTerms ? $sourceTerms->get($termId) : ($termId ? Term::with('taxonomy')->find($termId) : null);
+                        if ($referencedTerm) {
+                            if ($key === 'title' || $key === 'name') {
+                                $entryValue = $referencedTerm->title;
+                            } elseif ($key === 'link' || $key === 'route' || $key === 'url') {
+                                $entryValue = $referencedTerm->route();
+                            } elseif ($key === 'slug') {
+                                $entryValue = $referencedTerm->slug;
+                            } elseif ($key === 'image') {
+                                $tData = is_array($referencedTerm->data) ? $referencedTerm->data : [];
+                                $entryValue = $tData['image'] ?? $tData['featured_image'] ?? $tData['cover_image'] ?? $tData['photo'] ?? null;
+                            } else {
+                                $tData = is_array($referencedTerm->data) ? $referencedTerm->data : [];
+                                $entryValue = $tData[$key] ?? null;
                             }
                         }
                     } elseif ($page) {
@@ -380,6 +414,13 @@ abstract class Block
      * @param  array<int, array>  $fields
      * @return array<int, int>
      */
+    /**
+     * Recursively collect all referenced collection entry IDs.
+     *
+     * @param  array<string, mixed>  $data
+     * @param  array<int, array>  $fields
+     * @return array<int, int>
+     */
     protected static function extractCollectionEntryIds(array $data, array $fields): array
     {
         $ids = [];
@@ -396,6 +437,12 @@ abstract class Block
                             $ids = array_merge($ids, self::extractCollectionEntryIds($item, $subFields));
                             if (! empty($item['entry_id']) && is_numeric($item['entry_id'])) {
                                 $ids[] = (int) $item['entry_id'];
+                            }
+                            if (! empty($item['package_id']) && is_numeric($item['package_id'])) {
+                                $ids[] = (int) $item['package_id'];
+                            }
+                            if (! empty($item['deal_id']) && is_numeric($item['deal_id'])) {
+                                $ids[] = (int) $item['deal_id'];
                             }
                             if (! empty($item['collection_entry_id']) && is_numeric($item['collection_entry_id'])) {
                                 $ids[] = (int) $item['collection_entry_id'];
@@ -453,6 +500,12 @@ abstract class Block
         if (! $activeEntryId && ! empty($data['entry_id']) && is_numeric($data['entry_id'])) {
             $activeEntryId = (int) $data['entry_id'];
         }
+        if (! $activeEntryId && ! empty($data['package_id']) && is_numeric($data['package_id'])) {
+            $activeEntryId = (int) $data['package_id'];
+        }
+        if (! $activeEntryId && ! empty($data['deal_id']) && is_numeric($data['deal_id'])) {
+            $activeEntryId = (int) $data['deal_id'];
+        }
 
         if ($activeEntryId && $entries->has($activeEntryId)) {
             $entry = $entries->get($activeEntryId);
@@ -483,7 +536,41 @@ abstract class Block
                 }
             }
 
-            $data['title'] = $entry->title;
+            // Image fallback
+            if (empty($data['image']) || $data['image'] === '/placeholder-image.png') {
+                $data['image'] = $entryData['featured_image'] ?? $entryData['image'] ?? $entryData['hero_image'] ?? $entryData['cover_image'] ?? $entryData['thumbnail'] ?? ($data['image'] ?? '');
+            }
+
+            // Price fallbacks
+            if (empty($data['price']) || $data['price'] === '৳299' || $data['price'] === '0') {
+                if (isset($entryData['price']) || isset($entryData['special_price']) || isset($entryData['discount_price']) || isset($entryData['amount'])) {
+                    $data['price'] = (string) ($entryData['price'] ?? $entryData['special_price'] ?? $entryData['discount_price'] ?? $entryData['amount']);
+                }
+            }
+            if (empty($data['originalPrice']) || $data['originalPrice'] === '৳499') {
+                if (isset($entryData['original_price']) || isset($entryData['regular_price']) || isset($entryData['old_price'])) {
+                    $data['originalPrice'] = (string) ($entryData['original_price'] ?? $entryData['regular_price'] ?? $entryData['old_price']);
+                }
+            }
+
+            // Description fallback
+            if (empty($data['description']) || $data['description'] === 'Explore the city of lights with our exclusive package') {
+                if (isset($entryData['description']) || isset($entryData['excerpt']) || isset($entryData['summary'])) {
+                    $data['description'] = (string) ($entryData['description'] ?? $entryData['excerpt'] ?? $entryData['summary']);
+                }
+            }
+
+            // Badge fallback
+            if (empty($data['badge']) || $data['badge'] === 'Popular') {
+                if (isset($entryData['badge']) || isset($entryData['discount_badge'])) {
+                    $data['badge'] = (string) ($entryData['badge'] ?? $entryData['discount_badge']);
+                }
+            }
+
+            if (empty($data['title']) || $data['title'] === 'Untitled' || $data['title'] === 'Paris Getaway') {
+                $data['title'] = $entry->title;
+            }
+
             if (empty($data['link']) && empty($data['buttonLink']) && empty($data['url'])) {
                 if (array_key_exists('buttonLink', $data)) {
                     $data['buttonLink'] = $entry->route();
@@ -503,13 +590,202 @@ abstract class Block
             if ($type === 'object') {
                 $subFields = $field['fields'] ?? [];
                 if (! empty($field['list']) && isset($data[$name]) && is_array($data[$name])) {
-                    foreach ($data[$name] as $index => &$item) {
+                    foreach ($data[$name] as $index => $item) {
                         if (is_array($item)) {
-                            $item = self::applyCollectionEntries($item, $subFields, $entries);
+                            $data[$name][$index] = self::applyCollectionEntries($item, $subFields, $entries);
                         }
                     }
                 } elseif (isset($data[$name]) && is_array($data[$name])) {
                     $data[$name] = self::applyCollectionEntries($data[$name], $subFields, $entries);
+                }
+            }
+        }
+
+        return $data;
+    }
+
+    /**
+     * Batch hydrate all referenced Taxonomy Term models across the block data.
+     *
+     * @param  array<string, mixed>  $data
+     * @param  array<int, array>  $fields
+     * @return array<string, mixed>
+     */
+    public static function hydrateTaxonomyReferences(array $data, array $fields): array
+    {
+        if (! Schema::hasTable('terms')) {
+            return $data;
+        }
+
+        $termIds = self::extractTaxonomyTermIds($data, $fields);
+        if (empty($termIds)) {
+            return $data;
+        }
+
+        $terms = Term::whereIn('id', $termIds)->get()->keyBy('id');
+        if ($terms->isEmpty()) {
+            return $data;
+        }
+
+        return self::applyTaxonomyTerms($data, $fields, $terms);
+    }
+
+    /**
+     * Recursively collect all referenced taxonomy term IDs.
+     *
+     * @param  array<string, mixed>  $data
+     * @param  array<int, array>  $fields
+     * @return array<int, int>
+     */
+    protected static function extractTaxonomyTermIds(array $data, array $fields): array
+    {
+        $ids = [];
+
+        foreach ($fields as $field) {
+            $name = $field['name'] ?? '';
+            $type = $field['type'] ?? '';
+
+            if ($type === 'object') {
+                $subFields = $field['fields'] ?? [];
+                if (! empty($field['list']) && isset($data[$name]) && is_array($data[$name])) {
+                    foreach ($data[$name] as $item) {
+                        if (is_array($item)) {
+                            $ids = array_merge($ids, self::extractTaxonomyTermIds($item, $subFields));
+                            if (! empty($item['term_id']) && is_numeric($item['term_id'])) {
+                                $ids[] = (int) $item['term_id'];
+                            }
+                            if (! empty($item['destination_id']) && is_numeric($item['destination_id'])) {
+                                $ids[] = (int) $item['destination_id'];
+                            }
+                        }
+                    }
+                } elseif (isset($data[$name]) && is_array($data[$name])) {
+                    $ids = array_merge($ids, self::extractTaxonomyTermIds($data[$name], $subFields));
+                }
+            } elseif ($type === 'taxonomies' || $type === 'taxonomy') {
+                $val = $data[$name] ?? null;
+                if (! empty($val)) {
+                    if (is_numeric($val)) {
+                        $ids[] = (int) $val;
+                    } elseif (is_array($val)) {
+                        foreach ($val as $subVal) {
+                            if (is_numeric($subVal)) {
+                                $ids[] = (int) $subVal;
+                            } elseif (is_array($subVal) && ! empty($subVal['id']) && is_numeric($subVal['id'])) {
+                                $ids[] = (int) $subVal['id'];
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        return array_values(array_unique(array_filter($ids)));
+    }
+
+    /**
+     * Recursively apply live taxonomy term attributes and attach _term to items.
+     *
+     * @param  array<string, mixed>  $data
+     * @param  array<int, array>  $fields
+     * @param  Collection<int, Term>  $terms
+     * @return array<string, mixed>
+     */
+    protected static function applyTaxonomyTerms(array $data, array $fields, $terms): array
+    {
+        $taxFieldMap = [];
+        foreach ($fields as $f) {
+            if (($f['type'] ?? '') === 'taxonomies' || ($f['type'] ?? '') === 'taxonomy') {
+                $fName = $f['name'] ?? '';
+                if ($fName) {
+                    $taxFieldMap[$fName] = $f;
+                }
+            }
+        }
+
+        $activeTermId = null;
+        $activeFieldPattern = null;
+        foreach ($taxFieldMap as $tfName => $fDef) {
+            if (! empty($data[$tfName])) {
+                $rawVal = $data[$tfName];
+                $activeTermId = is_numeric($rawVal) ? (int) $rawVal : ($rawVal['id'] ?? null);
+                if ($activeTermId) {
+                    $activeFieldPattern = $fDef['route_pattern'] ?? null;
+                    break;
+                }
+            }
+        }
+        if (! $activeTermId && ! empty($data['term_id']) && is_numeric($data['term_id'])) {
+            $activeTermId = (int) $data['term_id'];
+        }
+        if (! $activeTermId && ! empty($data['destination_id']) && is_numeric($data['destination_id'])) {
+            $activeTermId = (int) $data['destination_id'];
+        }
+
+        if ($activeTermId && $terms->has($activeTermId)) {
+            $term = $terms->get($activeTermId);
+            $termData = is_array($term->data) ? $term->data : [];
+            $termLink = $term->route($activeFieldPattern);
+
+            $data['_term'] = $term;
+            $data['_term_data'] = $termData;
+            $data['_term_title'] = $term->title;
+            $data['_term_slug'] = $term->slug;
+            $data['_term_link'] = $termLink;
+
+            foreach ($termData as $k => $v) {
+                if (! is_scalar($v)) {
+                    continue;
+                }
+                $strVal = (string) $v;
+                if (! isset($data[$k]) || $data[$k] === '' || $data[$k] === null || $data[$k] === '/placeholder-image.png') {
+                    $data[$k] = $strVal;
+                }
+                $camelKey = Str::camel($k);
+                if (! isset($data[$camelKey]) || $data[$camelKey] === '' || $data[$camelKey] === null) {
+                    $data[$camelKey] = $strVal;
+                }
+                $snakeKey = Str::snake($k);
+                if (! isset($data[$snakeKey]) || $data[$snakeKey] === '' || $data[$snakeKey] === null) {
+                    $data[$snakeKey] = $strVal;
+                }
+            }
+
+            if (empty($data['name']) || $data['name'] === 'Destination Name') {
+                $data['name'] = $term->title;
+            }
+            if (empty($data['title']) || $data['title'] === 'Untitled') {
+                $data['title'] = $term->title;
+            }
+            if (empty($data['slug'])) {
+                $data['slug'] = $term->slug;
+            }
+            if (empty($data['image']) || $data['image'] === '/placeholder-image.png') {
+                $data['image'] = $termData['image'] ?? $termData['featured_image'] ?? $termData['cover_image'] ?? $termData['photo'] ?? ($data['image'] ?? '');
+            }
+            if (empty($data['link']) || $data['link'] === '#' || $data['link'] === '/' || str_starts_with($data['link'], '/destinations/')) {
+                $data['link'] = $termLink;
+            }
+            if (empty($data['url']) || $data['url'] === '#') {
+                $data['url'] = $termLink;
+            }
+        }
+
+        // Process subfields / object / list structures
+        foreach ($fields as $field) {
+            $name = $field['name'] ?? '';
+            $type = $field['type'] ?? '';
+
+            if ($type === 'object') {
+                $subFields = $field['fields'] ?? [];
+                if (! empty($field['list']) && isset($data[$name]) && is_array($data[$name])) {
+                    foreach ($data[$name] as $index => $item) {
+                        if (is_array($item)) {
+                            $data[$name][$index] = self::applyTaxonomyTerms($item, $subFields, $terms);
+                        }
+                    }
+                } elseif (isset($data[$name]) && is_array($data[$name])) {
+                    $data[$name] = self::applyTaxonomyTerms($data[$name], $subFields, $terms);
                 }
             }
         }

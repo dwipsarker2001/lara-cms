@@ -21,6 +21,7 @@ class TravelDeals extends Block
                 Field::link('link', 'Link'),
             ]),
             Field::list('cards', 'Cards', [
+                Field::collection('package_id', 'Select Package / Deal', collection: 'packages'),
                 Field::image('image', 'Image', default: '/placeholder-image.png'),
                 Field::string('badge', 'Badge', default: 'Popular'),
                 Field::string('title', 'Title', default: 'Paris Getaway'),

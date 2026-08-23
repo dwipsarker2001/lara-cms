@@ -23,6 +23,7 @@
     window.editorCsrfToken              = '{{ csrf_token() }}';
     window.editorPostId                 = null;
     window.editorForms                  = @json($availableForms ?? []);
+    window.editorAllTaxonomies          = @json($allTaxonomies ?? []);
 </script>
 
 <div class="flex h-full p-3 relative" id="page-editor-root" style="--sb-w: 420px;"
@@ -123,7 +124,7 @@
 
                     {{-- Field list --}}
                     <div class="flex flex-col gap-3 p-0.5">
-                        <template x-for="field in currentFields()" :key="field.name">
+                        <template x-for="field in currentFields()" :key="fieldPath(field.name)">
                             <div :data-field-scroll="field.name">
                                 @include('admin.collections.entries.partials.fields._string')
                                 @include('admin.collections.entries.partials.fields._textarea')
@@ -132,6 +133,8 @@
                                 @include('admin.collections.entries.partials.fields._devices')
                                 @include('admin.collections.entries.partials.fields._select')
                                 @include('admin.collections.entries.partials.fields._form')
+                                @include('admin.collections.entries.partials.fields._collection')
+                                @include('admin.collections.entries.partials.fields._taxonomies')
                                 @include('admin.collections.entries.partials.fields._image')
                                 @include('admin.collections.entries.partials.fields._icon')
                                 @include('admin.collections.entries.partials.fields._map')

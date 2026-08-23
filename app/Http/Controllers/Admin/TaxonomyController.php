@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\Collection;
 use App\Models\Taxonomy;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -27,6 +28,11 @@ class TaxonomyController extends Controller
             if (! Schema::hasColumn('taxonomies', 'icon')) {
                 Schema::table('taxonomies', function ($table) {
                     $table->string('icon')->nullable();
+                });
+            }
+            if (! Schema::hasColumn('taxonomies', 'route_pattern')) {
+                Schema::table('taxonomies', function ($table) {
+                    $table->string('route_pattern')->nullable();
                 });
             }
         }
@@ -60,7 +66,17 @@ class TaxonomyController extends Controller
     {
         $this->ensureSchemaColumns();
 
-        return view('admin.taxonomies.create');
+        $collections = Collection::whereRaw('LOWER(name) != ?', ['layout'])
+            ->whereRaw('LOWER(slug) != ?', ['layout'])
+            ->whereRaw('LOWER(slug) != ?', ['layouts'])
+            ->with(['entries' => fn ($q) => $q->select('id', 'collection_id', 'slug', 'data')->where('published', true)])
+            ->orderBy('position')
+            ->orderBy('name')
+            ->get();
+
+        $taxonomies = Taxonomy::orderBy('title')->get();
+
+        return view('admin.taxonomies.create', compact('collections', 'taxonomies'));
     }
 
     public function store(Request $request): RedirectResponse
@@ -83,6 +99,7 @@ class TaxonomyController extends Controller
             'slug' => 'required|string|max:255|unique:taxonomies,slug',
             'icon' => 'nullable|string|max:255',
             'description' => 'nullable|string',
+            'route_pattern' => 'nullable|string|max:500',
             'fields' => 'nullable|array',
         ]);
 
@@ -104,7 +121,17 @@ class TaxonomyController extends Controller
     {
         $this->ensureSchemaColumns();
 
-        return view('admin.taxonomies.edit', ['taxonomy' => $taxonomy]);
+        $collections = Collection::whereRaw('LOWER(name) != ?', ['layout'])
+            ->whereRaw('LOWER(slug) != ?', ['layout'])
+            ->whereRaw('LOWER(slug) != ?', ['layouts'])
+            ->with(['entries' => fn ($q) => $q->select('id', 'collection_id', 'slug', 'data')->where('published', true)])
+            ->orderBy('position')
+            ->orderBy('name')
+            ->get();
+
+        $taxonomies = Taxonomy::where('id', '!=', $taxonomy->id)->orderBy('title')->get();
+
+        return view('admin.taxonomies.edit', compact('taxonomy', 'collections', 'taxonomies'));
     }
 
     public function update(Request $request, Taxonomy $taxonomy): RedirectResponse
@@ -121,6 +148,7 @@ class TaxonomyController extends Controller
             'slug' => 'required|string|max:255|unique:taxonomies,slug,'.$taxonomy->id,
             'icon' => 'nullable|string|max:255',
             'description' => 'nullable|string',
+            'route_pattern' => 'nullable|string|max:500',
             'fields' => 'nullable|array',
         ]);
 

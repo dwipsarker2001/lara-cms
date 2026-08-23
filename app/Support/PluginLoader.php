@@ -81,13 +81,19 @@ class PluginLoader
         $baseNamespace = rtrim($baseNamespace, '\\').'\\';
 
         if (is_dir($srcPath) || is_dir($blocksPath)) {
-            spl_autoload_register(function (string $class) use ($baseNamespace, $srcPath, $blocksPath): void {
+            spl_autoload_register(function (string $class) use ($baseNamespace, $pluginPath, $srcPath, $blocksPath): void {
                 if (! str_starts_with($class, $baseNamespace)) {
                     return;
                 }
 
                 $relativeClass = substr($class, strlen($baseNamespace));
                 $relativePath = str_replace('\\', DIRECTORY_SEPARATOR, $relativeClass).'.php';
+
+                if (file_exists($pluginPath.DIRECTORY_SEPARATOR.$relativePath)) {
+                    require_once $pluginPath.DIRECTORY_SEPARATOR.$relativePath;
+
+                    return;
+                }
 
                 if (is_dir($srcPath) && file_exists($srcPath.DIRECTORY_SEPARATOR.$relativePath)) {
                     require_once $srcPath.DIRECTORY_SEPARATOR.$relativePath;

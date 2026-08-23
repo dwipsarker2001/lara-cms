@@ -33,7 +33,7 @@
                 <div class="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
                     @foreach(($d['cards'] ?? []) as $i => $card)
                         @if($card)
-                            <div data-list="cards" class="group flex h-full flex-col overflow-hidden rounded-xl p-3 border border-gray-100 bg-white shadow-sm">
+                            <div data-list="cards" data-list-index="{{ $i }}" class="group flex h-full flex-col overflow-hidden rounded-xl p-3 border border-gray-100 bg-white shadow-sm">
                                 <div data-edit="image" class="relative h-52 overflow-hidden rounded-xl bg-gray-100">
                                     @if($card['image'] ?? false)
                                         <img src="{{ $card['image'] }}" alt="{{ $card['title'] ?? '' }}" class="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105" />

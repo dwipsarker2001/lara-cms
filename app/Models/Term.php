@@ -37,4 +37,32 @@ class Term extends Model
     {
         return $this->belongsTo(Taxonomy::class);
     }
+
+    /**
+     * Generate the frontend route or target URL for this term based on custom data, taxonomy pattern, or default path.
+     */
+    public function route(?string $patternOverride = null): string
+    {
+        if (! empty($this->data['custom_url'])) {
+            return $this->data['custom_url'];
+        }
+
+        $this->loadMissing('taxonomy');
+        $pattern = $this->taxonomy->route_pattern ?? '';
+        if (empty($pattern)) {
+            $pattern = $patternOverride;
+        }
+
+        if (! empty($pattern)) {
+            return str_replace(
+                ['{slug}', '{id}', '{title}'],
+                [$this->slug, (string) $this->id, urlencode($this->title)],
+                $pattern
+            );
+        }
+
+        $taxSlug = $this->taxonomy->slug ?? 'destinations';
+
+        return '/'.$taxSlug.'/'.$this->slug;
+    }
 }

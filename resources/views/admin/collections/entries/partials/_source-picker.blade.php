@@ -22,6 +22,16 @@
                     if (matched && matched.collection_slug) {
                         this.pickerMode = matched.collection_slug;
                     }
+                } else if (currentSrc.startsWith('term:')) {
+                    const parts = currentSrc.split(':');
+                    this.selectedEntryId = parts[1];
+                    const allTaxes = window.editorAllTaxonomies || [];
+                    for (const t of allTaxes) {
+                        if (t.terms && t.terms.some(item => String(item.id) === String(parts[1]))) {
+                            this.pickerMode = 'tax:' + t.slug;
+                            break;
+                        }
+                    }
                 } else {
                     const settingsGroup = (groupedCollectionFields || []).find(g => g.collection_id === 'site_settings');
                     if (settingsGroup && settingsGroup.fields.some(f => f.key === currentSrc)) {
@@ -35,18 +45,44 @@
         getModeLabel() {
             if (this.pickerMode === 'current_page') return 'Current Page';
             if (this.pickerMode === 'site_settings') return 'Site Settings';
+            if (this.pickerMode.startsWith('tax:')) {
+                const taxSlug = this.pickerMode.substring(4);
+                const tax = (window.editorAllTaxonomies || []).find(t => t.slug === taxSlug);
+                return tax ? ('Taxonomy: ' + tax.title) : 'Taxonomy';
+            }
             const col = getLinkCollections().find(c => c.slug === this.pickerMode);
             return col ? col.name : this.pickerMode;
         },
         getSelectedEntryTitle() {
             if (!this.selectedEntryId) return 'Select item...';
-            const matched = (pages || []).find(p => String(p.id) === String(this.selectedEntryId));
+            if (this.pickerMode.startsWith('tax:')) {
+                const taxSlug = this.pickerMode.substring(4);
+                const tax = (window.editorAllTaxonomies || []).find(t => t.slug === taxSlug);
+                const term = (tax?.terms || []).find(item => String(item.id) === String(this.selectedEntryId));
+                return term ? term.title : 'Select item...';
+            }
+            let matched = (pages || []).find(p => String(p.id) === String(this.selectedEntryId));
+            if (!matched && window.editorAllCollections) {
+                for (const c of window.editorAllCollections) {
+                    if (c.entries) {
+                        const found = c.entries.find(e => String(e.id) === String(this.selectedEntryId));
+                        if (found) { matched = found; break; }
+                    }
+                }
+            }
             return matched ? matched.title : 'Select item...';
         },
         getFilteredEntries() {
+            if (this.pickerMode.startsWith('tax:')) {
+                const taxSlug = this.pickerMode.substring(4);
+                const tax = (window.editorAllTaxonomies || []).find(t => t.slug === taxSlug);
+                const list = tax?.terms || [];
+                if (!this.entrySearch) return list;
+                return list.filter(p => (p.title || '').toLowerCase().includes(this.entrySearch.toLowerCase()));
+            }
             const list = getLinkEntries(this.pickerMode);
             if (!this.entrySearch) return list;
-            return list.filter(p => p.title.toLowerCase().includes(this.entrySearch.toLowerCase()));
+            return list.filter(p => (p.title || '').toLowerCase().includes(this.entrySearch.toLowerCase()));
         },
         getCurrentPageFields() {
             const list = [
@@ -167,6 +203,22 @@
                         </svg>
                     </button>
                 </template>
+
+                <div class="h-px bg-gray-100 my-1"></div>
+                <div class="px-2.5 py-1 text-[10px] font-semibold text-gray-400 uppercase tracking-wider">Taxonomies</div>
+
+                {{-- Taxonomies --}}
+                <template x-for="tax in (window.editorAllTaxonomies || [])" :key="tax.slug">
+                    <button type="button" @click="pickerMode = 'tax:' + tax.slug; selectedEntryId = null; modePickerOpen = false"
+                        class="w-full flex items-center justify-between px-2.5 py-1.5 text-left text-xs transition-colors cursor-pointer"
+                        :class="pickerMode === ('tax:' + tax.slug) ? 'bg-primary/10 text-primary font-bold' : 'text-gray-700 hover:bg-gray-50'"
+                    >
+                        <span class="truncate" x-text="tax.title"></span>
+                        <svg x-show="pickerMode === ('tax:' + tax.slug)" class="size-3.5 shrink-0 text-primary" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                            <path d="M20 6 9 17l-5-5"/>
+                        </svg>
+                    </button>
+                </template>
             </div>
         </div>
     </div>
@@ -207,12 +259,12 @@
         </div>
     </template>
 
-    {{-- Mode 3: Collection Item & Fields --}}
+    {{-- Mode 3: Collection or Taxonomy Item & Fields --}}
     <template x-if="pickerMode !== 'current_page' && pickerMode !== 'site_settings'">
         <div>
             {{-- Item Picker --}}
             <div class="px-3 py-2 border-b border-gray-100">
-                <label class="block text-[10px] font-semibold text-gray-500 uppercase tracking-wider mb-1">Collection Item</label>
+                <label class="block text-[10px] font-semibold text-gray-500 uppercase tracking-wider mb-1" x-text="pickerMode.startsWith('tax:') ? 'Taxonomy Term' : 'Collection Item'"></label>
                 <div class="relative">
                     <button type="button" @click="entryPickerOpen = !entryPickerOpen"
                         class="w-full flex items-center justify-between gap-2 rounded-lg border border-gray-200 bg-white px-2.5 py-1.5 text-xs font-medium text-gray-700 transition-colors hover:border-gray-300 focus:outline-none focus:ring-1 focus:ring-primary focus:border-primary cursor-pointer"
@@ -257,10 +309,10 @@
                 <template x-if="selectedEntryId">
                     <div>
                         <div class="px-3 py-1 text-[10px] font-semibold text-gray-400 uppercase tracking-wider">Select Field to Bind</div>
-                        <template x-for="cf in getEntrySourceFields(selectedEntryId)" :key="cf.key">
-                            <button type="button" @click="setFieldSource(field.name, 'entry:' + selectedEntryId + ':' + cf.key); showSourcePicker = false"
+                        <template x-for="cf in (pickerMode.startsWith('tax:') ? getTermSourceFields(selectedEntryId) : getEntrySourceFields(selectedEntryId))" :key="cf.key">
+                            <button type="button" @click="setFieldSource(field.name, (pickerMode.startsWith('tax:') ? 'term:' : 'entry:') + selectedEntryId + ':' + cf.key); showSourcePicker = false"
                                 class="w-full flex items-center justify-between px-3 py-1.5 text-left text-xs transition-colors cursor-pointer hover:bg-primary/10"
-                                :class="getSourceKey(field.name) === ('entry:' + selectedEntryId + ':' + cf.key) ? 'bg-primary/10 text-primary font-bold' : 'text-gray-700'"
+                                :class="getSourceKey(field.name) === ((pickerMode.startsWith('tax:') ? 'term:' : 'entry:') + selectedEntryId + ':' + cf.key) ? 'bg-primary/10 text-primary font-bold' : 'text-gray-700'"
                             >
                                 <span class="truncate pr-2" x-text="cf.label"></span>
                                 <span class="text-[10px] font-mono text-gray-400 shrink-0" x-text="cf.key"></span>

@@ -10,7 +10,7 @@
         <div class="mt-12 flex gap-5 overflow-x-auto snap-x snap-mandatory sm:grid sm:grid-cols-2 lg:grid-cols-4 md:gap-6 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
             @foreach(($d['members'] ?? []) as $i => $member)
                 @if($member)
-                    <div data-list="members" class="min-w-[260px] sm:min-w-0 snap-start rounded-2xl border-2 border-transparent">
+                    <div data-list="members" data-list-index="{{ $i }}" class="min-w-[260px] sm:min-w-0 snap-start rounded-2xl border-2 border-transparent">
                         <div data-edit="image" class="group relative aspect-[4/5] overflow-hidden rounded-2xl bg-gray-200">
                             @if($member['image'] ?? false)
                                 <img src="{{ $member['image'] }}" alt="{{ $member['name'] ?? '' }}" class="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-[1.03]" />

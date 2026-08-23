@@ -1,6 +1,6 @@
 @php
     $d = $data;
-    $places = array_values(array_filter($d['places'] ?? []));
+    $places = is_array($d['places'] ?? null) ? array_values($d['places']) : [];
     $spans = ['sm:col-span-1', 'sm:col-span-2', 'sm:col-span-1'];
 @endphp
 <section data-block="destinationsGrid" class="py-20">
@@ -19,8 +19,14 @@
                 @if(count($places) >= 3)
                     <div class="grid grid-cols-1 gap-6 sm:grid-cols-4">
                         @foreach(array_slice($places, 0, 3) as $i => $place)
-                            <div class="{{ $spans[$i] }}">
-                                <a href="{{ $place['slug'] ?? '#' }}" data-list="places" class="group relative block h-[280px] overflow-hidden rounded-2xl bg-gray-100">
+                            @php
+                                $placeUrl = $place['link'] ?? ($place['_term_link'] ?? ($place['url'] ?? ($place['slug'] ?? '#')));
+                                if ($placeUrl && $placeUrl !== '#' && !str_starts_with($placeUrl, '/') && !str_starts_with($placeUrl, 'http') && !str_starts_with($placeUrl, '?')) {
+                                    $placeUrl = '/destinations/' . $placeUrl;
+                                }
+                            @endphp
+                            <div class="{{ $spans[$i] ?? 'sm:col-span-1' }}">
+                                <a href="{{ $placeUrl }}" data-list="places" data-list-index="{{ $i }}" class="group relative block h-[280px] overflow-hidden rounded-2xl bg-gray-100">
                                     <img src="{{ $place['image'] ?? '' }}" alt="{{ $place['name'] ?? '' }}" data-edit="image" class="absolute inset-0 w-full h-full object-cover {{ empty($place['image']) ? 'hidden' : '' }}" />
                                     <div class="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent"></div>
                                     <div class="absolute bottom-5 left-5 text-white">
@@ -32,11 +38,21 @@
                     </div>
                 @endif
 
-                @php $remaining = array_slice($places, 3); $gridItems = count($places) >= 3 ? $remaining : $places; @endphp
-                @if(!empty($gridItems))
+                @php
+                    $remaining = count($places) >= 3 ? array_slice($places, 3) : $places;
+                    $startIndex = count($places) >= 3 ? 3 : 0;
+                @endphp
+                @if(!empty($remaining))
                     <div class="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
-                        @foreach($gridItems as $place)
-                            <a href="{{ $place['slug'] ?? '#' }}" data-list="places" class="group relative block h-[280px] overflow-hidden rounded-2xl bg-gray-100">
+                        @foreach($remaining as $j => $place)
+                            @php
+                                $placeIndex = $startIndex + $j;
+                                $placeUrl = $place['link'] ?? ($place['_term_link'] ?? ($place['url'] ?? ($place['slug'] ?? '#')));
+                                if ($placeUrl && $placeUrl !== '#' && !str_starts_with($placeUrl, '/') && !str_starts_with($placeUrl, 'http') && !str_starts_with($placeUrl, '?')) {
+                                    $placeUrl = '/destinations/' . $placeUrl;
+                                }
+                            @endphp
+                            <a href="{{ $placeUrl }}" data-list="places" data-list-index="{{ $placeIndex }}" class="group relative block h-[280px] overflow-hidden rounded-2xl bg-gray-100">
                                 <img src="{{ $place['image'] ?? '' }}" alt="{{ $place['name'] ?? '' }}" data-edit="image" class="absolute inset-0 w-full h-full object-cover {{ empty($place['image']) ? 'hidden' : '' }}" />
                                 <div class="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent"></div>
                                 <div class="absolute bottom-5 left-5 text-white">

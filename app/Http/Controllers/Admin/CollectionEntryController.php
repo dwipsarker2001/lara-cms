@@ -10,6 +10,7 @@ use App\Models\CollectionEntry;
 use App\Models\Form;
 use App\Models\Layout;
 use App\Models\Setting;
+use App\Models\Taxonomy;
 use App\Support\Sections;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Schema;
@@ -361,17 +362,47 @@ class CollectionEntryController extends Controller
         $allCollections = Collection::whereRaw('LOWER(name) != ?', ['layout'])
             ->whereRaw('LOWER(slug) != ?', ['layout'])
             ->whereRaw('LOWER(slug) != ?', ['layouts'])
+            ->with(['entries' => fn ($q) => $q->select('id', 'collection_id', 'slug', 'data')->where('published', true)->orderBy('position')->orderBy('id', 'desc')])
             ->orderBy('position')
             ->orderBy('name')
             ->get()
             ->map(fn ($c) => [
-                'id' => $c->id,
+                'id' => (string) $c->id,
                 'name' => $c->name,
                 'slug' => $c->slug,
                 'fields' => is_array($c->fields) ? $c->fields : [],
+                'entries' => $c->entries->map(fn ($e) => [
+                    'id' => (string) $e->id,
+                    'title' => $e->title ?? ($e->data['title'] ?? 'Untitled Entry'),
+                    'slug' => $e->slug,
+                    'data' => is_array($e->data) ? $e->data : [],
+                ])->values()->all(),
             ])
             ->values()
             ->all();
+
+        $allTaxonomies = collect();
+        if (Schema::hasTable('taxonomies')) {
+            $allTaxonomies = Taxonomy::with(['terms' => fn ($q) => $q->orderBy('position')->orderBy('title')])
+                ->orderBy('position')
+                ->orderBy('title')
+                ->get()
+                ->map(fn ($t) => [
+                    'id' => (string) $t->id,
+                    'title' => $t->title,
+                    'slug' => $t->slug,
+                    'route_pattern' => $t->route_pattern,
+                    'terms' => $t->terms->map(fn ($term) => [
+                        'id' => (string) $term->id,
+                        'title' => $term->title,
+                        'slug' => $term->slug,
+                        'route' => $term->route(),
+                        'data' => is_array($term->data) ? $term->data : [],
+                    ])->values()->all(),
+                ])
+                ->values()
+                ->all();
+        }
 
         return view('admin.collections.entries.editor', [
             'collection' => $collection,
@@ -383,6 +414,7 @@ class CollectionEntryController extends Controller
             'blockList' => $blockList,
             'pages' => $pages,
             'allCollections' => $allCollections,
+            'allTaxonomies' => $allTaxonomies,
             'collectionFields' => $collectionFields,
             'groupedCollectionFields' => $groupedCollectionFields,
             'settingsCustomValues' => $settingsCustomValues,

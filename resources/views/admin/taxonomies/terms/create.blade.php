@@ -386,6 +386,60 @@
                                                         @endif
                                                         <input type="hidden" name="data[{{ $fKey }}][formatted]" :value="formatted">
                                                     </div>
+                                                @elseif($fType === 'collection')
+                                                    @php
+                                                        $targetCollection = !empty($field['collection_id']) ? \App\Models\Collection::find($field['collection_id']) : null;
+                                                        $targetEntries = $targetCollection ? $targetCollection->entries()->where('published', true)->get() : collect();
+                                                        $selectedEntry = $targetEntries->firstWhere('id', $oldVal);
+                                                        $selectedLabel = $selectedEntry?->title ?? $selectedEntry?->data['title'] ?? 'Choose entry...';
+                                                    @endphp
+                                                    <div x-data="{ open: false, selectedValue: @js((string)$oldVal), label: @js((string)$selectedLabel) }" @click.outside="open = false" @keydown.escape.window="open = false" class="relative">
+                                                        <button type="button" @click="open = !open" class="w-full flex items-center justify-between bg-content-bg border border-content-border text-text-primary text-sm rounded-lg px-3 py-2 h-9 cursor-pointer transition-all duration-150 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary">
+                                                            <span class="truncate" x-text="label"></span>
+                                                            <svg class="size-4 text-text-muted shrink-0 transition-transform duration-150" :class="open ? 'rotate-180' : ''" viewBox="0 0 20 20" fill="currentColor">
+                                                                <path fill-rule="evenodd" d="M5.22 8.22a.75.75 0 0 1 1.06 0L10 11.94l3.72-3.72a.75.75 0 1 1 1.06 1.06l-4.25 4.25a.75.75 0 0 1-1.06 0L5.22 9.28a.75.75 0 0 1 0-1.06Z" clip-rule="evenodd" />
+                                                            </svg>
+                                                        </button>
+                                                        <div x-show="open" class="absolute z-50 top-full mt-1 left-0 right-0 bg-content-bg border border-content-border rounded-lg shadow-lg p-1 max-h-80 overflow-y-auto [scrollbar-width:thin] space-y-0.5" style="display: none;">
+                                                            <button type="button" @click="selectedValue = ''; label = 'Choose entry...'; open = false" class="w-full text-left px-3 py-1.5 text-sm rounded-md transition-colors text-text-muted hover:bg-content-border/30">
+                                                                <span>None</span>
+                                                            </button>
+                                                            @foreach ($targetEntries as $te)
+                                                                @php $teTitle = $te->data['title'] ?? $te->title ?? 'Untitled Entry'; @endphp
+                                                                <button type="button" @click="selectedValue = @js((string)$te->id); label = @js((string)$teTitle); open = false" class="w-full text-left px-3 py-1.5 text-sm rounded-md transition-colors" :class="selectedValue == @js((string)$te->id) ? 'bg-primary/10 text-primary font-medium' : 'text-text-primary hover:bg-content-border/30'">
+                                                                    <span>{{ $teTitle }}</span>
+                                                                </button>
+                                                            @endforeach
+                                                        </div>
+                                                        <input type="hidden" name="data[{{ $fKey }}]" :value="selectedValue">
+                                                    </div>
+                                                @elseif($fType === 'taxonomies')
+                                                    @php
+                                                        $taxId = $field['taxonomy_id'] ?? null;
+                                                        $targetTaxonomy = $taxId ? \App\Models\Taxonomy::find($taxId) : null;
+                                                        $targetTerms = $targetTaxonomy ? $targetTaxonomy->terms()->orderBy('title')->get() : \App\Models\Term::orderBy('title')->get();
+                                                        $selectedTerm = $targetTerms->firstWhere('id', $oldVal);
+                                                        $selectedLabel = $selectedTerm?->title ?? 'Choose item...';
+                                                    @endphp
+                                                    <div x-data="{ open: false, selectedValue: @js((string)$oldVal), label: @js((string)$selectedLabel) }" @click.outside="open = false" @keydown.escape.window="open = false" class="relative">
+                                                        <button type="button" @click="open = !open" class="w-full flex items-center justify-between bg-content-bg border border-content-border text-text-primary text-sm rounded-lg px-3 py-2 h-9 cursor-pointer transition-all duration-150 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary">
+                                                            <span class="truncate" x-text="label"></span>
+                                                            <svg class="size-4 text-text-muted shrink-0 transition-transform duration-150" :class="open ? 'rotate-180' : ''" viewBox="0 0 20 20" fill="currentColor">
+                                                                <path fill-rule="evenodd" d="M5.22 8.22a.75.75 0 0 1 1.06 0L10 11.94l3.72-3.72a.75.75 0 1 1 1.06 1.06l-4.25 4.25a.75.75 0 0 1-1.06 0L5.22 9.28a.75.75 0 0 1 0-1.06Z" clip-rule="evenodd" />
+                                                            </svg>
+                                                        </button>
+                                                        <div x-show="open" class="absolute z-50 top-full mt-1 left-0 right-0 bg-content-bg border border-content-border rounded-lg shadow-lg p-1 max-h-80 overflow-y-auto [scrollbar-width:thin] space-y-0.5" style="display: none;">
+                                                            <button type="button" @click="selectedValue = ''; label = 'Choose item...'; open = false" class="w-full text-left px-3 py-1.5 text-sm rounded-md transition-colors text-text-muted hover:bg-content-border/30">
+                                                                <span>None</span>
+                                                            </button>
+                                                            @foreach ($targetTerms as $tt)
+                                                                <button type="button" @click="selectedValue = @js((string)$tt->id); label = @js((string)$tt->title); open = false" class="w-full text-left px-3 py-1.5 text-sm rounded-md transition-colors" :class="selectedValue == @js((string)$tt->id) ? 'bg-primary/10 text-primary font-medium' : 'text-text-primary hover:bg-content-border/30'">
+                                                                    <span>{{ $tt->title }}</span>
+                                                                </button>
+                                                            @endforeach
+                                                        </div>
+                                                        <input type="hidden" name="data[{{ $fKey }}]" :value="selectedValue">
+                                                    </div>
                                                 @else
                                                     <input type="text" name="data[{{ $fKey }}]" value="{{ $oldVal }}" class="w-full block bg-content-bg border border-content-border text-text-primary text-sm rounded-lg px-3 py-2 h-9 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary">
                                                 @endif
