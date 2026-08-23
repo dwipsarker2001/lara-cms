@@ -37,6 +37,21 @@ class SettingsController extends Controller
                     $table->string('recaptcha_secret_key')->nullable();
                 });
             }
+            if (! Schema::hasColumn('settings', 'ai_base_url')) {
+                Schema::table('settings', function ($table) {
+                    $table->string('ai_base_url')->nullable();
+                });
+            }
+            if (! Schema::hasColumn('settings', 'ai_api_key')) {
+                Schema::table('settings', function ($table) {
+                    $table->text('ai_api_key')->nullable();
+                });
+            }
+            if (! Schema::hasColumn('settings', 'ai_model')) {
+                Schema::table('settings', function ($table) {
+                    $table->string('ai_model')->nullable();
+                });
+            }
         }
     }
 
@@ -71,6 +86,9 @@ class SettingsController extends Controller
             'language' => 'nullable|string|max:10',
             'recaptcha_site_key' => 'nullable|string|max:255',
             'recaptcha_secret_key' => 'nullable|string|max:255',
+            'ai_base_url' => 'nullable|string|max:500',
+            'ai_api_key' => 'nullable|string|max:1000',
+            'ai_model' => 'nullable|string|max:150',
             'logo_light' => 'nullable|string|max:255',
             'logo_dark' => 'nullable|string|max:255',
             'contact_number' => 'nullable|string|max:50',
@@ -78,6 +96,13 @@ class SettingsController extends Controller
             'custom_fields' => 'nullable',
             'custom_values' => 'nullable|array',
         ]);
+
+        if (array_key_exists('ai_api_key', $data)) {
+            $submittedKey = trim((string) $data['ai_api_key']);
+            if ($submittedKey === '' || str_contains($submittedKey, '*') || str_contains($submittedKey, '•')) {
+                unset($data['ai_api_key']);
+            }
+        }
 
         if (array_key_exists('custom_fields', $data)) {
             if (is_string($data['custom_fields'])) {

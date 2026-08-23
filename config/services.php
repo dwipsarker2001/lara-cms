@@ -41,4 +41,10 @@ return [
         'score_threshold' => (float) env('RECAPTCHA_SCORE_THRESHOLD', 0.5),
     ],
 
+    'deepseek' => [
+        'api_key' => env('DEEPSEEK_API_KEY', ''),
+        'base_url' => env('DEEPSEEK_BASE_URL', 'https://api.deepseek.com'),
+        'model' => env('DEEPSEEK_MODEL', 'deepseek-chat'),
+    ],
+
 ];

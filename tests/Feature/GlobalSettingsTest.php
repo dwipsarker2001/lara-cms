@@ -80,3 +80,43 @@ it('returns logo and contact number via helper methods', function () {
         ->and(Setting::getLogo('dark'))->toBe('/storage/logo-dark.png')
         ->and(Setting::getContactNumber())->toBe('+123456789');
 });
+
+it('can store and update ai settings including base url, api key, and model name', function () {
+    $response = put(route('admin.settings.update'), [
+        'ai_base_url' => 'https://api.groq.com/openai/v1',
+        'ai_api_key' => 'sk-test-ai-secret-key-999',
+        'ai_model' => 'llama-3.3-70b-versatile',
+    ]);
+
+    $response->assertRedirect();
+
+    $settings = Setting::first();
+    expect($settings->ai_base_url)->toBe('https://api.groq.com/openai/v1')
+        ->and($settings->ai_api_key)->toBe('sk-test-ai-secret-key-999')
+        ->and($settings->ai_model)->toBe('llama-3.3-70b-versatile');
+
+    $maskedKey = $settings->getMaskedAiApiKey();
+    expect($maskedKey)->toContain('sk-t')
+        ->and($maskedKey)->toContain('-999')
+        ->and($maskedKey)->toContain('*')
+        ->and($maskedKey)->not->toBe('sk-test-ai-secret-key-999');
+
+    get(route('admin.settings'))
+        ->assertSuccessful()
+        ->assertSee('name="ai_base_url"', false)
+        ->assertSee('name="ai_api_key"', false)
+        ->assertSee('name="ai_model"', false)
+        ->assertSee('https://api.groq.com/openai/v1', false)
+        ->assertSee('llama-3.3-70b-versatile', false)
+        ->assertSee($maskedKey, false)
+        ->assertDontSee('sk-test-ai-secret-key-999', false);
+
+    // Saving with masked key or blank preserves existing raw key
+    put(route('admin.settings.update'), [
+        'ai_base_url' => 'https://api.groq.com/openai/v1',
+        'ai_api_key' => $maskedKey,
+        'ai_model' => 'llama-3.3-70b-versatile',
+    ]);
+
+    expect(Setting::first()->ai_api_key)->toBe('sk-test-ai-secret-key-999');
+});

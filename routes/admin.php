@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Admin\AdminUserController;
+use App\Http\Controllers\Admin\AiAgentController;
 use App\Http\Controllers\Admin\AssetsController;
 use App\Http\Controllers\Admin\CollectionController;
 use App\Http\Controllers\Admin\CollectionEntryController;
@@ -84,4 +85,9 @@ Route::middleware(['web', 'auth:admin'])->prefix('admin')->name('admin.')->group
     Route::resource('administrators', AdminUserController::class)
         ->except(['show'])
         ->parameters(['administrators' => 'admin']);
+
+    Route::post('ai/chat', [AiAgentController::class, 'chat'])->name('ai.chat');
+    Route::get('ai/assets', [AiAgentController::class, 'assets'])->name('ai.assets');
+    Route::get('ai/images', [AiAgentController::class, 'images'])->name('ai.images');
+    Route::get('ai/search-images', [AiAgentController::class, 'searchImages'])->name('ai.search-images');
 });

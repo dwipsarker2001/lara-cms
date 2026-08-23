@@ -28,6 +28,9 @@ class Setting extends Model
         'cms_version',
         'recaptcha_site_key',
         'recaptcha_secret_key',
+        'ai_base_url',
+        'ai_api_key',
+        'ai_model',
         'custom_fields',
         'custom_values',
     ];
@@ -99,5 +102,25 @@ class Setting extends Model
     public static function getContactNumber(): ?string
     {
         return static::first()?->contact_number;
+    }
+
+    public function getMaskedAiApiKey(): ?string
+    {
+        if (empty($this->ai_api_key)) {
+            return null;
+        }
+
+        $key = (string) $this->ai_api_key;
+        $len = strlen($key);
+
+        if ($len <= 8) {
+            return str_repeat('*', max(6, $len));
+        }
+
+        $prefix = substr($key, 0, 4);
+        $suffix = substr($key, -4);
+        $maskedLength = min(16, max(8, $len - 8));
+
+        return $prefix.str_repeat('*', $maskedLength).$suffix;
     }
 }

@@ -200,6 +200,11 @@
             </div>
         </div>
     </div>
+
+    {{-- ===================================================
+         AI Agent Assistant (Floating Avatar & Interactive Chat)
+    =================================================== --}}
+    @include('admin.components.ai-agent')
 </div>
 @endsection
 
@@ -214,4 +219,6 @@
 
 @push('styles')
 <script src="/js/page-editor.js?v={{ filemtime(public_path('js/page-editor.js')) }}"></script>
+<script src="/js/ai-agent.js?v={{ filemtime(public_path('js/ai-agent.js')) }}"></script>
 @endpush
+

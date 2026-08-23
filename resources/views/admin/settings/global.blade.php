@@ -55,6 +55,11 @@
                     :class="activeTab === 'recaptcha' ? 'border-primary text-primary font-semibold' : 'border-transparent text-text-muted hover:text-text-primary'">
                     reCAPTCHA
                 </button>
+                <button type="button" @click="activeTab = 'ai'"
+                    class="px-4 py-2.5 text-sm font-medium transition-colors border-b-2 cursor-pointer -mb-px"
+                    :class="activeTab === 'ai' ? 'border-primary text-primary font-semibold' : 'border-transparent text-text-muted hover:text-text-primary'">
+                    AI Assistant
+                </button>
             </div>
 
             {{-- Settings Content --}}
@@ -400,7 +405,7 @@
                 </div> {{-- End General Tab Panel --}}
 
                 {{-- reCAPTCHA Settings Tab Panel --}}
-                <div x-show="activeTab === 'recaptcha'" style="display: none;">
+                <div x-show="activeTab === 'recaptcha'" x-cloak>
                     <div class="bg-panel-bg rounded-2xl mb-8 p-[7px]">
                         <div class="px-[18px] pt-3 pb-1 text-sm font-medium text-text-heading">reCAPTCHA v3 Protection</div>
                         <p class="px-[18px] pb-3 text-sm text-text-muted">Configure Google reCAPTCHA v3 credentials to protect your admin login page from automated brute-force attacks.</p>
@@ -432,6 +437,98 @@
                                                 placeholder="6L..."
                                                 class="w-full block bg-white border border-gray-300 text-text-primary text-sm rounded-lg px-3 py-2 h-9 font-mono focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary shadow-xs">
                                             @error('recaptcha_secret_key') <p class="text-xs text-danger mt-1">{{ $message }}</p> @enderror
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                {{-- AI Assistant Settings Tab Panel --}}
+                <div x-show="activeTab === 'ai'" x-cloak>
+                    <div class="bg-panel-bg rounded-2xl mb-8 p-[7px]">
+                        <div class="px-[18px] pt-3 pb-1 text-sm font-medium text-text-heading">AI Assistant</div>
+                        <p class="px-[18px] pb-3 text-sm text-text-muted">Configure your AI credentials and model preferences.</p>
+                        <div class="px-1.5 pb-2">
+                            <div class="bg-content-bg rounded-xl ring-1 ring-content-border shadow-sm px-3 py-3">
+                                <div>
+                                    {{-- API Base URL --}}
+                                    <div class="grid md:grid-cols-2 items-start px-[18px] py-4 gap-y-3 md:gap-y-0 md:gap-x-5 border-b border-content-border">
+                                        <div class="flex flex-col gap-1.5">
+                                            <label class="text-sm font-medium text-text-heading">API Base URL</label>
+                                            <div class="text-sm text-text-muted">Base URL endpoint for your AI provider.</div>
+                                        </div>
+                                        <div>
+                                            <input
+                                                type="text"
+                                                name="ai_base_url"
+                                                value="{{ old('ai_base_url', $settings->ai_base_url ?? '') }}"
+                                                placeholder="https://api.deepseek.com"
+                                                class="w-full block bg-white border border-gray-300 text-text-primary text-sm rounded-lg px-3 py-2 h-9 font-mono focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary shadow-xs"
+                                            >
+                                            @error('ai_base_url') <p class="text-xs text-danger mt-1">{{ $message }}</p> @enderror
+                                        </div>
+                                    </div>
+
+                                    {{-- API Key --}}
+                                    <div class="grid md:grid-cols-2 items-start px-[18px] py-4 gap-y-3 md:gap-y-0 md:gap-x-5 border-b border-content-border">
+                                        <div class="flex flex-col gap-1.5">
+                                            <label class="text-sm font-medium text-text-heading">API Key</label>
+                                            <div class="text-sm text-text-muted">Secret API key for authentication (masked once saved).</div>
+                                        </div>
+                                        <div>
+                                            <div class="relative">
+                                                <input
+                                                    :type="showAiKey ? 'text' : 'password'"
+                                                    name="ai_api_key"
+                                                    value="{{ old('ai_api_key', !empty($settings->ai_api_key) ? $settings->getMaskedAiApiKey() : '') }}"
+                                                    placeholder="{{ !empty($settings->ai_api_key) ? $settings->getMaskedAiApiKey() : 'sk-...' }}"
+                                                    autocomplete="off"
+                                                    class="w-full block bg-white border border-gray-300 text-text-primary text-sm rounded-lg pl-3 pr-10 py-2 h-9 font-mono focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary shadow-xs"
+                                                >
+                                                <button
+                                                    type="button"
+                                                    @click="showAiKey = !showAiKey"
+                                                    class="absolute right-2.5 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 focus:outline-none cursor-pointer"
+                                                    tabindex="-1"
+                                                    :title="showAiKey ? 'Hide key' : 'Show key'"
+                                                >
+                                                    <template x-if="!showAiKey">
+                                                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="size-4">
+                                                            <path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7Z"/>
+                                                            <circle cx="12" cy="12" r="3"/>
+                                                        </svg>
+                                                    </template>
+                                                    <template x-if="showAiKey">
+                                                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="size-4">
+                                                            <path d="M9.88 9.88a3 3 0 1 0 4.24 4.24"/>
+                                                            <path d="M10.73 5.08A10.43 10.43 0 0 1 12 5c7 0 10 7 10 7a13.16 13.16 0 0 1-1.67 2.68"/>
+                                                            <path d="M6.61 6.61A13.526 13.526 0 0 0 2 12s3 7 10 7a9.74 9.74 0 0 0 5.39-1.61"/>
+                                                            <line x1="2" x2="22" y1="2" y2="22"/>
+                                                        </svg>
+                                                    </template>
+                                                </button>
+                                            </div>
+                                            @error('ai_api_key') <p class="text-xs text-danger mt-1">{{ $message }}</p> @enderror
+                                        </div>
+                                    </div>
+
+                                    {{-- Model Name --}}
+                                    <div class="grid md:grid-cols-2 items-start px-[18px] py-4 gap-y-3 md:gap-y-0 md:gap-x-5">
+                                        <div class="flex flex-col gap-1.5">
+                                            <label class="text-sm font-medium text-text-heading">Model Name</label>
+                                            <div class="text-sm text-text-muted">Target model identifier.</div>
+                                        </div>
+                                        <div>
+                                            <input
+                                                type="text"
+                                                name="ai_model"
+                                                value="{{ old('ai_model', $settings->ai_model ?? '') }}"
+                                                placeholder="deepseek-chat"
+                                                class="w-full block bg-white border border-gray-300 text-text-primary text-sm rounded-lg px-3 py-2 h-9 font-mono focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary shadow-xs"
+                                            >
+                                            @error('ai_model') <p class="text-xs text-danger mt-1">{{ $message }}</p> @enderror
                                         </div>
                                     </div>
                                 </div>
@@ -769,15 +866,23 @@
 
 @push('scripts')
 <script>
+    function generateUUID() {
+        if (typeof crypto !== 'undefined' && typeof crypto.randomUUID === 'function') {
+            return crypto.randomUUID();
+        }
+        return 'f_' + Math.random().toString(36).substring(2, 11) + '_' + Date.now().toString(36);
+    }
+
     function globalSettingsForm() {
         const initialFields = window.settingsCustomFields || [];
         const initialValues = window.settingsCustomValues || {};
         return {
             activeTab: 'general',
+            showAiKey: false,
             fields: (initialFields || []).map(f => ({
                 ...f,
                 template: (f.template || '').replace(/[^a-zA-Z0-9_]+/g, ''),
-                _key: f._key || crypto.randomUUID()
+                _key: f._key || generateUUID()
             })),
             customValues: initialValues || {},
 
@@ -914,7 +1019,7 @@
                     this.fields[this.editingFieldIndex] = { ...this.fieldForm, _key: this.fields[this.editingFieldIndex]._key };
                     this.fields = [...this.fields];
                 } else {
-                    this.fields.push({ ...this.fieldForm, _key: crypto.randomUUID() });
+                    this.fields.push({ ...this.fieldForm, _key: generateUUID() });
                     this.$nextTick(() => this.initSortable());
                 }
 

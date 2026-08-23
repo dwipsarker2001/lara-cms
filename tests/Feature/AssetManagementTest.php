@@ -123,7 +123,7 @@ test('deleting a directory asset deletes all image files inside it from storage 
         'is_directory' => true,
     ]);
 
-    $imageFile = UploadedFile::fake()->image('photo.jpg', 800, 600);
+    $imageFile = UploadedFile::fake()->create('photo.jpg', 1500, 'image/jpeg');
     $imagePath = $imageFile->store('assets/gallery', 'public');
 
     $imageAsset = Asset::create([

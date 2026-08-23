@@ -80,6 +80,7 @@ function pageEditor() {
                 this.allCollections = window.editorAllCollections || [];
                 this.homeGlobals = homeGlobals;
                 this.entryData = window.editorEntryData || {};
+                window.__pageEditor = this;
                 this.$nextTick(() => this.initSectionSortable());
                 this.refreshPreview();
             },
