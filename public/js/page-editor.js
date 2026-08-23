@@ -520,12 +520,14 @@ function pageEditor() {
                     { key: 'title', label: 'Title' },
                     { key: 'slug', label: 'Slug' },
                     { key: 'link', label: 'Link / URL' },
+                    { key: 'route', label: 'Route / Link' },
                     { key: 'created_at', label: 'Created At' },
                     { key: 'author', label: 'Author' },
                 ];
 
                 // 1. Add all fields defined on this collection schema
-                const col = (this.allCollections || []).find(c => c.slug === entry.collection_slug || String(c.id) === String(entry.collection_id));
+                const collections = window.editorAllCollections || this.allCollections || [];
+                const col = collections.find(c => c.slug === entry.collection_slug || String(c.id) === String(entry.collection_id) || (c.entries && c.entries.some(e => String(e.id) === String(entry.id))));
                 if (col && Array.isArray(col.fields)) {
                     for (const f of col.fields) {
                         const key = f.template || f.key || f.name || '';

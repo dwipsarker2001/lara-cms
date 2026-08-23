@@ -13,15 +13,34 @@
         modePickerOpen: false,
         entryPickerOpen: false,
         init() {
+            this.sync();
+            this.$watch('showSourcePicker', value => {
+                if (value) {
+                    this.sync();
+                }
+            });
+        },
+        sync() {
             const currentSrc = getSourceKey(field.name);
             if (currentSrc) {
                 if (currentSrc.startsWith('entry:')) {
                     const parts = currentSrc.split(':');
                     this.selectedEntryId = parts[1];
+                    let foundSlug = null;
                     const matched = (pages || []).find(p => String(p.id) === String(parts[1]));
                     if (matched && matched.collection_slug) {
-                        this.pickerMode = matched.collection_slug;
+                        foundSlug = matched.collection_slug;
                     }
+                    if (!foundSlug) {
+                        const cols = window.editorAllCollections || (typeof allCollections !== 'undefined' ? allCollections : []);
+                        for (const c of cols) {
+                            if (c.entries && c.entries.some(e => String(e.id) === String(parts[1]))) {
+                                foundSlug = c.slug;
+                                break;
+                            }
+                        }
+                    }
+                    this.pickerMode = foundSlug || (getLinkCollections()[0]?.slug || 'current_page');
                 } else if (currentSrc.startsWith('term:')) {
                     const parts = currentSrc.split(':');
                     this.selectedEntryId = parts[1];
@@ -38,6 +57,51 @@
                         this.pickerMode = 'site_settings';
                     } else {
                         this.pickerMode = 'current_page';
+                    }
+                }
+            } else {
+                let scopeEntryId = null;
+                let scopeColSlug = null;
+                const candidates = ['package_id', 'entry_id', 'deal_id', 'collection_entry_id'];
+                for (const cKey of candidates) {
+                    const val = typeof getField === 'function' ? getField(cKey) : null;
+                    if (val) {
+                        scopeEntryId = String(val);
+                        break;
+                    }
+                }
+                if (scopeEntryId) {
+                    this.selectedEntryId = scopeEntryId;
+                    const cols = window.editorAllCollections || (typeof allCollections !== 'undefined' ? allCollections : []);
+                    for (const c of cols) {
+                        if (c.entries && c.entries.some(e => String(e.id) === String(scopeEntryId))) {
+                            scopeColSlug = c.slug;
+                            break;
+                        }
+                    }
+                    this.pickerMode = scopeColSlug || (getLinkCollections()[0]?.slug || 'current_page');
+                } else {
+                    const taxCandidates = ['destination_id', 'term_id'];
+                    let scopeTermId = null;
+                    for (const tKey of taxCandidates) {
+                        const val = typeof getField === 'function' ? getField(tKey) : null;
+                        if (val) {
+                            scopeTermId = String(val);
+                            break;
+                        }
+                    }
+                    if (scopeTermId) {
+                        this.selectedEntryId = scopeTermId;
+                        const allTaxes = window.editorAllTaxonomies || [];
+                        for (const t of allTaxes) {
+                            if (t.terms && t.terms.some(item => String(item.id) === String(scopeTermId))) {
+                                this.pickerMode = 'tax:' + t.slug;
+                                break;
+                            }
+                        }
+                    } else {
+                        this.pickerMode = 'current_page';
+                        this.selectedEntryId = null;
                     }
                 }
             }
@@ -62,8 +126,9 @@
                 return term ? term.title : 'Select item...';
             }
             let matched = (pages || []).find(p => String(p.id) === String(this.selectedEntryId));
-            if (!matched && window.editorAllCollections) {
-                for (const c of window.editorAllCollections) {
+            if (!matched) {
+                const cols = window.editorAllCollections || (typeof allCollections !== 'undefined' ? allCollections : []);
+                for (const c of cols) {
                     if (c.entries) {
                         const found = c.entries.find(e => String(e.id) === String(this.selectedEntryId));
                         if (found) { matched = found; break; }
@@ -315,7 +380,12 @@
                                 :class="getSourceKey(field.name) === ((pickerMode.startsWith('tax:') ? 'term:' : 'entry:') + selectedEntryId + ':' + cf.key) ? 'bg-primary/10 text-primary font-bold' : 'text-gray-700'"
                             >
                                 <span class="truncate pr-2" x-text="cf.label"></span>
-                                <span class="text-[10px] font-mono text-gray-400 shrink-0" x-text="cf.key"></span>
+                                <div class="flex items-center gap-1.5 shrink-0">
+                                    <span class="text-[10px] font-mono text-gray-400" x-text="cf.key"></span>
+                                    <svg x-show="getSourceKey(field.name) === ((pickerMode.startsWith('tax:') ? 'term:' : 'entry:') + selectedEntryId + ':' + cf.key)" class="size-3.5 text-primary shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                        <path d="M20 6 9 17l-5-5"/>
+                                    </svg>
+                                </div>
                             </button>
                         </template>
                     </div>

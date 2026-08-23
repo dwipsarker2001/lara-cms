@@ -47,6 +47,8 @@ app/Blocks/custom/                       resources/views/blocks/custom/
 | `Field::select('key', 'Label', $options)` | Dropdown | Select dropdown options array `[['value'=>'', 'label'=>'']]` |
 | `Field::link('key', 'Label', default: '#')` | Link | URL / Route input |
 | `Field::richText('key', 'Label')` | Rich Text | HTML / Markdown WYSIWYG editor |
+| `Field::taxonomies('key', 'Label', taxonomyId: 'slug', routePattern: '/path?term={slug}')` | Taxonomy Picker | Select term from taxonomy group with dynamic route & data hydration |
+| `Field::collection('key', 'Label', collection: 'slug')` | Collection Picker | Select entry from collection with dynamic data binding |
 | `Field::group('key', 'Label', $fields)` | Field Group | Object container for nested fields |
 | `Field::list('key', 'Label', $fields, count: 3)` | Repeater List | Re-orderable array repeater with initial item count |
 
@@ -289,6 +291,120 @@ class TeamCards extends Block
         ];
     }
 }
+```
+
+---
+
+### Example D: Dynamic Taxonomy Selection Block (`DestinationsGrid`)
+
+Demonstrates selecting terms from a taxonomy (e.g. `destinations`) with route pattern generation, auto-binding, and fallback links.
+
+#### 1. Schema: `plugins/travel-theme/Blocks/DestinationsGrid/DestinationsGrid.php`
+```php
+<?php
+
+namespace Plugins\TravelTheme\Blocks\DestinationsGrid;
+
+use App\Blocks\Block;
+use App\Blocks\Field;
+
+class DestinationsGrid extends Block
+{
+    public string $name = 'destinationsGrid';
+
+    public string $label = 'Destinations Grid';
+
+    public function fields(): array
+    {
+        return [
+            Field::string('headline', 'Headline', default: 'All Destinations'),
+            Field::text('description', 'Description', default: 'Explore our handpicked destinations for your next adventure'),
+            Field::list('places', 'Places', [
+                Field::taxonomies('term_id', 'Destination', taxonomyId: 'destinations', routePattern: '/packages?destination={slug}'),
+                Field::image('image', 'Image', default: '/placeholder-image.png'),
+                Field::string('name', 'Name', default: 'Destination Name'),
+                Field::string('slug', 'Slug'),
+            ], count: 7),
+        ];
+    }
+}
+```
+
+#### 2. View: `plugins/travel-theme/Blocks/DestinationsGrid/view.blade.php`
+```blade
+@php
+    $d = $data;
+    $places = array_values(array_filter($d['places'] ?? []));
+    $spans = ['sm:col-span-1', 'sm:col-span-2', 'sm:col-span-1'];
+@endphp
+<section data-block="destinationsGrid" class="py-20">
+    <div class="max-w-6xl mx-auto px-6">
+        @if($d['headline'] ?? false)
+            <h2 data-edit="headline" class="text-center text-3xl md:text-4xl font-bold text-gray-900">{{ $d['headline'] }}</h2>
+        @endif
+        @if($d['description'] ?? false)
+            <p data-edit="description" class="mx-auto mt-3 max-w-xl text-center text-gray-500">{{ $d['description'] }}</p>
+        @endif
+
+        @if(empty($places))
+            <p class="mt-10 text-center text-gray-500">No destinations selected.</p>
+        @else
+            <div class="mt-10 space-y-6">
+                @if(count($places) >= 3)
+                    <div class="grid grid-cols-1 gap-6 sm:grid-cols-4">
+                        @foreach(array_slice($places, 0, 3) as $i => $place)
+                            @php
+                                $slug = $place['slug'] ?? ($place['_term_slug'] ?? '');
+                                if ($slug && !str_starts_with($slug, '/') && !str_starts_with($slug, 'http') && !str_starts_with($slug, '?')) {
+                                    $placeUrl = '/packages?destination=' . $slug;
+                                } else {
+                                    $placeUrl = $slug ?: '#';
+                                }
+                            @endphp
+                            <div class="{{ $spans[$i] }}">
+                                <a href="{{ $placeUrl }}" data-list="places" data-list-index="{{ $i }}" class="group relative block h-[280px] overflow-hidden rounded-2xl bg-gray-100">
+                                    <img src="{{ $place['image'] ?? '' }}" alt="{{ $place['name'] ?? '' }}" data-edit="image" class="absolute inset-0 w-full h-full object-cover {{ empty($place['image']) ? 'hidden' : '' }}" />
+                                    <div class="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent"></div>
+                                    <div class="absolute bottom-5 left-5 text-white">
+                                        <h3 data-edit="name" class="text-base font-bold">{{ $place['name'] ?? '' }}</h3>
+                                    </div>
+                                </a>
+                            </div>
+                        @endforeach
+                    </div>
+                @endif
+
+                @php
+                    $remaining = array_slice($places, 3);
+                    $gridItems = count($places) >= 3 ? $remaining : $places;
+                    $startIndex = count($places) >= 3 ? 3 : 0;
+                @endphp
+                @if(!empty($gridItems))
+                    <div class="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
+                        @foreach($gridItems as $j => $place)
+                            @php
+                                $placeIndex = $startIndex + $j;
+                                $slug = $place['slug'] ?? ($place['_term_slug'] ?? '');
+                                if ($slug && !str_starts_with($slug, '/') && !str_starts_with($slug, 'http') && !str_starts_with($slug, '?')) {
+                                    $placeUrl = '/packages?destination=' . $slug;
+                                } else {
+                                    $placeUrl = $slug ?: '#';
+                                }
+                            @endphp
+                            <a href="{{ $placeUrl }}" data-list="places" data-list-index="{{ $placeIndex }}" class="group relative block h-[280px] overflow-hidden rounded-2xl bg-gray-100">
+                                <img src="{{ $place['image'] ?? '' }}" alt="{{ $place['name'] ?? '' }}" data-edit="image" class="absolute inset-0 w-full h-full object-cover {{ empty($place['image']) ? 'hidden' : '' }}" />
+                                <div class="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent"></div>
+                                <div class="absolute bottom-5 left-5 text-white">
+                                    <h3 data-edit="name" class="text-base font-bold">{{ $place['name'] ?? '' }}</h3>
+                                </div>
+                            </a>
+                        @endforeach
+                    </div>
+                @endif
+            </div>
+        @endif
+    </div>
+</section>
 ```
 
 ---
