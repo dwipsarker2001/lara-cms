@@ -737,8 +737,11 @@ function pageEditor() {
             },
 
             getLinkCollections() {
-                if (this.allCollections && this.allCollections.length > 0) {
-                    return this.allCollections.filter(c => {
+                const collections = (this.allCollections && this.allCollections.length > 0)
+                    ? this.allCollections
+                    : (window.editorAllCollections || []);
+                if (collections && collections.length > 0) {
+                    return collections.filter(c => {
                         const slug = (c.slug || '').toLowerCase();
                         const name = (c.name || '').toLowerCase();
                         return slug !== 'layout' && slug !== 'layouts' && name !== 'layout';
@@ -759,6 +762,15 @@ function pageEditor() {
             },
 
             getLinkEntries(collectionSlug) {
+                const collections = (this.allCollections && this.allCollections.length > 0)
+                    ? this.allCollections
+                    : (window.editorAllCollections || []);
+                if (collections && collections.length > 0) {
+                    const found = collections.find(c => String(c.slug) === String(collectionSlug) || String(c.id) === String(collectionSlug));
+                    if (found && found.entries && found.entries.length > 0) {
+                        return found.entries;
+                    }
+                }
                 return (this.pages || []).filter(p => (p.collection_slug || 'pages') === collectionSlug);
             },
 
