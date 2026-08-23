@@ -39,6 +39,34 @@
             setField(field.name, val);
             this.open = false;
             this.search = '';
+
+            if (typeof setFieldSource === 'function') {
+                const siblingFields = (typeof currentFields === 'function') ? (currentFields() || []) : [];
+                if (term) {
+                    const termId = String(term.id);
+                    const termData = term.data || {};
+
+                    siblingFields.forEach(f => {
+                        if (!f.name || f.name === field.name) return;
+                        const fName = f.name;
+                        if (fName === 'name' || fName === 'title') {
+                            setFieldSource(fName, 'term:' + termId + ':title');
+                        } else if (fName === 'slug') {
+                            setFieldSource('slug', 'term:' + termId + ':slug');
+                        } else if (fName === 'link' || fName === 'url') {
+                            setFieldSource(fName, 'term:' + termId + ':route');
+                        } else if (fName in termData) {
+                            setFieldSource(fName, 'term:' + termId + ':' + fName);
+                        }
+                    });
+                } else {
+                    siblingFields.forEach(f => {
+                        if (f.name && f.name !== field.name && typeof clearFieldSource === 'function') {
+                            clearFieldSource(f.name);
+                        }
+                    });
+                }
+            }
         }
     }">
         <div class="flex items-center justify-between mb-1">

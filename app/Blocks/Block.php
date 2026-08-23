@@ -516,70 +516,6 @@ abstract class Block
             $data['_entry_title'] = $entry->title;
             $data['_entry_link'] = $entry->route();
             $data['_entry_slug'] = $entry->slug;
-
-            // Generic overlay: Live sync any scalar attributes present in $entryData
-            foreach ($entryData as $k => $v) {
-                if (! is_scalar($v)) {
-                    continue;
-                }
-                $strVal = (string) $v;
-                if (! isset($data[$k]) || $data[$k] === '' || $data[$k] === null || $data[$k] === '/placeholder-image.png') {
-                    $data[$k] = $strVal;
-                }
-                $camelKey = Str::camel($k);
-                if (! isset($data[$camelKey]) || $data[$camelKey] === '' || $data[$camelKey] === null) {
-                    $data[$camelKey] = $strVal;
-                }
-                $snakeKey = Str::snake($k);
-                if (! isset($data[$snakeKey]) || $data[$snakeKey] === '' || $data[$snakeKey] === null) {
-                    $data[$snakeKey] = $strVal;
-                }
-            }
-
-            // Image fallback
-            if (empty($data['image']) || $data['image'] === '/placeholder-image.png') {
-                $data['image'] = $entryData['featured_image'] ?? $entryData['image'] ?? $entryData['hero_image'] ?? $entryData['cover_image'] ?? $entryData['thumbnail'] ?? ($data['image'] ?? '');
-            }
-
-            // Price fallbacks
-            if (empty($data['price']) || $data['price'] === '৳299' || $data['price'] === '0') {
-                if (isset($entryData['price']) || isset($entryData['special_price']) || isset($entryData['discount_price']) || isset($entryData['amount'])) {
-                    $data['price'] = (string) ($entryData['price'] ?? $entryData['special_price'] ?? $entryData['discount_price'] ?? $entryData['amount']);
-                }
-            }
-            if (empty($data['originalPrice']) || $data['originalPrice'] === '৳499') {
-                if (isset($entryData['original_price']) || isset($entryData['regular_price']) || isset($entryData['old_price'])) {
-                    $data['originalPrice'] = (string) ($entryData['original_price'] ?? $entryData['regular_price'] ?? $entryData['old_price']);
-                }
-            }
-
-            // Description fallback
-            if (empty($data['description']) || $data['description'] === 'Explore the city of lights with our exclusive package') {
-                if (isset($entryData['description']) || isset($entryData['excerpt']) || isset($entryData['summary'])) {
-                    $data['description'] = (string) ($entryData['description'] ?? $entryData['excerpt'] ?? $entryData['summary']);
-                }
-            }
-
-            // Badge fallback
-            if (empty($data['badge']) || $data['badge'] === 'Popular') {
-                if (isset($entryData['badge']) || isset($entryData['discount_badge'])) {
-                    $data['badge'] = (string) ($entryData['badge'] ?? $entryData['discount_badge']);
-                }
-            }
-
-            if (empty($data['title']) || $data['title'] === 'Untitled' || $data['title'] === 'Paris Getaway') {
-                $data['title'] = $entry->title;
-            }
-
-            if (empty($data['link']) && empty($data['buttonLink']) && empty($data['url'])) {
-                if (array_key_exists('buttonLink', $data)) {
-                    $data['buttonLink'] = $entry->route();
-                } elseif (array_key_exists('link', $data)) {
-                    $data['link'] = $entry->route();
-                } elseif (array_key_exists('url', $data)) {
-                    $data['url'] = $entry->route();
-                }
-            }
         }
 
         // Now process subfields / object / list structures
@@ -732,43 +668,6 @@ abstract class Block
             $data['_term_title'] = $term->title;
             $data['_term_slug'] = $term->slug;
             $data['_term_link'] = $termLink;
-
-            foreach ($termData as $k => $v) {
-                if (! is_scalar($v)) {
-                    continue;
-                }
-                $strVal = (string) $v;
-                if (! isset($data[$k]) || $data[$k] === '' || $data[$k] === null || $data[$k] === '/placeholder-image.png') {
-                    $data[$k] = $strVal;
-                }
-                $camelKey = Str::camel($k);
-                if (! isset($data[$camelKey]) || $data[$camelKey] === '' || $data[$camelKey] === null) {
-                    $data[$camelKey] = $strVal;
-                }
-                $snakeKey = Str::snake($k);
-                if (! isset($data[$snakeKey]) || $data[$snakeKey] === '' || $data[$snakeKey] === null) {
-                    $data[$snakeKey] = $strVal;
-                }
-            }
-
-            if (empty($data['name']) || $data['name'] === 'Destination Name') {
-                $data['name'] = $term->title;
-            }
-            if (empty($data['title']) || $data['title'] === 'Untitled') {
-                $data['title'] = $term->title;
-            }
-            if (empty($data['slug'])) {
-                $data['slug'] = $term->slug;
-            }
-            if (empty($data['image']) || $data['image'] === '/placeholder-image.png') {
-                $data['image'] = $termData['image'] ?? $termData['featured_image'] ?? $termData['cover_image'] ?? $termData['photo'] ?? ($data['image'] ?? '');
-            }
-            if (empty($data['link']) || $data['link'] === '#' || $data['link'] === '/' || str_starts_with($data['link'], '/destinations/')) {
-                $data['link'] = $termLink;
-            }
-            if (empty($data['url']) || $data['url'] === '#') {
-                $data['url'] = $termLink;
-            }
         }
 
         // Process subfields / object / list structures

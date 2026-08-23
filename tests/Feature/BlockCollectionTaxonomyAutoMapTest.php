@@ -25,7 +25,7 @@ test('Field::taxonomies and Field::collection return proper schema definitions',
         ->and($taxonomyField['taxonomy_id'])->toBe('destinations');
 });
 
-test('TravelDeals block auto-maps data from referenced collection entry', function () {
+test('TravelDeals block resolves data from referenced collection entry sources', function () {
     $collection = Collection::create([
         'name' => 'Packages',
         'slug' => 'packages',
@@ -54,6 +54,13 @@ test('TravelDeals block auto-maps data from referenced collection entry', functi
     $block = new TravelDeals;
     $html = $block->render(
         data: [
+            '_sources' => [
+                'cards.0.title' => 'entry:'.$entry->id.':title',
+                'cards.0.image' => 'entry:'.$entry->id.':featured_image',
+                'cards.0.price' => 'entry:'.$entry->id.':price',
+                'cards.0.originalPrice' => 'entry:'.$entry->id.':original_price',
+                'cards.0.description' => 'entry:'.$entry->id.':description',
+            ],
             'headline' => 'Special Deals',
             'cards' => [
                 [
@@ -75,7 +82,7 @@ test('TravelDeals block auto-maps data from referenced collection entry', functi
         ->and($html)->toContain('Unforgettable tropical paradise');
 });
 
-test('DestinationsGrid block auto-maps data from referenced taxonomy term', function () {
+test('DestinationsGrid block resolves data from referenced taxonomy term sources', function () {
     $taxonomy = Taxonomy::create([
         'title' => 'Destinations',
         'slug' => 'destinations',
@@ -96,6 +103,11 @@ test('DestinationsGrid block auto-maps data from referenced taxonomy term', func
     $block = new DestinationsGrid;
     $html = $block->render(
         data: [
+            '_sources' => [
+                'places.0.name' => 'term:'.$term->id.':title',
+                'places.0.image' => 'term:'.$term->id.':image',
+                'places.0.link' => 'term:'.$term->id.':route',
+            ],
             'headline' => 'Featured Destinations',
             'places' => [
                 [
@@ -111,7 +123,7 @@ test('DestinationsGrid block auto-maps data from referenced taxonomy term', func
 
     expect($html)->toContain('Santorini, Greece')
         ->and($html)->toContain('/uploads/santorini.jpg')
-        ->and($html)->toContain('/packages?destination=santorini-greece');
+        ->and($html)->toContain('/destinations/santorini-greece');
 });
 
 test('Taxonomy and Term route generation works with custom route_pattern', function () {
