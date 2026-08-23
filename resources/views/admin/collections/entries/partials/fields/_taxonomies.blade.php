@@ -39,39 +39,6 @@
             setField(field.name, val);
             this.open = false;
             this.search = '';
-
-            if (term) {
-                const termId = String(term.id);
-                const termData = term.data || {};
-
-                // Programmatically bind fields using the built-in source binding system
-                if (typeof setFieldSource === 'function') {
-                    if (findField('name')) {
-                        setFieldSource('name', 'term:' + termId + ':title');
-                    }
-                    if (findField('title')) {
-                        setFieldSource('title', 'term:' + termId + ':title');
-                    }
-                    if (findField('slug')) {
-                        setFieldSource('slug', 'term:' + termId + ':slug');
-                    }
-                    if (findField('image')) {
-                        const imgKey = ('image' in termData) ? 'image' : (('featured_image' in termData) ? 'featured_image' : (('cover_image' in termData) ? 'cover_image' : 'photo'));
-                        setFieldSource('image', 'term:' + termId + ':' + imgKey);
-                    }
-                    if (findField('link')) {
-                        setFieldSource('link', 'term:' + termId + ':route');
-                    } else if (findField('url')) {
-                        setFieldSource('url', 'term:' + termId + ':route');
-                    }
-                }
-            } else {
-                if (typeof clearFieldSource === 'function') {
-                    ['name', 'title', 'slug', 'image', 'link', 'url'].forEach(k => {
-                        if (findField(k)) clearFieldSource(k);
-                    });
-                }
-            }
         }
     }">
         <div class="flex items-center justify-between mb-1">

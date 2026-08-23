@@ -39,53 +39,6 @@
             setField(field.name, val);
             this.open = false;
             this.search = '';
-
-            if (entry) {
-                const entryId = String(entry.id);
-                const entryData = entry.data || {};
-
-                // Programmatically bind fields using the built-in source binding system
-                if (typeof setFieldSource === 'function') {
-                    if (findField('title')) {
-                        setFieldSource('title', 'entry:' + entryId + ':title');
-                    }
-                    if (findField('image')) {
-                        const imgKey = ('featured_image' in entryData) ? 'featured_image' : (('image' in entryData) ? 'image' : (('hero_image' in entryData) ? 'hero_image' : (('cover_image' in entryData) ? 'cover_image' : 'thumbnail')));
-                        setFieldSource('image', 'entry:' + entryId + ':' + imgKey);
-                    }
-                    if (findField('price')) {
-                        const priceKey = ('price' in entryData) ? 'price' : (('special_price' in entryData) ? 'special_price' : (('discount_price' in entryData) ? 'discount_price' : 'amount'));
-                        setFieldSource('price', 'entry:' + entryId + ':' + priceKey);
-                    }
-                    if (findField('originalPrice')) {
-                        const origKey = ('original_price' in entryData) ? 'original_price' : (('regular_price' in entryData) ? 'regular_price' : 'old_price');
-                        setFieldSource('originalPrice', 'entry:' + entryId + ':' + origKey);
-                    }
-                    if (findField('description')) {
-                        const descKey = ('description' in entryData) ? 'description' : (('excerpt' in entryData) ? 'excerpt' : 'summary');
-                        setFieldSource('description', 'entry:' + entryId + ':' + descKey);
-                    }
-                    if (findField('badge')) {
-                        const badgeKey = ('badge' in entryData) ? 'badge' : (('discount_badge' in entryData) ? 'discount_badge' : null);
-                        if (badgeKey) {
-                            setFieldSource('badge', 'entry:' + entryId + ':' + badgeKey);
-                        }
-                    }
-                    if (findField('buttonLink')) {
-                        setFieldSource('buttonLink', 'entry:' + entryId + ':route');
-                    } else if (findField('link')) {
-                        setFieldSource('link', 'entry:' + entryId + ':route');
-                    } else if (findField('url')) {
-                        setFieldSource('url', 'entry:' + entryId + ':route');
-                    }
-                }
-            } else {
-                if (typeof clearFieldSource === 'function') {
-                    ['title', 'image', 'price', 'originalPrice', 'description', 'badge', 'buttonLink', 'link', 'url'].forEach(k => {
-                        if (findField(k)) clearFieldSource(k);
-                    });
-                }
-            }
         }
     }">
         <div class="flex items-center justify-between mb-1">
