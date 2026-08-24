@@ -18,6 +18,7 @@ function aiAgent() {
         messages: [],
         isLoading: false,
         isProcessingActions: false,
+        abortController: null,
         statusMessage: '',
         activeTab: 'chat', // 'chat' | 'assets'
         availableAssets: [],
@@ -26,6 +27,14 @@ function aiAgent() {
         showToast: false,
         toastMessage: '',
         toastTimer: null,
+        eyeX: 0,
+        eyeY: 0,
+        targetEyeX: 0,
+        targetEyeY: 0,
+        eyeScaleY: 1,
+        isBlinking: false,
+        blinkTimer: null,
+        eyeFollowRaf: null,
         suggestions: [
             '🎯 Optimize hook & headlines (3 angles)',
             '✍️ Rewrite section copy for high conversion',
@@ -52,10 +61,84 @@ function aiAgent() {
             return '/images/ai-agent-idle.svg';
         },
 
+        get floatingStatusText() {
+            if (this.statusMessage) {
+                return this.statusMessage;
+            }
+            if (this.isLoading) {
+                return 'Thinking...';
+            }
+            if (this.isProcessingActions) {
+                return 'Working...';
+            }
+            if (this.showToast) {
+                return this.toastMessage || 'Done';
+            }
+            return '';
+        },
+
+        get looksLeft() {
+            // When avatar is on the right side of the screen, more space is on the left
+            const screenCenter = window.innerWidth / 2;
+            return (this.posX + 28) >= screenCenter;
+        },
+
+        get leftEyePath() {
+            if (this.isProcessingActions) {
+                return this.looksLeft
+                    ? 'M-14 0A8.5 8.5 0 0 1 -5.5 -8.5L5.5 -8.5A8.5 8.5 0 0 1 14 0L14 0A8.5 8.5 0 0 1 5.5 8.5L-5.5 8.5A8.5 8.5 0 0 1 -14 0Z'
+                    : 'M-10 -12A10 10 0 0 1 0 -22L0 -22A10 10 0 0 1 10 -12L10 12A10 10 0 0 1 0 22L0 22A10 10 0 0 1 -10 12Z';
+            }
+            if (this.isLoading) {
+                return this.looksLeft
+                    ? 'M-10 -9A10 10 0 0 1 0 -19L0 -19A10 10 0 0 1 10 -9L10 9A10 10 0 0 1 0 19L0 19A10 10 0 0 1 -10 9Z'
+                    : 'M-12 -11A12 12 0 0 1 0 -23L0 -23A12 12 0 0 1 12 -11L12 11A12 12 0 0 1 0 23L0 23A12 12 0 0 1 -12 11Z';
+            }
+            if (this.isOpen) {
+                return 'M-20 -8A20 20 0 0 1 0 -28L0 -28A20 20 0 0 1 20 -8L20 8A20 20 0 0 1 0 28L0 28A20 20 0 0 1 -20 8Z';
+            }
+            return 'M-22.5 -1A22.5 22.5 0 0 1 0 -23.5L0 -23.5A22.5 22.5 0 0 1 22.5 -1L22.5 1A22.5 22.5 0 0 1 0 23.5L0 23.5A22.5 22.5 0 0 1 -22.5 1Z';
+        },
+
+        get rightEyePath() {
+            if (this.isProcessingActions) {
+                return this.looksLeft
+                    ? 'M-10 -12A10 10 0 0 1 0 -22L0 -22A10 10 0 0 1 10 -12L10 12A10 10 0 0 1 0 22L0 22A10 10 0 0 1 -10 12Z'
+                    : 'M-14 0A8.5 8.5 0 0 1 -5.5 -8.5L5.5 -8.5A8.5 8.5 0 0 1 14 0L14 0A8.5 8.5 0 0 1 5.5 8.5L-5.5 8.5A8.5 8.5 0 0 1 -14 0Z';
+            }
+            if (this.isLoading) {
+                return this.looksLeft
+                    ? 'M-12 -11A12 12 0 0 1 0 -23L0 -23A12 12 0 0 1 12 -11L12 11A12 12 0 0 1 0 23L0 23A12 12 0 0 1 -12 11Z'
+                    : 'M-10 -9A10 10 0 0 1 0 -19L0 -19A10 10 0 0 1 10 -9L10 9A10 10 0 0 1 0 19L0 19A10 10 0 0 1 -10 9Z';
+            }
+            if (this.isOpen) {
+                return 'M-20 -8A20 20 0 0 1 0 -28L0 -28A20 20 0 0 1 20 -8L20 8A20 20 0 0 1 0 28L0 28A20 20 0 0 1 -20 8Z';
+            }
+            return 'M-22.5 -1A22.5 22.5 0 0 1 0 -23.5L0 -23.5A22.5 22.5 0 0 1 22.5 -1L22.5 1A22.5 22.5 0 0 1 0 23.5L0 23.5A22.5 22.5 0 0 1 -22.5 1Z';
+        },
+
+        get eyeBasePos() {
+            if (this.isProcessingActions) {
+                return this.looksLeft
+                    ? { leftX: -8, leftY: -4, rightX: 46, rightY: -9 }
+                    : { leftX: -46, leftY: -9, rightX: 8, rightY: -4 };
+            }
+            if (this.isLoading) {
+                return this.looksLeft
+                    ? { leftX: -55, leftY: 6, rightX: -3, rightY: 21 }
+                    : { leftX: 3, leftY: 21, rightX: 55, rightY: 6 };
+            }
+            if (this.isOpen) {
+                return { leftX: -19, leftY: 22, rightX: 46, rightY: 22 };
+            }
+            return { leftX: -23, leftY: 2, rightX: 42.5, rightY: 2 };
+        },
+
         init() {
             this.loadSavedPosition();
             this.loadAssets();
             this.initWelcomeMessage();
+            this.startEyeTracking();
 
             window.addEventListener('keydown', (e) => {
                 if ((e.ctrlKey || e.metaKey) && (e.key === ' ' || e.key.toLowerCase() === 'j')) {
@@ -81,6 +164,108 @@ function aiAgent() {
                     this.endDrag(e);
                 }
             });
+        },
+
+        updateEyeTarget(mouseX, mouseY) {
+            const avatarCenterX = this.posX + 28;
+            const avatarCenterY = this.posY + 28;
+            const dx = mouseX - avatarCenterX;
+            const dy = mouseY - avatarCenterY;
+            const dist = Math.hypot(dx, dy);
+
+            if (dist < 2) {
+                this.targetEyeX = 0;
+                this.targetEyeY = 0;
+                return;
+            }
+
+            const maxRangeX = 14;
+            const maxRangeY = 10;
+            const angle = Math.atan2(dy, dx);
+            const intensity = Math.min(dist / 220, 1);
+
+            this.targetEyeX = Math.cos(angle) * maxRangeX * intensity;
+            this.targetEyeY = Math.sin(angle) * maxRangeY * intensity;
+        },
+
+        startEyeTracking() {
+            // Pointer movement across parent window
+            window.addEventListener('pointermove', (e) => {
+                this.updateEyeTarget(e.clientX, e.clientY);
+            }, { passive: true });
+
+            document.addEventListener('mouseleave', () => {
+                this.targetEyeX = 0;
+                this.targetEyeY = 0;
+            });
+
+            // Support mouse tracking across the live iframe preview
+            const attachIframeTracking = () => {
+                const iframe = document.getElementById('preview-iframe');
+                if (iframe) {
+                    try {
+                        iframe.contentWindow?.addEventListener('mousemove', (e) => {
+                            const rect = iframe.getBoundingClientRect();
+                            this.updateEyeTarget(rect.left + e.clientX, rect.top + e.clientY);
+                        }, { passive: true });
+                    } catch (err) {}
+                    iframe.addEventListener('load', () => {
+                        try {
+                            iframe.contentWindow?.addEventListener('mousemove', (e) => {
+                                const rect = iframe.getBoundingClientRect();
+                                this.updateEyeTarget(rect.left + e.clientX, rect.top + e.clientY);
+                            }, { passive: true });
+                        } catch (err) {}
+                    });
+                }
+            };
+            attachIframeTracking();
+
+            // Smooth animation loop using requestAnimationFrame + lerp
+            const updateEyesLoop = () => {
+                let targetX = this.targetEyeX;
+                let targetY = this.targetEyeY;
+
+                if (this.isProcessingActions) {
+                    const t = Date.now() / 120;
+                    targetX = Math.sin(t) * 4;
+                    targetY = 4;
+                } else if (this.isLoading) {
+                    const t = Date.now() / 350;
+                    const dir = this.looksLeft ? -1 : 1;
+                    targetX = dir * (Math.cos(t) * 6);
+                    targetY = -3 + Math.sin(t) * 3;
+                }
+
+                const lerp = 0.18;
+                this.eyeX += (targetX - this.eyeX) * lerp;
+                this.eyeY += (targetY - this.eyeY) * lerp;
+
+                if (Math.abs(targetX - this.eyeX) < 0.01) this.eyeX = targetX;
+                if (Math.abs(targetY - this.eyeY) < 0.01) this.eyeY = targetY;
+
+                this.eyeFollowRaf = requestAnimationFrame(updateEyesLoop);
+            };
+            this.eyeFollowRaf = requestAnimationFrame(updateEyesLoop);
+
+            // Natural organic blinking cycle
+            const scheduleBlink = () => {
+                const delay = 2600 + Math.random() * 3200;
+                this.blinkTimer = setTimeout(() => {
+                    if (!this.isLoading && !this.isProcessingActions) {
+                        this.isBlinking = true;
+                        this.eyeScaleY = 0.08;
+                        setTimeout(() => {
+                            this.eyeScaleY = 1;
+                            this.isBlinking = false;
+                            scheduleBlink();
+                        }, 130);
+                    } else {
+                        scheduleBlink();
+                    }
+                }, delay);
+            };
+            scheduleBlink();
         },
 
         loadSavedPosition() {
@@ -248,15 +433,44 @@ You can ask me to draft or polish copy, add or reorganize sections, or find and 
             this.isExpanded = !this.isExpanded;
         },
 
+        adjustTextareaHeight(el) {
+            const target = el || this.$refs.promptInput;
+            if (!target) return;
+            target.style.height = 'auto';
+            const newHeight = Math.min(target.scrollHeight, 200);
+            target.style.height = newHeight + 'px';
+            target.style.overflowY = target.scrollHeight > 200 ? 'auto' : 'hidden';
+        },
+
+        resetTextareaHeight() {
+            if (this.$refs.promptInput) {
+                this.$refs.promptInput.style.height = 'auto';
+                this.$refs.promptInput.style.overflowY = 'hidden';
+            }
+        },
+
+        stopGeneration() {
+            if (this.abortController) {
+                this.abortController.abort();
+                this.abortController = null;
+            }
+            this.isLoading = false;
+            this.isProcessingActions = false;
+            this.statusMessage = '';
+        },
+
         clearChat() {
             if (confirm('Clear chat history?')) {
                 this.messages = [];
+                this.prompt = '';
+                this.resetTextareaHeight();
                 this.initWelcomeMessage();
             }
         },
 
         useSuggestion(text) {
             this.prompt = text;
+            this.adjustTextareaHeight();
             this.sendMessage();
         },
 
@@ -293,8 +507,9 @@ You can ask me to draft or polish copy, add or reorganize sections, or find and 
             });
 
             this.prompt = '';
+            this.resetTextareaHeight();
             this.isLoading = true;
-            this.statusMessage = 'Thinking & Crafting...';
+            this.statusMessage = 'Thinking...';
 
             this.$nextTick(() => this.scrollToBottom());
 
@@ -317,9 +532,12 @@ You can ask me to draft or polish copy, add or reorganize sections, or find and 
             const activeSectionName = (activeSectionIndex !== null && editor.sections[activeSectionIndex]) ? editor.sections[activeSectionIndex].name : null;
             const activeSectionData = (activeSectionIndex !== null && editor.sections[activeSectionIndex]) ? editor.sections[activeSectionIndex].data : null;
 
+            this.abortController = new AbortController();
+
             try {
                 const response = await fetch('/admin/ai/chat', {
                     method: 'POST',
+                    signal: this.abortController.signal,
                     headers: {
                         'Content-Type': 'application/json',
                         'Accept': 'application/json',
@@ -367,12 +585,12 @@ You can ask me to draft or polish copy, add or reorganize sections, or find and 
                         executedActions.push({ ...act, executionStatus: status });
                     }
 
-                    // 4. Finished actions: clear status, show toast, and small crisp delay (500ms)
+                    // 4. Finished actions: clear status, show brief Done tooltip (1.8s)
                     this.statusMessage = '';
                     this.isProcessingActions = false;
-                    this.setFloatingToast('✨ ' + (data.message || 'Changes applied successfully!'), 4000);
+                    this.setFloatingToast('Done', 1800);
 
-                    await this.sleep(500);
+                    await this.sleep(400);
 
                     // 5. Reopen chat modal promptly!
                     this.isOpen = true;
@@ -424,19 +642,33 @@ You can ask me to draft or polish copy, add or reorganize sections, or find and 
                 }
 
             } catch (err) {
+                if (err.name === 'AbortError') {
+                    this.isOpen = true;
+                    this.messages.push({
+                        id: assistantMsgId,
+                        role: 'assistant',
+                        content: 'Generation stopped.',
+                        actions: [],
+                        timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+                    });
+                    this.$nextTick(() => this.scrollToBottom());
+                    return;
+                }
+
                 console.error('AI chat error:', err);
                 this.isOpen = true;
                 this.messages.push({
                     id: assistantMsgId,
                     role: 'assistant',
-                    content: `⚠️ **Error:** ${err.message || 'Unable to connect to AI agent.'}`,
+                    content: err.message || 'Unable to connect to the AI service. Please try again.',
                     error: true,
                     actions: [],
                     timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
                 });
                 this.$nextTick(() => this.scrollToBottom());
-                this.setFloatingToast('⚠️ AI Error: ' + (err.message || 'Failed'), 4000);
+                this.setFloatingToast('Error', 2200);
             } finally {
+                this.abortController = null;
                 this.isLoading = false;
                 this.isProcessingActions = false;
                 this.statusMessage = '';
@@ -454,7 +686,7 @@ You can ask me to draft or polish copy, add or reorganize sections, or find and 
                 switch (action.action) {
                     case 'add_section': {
                         const blockName = action.name;
-                        this.statusMessage = `Adding block: ${blockName}...`;
+                        this.statusMessage = 'Working...';
                         const defaultSec = editor.createDefault(blockName);
                         if (!defaultSec) {
                             console.warn(`Block schema not found for "${blockName}"`);
@@ -482,7 +714,7 @@ You can ask me to draft or polish copy, add or reorganize sections, or find and 
                             for (let [key, val] of Object.entries(action.data)) {
                                 val = this.cleanFieldValue(key, val);
                                 if (typeof val === 'string' && val.length > 0 && !val.startsWith('http') && !val.startsWith('/storage/')) {
-                                    this.statusMessage = `Typing ${key}...`;
+                                    this.statusMessage = 'Typing...';
                                     if (typeof editor.focusField === 'function') {
                                         editor.focusField(key, pos);
                                     }
@@ -504,7 +736,7 @@ You can ask me to draft or polish copy, add or reorganize sections, or find and 
                         const idx = action.section_index;
                         if (idx === undefined || !editor.sections[idx]) return 'not_found';
 
-                        this.statusMessage = `Updating section #${idx + 1}...`;
+                        this.statusMessage = 'Working...';
                         if (typeof editor.focusField === 'function') {
                             editor.focusField('_root', idx);
                         }
@@ -513,7 +745,7 @@ You can ask me to draft or polish copy, add or reorganize sections, or find and 
                             for (let [key, val] of Object.entries(action.data)) {
                                 val = this.cleanFieldValue(key, val);
                                 if (typeof val === 'string' && val.length > 0 && !val.startsWith('http') && !val.startsWith('/storage/')) {
-                                    this.statusMessage = `Writing ${key}...`;
+                                    this.statusMessage = 'Typing...';
                                     if (typeof editor.focusField === 'function') {
                                         editor.focusField(key, idx);
                                     }
@@ -539,7 +771,7 @@ You can ask me to draft or polish copy, add or reorganize sections, or find and 
                         const path = action.field_path;
                         let val = this.cleanFieldValue(path, action.value);
 
-                        this.statusMessage = `Writing ${path}...`;
+                        this.statusMessage = 'Typing...';
                         if (typeof editor.focusField === 'function') {
                             editor.focusField(path, idx);
                         }
@@ -560,7 +792,7 @@ You can ask me to draft or polish copy, add or reorganize sections, or find and 
                         const idx = action.section_index;
                         if (idx === undefined || !editor.sections[idx]) return 'not_found';
 
-                        this.statusMessage = `Setting image for ${action.field_path || 'block'}...`;
+                        this.statusMessage = 'Working...';
                         this.setNestedValue(editor.sections[idx].data, action.field_path, action.image_url);
 
                         if (typeof editor.focusField === 'function') {
@@ -577,7 +809,7 @@ You can ask me to draft or polish copy, add or reorganize sections, or find and 
                     case 'remove_section': {
                         const idx = action.section_index;
                         if (idx !== undefined && editor.sections[idx]) {
-                            this.statusMessage = `Removing section #${idx + 1}...`;
+                            this.statusMessage = 'Working...';
                             editor.removeSection(idx);
                             await this.sleep(200);
                             return 'success';
@@ -587,7 +819,7 @@ You can ask me to draft or polish copy, add or reorganize sections, or find and 
 
                     case 'reorder_sections': {
                         if (Array.isArray(action.order)) {
-                            this.statusMessage = 'Reordering sections...';
+                            this.statusMessage = 'Working...';
                             const newSections = [];
                             for (const i of action.order) {
                                 if (editor.sections[i]) newSections.push(editor.sections[i]);
@@ -606,7 +838,7 @@ You can ask me to draft or polish copy, add or reorganize sections, or find and 
 
                     case 'replace_all_sections': {
                         if (Array.isArray(action.sections)) {
-                            this.statusMessage = 'Applying new page layout...';
+                            this.statusMessage = 'Working...';
                             editor.sections = JSON.parse(JSON.stringify(action.sections));
                             editor.ensureSectionKeys();
                             editor.dirty = true;
@@ -630,7 +862,7 @@ You can ask me to draft or polish copy, add or reorganize sections, or find and 
                     }
 
                     case 'save_page': {
-                        this.statusMessage = 'Saving & Publishing page...';
+                        this.statusMessage = 'Working...';
                         if (typeof editor.save === 'function') {
                             await editor.save();
                             return 'success';
@@ -743,7 +975,7 @@ You can ask me to draft or polish copy, add or reorganize sections, or find and 
             if (msg) {
                 msg.undone = true;
             }
-            this.setFloatingToast('↺ Changes reverted to previous state', 3000);
+            this.setFloatingToast('Reverted', 1800);
         },
 
         insertAssetIntoActive(asset) {
@@ -761,7 +993,7 @@ You can ask me to draft or polish copy, add or reorganize sections, or find and 
                     editor.schedulePreview();
                     this.closeChat();
                     editor.focusField(imgField.name, editor.active);
-                    this.setFloatingToast(`🖼️ Image "${asset.name}" applied to active section!`);
+                    this.setFloatingToast('Applied', 1800);
                     return;
                 }
             }

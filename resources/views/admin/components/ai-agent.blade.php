@@ -25,6 +25,40 @@
         .ai-chat-scroll::-webkit-scrollbar-thumb:hover {
             background-color: rgba(156, 163, 175, 0.9);
         }
+
+        .ai-input-scroll {
+            scrollbar-width: thin;
+            scrollbar-color: rgba(209, 213, 219, 0.6) transparent;
+        }
+        .ai-input-scroll::-webkit-scrollbar {
+            width: 3px;
+        }
+        .ai-input-scroll::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        .ai-input-scroll::-webkit-scrollbar-thumb {
+            background-color: rgba(209, 213, 219, 0.6);
+            border-radius: 9999px;
+        }
+        .ai-input-scroll::-webkit-scrollbar-thumb:hover {
+            background-color: rgba(156, 163, 175, 0.9);
+        }
+
+        @keyframes ai-shimmer {
+            0% {
+                background-position: -200% 0;
+            }
+            100% {
+                background-position: 200% 0;
+            }
+        }
+        .ai-shimmer-text {
+            background: linear-gradient(90deg, #94a3b8 0%, #ffffff 50%, #94a3b8 100%);
+            background-size: 200% 100%;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: ai-shimmer 2s infinite linear;
+        }
     </style>
     {{-- ===================================================
          1. Frosted Backdrop Overlay (Smooth Blur)
@@ -51,62 +85,102 @@
         x-show="!isOpen || isDragging"
         x-cloak
     >
-        {{-- Floating Speech Bubble / Live Status Typewriter Pill --}}
+        {{-- Library-Style Animated Tooltip with Caret Arrow & Shimmer Text (Positioned clearly above avatar) --}}
         <div
-            x-show="isLoading || isProcessingActions || statusMessage"
+            x-show="floatingStatusText"
             x-cloak
-            x-transition:enter="transition ease-out duration-200"
-            x-transition:enter-start="opacity-0 -translate-y-2 scale-95"
+            x-transition:enter="transition ease-[cubic-bezier(0.16,1,0.3,1)] duration-250"
+            x-transition:enter-start="opacity-0 translate-y-1.5 scale-90"
             x-transition:enter-end="opacity-100 translate-y-0 scale-100"
             x-transition:leave="transition ease-in duration-150"
             x-transition:leave-start="opacity-100 translate-y-0 scale-100"
-            x-transition:leave-end="opacity-0 -translate-y-2 scale-95"
-            class="absolute -top-11 left-1/2 -translate-x-1/2 whitespace-nowrap px-3 py-1 rounded-full bg-white text-gray-900 text-xs font-medium shadow-md border border-gray-150 flex items-center gap-1.5 pointer-events-none z-10"
+            x-transition:leave-end="opacity-0 translate-y-1 scale-95"
+            class="absolute bottom-full mb-2.5 left-1/2 -translate-x-1/2 origin-bottom whitespace-nowrap pointer-events-none z-20 select-none drop-shadow-[0_4px_12px_rgba(0,0,0,0.3)]"
         >
-            <span class="inline-flex items-center gap-0.5">
-                <span class="size-1.5 rounded-full bg-primary animate-bounce [animation-delay:-0.3s]"></span>
-                <span class="size-1.5 rounded-full bg-primary animate-bounce [animation-delay:-0.15s]"></span>
-                <span class="size-1.5 rounded-full bg-primary animate-bounce"></span>
-            </span>
-            <span class="text-gray-700 font-medium" x-text="statusMessage || 'Thinking...'"></span>
-            <span class="inline-block w-1 h-3 bg-primary animate-pulse ml-0.5"></span>
+            <div class="relative px-2.5 py-0.5 rounded-md bg-slate-950/95 backdrop-blur-md border border-white/15 flex items-center justify-center">
+                <span class="ai-shimmer-text text-[11px] font-medium tracking-wide" x-text="floatingStatusText"></span>
+
+                {{-- Tooltip Caret / Arrow Pointing Down at Avatar --}}
+                <div class="absolute -bottom-1 left-1/2 -translate-x-1/2 w-2 h-2 bg-slate-950 rotate-45 border-r border-b border-white/15"></div>
+            </div>
         </div>
 
-        {{-- Toast Bubble on completion --}}
-        <div
-            x-show="showToast && !isLoading && !isProcessingActions"
-            x-cloak
-            x-transition:enter="transition ease-out duration-300"
-            x-transition:enter-start="opacity-0 translate-y-2 scale-95"
-            x-transition:enter-end="opacity-100 translate-y-0 scale-100"
-            x-transition:leave="transition ease-in duration-200"
-            x-transition:leave-start="opacity-100 translate-y-0 scale-100"
-            x-transition:leave-end="opacity-0 translate-y-2 scale-95"
-            class="absolute -top-12 left-1/2 -translate-x-1/2 whitespace-nowrap px-3 py-1.5 rounded-xl bg-white text-gray-900 text-xs font-semibold shadow-lg border border-emerald-500/30 flex items-center gap-1.5 pointer-events-auto cursor-pointer"
-            @click="openChat()"
-        >
-            <span class="size-2 rounded-full bg-emerald-500 animate-ping"></span>
-            <span class="text-gray-800 font-medium" x-text="toastMessage"></span>
-        </div>
-
-        {{-- Floating circular avatar button (Snug Minimal Base, Zero Hover Popups) --}}
+        {{-- Floating circular avatar button (Vibrant Gradient Ambient Base - Tight snug fit) --}}
         <div
             @pointerdown="startDrag($event)"
             @pointermove="onDragMove($event)"
             @pointerup="endDrag($event)"
             @pointercancel="endDrag($event)"
-            class="relative size-13 sm:size-14 rounded-full bg-white p-0.5 shadow-[0_4px_16px_rgba(0,0,0,0.1),0_0_0_1px_rgba(0,0,0,0.04)] hover:shadow-[0_8px_24px_rgba(0,0,0,0.14)] active:scale-95 transition-all duration-200 cursor-grab active:cursor-grabbing flex items-center justify-center overflow-visible select-none"
+            class="relative size-13 sm:size-14 rounded-full bg-gradient-to-tr from-indigo-500 via-purple-500 to-cyan-400 p-0 shadow-[0_6px_22px_rgba(99,102,241,0.32),0_1px_3px_rgba(0,0,0,0.1)] hover:shadow-[0_10px_30px_rgba(99,102,241,0.48)] hover:scale-105 active:scale-95 transition-all duration-200 cursor-grab active:cursor-grabbing flex items-center justify-center overflow-visible select-none"
             style="touch-action: none; -webkit-user-drag: none; user-select: none;"
-            :class="(isLoading || isProcessingActions) ? 'ring-2 ring-primary/20 animate-pulse' : ''"
+            :class="(isLoading || isProcessingActions) ? 'ring-2 ring-cyan-400/40 animate-pulse' : ''"
         >
-            {{-- SVG Animated Creature --}}
-            <img
-                :src="avatarSrc"
-                alt="AI Agent Avatar"
-                class="size-full object-contain pointer-events-none select-none transition-transform duration-300 overflow-visible"
-                :class="(isLoading || isProcessingActions) ? 'scale-105' : ''"
-                draggable="false"
-            />
+            <div class="size-full rounded-full bg-slate-950/10 flex items-center justify-center overflow-visible p-0">
+                {{-- SVG Animated Creature with Mouse-Tracking Interactive Eyes & Rich Colors --}}
+                <svg
+                    viewBox="-125 -125 250 250"
+                    class="size-full object-contain pointer-events-none select-none transition-transform duration-300 overflow-visible"
+                    :class="(isLoading || isProcessingActions) ? 'scale-105' : ''"
+                    role="img"
+                    aria-label="AI Agent Avatar"
+                    xmlns="http://www.w3.org/2000/svg"
+                >
+                    <defs>
+                        {{-- Vibrant 3D Body Gradient --}}
+                        <linearGradient id="ai-body-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+                            <stop offset="0%" stop-color="#6366f1"/>
+                            <stop offset="48%" stop-color="#8b5cf6"/>
+                            <stop offset="100%" stop-color="#06b6d4"/>
+                        </linearGradient>
+
+                        {{-- Specular Highlight Sheen --}}
+                        <linearGradient id="ai-sheen" x1="0%" y1="0%" x2="0%" y2="100%">
+                            <stop offset="0%" stop-color="#ffffff" stop-opacity="0.38"/>
+                            <stop offset="55%" stop-color="#ffffff" stop-opacity="0"/>
+                        </linearGradient>
+
+                        {{-- Body shape mask for interior plates --}}
+                        <mask id="bot-body-mask" maskUnits="userSpaceOnUse" x="-158" y="-158" width="316" height="316">
+                            <path d="M100.19 0.33C100.19 3.6 100.03 6.88 99.71 10.13C99.39 13.38 98.9 16.63 98.27 19.84C97.63 23.04 96.83 26.23 95.88 29.36C94.93 32.48 93.83 35.58 92.58 38.6C91.33 41.62 89.92 44.59 88.38 47.47C86.84 50.35 85.15 53.17 83.33 55.89C81.52 58.6 79.56 61.24 77.49 63.77C75.42 66.29 73.21 68.73 70.9 71.04C68.59 73.35 66.15 75.56 63.63 77.63C61.1 79.7 58.46 81.66 55.74 83.48C53.03 85.29 50.21 86.98 47.33 88.52C44.45 90.06 41.47 91.47 38.46 92.72C35.44 93.97 32.34 95.07 29.22 96.02C26.09 96.97 22.9 97.77 19.7 98.41C16.49 99.04 13.24 99.53 9.99 99.85C6.74 100.17 3.45 100.33 0.19 100.33C-3.08 100.33 -6.36 100.17 -9.61 99.85C-12.87 99.53 -16.12 99.04 -19.32 98.41C-22.53 97.77 -25.71 96.97 -28.84 96.02C-31.97 95.07 -35.06 93.97 -38.08 92.72C-41.1 91.47 -44.07 90.06 -46.95 88.52C-49.83 86.98 -52.65 85.29 -55.37 83.48C-58.09 81.66 -60.73 79.7 -63.25 77.63C-65.78 75.56 -68.21 73.35 -70.52 71.04C-72.83 68.73 -75.04 66.29 -77.11 63.77C-79.19 61.24 -81.14 58.6 -82.96 55.89C-84.77 53.17 -86.46 50.35 -88 47.47C-89.54 44.59 -90.95 41.62 -92.2 38.6C-93.45 35.58 -94.56 32.48 -95.51 29.36C-96.46 26.23 -97.25 23.04 -97.89 19.84C-98.53 16.63 -99.01 13.38 -99.33 10.13C-99.65 6.88 -99.81 3.6 -99.81 0.33C-99.81 -2.94 -99.65 -6.22 -99.33 -9.47C-99.01 -12.72 -98.53 -15.98 -97.89 -19.18C-97.25 -22.38 -96.46 -25.57 -95.51 -28.7C-94.56 -31.83 -93.45 -34.92 -92.2 -37.94C-90.95 -40.96 -89.54 -43.93 -88 -46.81C-86.46 -49.69 -84.77 -52.51 -82.96 -55.23C-81.14 -57.94 -79.19 -60.58 -77.11 -63.11C-75.04 -65.64 -72.83 -68.07 -70.52 -70.38C-68.21 -72.69 -65.78 -74.9 -63.25 -76.97C-60.73 -79.04 -58.09 -81 -55.37 -82.82C-52.65 -84.63 -49.83 -86.32 -46.95 -87.86C-44.07 -89.4 -41.1 -90.81 -38.08 -92.06C-35.06 -93.31 -31.97 -94.42 -28.84 -95.37C-25.71 -96.31 -22.53 -97.11 -19.32 -97.75C-16.12 -98.39 -12.87 -98.87 -9.61 -99.19C-6.36 -99.51 -3.08 -99.67 0.19 -99.67C3.45 -99.67 6.74 -99.51 9.99 -99.19C13.24 -98.87 16.49 -98.39 19.7 -97.75C22.9 -97.11 26.09 -96.31 29.22 -95.37C32.34 -94.42 35.44 -93.31 38.46 -92.06C41.47 -90.81 44.45 -89.4 47.33 -87.86C50.21 -86.32 53.03 -84.63 55.74 -82.82C58.46 -81 61.1 -79.04 63.63 -76.97C66.15 -74.9 68.59 -72.69 70.9 -70.38C73.21 -68.07 75.42 -65.64 77.49 -63.11C79.56 -60.58 81.52 -57.94 83.33 -55.23C85.15 -52.51 86.84 -49.69 88.38 -46.81C89.92 -43.93 91.33 -40.96 92.58 -37.94C93.83 -34.92 94.93 -31.83 95.88 -28.7C96.83 -25.57 97.63 -22.38 98.27 -19.18C98.9 -15.98 99.39 -12.72 99.71 -9.47C100.03 -6.22 100.19 -2.94 100.19 0.33Z" fill="#fff"/>
+                        </mask>
+
+                        {{-- Visor mask with dynamic eye cutouts --}}
+                        <mask id="bot-mask-interactive" maskUnits="userSpaceOnUse" x="-158" y="-158" width="316" height="316">
+                            {{-- Body shape in mask (white reveals the dark face) --}}
+                            <path d="M100.19 0.33C100.19 3.6 100.03 6.88 99.71 10.13C99.39 13.38 98.9 16.63 98.27 19.84C97.63 23.04 96.83 26.23 95.88 29.36C94.93 32.48 93.83 35.58 92.58 38.6C91.33 41.62 89.92 44.59 88.38 47.47C86.84 50.35 85.15 53.17 83.33 55.89C81.52 58.6 79.56 61.24 77.49 63.77C75.42 66.29 73.21 68.73 70.9 71.04C68.59 73.35 66.15 75.56 63.63 77.63C61.1 79.7 58.46 81.66 55.74 83.48C53.03 85.29 50.21 86.98 47.33 88.52C44.45 90.06 41.47 91.47 38.46 92.72C35.44 93.97 32.34 95.07 29.22 96.02C26.09 96.97 22.9 97.77 19.7 98.41C16.49 99.04 13.24 99.53 9.99 99.85C6.74 100.17 3.45 100.33 0.19 100.33C-3.08 100.33 -6.36 100.17 -9.61 99.85C-12.87 99.53 -16.12 99.04 -19.32 98.41C-22.53 97.77 -25.71 96.97 -28.84 96.02C-31.97 95.07 -35.06 93.97 -38.08 92.72C-41.1 91.47 -44.07 90.06 -46.95 88.52C-49.83 86.98 -52.65 85.29 -55.37 83.48C-58.09 81.66 -60.73 79.7 -63.25 77.63C-65.78 75.56 -68.21 73.35 -70.52 71.04C-72.83 68.73 -75.04 66.29 -77.11 63.77C-79.19 61.24 -81.14 58.6 -82.96 55.89C-84.77 53.17 -86.46 50.35 -88 47.47C-89.54 44.59 -90.95 41.62 -92.2 38.6C-93.45 35.58 -94.56 32.48 -95.51 29.36C-96.46 26.23 -97.25 23.04 -97.89 19.84C-98.53 16.63 -99.01 13.38 -99.33 10.13C-99.65 6.88 -99.81 3.6 -99.81 0.33C-99.81 -2.94 -99.65 -6.22 -99.33 -9.47C-99.01 -12.72 -98.53 -15.98 -97.89 -19.18C-97.25 -22.38 -96.46 -25.57 -95.51 -28.7C-94.56 -31.83 -93.45 -34.92 -92.2 -37.94C-90.95 -40.96 -89.54 -43.93 -88 -46.81C-86.46 -49.69 -84.77 -52.51 -82.96 -55.23C-81.14 -57.94 -79.19 -60.58 -77.11 -63.11C-75.04 -65.64 -72.83 -68.07 -70.52 -70.38C-68.21 -72.69 -65.78 -74.9 -63.25 -76.97C-60.73 -79.04 -58.09 -81 -55.37 -82.82C-52.65 -84.63 -49.83 -86.32 -46.95 -87.86C-44.07 -89.4 -41.1 -90.81 -38.08 -92.06C-35.06 -93.31 -31.97 -94.42 -28.84 -95.37C-25.71 -96.31 -22.53 -97.11 -19.32 -97.75C-16.12 -98.39 -12.87 -98.87 -9.61 -99.19C-6.36 -99.51 -3.08 -99.67 0.19 -99.67C3.45 -99.67 6.74 -99.51 9.99 -99.19C13.24 -98.87 16.49 -98.39 19.7 -97.75C22.9 -97.11 26.09 -96.31 29.22 -95.37C32.34 -94.42 35.44 -93.31 38.46 -92.06C41.47 -90.81 44.45 -89.4 47.33 -87.86C50.21 -86.32 53.03 -84.63 55.74 -82.82C58.46 -81 61.1 -79.04 63.63 -76.97C66.15 -74.9 68.59 -72.69 70.9 -70.38C73.21 -68.07 75.42 -65.64 77.49 -63.11C79.56 -60.58 81.52 -57.94 83.33 -55.23C85.15 -52.51 86.84 -49.69 88.38 -46.81C89.92 -43.93 91.33 -40.96 92.58 -37.94C93.83 -34.92 94.93 -31.83 95.88 -28.7C96.83 -25.57 97.63 -22.38 98.27 -19.18C98.9 -15.98 99.39 -12.72 99.71 -9.47C100.03 -6.22 100.19 -2.94 100.19 0.33Z" fill="#fff"/>
+                            
+                            {{-- Left Eye cutout --}}
+                            <g :style="`transform: translate(${eyeBasePos.leftX + eyeX}px, ${eyeBasePos.leftY + eyeY}px) scale(1, ${eyeScaleY}); transform-origin: 0px 0px;`">
+                                <path :d="leftEyePath" opacity="1" fill="#000"/>
+                            </g>
+
+                            {{-- Right Eye cutout --}}
+                            <g :style="`transform: translate(${eyeBasePos.rightX + eyeX}px, ${eyeBasePos.rightY + eyeY}px) scale(1, ${eyeScaleY}); transform-origin: 0px 0px;`">
+                                <path :d="rightEyePath" opacity="1" fill="#000"/>
+                            </g>
+                        </mask>
+                    </defs>
+
+                    {{-- 1. Outer Body: Gradient --}}
+                    <path d="M100.19 0.33C100.19 3.6 100.03 6.88 99.71 10.13C99.39 13.38 98.9 16.63 98.27 19.84C97.63 23.04 96.83 26.23 95.88 29.36C94.93 32.48 93.83 35.58 92.58 38.6C91.33 41.62 89.92 44.59 88.38 47.47C86.84 50.35 85.15 53.17 83.33 55.89C81.52 58.6 79.56 61.24 77.49 63.77C75.42 66.29 73.21 68.73 70.9 71.04C68.59 73.35 66.15 75.56 63.63 77.63C61.1 79.7 58.46 81.66 55.74 83.48C53.03 85.29 50.21 86.98 47.33 88.52C44.45 90.06 41.47 91.47 38.46 92.72C35.44 93.97 32.34 95.07 29.22 96.02C26.09 96.97 22.9 97.77 19.7 98.41C16.49 99.04 13.24 99.53 9.99 99.85C6.74 100.17 3.45 100.33 0.19 100.33C-3.08 100.33 -6.36 100.17 -9.61 99.85C-12.87 99.53 -16.12 99.04 -19.32 98.41C-22.53 97.77 -25.71 96.97 -28.84 96.02C-31.97 95.07 -35.06 93.97 -38.08 92.72C-41.1 91.47 -44.07 90.06 -46.95 88.52C-49.83 86.98 -52.65 85.29 -55.37 83.48C-58.09 81.66 -60.73 79.7 -63.25 77.63C-65.78 75.56 -68.21 73.35 -70.52 71.04C-72.83 68.73 -75.04 66.29 -77.11 63.77C-79.19 61.24 -81.14 58.6 -82.96 55.89C-84.77 53.17 -86.46 50.35 -88 47.47C-89.54 44.59 -90.95 41.62 -92.2 38.6C-93.45 35.58 -94.56 32.48 -95.51 29.36C-96.46 26.23 -97.25 23.04 -97.89 19.84C-98.53 16.63 -99.01 13.38 -99.33 10.13C-99.65 6.88 -99.81 3.6 -99.81 0.33C-99.81 -2.94 -99.65 -6.22 -99.33 -9.47C-99.01 -12.72 -98.53 -15.98 -97.89 -19.18C-97.25 -22.38 -96.46 -25.57 -95.51 -28.7C-94.56 -31.83 -93.45 -34.92 -92.2 -37.94C-90.95 -40.96 -89.54 -43.93 -88 -46.81C-86.46 -49.69 -84.77 -52.51 -82.96 -55.23C-81.14 -57.94 -79.19 -60.58 -77.11 -63.11C-75.04 -65.64 -72.83 -68.07 -70.52 -70.38C-68.21 -72.69 -65.78 -74.9 -63.25 -76.97C-60.73 -79.04 -58.09 -81 -55.37 -82.82C-52.65 -84.63 -49.83 -86.32 -46.95 -87.86C-44.07 -89.4 -41.1 -90.81 -38.08 -92.06C-35.06 -93.31 -31.97 -94.42 -28.84 -95.37C-25.71 -96.31 -22.53 -97.11 -19.32 -97.75C-16.12 -98.39 -12.87 -98.87 -9.61 -99.19C-6.36 -99.51 -3.08 -99.67 0.19 -99.67C3.45 -99.67 6.74 -99.51 9.99 -99.19C13.24 -98.87 16.49 -98.39 19.7 -97.75C22.9 -97.11 26.09 -96.31 29.22 -95.37C32.34 -94.42 35.44 -93.31 38.46 -92.06C41.47 -90.81 44.45 -89.4 47.33 -87.86C50.21 -86.32 53.03 -84.63 55.74 -82.82C58.46 -81 61.1 -79.04 63.63 -76.97C66.15 -74.9 68.59 -72.69 70.9 -70.38C73.21 -68.07 75.42 -65.64 77.49 -63.11C79.56 -60.58 81.52 -57.94 83.33 -55.23C85.15 -52.51 86.84 -49.69 88.38 -46.81C89.92 -43.93 91.33 -40.96 92.58 -37.94C93.83 -34.92 94.93 -31.83 95.88 -28.7C96.83 -25.57 97.63 -22.38 98.27 -19.18C98.9 -15.98 99.39 -12.72 99.71 -9.47C100.03 -6.22 100.19 -2.94 100.19 0.33Z" fill="url(#ai-body-grad)"/>
+
+                    {{-- 2. Specular Highlight --}}
+                    <path d="M100.19 0.33C100.19 3.6 100.03 6.88 99.71 10.13C99.39 13.38 98.9 16.63 98.27 19.84C97.63 23.04 96.83 26.23 95.88 29.36C94.93 32.48 93.83 35.58 92.58 38.6C91.33 41.62 89.92 44.59 88.38 47.47C86.84 50.35 85.15 53.17 83.33 55.89C81.52 58.6 79.56 61.24 77.49 63.77C75.42 66.29 73.21 68.73 70.9 71.04C68.59 73.35 66.15 75.56 63.63 77.63C61.1 79.7 58.46 81.66 55.74 83.48C53.03 85.29 50.21 86.98 47.33 88.52C44.45 90.06 41.47 91.47 38.46 92.72C35.44 93.97 32.34 95.07 29.22 96.02C26.09 96.97 22.9 97.77 19.7 98.41C16.49 99.04 13.24 99.53 9.99 99.85C6.74 100.17 3.45 100.33 0.19 100.33C-3.08 100.33 -6.36 100.17 -9.61 99.85C-12.87 99.53 -16.12 99.04 -19.32 98.41C-22.53 97.77 -25.71 96.97 -28.84 96.02C-31.97 95.07 -35.06 93.97 -38.08 92.72C-41.1 91.47 -44.07 90.06 -46.95 88.52C-49.83 86.98 -52.65 85.29 -55.37 83.48C-58.09 81.66 -60.73 79.7 -63.25 77.63C-65.78 75.56 -68.21 73.35 -70.52 71.04C-72.83 68.73 -75.04 66.29 -77.11 63.77C-79.19 61.24 -81.14 58.6 -82.96 55.89C-84.77 53.17 -86.46 50.35 -88 47.47C-89.54 44.59 -90.95 41.62 -92.2 38.6C-93.45 35.58 -94.56 32.48 -95.51 29.36C-96.46 26.23 -97.25 23.04 -97.89 19.84C-98.53 16.63 -99.01 13.38 -99.33 10.13C-99.65 6.88 -99.81 3.6 -99.81 0.33C-99.81 -2.94 -99.65 -6.22 -99.33 -9.47C-99.01 -12.72 -98.53 -15.98 -97.89 -19.18C-97.25 -22.38 -96.46 -25.57 -95.51 -28.7C-94.56 -31.83 -93.45 -34.92 -92.2 -37.94C-90.95 -40.96 -89.54 -43.93 -88 -46.81C-86.46 -49.69 -84.77 -52.51 -82.96 -55.23C-81.14 -57.94 -79.19 -60.58 -77.11 -63.11C-75.04 -65.64 -72.83 -68.07 -70.52 -70.38C-68.21 -72.69 -65.78 -74.9 -63.25 -76.97C-60.73 -79.04 -58.09 -81 -55.37 -82.82C-52.65 -84.63 -49.83 -86.32 -46.95 -87.86C-44.07 -89.4 -41.1 -90.81 -38.08 -92.06C-35.06 -93.31 -31.97 -94.42 -28.84 -95.37C-25.71 -96.31 -22.53 -97.11 -19.32 -97.75C-16.12 -98.39 -12.87 -98.87 -9.61 -99.19C-6.36 -99.51 -3.08 -99.67 0.19 -99.67C3.45 -99.67 6.74 -99.51 9.99 -99.19C13.24 -98.87 16.49 -98.39 19.7 -97.75C22.9 -97.11 26.09 -96.31 29.22 -95.37C32.34 -94.42 35.44 -93.31 38.46 -92.06C41.47 -90.81 44.45 -89.4 47.33 -87.86C50.21 -86.32 53.03 -84.63 55.74 -82.82C58.46 -81 61.1 -79.04 63.63 -76.97C66.15 -74.9 68.59 -72.69 70.9 -70.38C73.21 -68.07 75.42 -65.64 77.49 -63.11C79.56 -60.58 81.52 -57.94 83.33 -55.23C85.15 -52.51 86.84 -49.69 88.38 -46.81C89.92 -43.93 91.33 -40.96 92.58 -37.94C93.83 -34.92 94.93 -31.83 95.88 -28.7C96.83 -25.57 97.63 -22.38 98.27 -19.18C98.9 -15.98 99.39 -12.72 99.71 -9.47C100.03 -6.22 100.19 -2.94 100.19 0.33Z" fill="url(#ai-sheen)"/>
+
+                    {{-- 3. Crisp Eye Glow Under-Plate --}}
+                    <g mask="url(#bot-body-mask)">
+                        <rect x="-158" y="-158" width="316" height="316" fill="#ffffff"/>
+                    </g>
+
+                    {{-- 4. Deep Obsidian Visor with Eye Cutouts --}}
+                    <g mask="url(#bot-mask-interactive)">
+                        <rect x="-158" y="-158" width="316" height="316" fill="#0c101d"/>
+                        {{-- Cute Rosy Cheeks --}}
+                        <ellipse cx="-44" cy="24" rx="8" ry="4" fill="#f43f5e" opacity="0.32" x-show="isOpen || isProcessingActions"/>
+                        <ellipse cx="64" cy="24" rx="8" ry="4" fill="#f43f5e" opacity="0.32" x-show="isOpen || isProcessingActions"/>
+                    </g>
+                </svg>
+            </div>
         </div>
     </div>
 
@@ -125,8 +199,8 @@
         class="fixed z-[120] inset-4 sm:inset-auto sm:top-1/2 sm:left-1/2 sm:-translate-x-1/2 sm:-translate-y-1/2 flex flex-col bg-white rounded-2xl shadow-[0_16px_48px_rgba(0,0,0,0.12),0_0_0_1px_rgba(0,0,0,0.06)] border border-gray-100 overflow-hidden transition-all duration-200"
         :class="isExpanded ? 'sm:w-[90vw] sm:max-w-4xl sm:h-[85vh]' : 'sm:w-[460px] sm:h-[590px]'"
     >
-        {{-- Clean Super AI Header (Balanced Spacing) --}}
-        <div class="px-5 py-4 bg-white flex items-center justify-between shrink-0">
+        {{-- Clean Super AI Header (Balanced Tight Spacing) --}}
+        <div class="px-4 py-2.5 bg-white flex items-center justify-between shrink-0 border-b border-gray-100/60">
             <div class="flex items-center gap-2">
                 <h3 class="text-sm font-semibold text-gray-900 tracking-tight">Ask Super AI</h3>
                 <span class="inline-flex items-center px-1.5 py-0.5 rounded-md text-[10px] font-medium bg-sky-50 text-sky-700 border border-sky-200/60 font-mono">
@@ -139,7 +213,7 @@
                 <button
                     type="button"
                     @click="clearChat()"
-                    class="p-1.5 rounded-lg text-gray-400 hover:text-gray-700 hover:bg-gray-100 transition-colors"
+                    class="p-1 rounded-lg text-gray-400 hover:text-gray-700 hover:bg-gray-100 transition-colors"
                     title="Erase Chat"
                 >
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="size-4">
@@ -153,7 +227,7 @@
                 <button
                     type="button"
                     @click="closeChat()"
-                    class="p-1.5 rounded-lg text-gray-400 hover:text-gray-800 hover:bg-gray-100 transition-colors"
+                    class="p-1 rounded-lg text-gray-400 hover:text-gray-800 hover:bg-gray-100 transition-colors"
                     title="Close"
                 >
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="size-4">
@@ -171,17 +245,17 @@
             {{-- Message List Container (Custom Minimalist Scrollbar) --}}
             <div
                 x-ref="chatContainer"
-                class="ai-chat-scroll flex-1 overflow-y-auto px-5 py-2 space-y-3.5"
+                class="ai-chat-scroll flex-1 overflow-y-auto px-4 py-2 space-y-2.5"
                 style="scrollbar-width: thin; scrollbar-color: rgba(226, 228, 233, 0.9) transparent;"
             >
                 <template x-for="msg in messages" :key="msg.id">
                     <div class="flex flex-col" :class="msg.role === 'user' ? 'items-end' : 'items-start'">
                         {{-- Message Bubble Wrapper --}}
-                        <div class="flex items-start gap-2.5 max-w-[90%]" :class="msg.role === 'user' ? 'flex-row-reverse' : 'flex-row'">
+                        <div class="flex items-start gap-2 max-w-[92%]" :class="msg.role === 'user' ? 'flex-row-reverse' : 'flex-row'">
                             {{-- Avatar for AI Assistant (Standard Avatar) --}}
                             <template x-if="msg.role === 'assistant'">
-                                <div class="size-8 shrink-0 flex items-center justify-center overflow-visible bg-transparent mt-0.5">
-                                    <img src="/images/ai-agent-avatar.svg" alt="AI" class="size-7.5 object-contain pointer-events-none overflow-visible" />
+                                <div class="size-7 shrink-0 flex items-center justify-center overflow-visible bg-transparent mt-0.5">
+                                    <img src="/images/ai-agent-avatar.svg" alt="AI" class="size-6.5 object-contain pointer-events-none overflow-visible" />
                                 </div>
                             </template>
 
@@ -190,10 +264,10 @@
                                 <div
                                     class="text-xs sm:text-sm leading-relaxed break-words"
                                     :class="msg.role === 'user'
-                                        ? 'bg-primary text-white font-medium rounded-xl rounded-tr-xs px-4 py-2.5 shadow-xs'
+                                        ? 'bg-primary text-white font-medium rounded-xl rounded-tr-xs px-3.5 py-2 shadow-xs'
                                         : (msg.error
-                                            ? 'bg-red-50 text-red-800 border border-red-200/80 rounded-xl rounded-tl-xs px-3.5 py-2.5'
-                                            : 'bg-[#f4f5f7] text-gray-800 rounded-xl rounded-tl-xs px-3.5 py-2.5')"
+                                            ? 'bg-red-50 text-red-800 border border-red-200/80 rounded-xl rounded-tl-xs px-3 py-2'
+                                            : 'bg-[#f4f5f7] text-gray-800 rounded-xl rounded-tl-xs px-3 py-2')"
                                 >
                                     {{-- Markdown rendered content --}}
                                     <div
@@ -373,47 +447,60 @@
                         <img :src="avatarSrc" alt="AI" class="size-7.5 object-contain animate-bounce overflow-visible" />
                     </div>
                     <div class="bg-[#f4f5f7] rounded-xl rounded-tl-xs px-3.5 py-2 text-xs flex items-center border border-gray-200/50">
-                        <span class="font-medium bg-gradient-to-r from-gray-400 via-gray-900 to-gray-400 bg-clip-text text-transparent animate-pulse" x-text="statusMessage || 'Thinking & Crafting...'"></span>
+                        <span class="font-medium text-gray-700 animate-pulse" x-text="statusMessage || 'Thinking & Crafting...'"></span>
                     </div>
                 </div>
             </div>
 
-            {{-- Super AI Input Capsule (Tight Minimalist Spacing) --}}
-            <div class="px-4 pt-1 bg-white shrink-0">
-                <form @submit.prevent="sendMessage()" class="relative">
-                    <div class="flex items-center gap-2 bg-[#f0f2f5] rounded-full pl-4 pr-1.5 py-1.5 transition-all">
-                        <input
-                            type="text"
-                            x-ref="promptInput"
-                            x-model="prompt"
-                            @keydown.enter.exact.prevent="sendMessage()"
-                            placeholder="How else can I help"
-                            class="bg-transparent border-0 focus:ring-0 focus:outline-none text-xs sm:text-sm text-gray-900 placeholder-gray-400 w-full py-1.5 px-0"
-                            :disabled="isLoading || isProcessingActions"
-                        />
+            {{-- ===================================================
+                 PromptInput System (Auto-expanding Textarea & Actions)
+            =================================================== --}}
+            <div class="px-3.5 pt-1 pb-3 bg-white shrink-0">
+                <div class="relative rounded-2xl border border-gray-200/90 bg-[#f8fafc] shadow-2xs">
+                    {{-- Auto-resizing Textarea (Shift+Enter for newline, Enter to send) --}}
+                    <textarea
+                        x-ref="promptInput"
+                        x-model="prompt"
+                        @input="adjustTextareaHeight($event.target)"
+                        @keydown.enter.exact.prevent="if (!isLoading && !isProcessingActions) sendMessage()"
+                        placeholder="Ask AI to write copy, add sections, or find images..."
+                        rows="1"
+                        class="ai-input-scroll w-full bg-transparent resize-none border-0 focus:ring-0 focus:outline-none text-xs sm:text-sm text-gray-900 placeholder-gray-400 px-3.5 pt-2.5 pb-1 max-h-[200px] min-h-[38px] leading-relaxed block overflow-y-hidden"
+                        :disabled="isProcessingActions"
+                    ></textarea>
 
-                        {{-- Fully Rounded Theme Color Send Button (Lucide Arrow Up) --}}
+                    {{-- Actions Row (Right-aligned Send / Stop Button) --}}
+                    <div class="flex items-center justify-end px-2.5 pb-2 pt-0.5">
+                        {{-- Stop Generation Button (when active) --}}
                         <button
-                            type="submit"
-                            :disabled="!prompt.trim() || isLoading || isProcessingActions"
-                            class="size-8 rounded-full bg-primary hover:bg-primary/90 text-white flex items-center justify-center transition-all shadow-xs active:scale-95 disabled:opacity-40 disabled:hover:bg-primary disabled:active:scale-100 shrink-0"
-                            title="Send"
+                            type="button"
+                            x-show="isLoading || isProcessingActions"
+                            x-cloak
+                            @click="stopGeneration()"
+                            class="w-8 h-8 rounded-full bg-primary hover:bg-primary/90 text-white flex items-center justify-center transition-all shadow-xs active:scale-95 cursor-pointer shrink-0"
+                            title="Stop generation"
                         >
-                            <template x-if="!isLoading && !isProcessingActions">
-                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="size-4">
-                                    <path d="m5 12 7-7 7 7"/>
-                                    <path d="M12 19V5"/>
-                                </svg>
-                            </template>
-                            <template x-if="isLoading || isProcessingActions">
-                                <svg class="animate-spin size-4 text-white" fill="none" viewBox="0 0 24 24">
-                                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="3"></circle>
-                                    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                                </svg>
-                            </template>
+                            <svg viewBox="0 0 24 24" fill="currentColor" class="w-3.5 h-3.5">
+                                <rect x="6" y="6" width="12" height="12" rx="2" />
+                            </svg>
+                        </button>
+
+                        {{-- Send Message Button (when idle) --}}
+                        <button
+                            type="button"
+                            x-show="!isLoading && !isProcessingActions"
+                            @click="sendMessage()"
+                            :disabled="!prompt.trim()"
+                            class="w-8 h-8 rounded-full bg-primary hover:bg-primary/90 text-white flex items-center justify-center transition-all shadow-xs active:scale-95 disabled:opacity-30 disabled:cursor-not-allowed disabled:active:scale-100 cursor-pointer shrink-0"
+                            title="Send message"
+                        >
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="w-4 h-4">
+                                <path d="m5 12 7-7 7 7"/>
+                                <path d="M12 19V5"/>
+                            </svg>
                         </button>
                     </div>
-                </form>
+                </div>
             </div>
         </div>
     </div>

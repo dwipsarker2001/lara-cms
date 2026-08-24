@@ -27,7 +27,7 @@ class AiAgentService
         if (empty($apiKey)) {
             return [
                 'success' => false,
-                'message' => 'AI API key is not configured. Please configure your API key in Admin Settings > AI Assistant.',
+                'message' => 'AI API key is not configured. Please configure your API key in Admin Settings > AI Assistant to get started.',
                 'actions' => [],
                 'suggestions' => ['Configure API Key in Admin Settings'],
                 'error' => 'Missing API key',
@@ -62,11 +62,23 @@ class AiAgentService
             ]);
 
             if (! $response->successful()) {
-                Log::error('DeepSeek API Error: '.$response->status().' - '.$response->body());
+                Log::error('AI API Error: '.$response->status().' - '.$response->body());
+
+                $status = $response->status();
+                $apiError = $response->json('error.message');
+
+                $friendlyMessage = ! empty($apiError)
+                    ? $apiError
+                    : match ($status) {
+                        401 => 'Invalid API key. Please check your credentials in Admin Settings > AI Assistant.',
+                        402, 429 => 'Rate limit or account credit balance reached. Please try again shortly.',
+                        500, 502, 503 => 'The AI service is temporarily unavailable. Please try again in a moment.',
+                        default => 'The AI service encountered an error. Please try again.',
+                    };
 
                 return [
                     'success' => false,
-                    'message' => 'AI Service Error: '.$response->json('error.message', 'HTTP '.$response->status()),
+                    'message' => $friendlyMessage,
                     'actions' => [],
                     'suggestions' => ['Try asking again with a simpler request'],
                     'error' => $response->body(),
@@ -91,9 +103,9 @@ class AiAgentService
 
             return [
                 'success' => false,
-                'message' => 'Connection failed: '.$e->getMessage(),
+                'message' => 'Unable to reach the AI service. Please verify your connection and try again.',
                 'actions' => [],
-                'suggestions' => ['Check server connectivity to api.deepseek.com'],
+                'suggestions' => ['Check server connectivity'],
                 'error' => $e->getMessage(),
             ];
         }
@@ -316,14 +328,15 @@ PROMPT;
 
         try {
             return Asset::where('is_directory', false)
+                ->whereNotNull('path')
                 ->orderByDesc('id')
                 ->limit(60)
                 ->get()
                 ->filter(function ($asset) {
-                    return Storage::disk('public')->exists($asset->path);
+                    return ! empty($asset->path);
                 })
                 ->map(function ($asset) {
-                    $url = '/storage/'.$asset->path;
+                    $url = str_starts_with($asset->path, 'http') ? $asset->path : '/storage/'.ltrim($asset->path, '/');
 
                     return [
                         'id' => $asset->id,
@@ -354,14 +367,7 @@ PROMPT;
     {
         try {
             $builder = Asset::where('is_directory', false)
-                ->where(function ($q) {
-                    $q->where('mime', 'like', 'image/%')
-                        ->orWhere('path', 'like', '%.jpg')
-                        ->orWhere('path', 'like', '%.jpeg')
-                        ->orWhere('path', 'like', '%.png')
-                        ->orWhere('path', 'like', '%.webp')
-                        ->orWhere('path', 'like', '%.svg');
-                });
+                ->whereNotNull('path');
 
             if (! empty(trim($query))) {
                 $terms = array_filter(explode(' ', trim($query)));
@@ -379,13 +385,15 @@ PROMPT;
                 ->limit($limit)
                 ->get()
                 ->filter(function ($asset) {
-                    return Storage::disk('public')->exists($asset->path);
+                    return ! empty($asset->path);
                 })
                 ->map(function ($asset) {
+                    $url = str_starts_with($asset->path, 'http') ? $asset->path : '/storage/'.ltrim($asset->path, '/');
+
                     return [
                         'id' => $asset->id,
                         'name' => $asset->name,
-                        'url' => '/storage/'.$asset->path,
+                        'url' => $url,
                         'path' => $asset->path,
                         'width' => $asset->width,
                         'height' => $asset->height,
