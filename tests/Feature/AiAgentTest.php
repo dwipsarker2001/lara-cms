@@ -134,6 +134,33 @@ class AiAgentTest extends TestCase
         $this->assertEquals('Parsed correctly!', $result['message']);
     }
 
+    public function test_ai_agent_service_handles_unescaped_newlines_and_control_chars(): void
+    {
+        $rawWithNewlines = "{\n\"thought\": \"Testing raw newlines\",\n\"message\": \"Paragraph 1\n\nParagraph 2\",\n\"actions\": [\n{\n\"action\": \"update_field\",\n\"section_index\": 0,\n\"field_path\": \"mapImage\",\n\"value\": \"https://maps.google.com\"\n}\n],\n\"suggestions\": [\"Next\"]\n}";
+
+        Http::fake([
+            'https://api.deepseek.com/chat/completions' => Http::response([
+                'choices' => [
+                    [
+                        'message' => [
+                            'content' => $rawWithNewlines,
+                        ],
+                    ],
+                ],
+            ], 200),
+        ]);
+
+        $service = app(AiAgentService::class);
+        $result = $service->chat([
+            ['role' => 'user', 'content' => 'Update map'],
+        ]);
+
+        $this->assertTrue($result['success']);
+        $this->assertCount(1, $result['actions']);
+        $this->assertEquals('update_field', $result['actions'][0]['action']);
+        $this->assertEquals('mapImage', $result['actions'][0]['field_path']);
+    }
+
     public function test_ai_chat_returns_complex_multi_actions_and_image_selection(): void
     {
         Http::fake([
@@ -301,5 +328,33 @@ class AiAgentTest extends TestCase
         $allResponse->assertOk();
         $allResponse->assertJsonPath('success', true);
         $allResponse->assertJsonCount(2, 'images');
+    }
+
+    public function test_admin_can_send_ai_chat_prompt_and_receive_json(): void
+    {
+        Http::fake([
+            'https://api.deepseek.com/chat/completions' => Http::response([
+                'choices' => [
+                    [
+                        'message' => [
+                            'content' => json_encode([
+                                'thought' => 'Prompt test',
+                                'message' => 'Processed response',
+                                'actions' => [],
+                                'suggestions' => [],
+                            ]),
+                        ],
+                    ],
+                ],
+            ], 200),
+        ]);
+
+        $response = $this->actingAs($this->admin, 'admin')->postJson(route('admin.ai.chat'), [
+            'prompt' => 'Tell me about the site',
+        ]);
+
+        $response->assertOk();
+        $response->assertJsonPath('success', true);
+        $response->assertJsonPath('message', 'Processed response');
     }
 }

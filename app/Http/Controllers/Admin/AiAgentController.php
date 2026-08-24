@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Services\AiAgentService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class AiAgentController extends Controller
 {
@@ -14,9 +15,9 @@ class AiAgentController extends Controller
     ) {}
 
     /**
-     * Handle AI chat & action execution query.
+     * Handle AI chat & action execution query (supports both SSE streaming and standard JSON).
      */
-    public function chat(Request $request): JsonResponse
+    public function chat(Request $request): JsonResponse|StreamedResponse
     {
         $request->validate([
             'prompt' => 'nullable|string',
@@ -26,6 +27,7 @@ class AiAgentController extends Controller
             'schemas' => 'nullable|array',
             'blockList' => 'nullable|array',
             'entryData' => 'nullable|array',
+            'stream' => 'nullable|boolean',
         ]);
 
         $messages = $request->input('messages', []);
@@ -62,7 +64,9 @@ class AiAgentController extends Controller
         if ($request->has('assets')) {
             $context['assets'] = $request->input('assets');
         }
-
+        if ($request->has('collections')) {
+            $context['collections'] = $request->input('collections');
+        }
         $result = $this->aiAgentService->chat($messages, $context);
 
         return response()->json($result, $result['success'] ? 200 : 422);

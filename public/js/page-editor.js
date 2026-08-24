@@ -1405,12 +1405,21 @@ function pageEditor() {
                 return found ? found.l : cls;
             },
 
-            schedulePreview() {
+            schedulePreview(immediate = false) {
                 if (window.__isResizingImage || window.__skipNextPreviewRefresh) {
                     return;
                 }
-                clearTimeout(this.previewTimer);
-                this.previewTimer = setTimeout(() => this.refreshPreview(), 250);
+                if (this._previewTimer) {
+                    clearTimeout(this._previewTimer);
+                    this._previewTimer = null;
+                }
+                if (immediate) {
+                    this.refreshPreview();
+                } else {
+                    this._previewTimer = setTimeout(() => {
+                        this.refreshPreview();
+                    }, 120);
+                }
             },
 
             refreshPreview() {
@@ -1562,34 +1571,74 @@ function pageEditor() {
                 return listParts.join('/') + '/';
             },
 
+            scrollToIframeSection(sectionIdx) {
+                if (sectionIdx === undefined || sectionIdx === null) return;
+                const iframe = document.getElementById('preview-iframe');
+                if (!iframe) return;
+                const doc = iframe.contentDocument || iframe.contentWindow?.document;
+                if (!doc) return;
+                const container = doc.getElementById('preview-content');
+                if (!container) return;
+
+                const targetEl = container.children[sectionIdx];
+                if (targetEl) {
+                    try {
+                        targetEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                        targetEl.style.transition = 'outline 0.3s ease, box-shadow 0.3s ease';
+                        targetEl.style.outline = '3px solid rgba(59, 130, 246, 0.65)';
+                        targetEl.style.outlineOffset = '2px';
+                        clearTimeout(targetEl._highlightTimer);
+                        targetEl._highlightTimer = setTimeout(() => {
+                            targetEl.style.outline = '';
+                            targetEl.style.outlineOffset = '';
+                        }, 2500);
+                    } catch (e) {}
+                }
+            },
+
             focusField(cmd, sectionIdx) {
-                if (sectionIdx !== undefined) this.active = sectionIdx;
+                if (sectionIdx !== undefined) {
+                    this.active = sectionIdx;
+                    this.scrollToIframeSection(sectionIdx);
+                }
 
                 const raw = cmd.split('#')[0];
                 if (raw === '_root') { this.crumbs = []; return; }
 
-                const segs = raw.split('/');
-                const leaf = segs.pop() || '';
+                const tokens = String(raw)
+                    .replace(/\[(\w+)\]/g, '.$1')
+                    .replace(/[:\/]/g, '.')
+                    .replace(/^\.+|\.+$/g, '')
+                    .split('.')
+                    .filter(Boolean);
+
+                const leaf = tokens.length > 0 ? tokens[tokens.length - 1] : '';
                 const newCrumbs = [];
                 let curFields = this.schemas[this.sections[this.active]?.name] || [];
                 let curData = this.sections[this.active]?.data || {};
 
-                for (const s of segs) {
-                    if (!s) continue;
-                    const [key, idxStr] = s.split(':');
-                    const def = curFields.find(f => f.name === key && f.type === 'object');
-                    if (!def) break;
-                    if (idxStr !== undefined) {
-                        const index = parseInt(idxStr, 10);
-                        if (!isNaN(index)) {
+                let i = 0;
+                while (i < tokens.length - 1) {
+                    const key = tokens[i];
+                    const next = tokens[i + 1];
+                    const isNextIndex = /^\d+$/.test(next);
+
+                    const def = curFields.find(f => f.name === key && (f.type === 'object' || f.type === 'list'));
+                    if (def) {
+                        if (isNextIndex) {
+                            const index = parseInt(next, 10);
                             newCrumbs.push({ key, index });
                             curData = curData?.[key]?.[index] || {};
+                            i += 2;
+                        } else {
+                            newCrumbs.push({ key });
+                            curData = curData?.[key] || {};
+                            i += 1;
                         }
+                        curFields = def.fields || [];
                     } else {
-                        newCrumbs.push({ key });
-                        curData = curData?.[key] || {};
+                        i++;
                     }
-                    curFields = def.fields || [];
                 }
 
                 this.crumbs = newCrumbs;
@@ -1602,9 +1651,8 @@ function pageEditor() {
                             proseMirror.focus();
                         } else if (fieldEl.matches('input, textarea, button, select, [tabindex]')) {
                             try { fieldEl.focus(); } catch {}
-                        } else {
-                            this.highlightField(fieldEl);
                         }
+                        this.highlightField(fieldEl);
                         try { fieldEl.scrollIntoView({ behavior: 'smooth', block: 'center' }); } catch {}
                     } else if (leaf) {
                         const scrollEl = document.querySelector(`[data-field-scroll="${leaf}"]`);
@@ -1618,10 +1666,15 @@ function pageEditor() {
             },
 
             highlightField(el) {
-                el.style.boxShadow = '0 0 0 3px rgba(59,130,246,0.5)';
-                el.style.borderRadius = el.style.borderRadius || '8px';
+                if (!el) return;
+                el.style.transition = 'box-shadow 0.2s ease, border-color 0.2s ease';
+                el.style.boxShadow = '0 0 0 3px rgba(59, 130, 246, 0.55)';
+                el.style.borderColor = 'rgb(59, 130, 246)';
                 clearTimeout(el._highlightTimer);
-                el._highlightTimer = setTimeout(() => { el.style.boxShadow = ''; }, 2000);
+                el._highlightTimer = setTimeout(() => {
+                    el.style.boxShadow = '';
+                    el.style.borderColor = '';
+                }, 2500);
             },
 
             selects: {},

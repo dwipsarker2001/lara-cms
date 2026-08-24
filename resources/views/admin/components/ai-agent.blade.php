@@ -5,7 +5,7 @@
 <div
     x-data="aiAgent()"
     x-init="init()"
-    class="ai-agent-system font-sans select-none"
+    class="ai-agent-system font-sans"
 >
     <style>
         .ai-chat-scroll {
@@ -118,7 +118,7 @@
             <div class="size-full rounded-full bg-slate-950/10 flex items-center justify-center overflow-visible p-0">
                 {{-- SVG Animated Creature with Mouse-Tracking Interactive Eyes & Rich Colors --}}
                 <svg
-                    viewBox="-125 -125 250 250"
+                    viewBox="-114 -114 228 228"
                     class="size-full object-contain pointer-events-none select-none transition-transform duration-300 overflow-visible"
                     :class="(isLoading || isProcessingActions) ? 'scale-105' : ''"
                     role="img"
@@ -262,7 +262,7 @@
                             {{-- Message Content Box --}}
                             <div class="flex flex-col gap-1 min-w-0">
                                 <div
-                                    class="text-xs sm:text-sm leading-relaxed break-words"
+                                    class="text-xs sm:text-sm leading-relaxed break-words select-text"
                                     :class="msg.role === 'user'
                                         ? 'bg-primary text-white font-medium rounded-xl rounded-tr-xs px-3.5 py-2 shadow-xs'
                                         : (msg.error
@@ -271,7 +271,7 @@
                                 >
                                     {{-- Markdown rendered content --}}
                                     <div
-                                        class="prose prose-xs sm:prose-sm max-w-none prose-p:my-0.5 prose-headings:my-1"
+                                        class="prose prose-xs sm:prose-sm max-w-none prose-p:my-0.5 prose-headings:my-1 select-text cursor-text"
                                         :class="msg.role === 'user' ? 'text-white prose-p:text-white prose-strong:text-white' : 'prose-strong:text-gray-900'"
                                         x-html="formatMarkdown(msg.content)"
                                     ></div>

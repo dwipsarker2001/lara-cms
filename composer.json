@@ -12,6 +12,7 @@
         "php": "^8.3",
         "laravel/framework": "^13.8",
         "laravel/tinker": "^3.0",
+        "prism-php/prism": "^0.100.1",
         "sendgrid/sendgrid": "^8.1"
     },
     "require-dev": {

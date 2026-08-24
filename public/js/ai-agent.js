@@ -494,6 +494,42 @@ You can ask me to draft or polish copy, add or reorganize sections, or find and 
             }, duration);
         },
 
+        buildSectionsDigest(sections) {
+            const truncate = (v, len = 60) =>
+                typeof v === 'string' && v.length > len ? v.slice(0, len) + '…' : v;
+
+            const compactValue = (v, key) => {
+                if (v === null || v === undefined) return null;
+                if (Array.isArray(v)) {
+                    // Show count + first item's keys with truncated values so AI knows the field structure
+                    const sample = v[0] && typeof v[0] === 'object'
+                        ? Object.fromEntries(Object.entries(v[0]).filter(([k]) => !k.startsWith('_')).map(([k, sv]) => [k, truncate(sv instanceof Object ? '(object)' : sv)]))
+                        : v[0];
+                    return { _count: v.length, _fields: sample ?? null };
+                }
+                if (v && typeof v === 'object') return '{...}';
+                return truncate(v);
+            };
+
+            return sections.map((sec, i) => {
+                const data = sec.data || {};
+                const fields = {};
+                for (const [k, v] of Object.entries(data)) {
+                    if (!k.startsWith('_')) {
+                        fields[k] = compactValue(v, k);
+                    }
+                }
+                return { index: i, name: sec.name, enabled: sec.enabled, data: fields };
+            });
+        },
+
+        schemaHash(schemas) {
+            const str = JSON.stringify(Object.keys(schemas).sort());
+            let h = 0;
+            for (let i = 0; i < str.length; i++) { h = (Math.imul(31, h) + str.charCodeAt(i)) | 0; }
+            return h.toString(36);
+        },
+
         async sendMessage() {
             const text = this.prompt.trim();
             if (!text || this.isLoading || this.isProcessingActions) return;
@@ -514,25 +550,43 @@ You can ask me to draft or polish copy, add or reorganize sections, or find and 
             this.$nextTick(() => this.scrollToBottom());
 
             const editor = this.editor;
+
+            // ── Token & Payload Optimisation ─────────────────────────────────────
+            // 1. Keep the last 8 turns to maintain context without bloat.
+            const allMessages = this.messages.filter(m => m.id !== 'welcome');
+            const trimmedMessages = allMessages.slice(-8).map(m => ({ role: m.role, content: m.content }));
+
             const currentSections = editor ? JSON.parse(JSON.stringify(editor.sections || [])) : [];
             const schemas = editor?.schemas || window.editorSchemas || {};
             const blockList = editor?.blockList || window.editorBlockList || [];
-            const entryData = editor?.entryData || window.editorEntryData || {};
+            const entryDataPayload = editor?.entryData || window.editorEntryData || {};
 
-            const payloadMessages = this.messages
-                .filter(m => m.id !== 'welcome')
-                .map(m => ({
-                    role: m.role,
-                    content: m.content
-                }));
+            // 2. Only send full schemas when they change (tracked by hash) or on first message.
+            const currentHash = this.schemaHash(schemas);
+            const schemasChanged = currentHash !== this._lastSchemaHash;
+            this._lastSchemaHash = currentHash;
+            const schemasPayload = schemasChanged ? schemas : null;
+            const blockListPayload = schemasChanged ? blockList : null;
 
-            const assistantMsgId = 'asst_' + Date.now();
+            // 3. Send compact digest of sections for fast, accurate token usage.
+            const sectionsDigest = this.buildSectionsDigest(currentSections);
 
+            // 4. Send available collections and entries for link & collection binding
+            const rawCols = window.editorAllCollections || (editor?.allCollections) || [];
+            const collectionsPayload = (rawCols && rawCols.length > 0) ? rawCols.map(c => ({
+                name: c.name,
+                slug: c.slug,
+                entries: (c.entries || []).map(e => ({ id: e.id, title: e.title, slug: e.slug, route: e.route || `/${c.slug}/${e.slug}` }))
+            })) : null;
+
+            // 5. Send active section data so AI can read/edit it accurately.
             const activeSectionIndex = (editor && editor.active !== null && editor.active !== undefined) ? editor.active : null;
             const activeSectionName = (activeSectionIndex !== null && editor.sections[activeSectionIndex]) ? editor.sections[activeSectionIndex].name : null;
             const activeSectionData = (activeSectionIndex !== null && editor.sections[activeSectionIndex]) ? editor.sections[activeSectionIndex].data : null;
+            // ─────────────────────────────────────────────────────────────────────
 
             this.abortController = new AbortController();
+            const assistantMsgId = 'asst_' + Date.now();
 
             try {
                 const response = await fetch('/admin/ai/chat', {
@@ -544,22 +598,28 @@ You can ask me to draft or polish copy, add or reorganize sections, or find and 
                         'X-CSRF-TOKEN': window.editorCsrfToken || document.querySelector('meta[name="csrf-token"]')?.content || ''
                     },
                     body: JSON.stringify({
-                        messages: payloadMessages,
-                        sections: currentSections,
-                        schemas: schemas,
-                        blockList: blockList,
-                        entryData: entryData,
-                        assets: this.availableAssets,
-                        activeSectionIndex: activeSectionIndex,
-                        activeSectionName: activeSectionName,
-                        activeSectionData: activeSectionData
+                        messages: trimmedMessages,
+                        sections: sectionsDigest,
+                        full_sections: currentSections,
+                        schemas: schemasPayload,
+                        blockList: blockListPayload,
+                        entryData: entryDataPayload,
+                        collections: collectionsPayload,
+                        activeSectionIndex,
+                        activeSectionName,
+                        activeSectionData,
                     })
                 });
 
+                if (!response.ok) {
+                    const errJson = await response.json().catch(() => ({}));
+                    throw new Error(errJson.message || `AI request failed (${response.status})`);
+                }
+
                 const data = await response.json();
 
-                if (!response.ok || !data.success) {
-                    throw new Error(data.message || 'AI request failed');
+                if (!data || !data.success) {
+                    throw new Error(data?.message || 'Failed to process AI response');
                 }
 
                 const hasActions = data.actions && Array.isArray(data.actions) && data.actions.length > 0;
@@ -616,23 +676,27 @@ You can ask me to draft or polish copy, add or reorganize sections, or find and 
                     await this.typewriteChatMessage(assistantMsgId, data.message || 'I have completed the requested changes.');
 
                 } else {
-                    // Conversational / advice / general response: keep chat window open and typewrite response!
+                    // Conversational / advice / general response
                     this.isOpen = true;
-                    this.isLoading = false; // Hide thinking indicator as text starts writing
+                    this.isLoading = false;
 
-                    const asstMsg = {
-                        id: assistantMsgId,
-                        role: 'assistant',
-                        content: '',
-                        thought: data.thought || '',
-                        actions: [],
-                        timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
-                        canUndo: false,
-                        undone: false,
-                    };
-                    this.messages.push(asstMsg);
-
-                    await this.typewriteChatMessage(assistantMsgId, data.message || 'How else can I help?');
+                    const existingMsg = this.messages.find(m => m.id === assistantMsgId);
+                    if (existingMsg) {
+                        existingMsg.content = data.message || existingMsg.content;
+                        existingMsg.thought = data.thought || '';
+                    } else {
+                        const asstMsg = {
+                            id: assistantMsgId,
+                            role: 'assistant',
+                            content: data.message || 'I have analyzed your page. Let me know what you would like to customize!',
+                            thought: data.thought || '',
+                            actions: [],
+                            timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+                            canUndo: false,
+                            undone: false,
+                        };
+                        this.messages.push(asstMsg);
+                    }
 
                     this.$nextTick(() => {
                         this.scrollToBottom();
@@ -776,6 +840,9 @@ You can ask me to draft or polish copy, add or reorganize sections, or find and 
                             editor.focusField(path, idx);
                         }
 
+                        // Give smooth scrolling time to settle on both sidebar and iframe
+                        await this.sleep(250);
+
                         if (typeof val === 'string' && val.length > 0 && !val.startsWith('http') && !val.startsWith('/storage/')) {
                             await this.typewriteNestedField(editor.sections[idx].data, path, val);
                         } else {
@@ -792,13 +859,32 @@ You can ask me to draft or polish copy, add or reorganize sections, or find and 
                         const idx = action.section_index;
                         if (idx === undefined || !editor.sections[idx]) return 'not_found';
 
+                        const imageUrl = action.image_url || action.value || action.url || '';
                         this.statusMessage = 'Working...';
-                        this.setNestedValue(editor.sections[idx].data, action.field_path, action.image_url);
+                        this.setNestedValue(editor.sections[idx].data, action.field_path, imageUrl);
 
                         if (typeof editor.focusField === 'function') {
                             editor.focusField(action.field_path, idx);
                         }
 
+                        editor.sections = [...editor.sections];
+                        editor.dirty = true;
+                        editor.schedulePreview();
+                        await this.sleep(200);
+                        return 'success';
+                    }
+
+                    case 'set_field_source': {
+                        const idx = action.section_index;
+                        if (idx === undefined || !editor.sections[idx]) return 'not_found';
+
+                        const path = action.field_path;
+                        const sourceKey = action.source;
+
+                        if (!editor.sections[idx].data) editor.sections[idx].data = {};
+                        if (!editor.sections[idx].data._sources) editor.sections[idx].data._sources = {};
+                        editor.sections[idx].data._sources[path] = sourceKey;
+                        editor.sections[idx].data = { ...editor.sections[idx].data };
                         editor.sections = [...editor.sections];
                         editor.dirty = true;
                         editor.schedulePreview();
@@ -870,6 +956,91 @@ You can ask me to draft or polish copy, add or reorganize sections, or find and 
                         return 'skipped';
                     }
 
+                    case 'add_list_item': {
+                        // Appends a new item to a list field, optionally populated with data.
+                        // action.section_index: section to target
+                        // action.list_path: dot-path to the list (e.g. "itinerary", "highlights", "faqs")
+                        // action.data: object with field values for the new item (optional)
+                        const idx = action.section_index;
+                        if (idx === undefined || !editor.sections[idx]) return 'not_found';
+
+                        const listPath = action.list_path;
+                        if (!listPath) return 'failed';
+
+                        this.statusMessage = 'Working...';
+
+                        // Navigate to the list using the path
+                        const tokens = this.normalizePathSegments(listPath);
+                        let obj = editor.sections[idx].data;
+                        for (let i = 0; i < tokens.length - 1; i++) {
+                            if (!obj[tokens[i]] || typeof obj[tokens[i]] !== 'object') obj[tokens[i]] = {};
+                            obj = obj[tokens[i]];
+                        }
+                        const listKey = tokens[tokens.length - 1];
+                        if (!Array.isArray(obj[listKey])) obj[listKey] = [];
+
+                        // Build new item: use provided data merged with a fresh _key
+                        const newItem = {
+                            _key: (crypto.randomUUID ? crypto.randomUUID() : Date.now().toString(36) + Math.random().toString(36).slice(2)),
+                            ...(action.data && typeof action.data === 'object' ? JSON.parse(JSON.stringify(action.data)) : {}),
+                        };
+                        obj[listKey] = [...obj[listKey], newItem];
+
+                        editor.ensureSectionKeys();
+                        editor.sections = [...editor.sections];
+                        editor.dirty = true;
+                        editor.schedulePreview();
+                        editor.$nextTick(() => editor.initListSortables?.());
+
+                        // Typewrite any string values in the new item
+                        if (action.data && typeof action.data === 'object') {
+                            const itemIndex = obj[listKey].length - 1;
+                            for (const [key, val] of Object.entries(action.data)) {
+                                if (typeof val === 'string' && val.length > 0 && !val.startsWith('http') && !val.startsWith('/storage/')) {
+                                    this.statusMessage = 'Typing...';
+                                    const nestedPath = `${listPath}.${itemIndex}.${key}`;
+                                    await this.typewriteNestedField(editor.sections[idx].data, nestedPath, val);
+                                }
+                            }
+                        }
+
+                        editor.sections = [...editor.sections];
+                        editor.schedulePreview();
+                        return 'success';
+                    }
+
+                    case 'remove_list_item': {
+                        // Removes a specific item from a list field by index.
+                        // action.section_index: section to target
+                        // action.list_path: dot-path to the list (e.g. "itinerary", "faqs")
+                        // action.index: 0-based index of the item to remove
+                        const idx = action.section_index;
+                        if (idx === undefined || !editor.sections[idx]) return 'not_found';
+
+                        const listPath = action.list_path;
+                        const removeIndex = action.index;
+                        if (!listPath || removeIndex === undefined) return 'failed';
+
+                        this.statusMessage = 'Working...';
+
+                        const tokens = this.normalizePathSegments(listPath);
+                        let obj = editor.sections[idx].data;
+                        for (let i = 0; i < tokens.length - 1; i++) {
+                            if (!obj[tokens[i]]) return 'not_found';
+                            obj = obj[tokens[i]];
+                        }
+                        const listKey = tokens[tokens.length - 1];
+                        if (!Array.isArray(obj[listKey]) || obj[listKey][removeIndex] === undefined) return 'not_found';
+
+                        obj[listKey] = obj[listKey].filter((_, i) => i !== removeIndex);
+                        editor.ensureSectionKeys();
+                        editor.sections = [...editor.sections];
+                        editor.dirty = true;
+                        editor.schedulePreview();
+                        await this.sleep(150);
+                        return 'success';
+                    }
+
                     default:
                         console.info('Unhandled AI action:', action);
                         return 'unhandled';
@@ -913,19 +1084,23 @@ You can ask me to draft or polish copy, add or reorganize sections, or find and 
         async typewriteField(targetObj, key, fullText) {
             const editor = this.editor;
             const length = fullText.length;
-            // Snappy adaptive step: 10-15 frames max per field so animations feel brisk and responsive
-            const step = Math.max(1, Math.ceil(length / 15));
-            const delay = 12;
+            // Smooth pacing: ~25-30 frames for a satisfying, visible typewriter effect (~400-600ms total)
+            const step = Math.max(1, Math.ceil(length / 28));
+            const delay = 20;
 
             for (let i = 0; i <= length; i += step) {
-                targetObj[key] = fullText.slice(0, i);
-                if (editor) {
-                    editor.schedulePreview();
+                const slice = fullText.slice(0, i);
+                targetObj[key] = slice;
+                if (editor && typeof editor.syncPreviewField === 'function') {
+                    editor.syncPreviewField(key, slice);
                 }
                 await this.sleep(delay);
             }
             targetObj[key] = fullText;
             if (editor) {
+                if (typeof editor.syncPreviewField === 'function') {
+                    editor.syncPreviewField(key, fullText);
+                }
                 editor.schedulePreview();
             }
         },
@@ -933,18 +1108,25 @@ You can ask me to draft or polish copy, add or reorganize sections, or find and 
         async typewriteNestedField(obj, path, fullText) {
             const editor = this.editor;
             const length = fullText.length;
-            const step = Math.max(1, Math.ceil(length / 15));
-            const delay = 12;
+            const step = Math.max(1, Math.ceil(length / 28));
+            const delay = 20;
+
+            const tokens = this.normalizePathSegments(path);
+            const leaf = tokens[tokens.length - 1] || path;
 
             for (let i = 0; i <= length; i += step) {
-                this.setNestedValue(obj, path, fullText.slice(0, i));
-                if (editor) {
-                    editor.schedulePreview();
+                const slice = fullText.slice(0, i);
+                this.setNestedValue(obj, path, slice);
+                if (editor && typeof editor.syncPreviewField === 'function') {
+                    editor.syncPreviewField(leaf, slice);
                 }
                 await this.sleep(delay);
             }
             this.setNestedValue(obj, path, fullText);
             if (editor) {
+                if (typeof editor.syncPreviewField === 'function') {
+                    editor.syncPreviewField(leaf, fullText);
+                }
                 editor.schedulePreview();
             }
         },
@@ -1040,43 +1222,54 @@ You can ask me to draft or polish copy, add or reorganize sections, or find and 
             return output;
         },
 
-        isObject(item) {
-            return (item && typeof item === 'object' && !Array.isArray(item));
+        normalizePathSegments(path) {
+            if (!path) return [];
+            const cleaned = String(path)
+                .replace(/\[(\w+)\]/g, '.$1')
+                .replace(/[:\/]/g, '.')
+                .replace(/^\.+|\.+$/g, '');
+            return cleaned.split('.').filter(Boolean);
         },
 
         setNestedValue(obj, path, value) {
-            if (!path || !obj) return;
-            const segments = path.split('/');
+            if (!path || !obj || typeof obj !== 'object') return;
+            const tokens = this.normalizePathSegments(path);
+            if (tokens.length === 0) return;
+
             let current = obj;
+            for (let i = 0; i < tokens.length - 1; i++) {
+                const token = tokens[i];
+                const nextToken = tokens[i + 1];
+                const nextIsIndex = /^\d+$/.test(nextToken);
 
-            for (let i = 0; i < segments.length - 1; i++) {
-                const seg = segments[i];
-                if (seg.includes(':')) {
-                    const [listName, idxStr] = seg.split(':');
-                    const idx = parseInt(idxStr, 10);
-                    if (!Array.isArray(current[listName])) current[listName] = [];
-                    while (current[listName].length <= idx) {
-                        current[listName].push({});
-                    }
-                    current = current[listName][idx];
-                } else {
-                    if (!current[seg] || typeof current[seg] !== 'object') {
-                        current[seg] = {};
-                    }
-                    current = current[seg];
+                if (current[token] === undefined || current[token] === null || typeof current[token] !== 'object') {
+                    current[token] = nextIsIndex ? [] : {};
                 }
+                if (nextIsIndex && !Array.isArray(current[token])) {
+                    current[token] = [];
+                }
+                if (nextIsIndex) {
+                    const idx = parseInt(nextToken, 10);
+                    while (current[token].length <= idx) {
+                        current[token].push({});
+                    }
+                }
+                current = current[token];
             }
 
-            const leaf = segments[segments.length - 1];
-            if (leaf.includes(':')) {
-                const [listName, idxStr] = leaf.split(':');
-                const idx = parseInt(idxStr, 10);
-                if (Array.isArray(current[listName])) {
-                    current[listName][idx] = value;
-                }
-            } else {
-                current[leaf] = value;
+            const leaf = tokens[tokens.length - 1];
+            current[leaf] = value;
+        },
+
+        getNestedValue(obj, path) {
+            if (!path || !obj || typeof obj !== 'object') return undefined;
+            const tokens = this.normalizePathSegments(path);
+            let current = obj;
+            for (const token of tokens) {
+                if (current === undefined || current === null) return undefined;
+                current = current[token];
             }
+            return current;
         },
 
         formatMarkdown(text) {
