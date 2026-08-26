@@ -561,12 +561,11 @@ You can ask me to draft or polish copy, add or reorganize sections, or find and 
             const blockList = editor?.blockList || window.editorBlockList || [];
             const entryDataPayload = editor?.entryData || window.editorEntryData || {};
 
-            // 2. Only send full schemas when they change (tracked by hash) or on first message.
-            const currentHash = this.schemaHash(schemas);
-            const schemasChanged = currentHash !== this._lastSchemaHash;
-            this._lastSchemaHash = currentHash;
-            const schemasPayload = schemasChanged ? schemas : null;
-            const blockListPayload = schemasChanged ? blockList : null;
+            // 2. Always send schemas and blockList — backend is stateless and cannot
+            //    remember them between requests. Sending null causes the AI to lose
+            //    knowledge of available blocks and fall back to text-only responses.
+            const schemasPayload = schemas;
+            const blockListPayload = blockList;
 
             // 3. Send compact digest of sections for fast, accurate token usage.
             const sectionsDigest = this.buildSectionsDigest(currentSections);
@@ -770,7 +769,7 @@ You can ask me to draft or polish copy, add or reorganize sections, or find and 
 
                         // Focus this new section in sidebar
                         if (typeof editor.focusField === 'function') {
-                            editor.focusField('_root', pos);
+                            editor.focusField('_root', pos, true);
                         }
 
                         // Animate typing into string fields, and deep copy objects/arrays
@@ -780,7 +779,7 @@ You can ask me to draft or polish copy, add or reorganize sections, or find and 
                                 if (typeof val === 'string' && val.length > 0 && !val.startsWith('http') && !val.startsWith('/storage/')) {
                                     this.statusMessage = 'Typing...';
                                     if (typeof editor.focusField === 'function') {
-                                        editor.focusField(key, pos);
+                                        editor.focusField(key, pos, true);
                                     }
                                     await this.typewriteField(editor.sections[pos].data, key, val);
                                 } else {
@@ -802,7 +801,7 @@ You can ask me to draft or polish copy, add or reorganize sections, or find and 
 
                         this.statusMessage = 'Working...';
                         if (typeof editor.focusField === 'function') {
-                            editor.focusField('_root', idx);
+                            editor.focusField('_root', idx, true);
                         }
 
                         if (action.data && typeof action.data === 'object') {
@@ -811,7 +810,7 @@ You can ask me to draft or polish copy, add or reorganize sections, or find and 
                                 if (typeof val === 'string' && val.length > 0 && !val.startsWith('http') && !val.startsWith('/storage/')) {
                                     this.statusMessage = 'Typing...';
                                     if (typeof editor.focusField === 'function') {
-                                        editor.focusField(key, idx);
+                                        editor.focusField(key, idx, true);
                                     }
                                     await this.typewriteField(editor.sections[idx].data, key, val);
                                 } else {
@@ -837,7 +836,7 @@ You can ask me to draft or polish copy, add or reorganize sections, or find and 
 
                         this.statusMessage = 'Typing...';
                         if (typeof editor.focusField === 'function') {
-                            editor.focusField(path, idx);
+                            editor.focusField(path, idx, true);
                         }
 
                         // Give smooth scrolling time to settle on both sidebar and iframe
@@ -864,7 +863,7 @@ You can ask me to draft or polish copy, add or reorganize sections, or find and 
                         this.setNestedValue(editor.sections[idx].data, action.field_path, imageUrl);
 
                         if (typeof editor.focusField === 'function') {
-                            editor.focusField(action.field_path, idx);
+                            editor.focusField(action.field_path, idx, true);
                         }
 
                         editor.sections = [...editor.sections];
@@ -940,7 +939,7 @@ You can ask me to draft or polish copy, add or reorganize sections, or find and 
                         const idx = action.section_index ?? 0;
                         const path = action.field_path || '_root';
                         if (typeof editor.focusField === 'function') {
-                            editor.focusField(path, idx);
+                            editor.focusField(path, idx, true);
                             await this.sleep(150);
                             return 'success';
                         }

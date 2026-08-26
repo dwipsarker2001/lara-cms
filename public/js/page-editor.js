@@ -1571,7 +1571,7 @@ function pageEditor() {
                 return listParts.join('/') + '/';
             },
 
-            scrollToIframeSection(sectionIdx) {
+            scrollToIframeSection(sectionIdx, noScroll = false) {
                 if (sectionIdx === undefined || sectionIdx === null) return;
                 const iframe = document.getElementById('preview-iframe');
                 if (!iframe) return;
@@ -1583,7 +1583,9 @@ function pageEditor() {
                 const targetEl = container.children[sectionIdx];
                 if (targetEl) {
                     try {
-                        targetEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                        if (!noScroll) {
+                            targetEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                        }
                         targetEl.style.transition = 'outline 0.3s ease, box-shadow 0.3s ease';
                         targetEl.style.outline = '3px solid rgba(59, 130, 246, 0.65)';
                         targetEl.style.outlineOffset = '2px';
@@ -1596,10 +1598,10 @@ function pageEditor() {
                 }
             },
 
-            focusField(cmd, sectionIdx) {
+            focusField(cmd, sectionIdx, noScroll = false) {
                 if (sectionIdx !== undefined) {
                     this.active = sectionIdx;
-                    this.scrollToIframeSection(sectionIdx);
+                    this.scrollToIframeSection(sectionIdx, noScroll);
                 }
 
                 const raw = cmd.split('#')[0];
@@ -1653,11 +1655,15 @@ function pageEditor() {
                             try { fieldEl.focus(); } catch {}
                         }
                         this.highlightField(fieldEl);
-                        try { fieldEl.scrollIntoView({ behavior: 'smooth', block: 'center' }); } catch {}
+                        if (!noScroll) {
+                            try { fieldEl.scrollIntoView({ behavior: 'smooth', block: 'center' }); } catch {}
+                        }
                     } else if (leaf) {
                         const scrollEl = document.querySelector(`[data-field-scroll="${leaf}"]`);
                         if (scrollEl) {
-                            try { scrollEl.scrollIntoView({ behavior: 'smooth', block: 'center' }); } catch {}
+                            if (!noScroll) {
+                                try { scrollEl.scrollIntoView({ behavior: 'smooth', block: 'center' }); } catch {}
+                            }
                             const target = document.querySelector(`[data-field-target="${leaf}"]`);
                             if (target) this.highlightField(target);
                         }
