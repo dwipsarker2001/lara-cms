@@ -73,11 +73,45 @@ class AiAgentController extends Controller
     }
 
     /**
+     * Agentic chat endpoint — AI calls tools to fetch only what it needs.
+     * Frontend sends minimal payload; context is held server-side during the loop.
+     */
+    public function agentChat(Request $request): JsonResponse
+    {
+        $request->validate([
+            'messages'      => 'required|array',
+            'full_sections' => 'nullable|array',
+            'schemas'       => 'nullable|array',
+            'blockList'     => 'nullable|array',
+            'entryData'     => 'nullable|array',
+            'collectionFields' => 'nullable|array',
+        ]);
+
+        // Context is held server-side — never injected into the AI system prompt upfront.
+        // The AI fetches pieces of this on demand via tool calls.
+        $context = [
+            'full_sections'    => $request->input('full_sections', []),
+            'schemas'          => $request->input('schemas', []),
+            'blockList'        => $request->input('blockList', []),
+            'entryData'        => $request->input('entryData', []),
+            'collectionFields' => $request->input('collectionFields', []),
+        ];
+
+        $result = $this->aiAgentService->agentChat(
+            $request->input('messages'),
+            $context
+        );
+
+        return response()->json($result, $result['success'] ? 200 : 422);
+    }
+
+    /**
      * Return available media assets for the AI agent.
      */
     public function assets(Request $request): JsonResponse
     {
         $assets = $this->aiAgentService->getAvailableAssets();
+
 
         return response()->json([
             'assets' => $assets,

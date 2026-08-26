@@ -68,6 +68,231 @@ class AiAgentService
     }
 
     /**
+     * Agentic chat — AI fetches only the data it needs via tool calls.
+     * Supports sequential section editing: AI reads → edits → reads next → edits.
+     *
+     * @param  array<int, array{role: string, content: string}>  $messages
+     * @param  array<string, mixed>  $context
+     * @return array{success: bool, message: string, actions: array<int, mixed>, thought: string, usage: array<string, mixed>}
+     */
+    public function agentChat(array $messages, array $context = []): array
+    {
+        $settings  = Setting::first();
+        $apiKey    = $settings?->ai_api_key ?: config('services.deepseek.api_key');
+        $baseUrl   = rtrim($settings?->ai_base_url ?: config('services.deepseek.base_url', 'https://api.deepseek.com'), '/');
+        $model     = $settings?->ai_model ?: config('services.deepseek.model', 'deepseek-chat');
+
+        if (empty($apiKey)) {
+            return [
+                'success' => false,
+                'message' => 'AI API key is not configured. Please configure it in Admin Settings › AI Assistant.',
+                'actions' => [],
+                'thought' => '',
+                'usage'   => [],
+            ];
+        }
+
+        $toolService  = app(AiToolService::class);
+        $tools        = $toolService->getToolDefinitions();
+        $systemPrompt = $this->buildAgentSystemPrompt();
+        $endpoint     = $this->resolveEndpoint($baseUrl);
+
+        // Build initial conversation history
+        $history = [['role' => 'system', 'content' => $systemPrompt]];
+        foreach ($messages as $msg) {
+            if (! empty($msg['content'])) {
+                $history[] = [
+                    'role'    => in_array($msg['role'], ['user', 'assistant']) ? $msg['role'] : 'user',
+                    'content' => (string) $msg['content'],
+                ];
+            }
+        }
+
+        $maxIterations = 8;
+        $iteration     = 0;
+        $allBatches    = [];   // Each apply_actions call stored as a batch
+        $totalUsage    = ['prompt_tokens' => 0, 'completion_tokens' => 0];
+        $lastMessage   = '';
+
+        while ($iteration++ < $maxIterations) {
+            try {
+                $response = Http::withHeaders([
+                    'Authorization' => 'Bearer ' . $apiKey,
+                    'Content-Type'  => 'application/json',
+                ])->timeout(120)->post($endpoint, [
+                    'model'       => $model,
+                    'messages'    => $history,
+                    'tools'       => $tools,
+                    'tool_choice' => 'auto',
+                    'temperature' => 0.3,
+                    'max_tokens'  => 4096,
+                ]);
+
+                if (! $response->successful()) {
+                    Log::error('AgentChat API error: ' . $response->status() . ' — ' . $response->body());
+                    break;
+                }
+
+                $json      = $response->json();
+                $usage     = $json['usage'] ?? [];
+                $totalUsage['prompt_tokens']     += (int) ($usage['prompt_tokens'] ?? 0);
+                $totalUsage['completion_tokens'] += (int) ($usage['completion_tokens'] ?? 0);
+
+                $choice    = $json['choices'][0] ?? null;
+                $aiMessage = $choice['message'] ?? [];
+                $toolCalls = $aiMessage['tool_calls'] ?? [];
+
+            } catch (\Throwable $e) {
+                Log::error('AgentChat HTTP exception: ' . $e->getMessage());
+                break;
+            }
+
+            // No tool calls — plain conversational response, we are done
+            if (empty($toolCalls)) {
+                $lastMessage = $aiMessage['content'] ?? '';
+                break;
+            }
+
+            // Append AI message (with its tool_calls) into history
+            $history[] = [
+                'role'       => 'assistant',
+                'content'    => $aiMessage['content'] ?? null,
+                'tool_calls' => $toolCalls,
+            ];
+
+            // Process each tool call in this turn
+            foreach ($toolCalls as $call) {
+                $toolName = $call['function']['name'] ?? '';
+                $toolArgs = json_decode($call['function']['arguments'] ?? '{}', true) ?: [];
+                $callId   = $call['id'] ?? ('call_' . uniqid());
+
+                if ($toolName === 'apply_actions') {
+                    // Store this batch of actions
+                    $batchActions = $toolArgs['actions'] ?? [];
+                    $batchMessage = $toolArgs['message'] ?? '';
+
+                    if (! empty($batchActions)) {
+                        $allBatches[] = [
+                            'actions' => $batchActions,
+                            'message' => $batchMessage,
+                        ];
+                    }
+
+                    if (! empty($batchMessage)) {
+                        $lastMessage = $batchMessage;
+                    }
+
+                    // Tell the AI the batch was applied and it can continue or finish
+                    $history[] = [
+                        'role'         => 'tool',
+                        'tool_call_id' => $callId,
+                        'content'      => json_encode([
+                            'status'       => 'applied',
+                            'action_count' => count($batchActions),
+                        ]),
+                    ];
+
+                    // Empty actions array = AI signalling it is finished
+                    if (empty($batchActions)) {
+                        break 2; // exit both foreach and while
+                    }
+
+                    // Prompt AI to continue with remaining sections or wrap up
+                    $history[] = [
+                        'role'    => 'user',
+                        'content' => 'Section updated successfully. Continue with the next section if needed, or finish by calling apply_actions with an empty actions array and your final summary.',
+                    ];
+                } else {
+                    // Data-fetching tool — dispatch and feed result back to AI
+                    $result    = $toolService->dispatch($toolName, $toolArgs, $context);
+                    $history[] = [
+                        'role'         => 'tool',
+                        'tool_call_id' => $callId,
+                        'content'      => json_encode($result, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE),
+                    ];
+                }
+            }
+        }
+
+        // Flatten all batches into a single actions list for the frontend
+        $flatActions  = [];
+        $finalMessage = $lastMessage;
+
+        foreach ($allBatches as $batch) {
+            foreach ((array) ($batch['actions'] ?? []) as $act) {
+                if (! empty($act) && is_array($act)) {
+                    $flatActions[] = $act;
+                }
+            }
+            if (! empty($batch['message'])) {
+                $finalMessage = $batch['message'];
+            }
+        }
+
+        return [
+            'success' => true,
+            'message' => $finalMessage ?: 'Done.',
+            'actions' => $flatActions,
+            'thought' => "Completed {$iteration} iterations, applied " . count($flatActions) . ' actions across ' . count($allBatches) . ' section(s).',
+            'usage'   => $totalUsage,
+        ];
+    }
+
+    /**
+     * Lean system prompt for the agentic loop.
+     * No page data is injected — AI fetches what it needs via tools.
+     */
+    protected function buildAgentSystemPrompt(): string
+    {
+        return <<<'PROMPT'
+You are an autonomous AI agent embedded in Lara-CMS, a block-based CMS for building websites.
+You have tools to read page data on demand and apply changes section by section.
+
+======================================================
+WORKFLOW — FOLLOW THIS EXACTLY
+======================================================
+1. Call get_sections() to see all sections and their indexes.
+2. For each section you need to edit:
+   a. Call get_section(index) to read its EXACT current data.
+   b. Call get_schema(block_name) to learn the available field names and types.
+   c. Call apply_actions([...], "summary of changes") with precise action objects.
+3. Repeat step 2 for every section that needs changes — one section per apply_actions call.
+4. When ALL sections are done: call apply_actions with an empty [] actions array and your final summary message to signal completion.
+
+======================================================
+TOOL RULES
+======================================================
+- ALWAYS call get_section() before editing a section. Never guess field values.
+- ALWAYS call get_schema() before editing. Never guess field names.
+- For images: call search_images(keyword) first. Only use URLs from the results. NEVER fabricate or guess image URLs.
+- apply_actions() may be called multiple times — once per section. This is how you edit sections sequentially.
+- Use dot-notation for nested list fields: "faqs.0.question", "itinerary.2.dayTitle", "team.1.name"
+
+======================================================
+ACTION TYPES (place inside apply_actions "actions" array)
+======================================================
+Update field:        {"action":"update_field","section_index":0,"field_path":"headline","value":"New headline"}
+Update nested field: {"action":"update_field","section_index":0,"field_path":"faqs.0.question","value":"..."}
+Update section:      {"action":"update_section","section_index":0,"data":{"headline":"...","items":[...]}}
+Set image:           {"action":"set_image","section_index":0,"field_path":"image","image_url":"/storage/assets/photo.jpg"}
+Add section:         {"action":"add_section","name":"BlockName","data":{...},"position":2}
+Remove section:      {"action":"remove_section","section_index":3}
+Add list item:       {"action":"add_list_item","section_index":0,"list_path":"faqs","data":{"question":"...","answer":"..."}}
+Remove list item:    {"action":"remove_list_item","section_index":0,"list_path":"faqs","index":2}
+Save page:           {"action":"save_page"}
+
+======================================================
+COPYWRITING STANDARDS
+======================================================
+- Headlines: 5–9 words, action-oriented, specific value proposition.
+- Descriptions: 15–25 words, removes friction, communicates unique benefit.
+- CTAs: short action verbs ("Get Started", "Explore Now", "Book Your Spot").
+- Prices: numbers only — no currency symbols ($, €, £, ¥).
+- Lists: parallel structure, concrete and believable claims.
+PROMPT;
+    }
+
+    /**
      * Execute completion via Prism AI library with automated provider resolution and fallback.
      *
      * @param  array<int, array{role: string, content: string}>  $messages
@@ -492,10 +717,11 @@ SCHEMA;
             $assetsBlock = <<<ASSETS
 
 ========================
-MEDIA ASSETS (image-related request detected)
+MEDIA LIBRARY (user's uploaded images — always use these for image fields)
 ========================
 {$assetsJson}
-Prefer real assets from the list (use `url`). If none fit, use high-quality Unsplash URLs.
+STRICT RULE: ALWAYS use image URLs from this list for image fields. Pick the most contextually relevant one by matching the asset `name` to the section topic.
+NEVER guess or fabricate Unsplash photo IDs. If no asset fits, leave the image field unchanged.
 ASSETS;
         }
 
@@ -517,16 +743,35 @@ You are an autonomous AI Visual Copilot built into Lara-CMS — a flexible, bloc
 You have FULL programmatic control over the page editor: adding/removing/updating sections, editing any field value, setting images, and saving the page.
 
 ======================================================
+CORE DIRECTIVE — ALWAYS EXECUTE ACTIONS, NEVER CHATTER
+======================================================
+1. You are an ACTOR, not a chat bot. Whenever the user asks to change, update, write, rewrite, or transform content:
+   - NEVER ask clarifying questions (e.g., "Do you want me to change the title?", "Could you please clarify?").
+   - PROACTIVELY infer the user's intent (even with typos like "cox bazwe" -> "Cox's Bazar", "sylhet" -> "Sylhet", "faq" -> "FAQs").
+   - Output the exact `actions` in the JSON response immediately!
+
+2. FULL PAGE / THEME TRANSFORMATION (e.g., "change my content to cox bazar", "update my full content", "make it a beach package", "all"):
+   - You MUST update EVERY relevant section on the page in-place:
+     * Hero / Header (title, subtitle, badge, duration, price)
+     * About / Overview (compelling description tailored to the new theme)
+     * Highlights / Key Features (3-5 concrete highlights)
+     * Itinerary / Steps (day-by-day schedule with relevant stops & descriptions)
+     * Locations / Points of Interest (relevant places)
+     * Inclusions / Exclusions (realistic included items)
+     * FAQs (4-6 realistic, high-converting questions & answers)
+   - Output separate `update_field` or `update_section` actions for all these sections so the entire page transforms live!
+
+======================================================
 INTENT CLASSIFICATION — FOLLOW STRICTLY
 ======================================================
 
-RULE 1 — EDIT CONTENT (update, change, write, rewrite, polish, quick items, about section, itinerary, etc.)
+RULE 1 — EDIT CONTENT (update, change, write, rewrite, polish, quick items, about section, itinerary, full page, etc.)
 - NEVER call add_section. Modify existing section(s) in-place with update_field, update_section, or add_list_item.
 - In every action, "section_index" MUST be a valid integer index (0, 1, 2, ...). NEVER leave "section_index" empty or null.
-- When the user asks to "update quick items", "update about section", "improve headline", or any general request:
+- When the user asks to "update quick items", "update about section", "improve headline", "change content to X", or any request:
   DO NOT ask questions or reply with "How else can I help?". PROACTIVELY write compelling, fitting copy for those fields and generate the action(s) immediately!
 - If a section is active ({$activeInfo}), update THAT section's fields using its index.
-- If no section is active, find the section matching the name/topic in the "Page sections" list below and use its index integer.
+- If no section is active, find all sections matching the request in the "Page sections" list below and output actions for each of their integer indexes.
 
 RULE 2 — BUILD / CREATE PAGE (user says "create page", "build full page", "generate landing page")
 - Use replace_all_sections or sequential add_section to assemble a complete multi-block page.
@@ -535,18 +780,14 @@ RULE 2 — BUILD / CREATE PAGE (user says "create page", "build full page", "gen
 
 RULE 3 — ADD SECTION / BLOCK (user says "add a testimonials section", "insert FAQ", etc.)
 - Call add_section with a block name from the registered block list.
-- Populate all fields with great copy and high-quality image URLs.
+- Populate all fields with great copy. For image fields, use URLs from the MEDIA LIBRARY above.
 
 RULE 4 — IMAGE & MEDIA (user says "update all images", "update gallery", "change image", "find photos", "add images", etc.)
 - Use update_field or set_image to set image URLs directly. NEVER leave image fields empty.
-- CONTEXTUAL IMAGE SELECTION:
-  * Dynamically generate high-resolution, relevant direct image URLs (e.g. from Unsplash `https://images.unsplash.com/photo-...`) matching the specific topic, industry, product, or theme of the website/page.
-  * When asked to update all images or a gallery:
-    Inspect all sections for top-level image fields (e.g. `image`, `backgroundImage`, `heroImage`) and nested list image fields (e.g. `gallery.0.image`, `items.0.image`, `team.0.avatar`).
-    Output an update_field or set_image action for EVERY image field with a distinct, topic-relevant image URL.
-  * Format:
-    {"action":"update_field","section_index":0,"field_path":"image","value":"https://images.unsplash.com/photo-..."}
-    {"action":"set_image","section_index":0,"field_path":"heroImage","image_url":"https://images.unsplash.com/photo-..."}
+- IMAGE SELECTION:
+  1. If MEDIA LIBRARY has relevant images, use them.
+  2. If not, preserve the existing image URLs already in the section data.
+  3. Never invent broken photo IDs.
 
 RULE 5 — PRICES & NUMBERS
 - Never include currency symbols ($, €, £, etc.). Output raw numbers only (e.g. "49", "199").
@@ -558,7 +799,8 @@ COPYWRITING STANDARDS (apply to all generated text)
 - Descriptions: 15–25 words, remove friction, communicate unique benefit.
 - CTAs: short action verbs ("Get Started", "Explore Now", "Book Your Spot").
 - Lists/items: parallel structure, concrete and believable claims.
-- Maintain brand voice already present on the page.
+- Maintain professional, persuasive brand voice.
+
 
 ======================================================
 PATH FORMAT FOR NESTED FIELDS
@@ -717,11 +959,14 @@ PROMPT;
 
     /**
      * Search image assets by keyword / query for AI agent tool calls.
+     * Searches local media library first, with optional fallback to configured stock photo APIs (Pexels, Unsplash, Pixabay).
      *
      * @return array<int, array<string, mixed>>
      */
     public function searchAssets(string $query = '', int $limit = 30): array
     {
+        $localResults = [];
+
         try {
             $builder = Asset::where('is_directory', false)
                 ->whereNotNull('path');
@@ -738,7 +983,7 @@ PROMPT;
                 });
             }
 
-            return $builder->orderByDesc('id')
+            $localResults = $builder->orderByDesc('id')
                 ->limit($limit)
                 ->get()
                 ->filter(function ($asset) {
@@ -752,6 +997,7 @@ PROMPT;
                         'name' => $asset->name,
                         'url' => $url,
                         'path' => $asset->path,
+                        'source' => 'local',
                         'width' => $asset->width,
                         'height' => $asset->height,
                         'mime' => $asset->mime,
@@ -762,10 +1008,191 @@ PROMPT;
                 ->all();
         } catch (\Throwable $e) {
             Log::warning('AiAgentService asset search failed: '.$e->getMessage());
+        }
+
+        // If local results are sufficient or no query is provided, return local
+        if (count($localResults) >= 3 || empty(trim($query))) {
+            return $localResults;
+        }
+
+        // Fallback to configured stock photo API if local library has few/no matches
+        $stockResults = $this->searchStockImages($query, $limit - count($localResults));
+
+        return array_merge($localResults, $stockResults);
+    }
+
+    /**
+     * Search stock photos using configured provider (Pexels, Unsplash, Pixabay).
+     *
+     * @return array<int, array<string, mixed>>
+     */
+    public function searchStockImages(string $query, int $limit = 10): array
+    {
+        $settings = Setting::first();
+        if (! $settings) {
+            return [];
+        }
+
+        $provider = $settings->image_provider ?? 'auto';
+        if ($provider === 'local') {
+            return [];
+        }
+
+        $query = trim($query);
+        if (empty($query)) {
+            return [];
+        }
+
+        // 1. Try Pexels
+        if (($provider === 'pexels' || $provider === 'auto') && ! empty($settings->pexels_api_key)) {
+            $results = $this->fetchFromPexels($query, $settings->pexels_api_key, $limit);
+            if (! empty($results)) {
+                return $results;
+            }
+        }
+
+        // 2. Try Unsplash
+        if (($provider === 'unsplash' || $provider === 'auto') && ! empty($settings->unsplash_access_key)) {
+            $results = $this->fetchFromUnsplash($query, $settings->unsplash_access_key, $limit);
+            if (! empty($results)) {
+                return $results;
+            }
+        }
+
+        // 3. Try Pixabay
+        if (($provider === 'pixabay' || $provider === 'auto') && ! empty($settings->pixabay_api_key)) {
+            $results = $this->fetchFromPixabay($query, $settings->pixabay_api_key, $limit);
+            if (! empty($results)) {
+                return $results;
+            }
+        }
+
+        return [];
+    }
+
+    /**
+     * Fetch photos from Pexels API.
+     *
+     * @return array<int, array<string, mixed>>
+     */
+    protected function fetchFromPexels(string $query, string $apiKey, int $limit = 10): array
+    {
+        try {
+            $response = Http::withHeaders([
+                'Authorization' => $apiKey,
+            ])->timeout(10)->get('https://api.pexels.com/v1/search', [
+                'query' => $query,
+                'per_page' => min(20, max(1, $limit)),
+                'orientation' => 'landscape',
+            ]);
+
+            if (! $response->successful()) {
+                Log::warning('Pexels API error: '.$response->status().' - '.$response->body());
+
+                return [];
+            }
+
+            $photos = $response->json('photos') ?? [];
+
+            return array_map(function ($p) {
+                return [
+                    'id' => 'pexels_'.$p['id'],
+                    'name' => (! empty($p['alt']) ? $p['alt'] : 'Photo by '.$p['photographer']),
+                    'url' => $p['src']['large2x'] ?? $p['src']['large'] ?? $p['src']['original'] ?? '',
+                    'source' => 'pexels',
+                    'width' => $p['width'] ?? null,
+                    'height' => $p['height'] ?? null,
+                ];
+            }, $photos);
+        } catch (\Throwable $e) {
+            Log::warning('Pexels exception: '.$e->getMessage());
 
             return [];
         }
     }
+
+    /**
+     * Fetch photos from Unsplash API.
+     *
+     * @return array<int, array<string, mixed>>
+     */
+    protected function fetchFromUnsplash(string $query, string $accessKey, int $limit = 10): array
+    {
+        try {
+            $response = Http::withHeaders([
+                'Authorization' => 'Client-ID '.$accessKey,
+            ])->timeout(10)->get('https://api.unsplash.com/search/photos', [
+                'query' => $query,
+                'per_page' => min(20, max(1, $limit)),
+                'orientation' => 'landscape',
+            ]);
+
+            if (! $response->successful()) {
+                Log::warning('Unsplash API error: '.$response->status().' - '.$response->body());
+
+                return [];
+            }
+
+            $results = $response->json('results') ?? [];
+
+            return array_map(function ($p) {
+                return [
+                    'id' => 'unsplash_'.$p['id'],
+                    'name' => $p['alt_description'] ?? $p['description'] ?? 'Photo by '.($p['user']['name'] ?? 'Unsplash'),
+                    'url' => $p['urls']['regular'] ?? $p['urls']['full'] ?? '',
+                    'source' => 'unsplash',
+                    'width' => $p['width'] ?? null,
+                    'height' => $p['height'] ?? null,
+                ];
+            }, $results);
+        } catch (\Throwable $e) {
+            Log::warning('Unsplash exception: '.$e->getMessage());
+
+            return [];
+        }
+    }
+
+    /**
+     * Fetch photos from Pixabay API.
+     *
+     * @return array<int, array<string, mixed>>
+     */
+    protected function fetchFromPixabay(string $query, string $apiKey, int $limit = 10): array
+    {
+        try {
+            $response = Http::timeout(10)->get('https://pixabay.com/api/', [
+                'key' => $apiKey,
+                'q' => urlencode($query),
+                'per_page' => min(20, max(3, $limit)),
+                'image_type' => 'photo',
+                'orientation' => 'horizontal',
+            ]);
+
+            if (! $response->successful()) {
+                Log::warning('Pixabay API error: '.$response->status().' - '.$response->body());
+
+                return [];
+            }
+
+            $hits = $response->json('hits') ?? [];
+
+            return array_map(function ($h) {
+                return [
+                    'id' => 'pixabay_'.$h['id'],
+                    'name' => $h['tags'] ?? 'Pixabay Image',
+                    'url' => $h['largeImageURL'] ?? $h['webformatURL'] ?? '',
+                    'source' => 'pixabay',
+                    'width' => $h['imageWidth'] ?? null,
+                    'height' => $h['imageHeight'] ?? null,
+                ];
+            }, $hits);
+        } catch (\Throwable $e) {
+            Log::warning('Pixabay exception: '.$e->getMessage());
+
+            return [];
+        }
+    }
+
 
     /**
      * Parse JSON from model response safely with automatic repair for common LLM syntax defects.

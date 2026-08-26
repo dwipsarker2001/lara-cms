@@ -52,6 +52,26 @@ class SettingsController extends Controller
                     $table->string('ai_model')->nullable();
                 });
             }
+            if (! Schema::hasColumn('settings', 'unsplash_access_key')) {
+                Schema::table('settings', function ($table) {
+                    $table->text('unsplash_access_key')->nullable();
+                });
+            }
+            if (! Schema::hasColumn('settings', 'pexels_api_key')) {
+                Schema::table('settings', function ($table) {
+                    $table->text('pexels_api_key')->nullable();
+                });
+            }
+            if (! Schema::hasColumn('settings', 'pixabay_api_key')) {
+                Schema::table('settings', function ($table) {
+                    $table->text('pixabay_api_key')->nullable();
+                });
+            }
+            if (! Schema::hasColumn('settings', 'image_provider')) {
+                Schema::table('settings', function ($table) {
+                    $table->string('image_provider', 50)->default('auto')->nullable();
+                });
+            }
         }
     }
 
@@ -89,6 +109,10 @@ class SettingsController extends Controller
             'ai_base_url' => 'nullable|string|max:500',
             'ai_api_key' => 'nullable|string|max:1000',
             'ai_model' => 'nullable|string|max:150',
+            'unsplash_access_key' => 'nullable|string|max:1000',
+            'pexels_api_key' => 'nullable|string|max:1000',
+            'pixabay_api_key' => 'nullable|string|max:1000',
+            'image_provider' => 'nullable|string|in:auto,unsplash,pexels,pixabay,local',
             'logo_light' => 'nullable|string|max:255',
             'logo_dark' => 'nullable|string|max:255',
             'contact_number' => 'nullable|string|max:50',
@@ -97,10 +121,12 @@ class SettingsController extends Controller
             'custom_values' => 'nullable|array',
         ]);
 
-        if (array_key_exists('ai_api_key', $data)) {
-            $submittedKey = trim((string) $data['ai_api_key']);
-            if ($submittedKey === '' || str_contains($submittedKey, '*') || str_contains($submittedKey, '•')) {
-                unset($data['ai_api_key']);
+        foreach (['ai_api_key', 'unsplash_access_key', 'pexels_api_key', 'pixabay_api_key'] as $secretField) {
+            if (array_key_exists($secretField, $data)) {
+                $submittedKey = trim((string) $data[$secretField]);
+                if ($submittedKey === '' || str_contains($submittedKey, '*') || str_contains($submittedKey, '•')) {
+                    unset($data[$secretField]);
+                }
             }
         }
 

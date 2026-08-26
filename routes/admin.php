@@ -87,6 +87,7 @@ Route::middleware(['web', 'auth:admin'])->prefix('admin')->name('admin.')->group
         ->parameters(['administrators' => 'admin']);
 
     Route::post('ai/chat', [AiAgentController::class, 'chat'])->name('ai.chat');
+    Route::post('ai/agent', [AiAgentController::class, 'agentChat'])->name('ai.agent');
     Route::get('ai/assets', [AiAgentController::class, 'assets'])->name('ai.assets');
     Route::get('ai/images', [AiAgentController::class, 'images'])->name('ai.images');
     Route::get('ai/search-images', [AiAgentController::class, 'searchImages'])->name('ai.search-images');

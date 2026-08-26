@@ -545,32 +545,22 @@ You can ask me to draft or polish copy, add or reorganize sections, or find and 
             this.prompt = '';
             this.resetTextareaHeight();
             this.isLoading = true;
-            this.statusMessage = 'Thinking...';
+            this.statusMessage = 'Researching...';
 
             this.$nextTick(() => this.scrollToBottom());
 
             const editor = this.editor;
+            const assistantMsgId = 'asst_' + Date.now();
 
-            // ── Token & Payload Optimisation ─────────────────────────────────────
-            // 1. Keep the last 8 turns to maintain context without bloat.
-            const allMessages = this.messages.filter(m => m.id !== 'welcome');
+            // ── Payload Preparation ───────────────────────────────────────────────
+            const allMessages    = this.messages.filter(m => m.id !== 'welcome');
             const trimmedMessages = allMessages.slice(-8).map(m => ({ role: m.role, content: m.content }));
-
             const currentSections = editor ? JSON.parse(JSON.stringify(editor.sections || [])) : [];
-            const schemas = editor?.schemas || window.editorSchemas || {};
-            const blockList = editor?.blockList || window.editorBlockList || [];
+            const schemas         = editor?.schemas || window.editorSchemas || {};
+            const blockList       = editor?.blockList || window.editorBlockList || [];
             const entryDataPayload = editor?.entryData || window.editorEntryData || {};
+            const sectionsDigest  = this.buildSectionsDigest(currentSections);
 
-            // 2. Always send schemas and blockList — backend is stateless and cannot
-            //    remember them between requests. Sending null causes the AI to lose
-            //    knowledge of available blocks and fall back to text-only responses.
-            const schemasPayload = schemas;
-            const blockListPayload = blockList;
-
-            // 3. Send compact digest of sections for fast, accurate token usage.
-            const sectionsDigest = this.buildSectionsDigest(currentSections);
-
-            // 4. Send available collections and entries for link & collection binding
             const rawCols = window.editorAllCollections || (editor?.allCollections) || [];
             const collectionsPayload = (rawCols && rawCols.length > 0) ? rawCols.map(c => ({
                 name: c.name,
@@ -578,14 +568,12 @@ You can ask me to draft or polish copy, add or reorganize sections, or find and 
                 entries: (c.entries || []).map(e => ({ id: e.id, title: e.title, slug: e.slug, route: e.route || `/${c.slug}/${e.slug}` }))
             })) : null;
 
-            // 5. Send active section data so AI can read/edit it accurately.
             const activeSectionIndex = (editor && editor.active !== null && editor.active !== undefined) ? editor.active : null;
-            const activeSectionName = (activeSectionIndex !== null && editor.sections[activeSectionIndex]) ? editor.sections[activeSectionIndex].name : null;
-            const activeSectionData = (activeSectionIndex !== null && editor.sections[activeSectionIndex]) ? editor.sections[activeSectionIndex].data : null;
+            const activeSectionName  = (activeSectionIndex !== null && editor.sections[activeSectionIndex]) ? editor.sections[activeSectionIndex].name : null;
+            const activeSectionData  = (activeSectionIndex !== null && editor.sections[activeSectionIndex]) ? editor.sections[activeSectionIndex].data : null;
             // ─────────────────────────────────────────────────────────────────────
 
             this.abortController = new AbortController();
-            const assistantMsgId = 'asst_' + Date.now();
 
             try {
                 const response = await fetch('/admin/ai/chat', {
@@ -597,16 +585,17 @@ You can ask me to draft or polish copy, add or reorganize sections, or find and 
                         'X-CSRF-TOKEN': window.editorCsrfToken || document.querySelector('meta[name="csrf-token"]')?.content || ''
                     },
                     body: JSON.stringify({
-                        messages: trimmedMessages,
-                        sections: sectionsDigest,
-                        full_sections: currentSections,
-                        schemas: schemasPayload,
-                        blockList: blockListPayload,
-                        entryData: entryDataPayload,
-                        collections: collectionsPayload,
-                        activeSectionIndex,
-                        activeSectionName,
-                        activeSectionData,
+                        messages:           trimmedMessages,
+                        sections:           sectionsDigest,
+                        full_sections:      currentSections,
+                        schemas:            schemas,
+                        blockList:          blockList,
+                        entryData:          entryDataPayload,
+                        collections:        collectionsPayload,
+                        activeSectionIndex: activeSectionIndex,
+                        activeSectionName:  activeSectionName,
+                        activeSectionData:  activeSectionData,
+                        assets:             this.availableAssets.length > 0 ? this.availableAssets : null,
                     })
                 });
 
@@ -624,13 +613,10 @@ You can ask me to draft or polish copy, add or reorganize sections, or find and 
                 const hasActions = data.actions && Array.isArray(data.actions) && data.actions.length > 0;
 
                 if (hasActions) {
-                    // 1. Auto-close modal
                     this.isOpen = false;
-
-                    // 2. Wait for modal fade-out to finish (300ms) so user sees work start in clear view!
                     await this.sleep(300);
 
-                    // Save snapshot for undo capability before applying actions
+                    // Save snapshot for undo before applying anything
                     if (editor) {
                         this.undoStack[assistantMsgId] = JSON.parse(JSON.stringify(editor.sections));
                     }
@@ -638,20 +624,18 @@ You can ask me to draft or polish copy, add or reorganize sections, or find and 
                     this.isProcessingActions = true;
                     const executedActions = [];
 
-                    // 3. Execute typewriter actions
+                    // Execute all actions with typewriter — they arrive pre-ordered section by section
                     for (const act of data.actions) {
+                        this.statusMessage = 'Working...';
                         const status = await this.executeActionWithTypewriter(act);
                         executedActions.push({ ...act, executionStatus: status });
                     }
 
-                    // 4. Finished actions: clear status, show brief Done tooltip (1.8s)
                     this.statusMessage = '';
                     this.isProcessingActions = false;
                     this.setFloatingToast('Done', 1800);
 
                     await this.sleep(400);
-
-                    // 5. Reopen chat modal promptly!
                     this.isOpen = true;
 
                     const asstMsg = {
@@ -672,36 +656,32 @@ You can ask me to draft or polish copy, add or reorganize sections, or find and 
                         if (input) input.focus();
                     });
 
-                    await this.typewriteChatMessage(assistantMsgId, data.message || 'I have completed the requested changes.');
+                    await this.typewriteChatMessage(assistantMsgId, data.message || 'Changes applied.');
 
                 } else {
-                    // Conversational / advice / general response
+                    // Conversational / advice response — no page changes
                     this.isOpen = true;
                     this.isLoading = false;
 
-                    const existingMsg = this.messages.find(m => m.id === assistantMsgId);
-                    if (existingMsg) {
-                        existingMsg.content = data.message || existingMsg.content;
-                        existingMsg.thought = data.thought || '';
-                    } else {
-                        const asstMsg = {
-                            id: assistantMsgId,
-                            role: 'assistant',
-                            content: data.message || 'I have analyzed your page. Let me know what you would like to customize!',
-                            thought: data.thought || '',
-                            actions: [],
-                            timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
-                            canUndo: false,
-                            undone: false,
-                        };
-                        this.messages.push(asstMsg);
-                    }
+                    const asstMsg = {
+                        id: assistantMsgId,
+                        role: 'assistant',
+                        content: '',
+                        thought: data.thought || '',
+                        actions: [],
+                        timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+                        canUndo: false,
+                        undone: false,
+                    };
+                    this.messages.push(asstMsg);
 
                     this.$nextTick(() => {
                         this.scrollToBottom();
                         const input = this.$refs.promptInput;
                         if (input) input.focus();
                     });
+
+                    await this.typewriteChatMessage(assistantMsgId, data.message || 'How can I help you?');
                 }
 
             } catch (err) {
@@ -718,7 +698,7 @@ You can ask me to draft or polish copy, add or reorganize sections, or find and 
                     return;
                 }
 
-                console.error('AI chat error:', err);
+                console.error('AI agent error:', err);
                 this.isOpen = true;
                 this.messages.push({
                     id: assistantMsgId,

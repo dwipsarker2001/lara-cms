@@ -31,6 +31,10 @@ class Setting extends Model
         'ai_base_url',
         'ai_api_key',
         'ai_model',
+        'unsplash_access_key',
+        'pexels_api_key',
+        'pixabay_api_key',
+        'image_provider',
         'custom_fields',
         'custom_values',
     ];
@@ -106,11 +110,30 @@ class Setting extends Model
 
     public function getMaskedAiApiKey(): ?string
     {
-        if (empty($this->ai_api_key)) {
+        return $this->maskSecretKey($this->ai_api_key);
+    }
+
+    public function getMaskedUnsplashKey(): ?string
+    {
+        return $this->maskSecretKey($this->unsplash_access_key);
+    }
+
+    public function getMaskedPexelsKey(): ?string
+    {
+        return $this->maskSecretKey($this->pexels_api_key);
+    }
+
+    public function getMaskedPixabayKey(): ?string
+    {
+        return $this->maskSecretKey($this->pixabay_api_key);
+    }
+
+    protected function maskSecretKey(?string $key): ?string
+    {
+        if (empty($key)) {
             return null;
         }
 
-        $key = (string) $this->ai_api_key;
         $len = strlen($key);
 
         if ($len <= 8) {
@@ -124,3 +147,4 @@ class Setting extends Model
         return $prefix.str_repeat('*', $maskedLength).$suffix;
     }
 }
+
