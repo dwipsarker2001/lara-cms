@@ -194,9 +194,10 @@
                         <input
                             type="text"
                             x-model="form.base_url"
-                            placeholder="http://localhost:11434/v1"
+                            placeholder="https://tabitoken.com/v1, http://localhost:11434/v1, or any custom URL"
                             class="w-full h-10 rounded-xl border border-gray-300 bg-white px-3.5 text-xs font-mono text-text-heading placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all shadow-2xs"
                         >
+                        <p class="text-[11px] text-text-muted mt-1">Supports domain roots, <code>/v1</code> prefixes, or direct endpoints.</p>
                     </div>
 
                     {{-- Description --}}

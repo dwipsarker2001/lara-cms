@@ -93,6 +93,104 @@ class AiModel extends Model
     }
 
     /**
+     * Resolve the full API endpoint URL for any provider, proxy, or custom endpoint.
+     */
+    public static function resolveEndpoint(string $baseUrl, string $provider = 'custom', string $modelId = '', string $apiKey = ''): string
+    {
+        $url = trim($baseUrl);
+
+        if ($provider === 'anthropic') {
+            if (empty($url)) {
+                $url = 'https://api.anthropic.com/v1';
+            }
+            $url = rtrim($url, '/');
+            if (str_ends_with($url, '/messages')) {
+                return $url;
+            }
+            if (preg_match('#/(v\d+)$#i', $url)) {
+                return $url.'/messages';
+            }
+
+            return $url.'/v1/messages';
+        }
+
+        if ($provider === 'google') {
+            if (empty($url)) {
+                $url = 'https://generativelanguage.googleapis.com/v1beta';
+            }
+            $url = rtrim($url, '/');
+            if (str_contains($url, ':generateContent')) {
+                $endpoint = $url;
+            } elseif (str_contains($url, '/models/')) {
+                $endpoint = "{$url}:generateContent";
+            } else {
+                if (! preg_match('#/(v\d+(?:beta\d*)?)$#i', $url)) {
+                    $url .= '/v1beta';
+                }
+                $endpoint = "{$url}/models/{$modelId}:generateContent";
+            }
+
+            if (! empty($apiKey) && ! str_contains($endpoint, 'key=')) {
+                $separator = str_contains($endpoint, '?') ? '&' : '?';
+                $endpoint .= "{$separator}key={$apiKey}";
+            }
+
+            return $endpoint;
+        }
+
+        // OpenAI-compatible / Custom providers:
+        if (empty($url)) {
+            return match ($provider) {
+                'openai' => 'https://api.openai.com/v1/chat/completions',
+                'groq' => 'https://api.groq.com/openai/v1/chat/completions',
+                'qwen' => 'https://dashscope-intl.aliyuncs.com/compatible-mode/v1/chat/completions',
+                'grok', 'xai' => 'https://api.x.ai/v1/chat/completions',
+                default => 'https://api.deepseek.com/chat/completions',
+            };
+        }
+
+        $url = rtrim($url, '/');
+
+        // 1. Fix common singular typo: .../chat/completion -> .../chat/completions
+        if (str_ends_with($url, '/chat/completion')) {
+            return substr($url, 0, -strlen('/chat/completion')).'/chat/completions';
+        }
+
+        // 2. If it already ends with /chat/completions or /completions, it's already a complete endpoint
+        if (str_ends_with($url, '/chat/completions') || str_ends_with($url, '/completions')) {
+            return $url;
+        }
+
+        // 3. If URL ends with a standard version prefix (e.g. /v1, /v1beta, /api/v1, /openai/v1, /compatible-mode/v1)
+        if (preg_match('#/(v\d+(?:beta\d*)?|api/v\d+|openai/v\d+|compatible-mode/v\d+)$#i', $url)) {
+            return $url.'/chat/completions';
+        }
+
+        // 4. If host is api.deepseek.com (natively serves /chat/completions)
+        $parsedHost = parse_url($url, PHP_URL_HOST);
+        $parsedPath = parse_url($url, PHP_URL_PATH);
+
+        if ($parsedHost === 'api.deepseek.com') {
+            return $url.'/chat/completions';
+        }
+
+        // 5. If there is already a custom path (e.g. /v1/chat or custom endpoint path)
+        if (! empty($parsedPath) && $parsedPath !== '/' && substr_count(trim($parsedPath, '/'), '/') >= 1) {
+            if (str_ends_with($url, '/chat')) {
+                return $url.'/completions';
+            }
+            if (str_ends_with($url, '/api')) {
+                return $url.'/v1/chat/completions';
+            }
+
+            return $url;
+        }
+
+        // 6. Default for bare domain/host (e.g. https://tabitoken.com, http://localhost:11434)
+        return $url.'/v1/chat/completions';
+    }
+
+    /**
      * Resolve effective Base URL.
      */
     public function getEffectiveBaseUrl(): string

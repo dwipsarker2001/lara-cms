@@ -267,19 +267,19 @@ class AiModelController extends Controller
      */
     public function testConnection(Request $request): JsonResponse
     {
-        $baseUrl = trim((string) ($request->input('base_url') ?: 'https://api.deepseek.com'));
+        $baseUrl = trim((string) ($request->input('base_url') ?: ''));
         $apiKey = trim((string) $request->input('api_key'));
         $modelId = trim((string) ($request->input('model_id') ?: 'deepseek-chat'));
-        $provider = trim((string) ($request->input('provider') ?: 'deepseek'));
+        $provider = trim((string) ($request->input('provider') ?: 'custom'));
 
         // If api_key is masked or empty, lookup from DB model if model_id provided
         if ((empty($apiKey) || str_contains($apiKey, '****')) && $request->filled('id')) {
             $dbModel = AiModel::find($request->input('id'));
             if ($dbModel) {
-                $apiKey = $dbModel->getEffectiveApiKey();
-                $baseUrl = $dbModel->getEffectiveBaseUrl();
-                $modelId = $dbModel->model_id;
-                $provider = $dbModel->provider;
+                $apiKey = $dbModel->getEffectiveApiKey() ?: $apiKey;
+                $baseUrl = $baseUrl ?: $dbModel->getEffectiveBaseUrl();
+                $modelId = $modelId ?: $dbModel->model_id;
+                $provider = $provider ?: $dbModel->provider;
             }
         }
 
@@ -291,38 +291,32 @@ class AiModelController extends Controller
         }
 
         try {
-            $cleanBase = rtrim($baseUrl, '/');
+            $endpoint = AiModel::resolveEndpoint($baseUrl, $provider, $modelId, $apiKey);
 
-            // Quick lightweight probe based on provider
             if ($provider === 'anthropic') {
                 $response = Http::withHeaders([
                     'x-api-key' => $apiKey,
                     'anthropic-version' => '2023-06-01',
                     'content-type' => 'application/json',
-                ])->timeout(10)->post("{$cleanBase}/messages", [
+                ])->timeout(15)->post($endpoint, [
                     'model' => $modelId,
                     'max_tokens' => 5,
                     'messages' => [['role' => 'user', 'content' => 'hi']],
                 ]);
             } elseif ($provider === 'google') {
-                $endpoint = "{$cleanBase}/models/{$modelId}:generateContent?key={$apiKey}";
-                $response = Http::timeout(10)->post($endpoint, [
+                $response = Http::timeout(15)->post($endpoint, [
                     'contents' => [['parts' => [['text' => 'hi']]]],
                     'generationConfig' => ['maxOutputTokens' => 5],
                 ]);
             } else {
-                // OpenAI-compatible endpoint (DeepSeek, OpenAI, Groq, Ollama, Custom)
-                $endpoint = str_ends_with($cleanBase, '/v1') || str_contains($cleanBase, 'deepseek') || str_contains($cleanBase, 'groq')
-                    ? "{$cleanBase}/chat/completions"
-                    : "{$cleanBase}/v1/chat/completions";
-
+                // OpenAI-compatible endpoint (DeepSeek, OpenAI, Groq, Qwen, Ollama, Custom, Tabitoken, etc.)
                 $headers = ['Content-Type' => 'application/json'];
                 if (! empty($apiKey)) {
                     $headers['Authorization'] = "Bearer {$apiKey}";
                 }
 
                 $response = Http::withHeaders($headers)
-                    ->timeout(10)
+                    ->timeout(15)
                     ->post($endpoint, [
                         'model' => $modelId,
                         'messages' => [['role' => 'user', 'content' => 'hi']],
@@ -338,7 +332,14 @@ class AiModelController extends Controller
             }
 
             $body = $response->json();
-            $errMsg = $body['error']['message'] ?? $body['message'] ?? "HTTP {$response->status()}: {$response->body()}";
+            $errMsg = $body['error']['message'] ?? $body['error'] ?? $body['message'] ?? null;
+            if (is_array($errMsg)) {
+                $errMsg = json_encode($errMsg);
+            }
+            if (empty($errMsg)) {
+                $rawBody = trim($response->body());
+                $errMsg = ! empty($rawBody) ? "HTTP {$response->status()}: {$rawBody}" : "HTTP {$response->status()} error";
+            }
 
             return response()->json([
                 'success' => false,

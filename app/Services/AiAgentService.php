@@ -49,7 +49,7 @@ class AiAgentService
         }
 
         $systemPrompt = $this->buildSystemPrompt($context);
-        $completion = $this->executeCompletion($systemPrompt, $messages, $apiKey, $baseUrl, $model);
+        $completion = $this->executeCompletion($systemPrompt, $messages, $apiKey, $baseUrl, $model, $modelConfig['provider'] ?? 'custom');
 
         if (! $completion['success']) {
             return [
@@ -89,15 +89,16 @@ class AiAgentService
      */
     public function agentChat(array $messages, array $context = []): array
     {
-        $settings = Setting::first();
-        $apiKey = $settings?->ai_api_key ?: config('services.deepseek.api_key');
-        $baseUrl = rtrim($settings?->ai_base_url ?: config('services.deepseek.base_url', 'https://api.deepseek.com'), '/');
-        $model = $settings?->ai_model ?: config('services.deepseek.model', 'deepseek-chat');
+        $modelConfig = $this->resolveAiModelConfig($context['model'] ?? null);
+        $apiKey = $modelConfig['api_key'];
+        $baseUrl = $modelConfig['base_url'];
+        $model = $modelConfig['model'];
+        $provider = $modelConfig['provider'] ?? 'custom';
 
-        if (empty($apiKey)) {
+        if (empty($apiKey) && $provider !== 'custom') {
             return [
                 'success' => false,
-                'message' => 'AI API key is not configured. Please configure it in Admin Settings › AI Assistant.',
+                'message' => "AI API key for '{$modelConfig['name']}' is not configured. Please configure it in Admin Settings › AI Assistant.",
                 'actions' => [],
                 'thought' => '',
                 'usage' => [],
@@ -107,7 +108,7 @@ class AiAgentService
         $toolService = app(AiToolService::class);
         $tools = $toolService->getToolDefinitions();
         $systemPrompt = $this->buildAgentSystemPrompt();
-        $endpoint = $this->resolveEndpoint($baseUrl);
+        $endpoint = AiModel::resolveEndpoint($baseUrl, $provider, $model);
 
         // Build initial conversation history
         $history = [['role' => 'system', 'content' => $systemPrompt]];
@@ -265,13 +266,13 @@ class AiAgentService
      * @param  array<int, array{role: string, content: string}>  $messages
      * @return array{success: bool, content?: string, usage?: array<string, mixed>, error_message?: string, raw_error?: string}
      */
-    protected function executeCompletion(string $systemPrompt, array $messages, string $apiKey, string $baseUrl, string $model): array
+    protected function executeCompletion(string $systemPrompt, array $messages, string $apiKey, string $baseUrl, string $model, string $provider = 'custom'): array
     {
-        $providerName = $this->resolveProviderName($baseUrl, $model);
+        $providerName = $this->resolveProviderName($baseUrl, $model, $provider);
 
-        // For DeepSeek and OpenAI-compatible providers, execute direct HTTP with native json_object mode and 8k tokens
-        if ($providerName === 'deepseek' || $providerName === 'openai' || str_contains($baseUrl, 'deepseek') || str_contains($model, 'deepseek')) {
-            return $this->executeDirectHttpCompletion($systemPrompt, $messages, $apiKey, $baseUrl, $model);
+        // For Custom providers, DeepSeek, OpenAI, Groq, Qwen, Ollama, and OpenAI-compatible providers, execute direct HTTP with native json_object mode
+        if ($provider === 'custom' || $providerName === 'deepseek' || $providerName === 'openai' || $providerName === 'groq' || $providerName === 'qwen' || $providerName === 'ollama' || str_contains($baseUrl, 'deepseek') || str_contains($model, 'deepseek')) {
+            return $this->executeDirectHttpCompletion($systemPrompt, $messages, $apiKey, $baseUrl, $model, $provider);
         }
 
         try {
@@ -317,7 +318,7 @@ class AiAgentService
         } catch (\Throwable $e) {
             Log::info('Prism completion attempt handled exception: '.$e->getMessage().'. Falling back to direct HTTP completion.');
 
-            return $this->executeDirectHttpCompletion($systemPrompt, $messages, $apiKey, $baseUrl, $model);
+            return $this->executeDirectHttpCompletion($systemPrompt, $messages, $apiKey, $baseUrl, $model, $provider);
         }
     }
 
@@ -334,8 +335,9 @@ class AiAgentService
         $apiKey = $modelConfig['api_key'];
         $baseUrl = $modelConfig['base_url'];
         $model = $modelConfig['model'];
+        $provider = $modelConfig['provider'] ?? 'custom';
 
-        if (empty($apiKey) && $modelConfig['provider'] !== 'custom') {
+        if (empty($apiKey) && $provider !== 'custom') {
             $onChunk(json_encode([
                 'type' => 'error',
                 'error' => "AI API key for '{$modelConfig['name']}' is not configured. Please configure your API key in Admin Settings > AI Assistant.",
@@ -347,7 +349,7 @@ class AiAgentService
         $systemPrompt = $this->buildSystemPrompt($context);
 
         $accumulatedText = '';
-        $providerName = $this->resolveProviderName($baseUrl, $model);
+        $providerName = $this->resolveProviderName($baseUrl, $model, $provider);
 
         $providerConfig = [
             'api_key' => $apiKey,
@@ -372,8 +374,8 @@ class AiAgentService
         }
 
         // For OpenAI and DeepSeek compatible APIs, stream with native response_format json_object
-        if ($providerName === 'deepseek' || $providerName === 'openai' || str_contains($baseUrl, 'deepseek') || str_contains($baseUrl, 'openai')) {
-            $accumulatedText = $this->streamDirectHttpCompletion($systemPrompt, $messages, $apiKey, $baseUrl, $model, $onChunk);
+        if ($provider === 'custom' || $providerName === 'deepseek' || $providerName === 'openai' || $providerName === 'groq' || $providerName === 'qwen' || $providerName === 'ollama' || str_contains($baseUrl, 'deepseek') || str_contains($baseUrl, 'openai')) {
+            $accumulatedText = $this->streamDirectHttpCompletion($systemPrompt, $messages, $apiKey, $baseUrl, $model, $onChunk, $provider);
         } else {
             try {
                 $stream = Prism::text()
@@ -393,7 +395,7 @@ class AiAgentService
                 }
             } catch (\Throwable $e) {
                 Log::info('Prism stream handled exception: '.$e->getMessage().'. Falling back to direct HTTP stream.');
-                $accumulatedText = $this->streamDirectHttpCompletion($systemPrompt, $messages, $apiKey, $baseUrl, $model, $onChunk);
+                $accumulatedText = $this->streamDirectHttpCompletion($systemPrompt, $messages, $apiKey, $baseUrl, $model, $onChunk, $provider);
             }
         }
 
@@ -416,7 +418,7 @@ class AiAgentService
      * @param  array<int, array{role: string, content: string}>  $messages
      * @param  callable(string $jsonChunk): void  $onChunk
      */
-    protected function streamDirectHttpCompletion(string $systemPrompt, array $messages, string $apiKey, string $baseUrl, string $model, callable $onChunk): string
+    protected function streamDirectHttpCompletion(string $systemPrompt, array $messages, string $apiKey, string $baseUrl, string $model, callable $onChunk, string $provider = 'custom'): string
     {
         $payloadMessages = [
             ['role' => 'system', 'content' => $systemPrompt],
@@ -431,7 +433,7 @@ class AiAgentService
             }
         }
 
-        $endpoint = rtrim($baseUrl, '/').'/chat/completions';
+        $endpoint = AiModel::resolveEndpoint($baseUrl, $provider, $model);
         $accumulated = '';
 
         $payload = json_encode([
@@ -513,7 +515,7 @@ class AiAgentService
      * @param  array<int, array{role: string, content: string}>  $messages
      * @return array{success: bool, content?: string, usage?: array<string, mixed>, error_message?: string, raw_error?: string}
      */
-    protected function executeDirectHttpCompletion(string $systemPrompt, array $messages, string $apiKey, string $baseUrl, string $model): array
+    protected function executeDirectHttpCompletion(string $systemPrompt, array $messages, string $apiKey, string $baseUrl, string $model, string $provider = 'custom'): array
     {
         $payloadMessages = [
             ['role' => 'system', 'content' => $systemPrompt],
@@ -536,12 +538,14 @@ class AiAgentService
             $attempt++;
 
             try {
-                $endpoint = $this->resolveEndpoint($baseUrl);
+                $endpoint = AiModel::resolveEndpoint($baseUrl, $provider, $model);
 
-                $response = Http::withHeaders([
-                    'Authorization' => 'Bearer '.$apiKey,
-                    'Content-Type' => 'application/json',
-                ])->timeout(120)->post($endpoint, [
+                $headers = ['Content-Type' => 'application/json'];
+                if (! empty($apiKey)) {
+                    $headers['Authorization'] = 'Bearer '.$apiKey;
+                }
+
+                $response = Http::withHeaders($headers)->timeout(120)->post($endpoint, [
                     'model' => $model,
                     'messages' => $payloadMessages,
                     'response_format' => ['type' => 'json_object'],
@@ -607,7 +611,7 @@ class AiAgentService
             }
         }
 
-        $endpointStr = $this->resolveEndpoint($baseUrl);
+        $endpointStr = AiModel::resolveEndpoint($baseUrl, $provider, $model);
         $errMsg = $lastException ? $lastException->getMessage() : 'Max retry attempts reached';
         Log::error('AiAgentService Direct HTTP Exception: '.$errMsg.' [Endpoint: '.$endpointStr.']');
 
@@ -621,26 +625,24 @@ class AiAgentService
     /**
      * Resolve the target chat completions API endpoint from the given base URL.
      */
-    protected function resolveEndpoint(string $baseUrl): string
+    public function resolveEndpoint(string $baseUrl, string $provider = 'custom', string $model = ''): string
     {
-        $url = trim($baseUrl);
-        if (empty($url)) {
-            return 'https://api.openai.com/v1/chat/completions';
-        }
-
-        $url = rtrim($url, '/');
-        if (str_ends_with($url, '/chat/completions')) {
-            return $url;
-        }
-
-        return $url.'/chat/completions';
+        return AiModel::resolveEndpoint($baseUrl, $provider, $model);
     }
 
     /**
      * Resolve the appropriate Prism provider name based on base URL or model name.
      */
-    protected function resolveProviderName(string $baseUrl, string $model): string
+    protected function resolveProviderName(string $baseUrl, string $model, string $provider = 'custom'): string
     {
+        if ($provider === 'custom') {
+            return 'openai';
+        }
+
+        if (! empty($provider) && in_array($provider, ['deepseek', 'openai', 'anthropic', 'google', 'groq', 'qwen', 'ollama'])) {
+            return $provider === 'google' ? 'gemini' : ($provider === 'qwen' ? 'openai' : $provider);
+        }
+
         $baseUrlLower = strtolower($baseUrl);
         $modelLower = strtolower($model);
 

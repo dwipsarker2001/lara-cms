@@ -179,3 +179,44 @@ test('admin can create models for various providers', function (string $provider
     ['qwen', 'Qwen 2.5 72B', 'qwen-plus', 'https://dashscope-intl.aliyuncs.com/compatible-mode/v1'],
     ['groq', 'Groq LLaMA 3.3 70B', 'llama-3.3-70b-versatile', 'https://api.groq.com/openai/v1'],
 ]);
+
+test('resolveEndpoint resolves various custom URLs and providers accurately', function (string $inputUrl, string $provider, string $expectedEndpoint) {
+    $endpoint = AiModel::resolveEndpoint($inputUrl, $provider, 'test-model', 'sk-key');
+    expect($endpoint)->toBe($expectedEndpoint);
+})->with([
+    ['https://tabitoken.com/v1/chat/completion', 'custom', 'https://tabitoken.com/v1/chat/completions'],
+    ['https://tabitoken.com/v1/chat/completions', 'custom', 'https://tabitoken.com/v1/chat/completions'],
+    ['https://tabitoken.com/v1', 'custom', 'https://tabitoken.com/v1/chat/completions'],
+    ['https://tabitoken.com/v1/', 'custom', 'https://tabitoken.com/v1/chat/completions'],
+    ['https://tabitoken.com', 'custom', 'https://tabitoken.com/v1/chat/completions'],
+    ['http://localhost:11434', 'custom', 'http://localhost:11434/v1/chat/completions'],
+    ['http://localhost:11434/v1', 'custom', 'http://localhost:11434/v1/chat/completions'],
+    ['https://openrouter.ai/api/v1', 'custom', 'https://openrouter.ai/api/v1/chat/completions'],
+    ['https://api.deepseek.com', 'deepseek', 'https://api.deepseek.com/chat/completions'],
+    ['https://api.openai.com/v1', 'openai', 'https://api.openai.com/v1/chat/completions'],
+    ['https://api.anthropic.com', 'anthropic', 'https://api.anthropic.com/v1/messages'],
+    ['https://api.anthropic.com/v1', 'anthropic', 'https://api.anthropic.com/v1/messages'],
+    ['https://generativelanguage.googleapis.com', 'google', 'https://generativelanguage.googleapis.com/v1beta/models/test-model:generateContent?key=sk-key'],
+]);
+
+test('admin can test connection with custom provider endpoint like tabitoken', function () {
+    Http::fake([
+        'https://tabitoken.com/v1/chat/completions' => Http::response([
+            'choices' => [
+                ['message' => ['content' => 'Hello from Claude']],
+            ],
+        ], 200),
+    ]);
+
+    $response = $this->actingAs($this->admin, 'admin')->postJson(route('admin.ai-models.test-connection'), [
+        'provider' => 'custom',
+        'name' => 'Calude Code',
+        'model_id' => 'claude-opus-4-8',
+        'base_url' => 'https://tabitoken.com/v1/chat/completion',
+        'api_key' => 'sk-tabitoken-secret-key',
+    ]);
+
+    $response->assertOk()->assertJson([
+        'success' => true,
+    ]);
+});
