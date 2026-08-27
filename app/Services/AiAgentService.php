@@ -38,6 +38,15 @@ class AiAgentService
             ];
         }
 
+        // Dynamically search local assets + external stock APIs (Pixabay / Pexels / Unsplash) for relevant photos
+        $topicQuery = $this->extractImageSearchQuery($messages, $context);
+        $searchedAssets = $this->searchAssets($topicQuery, 20);
+
+        if (! empty($searchedAssets)) {
+            // Provide the topic-focused stock photos and relevant local photos to AI prompt
+            $context['assets'] = $searchedAssets;
+        }
+
         $systemPrompt = $this->buildSystemPrompt($context);
         $completion = $this->executeCompletion($systemPrompt, $messages, $apiKey, $baseUrl, $model);
 
@@ -53,12 +62,14 @@ class AiAgentService
 
         $rawContent = $completion['content'] ?? '';
         $parsed = $this->parseJsonResponse($rawContent);
+        $rawActions = $parsed['actions'] ?? [];
+        $sanitizedActions = $this->sanitizeActions($rawActions, $context);
 
         $result = [
             'success' => true,
             'thought' => $parsed['thought'] ?? '',
             'message' => $parsed['message'] ?? 'Changes processed successfully.',
-            'actions' => $parsed['actions'] ?? [],
+            'actions' => $sanitizedActions,
             'suggestions' => $parsed['suggestions'] ?? [],
             'usage' => $completion['usage'] ?? null,
             'raw' => $rawContent,
@@ -77,10 +88,10 @@ class AiAgentService
      */
     public function agentChat(array $messages, array $context = []): array
     {
-        $settings  = Setting::first();
-        $apiKey    = $settings?->ai_api_key ?: config('services.deepseek.api_key');
-        $baseUrl   = rtrim($settings?->ai_base_url ?: config('services.deepseek.base_url', 'https://api.deepseek.com'), '/');
-        $model     = $settings?->ai_model ?: config('services.deepseek.model', 'deepseek-chat');
+        $settings = Setting::first();
+        $apiKey = $settings?->ai_api_key ?: config('services.deepseek.api_key');
+        $baseUrl = rtrim($settings?->ai_base_url ?: config('services.deepseek.base_url', 'https://api.deepseek.com'), '/');
+        $model = $settings?->ai_model ?: config('services.deepseek.model', 'deepseek-chat');
 
         if (empty($apiKey)) {
             return [
@@ -88,62 +99,62 @@ class AiAgentService
                 'message' => 'AI API key is not configured. Please configure it in Admin Settings › AI Assistant.',
                 'actions' => [],
                 'thought' => '',
-                'usage'   => [],
+                'usage' => [],
             ];
         }
 
-        $toolService  = app(AiToolService::class);
-        $tools        = $toolService->getToolDefinitions();
+        $toolService = app(AiToolService::class);
+        $tools = $toolService->getToolDefinitions();
         $systemPrompt = $this->buildAgentSystemPrompt();
-        $endpoint     = $this->resolveEndpoint($baseUrl);
+        $endpoint = $this->resolveEndpoint($baseUrl);
 
         // Build initial conversation history
         $history = [['role' => 'system', 'content' => $systemPrompt]];
         foreach ($messages as $msg) {
             if (! empty($msg['content'])) {
                 $history[] = [
-                    'role'    => in_array($msg['role'], ['user', 'assistant']) ? $msg['role'] : 'user',
+                    'role' => in_array($msg['role'], ['user', 'assistant']) ? $msg['role'] : 'user',
                     'content' => (string) $msg['content'],
                 ];
             }
         }
 
         $maxIterations = 8;
-        $iteration     = 0;
-        $allBatches    = [];   // Each apply_actions call stored as a batch
-        $totalUsage    = ['prompt_tokens' => 0, 'completion_tokens' => 0];
-        $lastMessage   = '';
+        $iteration = 0;
+        $allBatches = [];   // Each apply_actions call stored as a batch
+        $totalUsage = ['prompt_tokens' => 0, 'completion_tokens' => 0];
+        $lastMessage = '';
 
         while ($iteration++ < $maxIterations) {
             try {
                 $response = Http::withHeaders([
-                    'Authorization' => 'Bearer ' . $apiKey,
-                    'Content-Type'  => 'application/json',
+                    'Authorization' => 'Bearer '.$apiKey,
+                    'Content-Type' => 'application/json',
                 ])->timeout(120)->post($endpoint, [
-                    'model'       => $model,
-                    'messages'    => $history,
-                    'tools'       => $tools,
+                    'model' => $model,
+                    'messages' => $history,
+                    'tools' => $tools,
                     'tool_choice' => 'auto',
                     'temperature' => 0.3,
-                    'max_tokens'  => 4096,
+                    'max_tokens' => 4096,
                 ]);
 
                 if (! $response->successful()) {
-                    Log::error('AgentChat API error: ' . $response->status() . ' — ' . $response->body());
+                    Log::error('AgentChat API error: '.$response->status().' — '.$response->body());
                     break;
                 }
 
-                $json      = $response->json();
-                $usage     = $json['usage'] ?? [];
-                $totalUsage['prompt_tokens']     += (int) ($usage['prompt_tokens'] ?? 0);
+                $json = $response->json();
+                $usage = $json['usage'] ?? [];
+                $totalUsage['prompt_tokens'] += (int) ($usage['prompt_tokens'] ?? 0);
                 $totalUsage['completion_tokens'] += (int) ($usage['completion_tokens'] ?? 0);
 
-                $choice    = $json['choices'][0] ?? null;
+                $choice = $json['choices'][0] ?? null;
                 $aiMessage = $choice['message'] ?? [];
                 $toolCalls = $aiMessage['tool_calls'] ?? [];
 
             } catch (\Throwable $e) {
-                Log::error('AgentChat HTTP exception: ' . $e->getMessage());
+                Log::error('AgentChat HTTP exception: '.$e->getMessage());
                 break;
             }
 
@@ -155,8 +166,8 @@ class AiAgentService
 
             // Append AI message (with its tool_calls) into history
             $history[] = [
-                'role'       => 'assistant',
-                'content'    => $aiMessage['content'] ?? null,
+                'role' => 'assistant',
+                'content' => $aiMessage['content'] ?? null,
                 'tool_calls' => $toolCalls,
             ];
 
@@ -164,7 +175,7 @@ class AiAgentService
             foreach ($toolCalls as $call) {
                 $toolName = $call['function']['name'] ?? '';
                 $toolArgs = json_decode($call['function']['arguments'] ?? '{}', true) ?: [];
-                $callId   = $call['id'] ?? ('call_' . uniqid());
+                $callId = $call['id'] ?? ('call_'.uniqid());
 
                 if ($toolName === 'apply_actions') {
                     // Store this batch of actions
@@ -184,10 +195,10 @@ class AiAgentService
 
                     // Tell the AI the batch was applied and it can continue or finish
                     $history[] = [
-                        'role'         => 'tool',
+                        'role' => 'tool',
                         'tool_call_id' => $callId,
-                        'content'      => json_encode([
-                            'status'       => 'applied',
+                        'content' => json_encode([
+                            'status' => 'applied',
                             'action_count' => count($batchActions),
                         ]),
                     ];
@@ -199,23 +210,23 @@ class AiAgentService
 
                     // Prompt AI to continue with remaining sections or wrap up
                     $history[] = [
-                        'role'    => 'user',
+                        'role' => 'user',
                         'content' => 'Section updated successfully. Continue with the next section if needed, or finish by calling apply_actions with an empty actions array and your final summary.',
                     ];
                 } else {
                     // Data-fetching tool — dispatch and feed result back to AI
-                    $result    = $toolService->dispatch($toolName, $toolArgs, $context);
+                    $result = $toolService->dispatch($toolName, $toolArgs, $context);
                     $history[] = [
-                        'role'         => 'tool',
+                        'role' => 'tool',
                         'tool_call_id' => $callId,
-                        'content'      => json_encode($result, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE),
+                        'content' => json_encode($result, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE),
                     ];
                 }
             }
         }
 
         // Flatten all batches into a single actions list for the frontend
-        $flatActions  = [];
+        $flatActions = [];
         $finalMessage = $lastMessage;
 
         foreach ($allBatches as $batch) {
@@ -233,63 +244,18 @@ class AiAgentService
             'success' => true,
             'message' => $finalMessage ?: 'Done.',
             'actions' => $flatActions,
-            'thought' => "Completed {$iteration} iterations, applied " . count($flatActions) . ' actions across ' . count($allBatches) . ' section(s).',
-            'usage'   => $totalUsage,
+            'thought' => "Completed {$iteration} iterations, applied ".count($flatActions).' actions across '.count($allBatches).' section(s).',
+            'usage' => $totalUsage,
         ];
     }
 
     /**
      * Lean system prompt for the agentic loop.
-     * No page data is injected — AI fetches what it needs via tools.
+     * Delegates to dedicated AiPromptBuilder / prompt template.
      */
     protected function buildAgentSystemPrompt(): string
     {
-        return <<<'PROMPT'
-You are an autonomous AI agent embedded in Lara-CMS, a block-based CMS for building websites.
-You have tools to read page data on demand and apply changes section by section.
-
-======================================================
-WORKFLOW — FOLLOW THIS EXACTLY
-======================================================
-1. Call get_sections() to see all sections and their indexes.
-2. For each section you need to edit:
-   a. Call get_section(index) to read its EXACT current data.
-   b. Call get_schema(block_name) to learn the available field names and types.
-   c. Call apply_actions([...], "summary of changes") with precise action objects.
-3. Repeat step 2 for every section that needs changes — one section per apply_actions call.
-4. When ALL sections are done: call apply_actions with an empty [] actions array and your final summary message to signal completion.
-
-======================================================
-TOOL RULES
-======================================================
-- ALWAYS call get_section() before editing a section. Never guess field values.
-- ALWAYS call get_schema() before editing. Never guess field names.
-- For images: call search_images(keyword) first. Only use URLs from the results. NEVER fabricate or guess image URLs.
-- apply_actions() may be called multiple times — once per section. This is how you edit sections sequentially.
-- Use dot-notation for nested list fields: "faqs.0.question", "itinerary.2.dayTitle", "team.1.name"
-
-======================================================
-ACTION TYPES (place inside apply_actions "actions" array)
-======================================================
-Update field:        {"action":"update_field","section_index":0,"field_path":"headline","value":"New headline"}
-Update nested field: {"action":"update_field","section_index":0,"field_path":"faqs.0.question","value":"..."}
-Update section:      {"action":"update_section","section_index":0,"data":{"headline":"...","items":[...]}}
-Set image:           {"action":"set_image","section_index":0,"field_path":"image","image_url":"/storage/assets/photo.jpg"}
-Add section:         {"action":"add_section","name":"BlockName","data":{...},"position":2}
-Remove section:      {"action":"remove_section","section_index":3}
-Add list item:       {"action":"add_list_item","section_index":0,"list_path":"faqs","data":{"question":"...","answer":"..."}}
-Remove list item:    {"action":"remove_list_item","section_index":0,"list_path":"faqs","index":2}
-Save page:           {"action":"save_page"}
-
-======================================================
-COPYWRITING STANDARDS
-======================================================
-- Headlines: 5–9 words, action-oriented, specific value proposition.
-- Descriptions: 15–25 words, removes friction, communicates unique benefit.
-- CTAs: short action verbs ("Get Started", "Explore Now", "Book Your Spot").
-- Prices: numbers only — no currency symbols ($, €, £, ¥).
-- Lists: parallel structure, concrete and believable claims.
-PROMPT;
+        return AiPromptBuilder::buildAgent();
     }
 
     /**
@@ -561,25 +527,58 @@ PROMPT;
             }
         }
 
-        try {
-            $endpoint = $this->resolveEndpoint($baseUrl);
+        $maxAttempts = 3;
+        $attempt = 0;
+        $lastException = null;
 
-            $response = Http::withHeaders([
-                'Authorization' => 'Bearer '.$apiKey,
-                'Content-Type' => 'application/json',
-            ])->timeout(120)->post($endpoint, [
-                'model' => $model,
-                'messages' => $payloadMessages,
-                'response_format' => ['type' => 'json_object'],
-                'temperature' => 0.3,
-                'max_tokens' => 8192,
-            ]);
+        while ($attempt < $maxAttempts) {
+            $attempt++;
 
-            if (! $response->successful()) {
-                Log::error('AI API Error: '.$response->status().' - '.$response->body());
+            try {
+                $endpoint = $this->resolveEndpoint($baseUrl);
+
+                $response = Http::withHeaders([
+                    'Authorization' => 'Bearer '.$apiKey,
+                    'Content-Type' => 'application/json',
+                ])->timeout(120)->post($endpoint, [
+                    'model' => $model,
+                    'messages' => $payloadMessages,
+                    'response_format' => ['type' => 'json_object'],
+                    'temperature' => 0.2,
+                    'max_tokens' => 8192,
+                ]);
+
+                if ($response->successful()) {
+                    $jsonResponse = $response->json();
+                    $rawContent = $jsonResponse['choices'][0]['message']['content'] ?? '';
+
+                    return [
+                        'success' => true,
+                        'content' => $rawContent,
+                        'usage' => $jsonResponse['usage'] ?? null,
+                    ];
+                }
 
                 $status = $response->status();
+                $body = $response->body();
                 $apiError = $response->json('error.message') ?? $response->json('message') ?? $response->json('error');
+
+                // Check if this is a transient upstream/server error suitable for auto-retry
+                $isTransient = in_array($status, [429, 500, 502, 503, 504], true)
+                    || str_contains(strtolower((string) $apiError), 'upstream')
+                    || str_contains(strtolower((string) $apiError), 'do request failed')
+                    || str_contains(strtolower($body), 'upstream error')
+                    || str_contains(strtolower($body), 'do request failed');
+
+                if ($isTransient && $attempt < $maxAttempts) {
+                    Log::warning("AI API transient upstream error (HTTP {$status}, attempt {$attempt}/{$maxAttempts}): ".(is_string($apiError) ? $apiError : 'Transient error').". Retrying in {$attempt}s...");
+                    usleep(1000000 * $attempt);
+
+                    continue;
+                }
+
+                // If non-transient or attempts exhausted, return friendly error message
+                Log::error('AI API Error: '.$status.' - '.$body);
 
                 $friendlyMessage = ! empty($apiError) && is_string($apiError)
                     ? $apiError
@@ -587,35 +586,35 @@ PROMPT;
                         401 => 'Invalid API key. Please check your credentials in Admin Settings > AI Assistant.',
                         402 => 'Account credit balance reached. Please check your AI provider billing.',
                         429 => 'Rate limit reached. Please wait a moment and try again.',
-                        500, 502, 503 => 'The AI service is temporarily unavailable (HTTP '.$status.'). Please try again in a moment.',
+                        500, 502, 503 => 'The AI upstream service is temporarily overloaded (HTTP '.$status.'). Please try again in a moment.',
                         default => 'The AI service returned an error (HTTP '.$status.'). Please try again.',
                     };
 
                 return [
                     'success' => false,
                     'error_message' => $friendlyMessage,
-                    'raw_error' => $response->body(),
+                    'raw_error' => $body,
                 ];
+            } catch (\Throwable $e) {
+                $lastException = $e;
+                if ($attempt < $maxAttempts) {
+                    Log::warning("AiAgentService connection attempt {$attempt}/{$maxAttempts} failed: ".$e->getMessage().". Retrying in {$attempt}s...");
+                    usleep(1000000 * $attempt);
+
+                    continue;
+                }
             }
-
-            $jsonResponse = $response->json();
-            $rawContent = $jsonResponse['choices'][0]['message']['content'] ?? '';
-
-            return [
-                'success' => true,
-                'content' => $rawContent,
-                'usage' => $jsonResponse['usage'] ?? null,
-            ];
-        } catch (\Throwable $e) {
-            $endpointStr = $this->resolveEndpoint($baseUrl);
-            Log::error('AiAgentService Direct HTTP Exception: '.$e->getMessage().' [Endpoint: '.$endpointStr.']');
-
-            return [
-                'success' => false,
-                'error_message' => 'Unable to reach AI service ('.$endpointStr.'): '.$e->getMessage(),
-                'raw_error' => $e->getMessage(),
-            ];
         }
+
+        $endpointStr = $this->resolveEndpoint($baseUrl);
+        $errMsg = $lastException ? $lastException->getMessage() : 'Max retry attempts reached';
+        Log::error('AiAgentService Direct HTTP Exception: '.$errMsg.' [Endpoint: '.$endpointStr.']');
+
+        return [
+            'success' => false,
+            'error_message' => 'Unable to reach AI service ('.$endpointStr.'): '.$errMsg,
+            'raw_error' => $errMsg,
+        ];
     }
 
     /**
@@ -668,249 +667,13 @@ PROMPT;
 
     /**
      * Build the system prompt incorporating CMS knowledge, schemas, and action protocols.
-     * Designed to be token-efficient: schemas/assets only included when provided by client.
+     * Delegates to dedicated AiPromptBuilder and prompt template file.
      *
      * @param  array<string, mixed>  $context
      */
     protected function buildSystemPrompt(array $context): string
     {
-        $schemas = $context['schemas'] ?? null;   // null = not changed this turn
-        $blockList = $context['blockList'] ?? null; // null = not changed this turn
-        $sections = $context['sections'] ?? [];    // compact digest from client
-        $activeSectionIndex = $context['activeSectionIndex'] ?? null;
-        $activeSectionName = $context['activeSectionName'] ?? null;
-        $activeSectionData = $context['activeSectionData'] ?? null;
-        $assets = $context['assets'] ?? null;    // null = not image-related request
-        $entryData = $context['entryData'] ?? [];
-
-        // Compact JSON — no pretty print to save tokens
-        $sectionsJson = json_encode($sections, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
-        $entryJson = json_encode($entryData, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
-
-        $activeInfo = ($activeSectionIndex !== null && $activeSectionIndex !== '')
-            ? "Active section in sidebar: index={$activeSectionIndex}, block={$activeSectionName}"
-            : 'No section active (user on section list / page overview)';
-
-        $activeDataBlock = '';
-        if ($activeSectionData !== null) {
-            $activeDataJson = json_encode($activeSectionData, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
-            $activeDataBlock = "\nActive section full data:\n{$activeDataJson}";
-        }
-
-        $schemasBlock = '';
-        if ($schemas !== null) {
-            $blockListJson = json_encode($blockList ?? [], JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
-            $schemasJson = json_encode($schemas, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
-            $schemasBlock = <<<SCHEMA
-
-========================
-AVAILABLE BLOCKS & SCHEMAS (sent once per session on change)
-========================
-Block names: {$blockListJson}
-Full schemas: {$schemasJson}
-SCHEMA;
-        }
-
-        $assetsBlock = '';
-        if ($assets !== null) {
-            $assetsJson = json_encode($assets, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
-            $assetsBlock = <<<ASSETS
-
-========================
-MEDIA LIBRARY (user's uploaded images — always use these for image fields)
-========================
-{$assetsJson}
-STRICT RULE: ALWAYS use image URLs from this list for image fields. Pick the most contextually relevant one by matching the asset `name` to the section topic.
-NEVER guess or fabricate Unsplash photo IDs. If no asset fits, leave the image field unchanged.
-ASSETS;
-        }
-
-        $collections = $context['collections'] ?? null;
-        $collectionsBlock = '';
-        if (! empty($collections)) {
-            $colsJson = json_encode($collections, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
-            $collectionsBlock = <<<COLS
-
-========================
-AVAILABLE COLLECTIONS & ENTRIES (use these to set links or select collection items)
-========================
-{$colsJson}
-COLS;
-        }
-
-        return <<<PROMPT
-You are an autonomous AI Visual Copilot built into Lara-CMS — a flexible, block-based CMS for building any type of website (business, portfolio, e-commerce, travel, SaaS, blog, etc.).
-You have FULL programmatic control over the page editor: adding/removing/updating sections, editing any field value, setting images, and saving the page.
-
-======================================================
-CORE DIRECTIVE — ALWAYS EXECUTE ACTIONS, NEVER CHATTER
-======================================================
-1. You are an ACTOR, not a chat bot. Whenever the user asks to change, update, write, rewrite, or transform content:
-   - NEVER ask clarifying questions (e.g., "Do you want me to change the title?", "Could you please clarify?").
-   - PROACTIVELY infer the user's intent (even with typos like "cox bazwe" -> "Cox's Bazar", "sylhet" -> "Sylhet", "faq" -> "FAQs").
-   - Output the exact `actions` in the JSON response immediately!
-
-2. FULL PAGE / THEME TRANSFORMATION (e.g., "change my content to cox bazar", "update my full content", "make it a beach package", "all"):
-   - You MUST update EVERY relevant section on the page in-place:
-     * Hero / Header (title, subtitle, badge, duration, price)
-     * About / Overview (compelling description tailored to the new theme)
-     * Highlights / Key Features (3-5 concrete highlights)
-     * Itinerary / Steps (day-by-day schedule with relevant stops & descriptions)
-     * Locations / Points of Interest (relevant places)
-     * Inclusions / Exclusions (realistic included items)
-     * FAQs (4-6 realistic, high-converting questions & answers)
-   - Output separate `update_field` or `update_section` actions for all these sections so the entire page transforms live!
-
-======================================================
-INTENT CLASSIFICATION — FOLLOW STRICTLY
-======================================================
-
-RULE 1 — EDIT CONTENT (update, change, write, rewrite, polish, quick items, about section, itinerary, full page, etc.)
-- NEVER call add_section. Modify existing section(s) in-place with update_field, update_section, or add_list_item.
-- In every action, "section_index" MUST be a valid integer index (0, 1, 2, ...). NEVER leave "section_index" empty or null.
-- When the user asks to "update quick items", "update about section", "improve headline", "change content to X", or any request:
-  DO NOT ask questions or reply with "How else can I help?". PROACTIVELY write compelling, fitting copy for those fields and generate the action(s) immediately!
-- If a section is active ({$activeInfo}), update THAT section's fields using its index.
-- If no section is active, find all sections matching the request in the "Page sections" list below and output actions for each of their integer indexes.
-
-RULE 2 — BUILD / CREATE PAGE (user says "create page", "build full page", "generate landing page")
-- Use replace_all_sections or sequential add_section to assemble a complete multi-block page.
-- Choose block types that make sense for the requested website type from the available block list.
-- Write realistic, high-converting copy tailored to the brief.
-
-RULE 3 — ADD SECTION / BLOCK (user says "add a testimonials section", "insert FAQ", etc.)
-- Call add_section with a block name from the registered block list.
-- Populate all fields with great copy. For image fields, use URLs from the MEDIA LIBRARY above.
-
-RULE 4 — IMAGE & MEDIA (user says "update all images", "update gallery", "change image", "find photos", "add images", etc.)
-- Use update_field or set_image to set image URLs directly. NEVER leave image fields empty.
-- IMAGE SELECTION:
-  1. If MEDIA LIBRARY has relevant images, use them.
-  2. If not, preserve the existing image URLs already in the section data.
-  3. Never invent broken photo IDs.
-
-RULE 5 — PRICES & NUMBERS
-- Never include currency symbols ($, €, £, etc.). Output raw numbers only (e.g. "49", "199").
-
-======================================================
-COPYWRITING STANDARDS (apply to all generated text)
-======================================================
-- Headlines: 5–9 words, action-oriented, specific value proposition. No generic phrases.
-- Descriptions: 15–25 words, remove friction, communicate unique benefit.
-- CTAs: short action verbs ("Get Started", "Explore Now", "Book Your Spot").
-- Lists/items: parallel structure, concrete and believable claims.
-- Maintain professional, persuasive brand voice.
-
-
-======================================================
-PATH FORMAT FOR NESTED FIELDS
-======================================================
-Use dot notation for nested list fields:
-- "fieldName"                 → top-level field (string, text, boolean, select, etc.)
-- "listName.0.subField"       → first item in a list (index 0)
-- "listName.2.subField"       → third item in a list (index 2)
-
-Examples:
-- "itinerary.0.dayTitle"
-- "itinerary.0.stopName"
-- "itinerary.0.departure"
-- "highlights.2.text"
-- "members.1.name"
-- "faqs.0.question"
-
-IMPORTANT — LINK & COLLECTION FIELDS:
-1. Fields of type "link" (e.g. bookNowLink, buttonLink, ctaLink, whatsappLink):
-   Set them to any external URL (e.g. "https://wa.me/...") OR to an available collection entry's route/slug from the list below (e.g. "/packages/sylhet-adventure", "/destinations/coxs-bazar"):
-   {"action":"update_field","section_index":0,"field_path":"bookNowLink","value":"/packages/sylhet-adventure"}
-
-2. Fields of type "collection" / "collectionEntry" (e.g. package_id, destination_id, deal_id, entry_id):
-   Set the value to the matching collection entry's ID:
-   {"action":"update_field","section_index":0,"field_path":"package_id","value":"3"}
-
-3. Binding a field to a collection entry source:
-   Use set_field_source:
-   {"action":"set_field_source","section_index":0,"field_path":"title","source":"entry:3:title"}
-
-IMPORTANT — SECTIONS DIGEST FORMAT:
-The "Page sections" below is a compact digest. For list fields it shows:
-{"_count": N, "_fields": {first item's field keys and truncated values}}
-This tells you: (a) how many items exist, (b) what sub-field names to use in dot-notation paths.
-When a section is active, its FULL data is shown above — use that for accurate editing.
-
-========================
-CURRENT EDITOR STATE
-========================
-{$activeInfo}
-{$activeDataBlock}
-
-Page sections (compact digest — use section index for actions):
-{$sectionsJson}
-
-Entry metadata: {$entryJson}
-{$schemasBlock}
-{$collectionsBlock}
-{$assetsBlock}
-
-========================
-RESPONSE FORMAT (strict JSON, always)
-========================
-{
-  "thought": "1-2 sentences: intent classification, which section/field to target, what action to take",
-  "message": "Concise markdown reply to user. No emoji spam. Professional and helpful.",
-  "actions": [ ...action objects... ],
-  "suggestions": [ "3-4 short follow-up prompt ideas" ]
-}
-
-========================
-ACTION TYPES
-========================
-
-1. Add section (only for build/add requests):
-{"action":"add_section","name":"BlockName","data":{...},"position":0}
-
-2. Update entire section (merge fields including lists):
-{"action":"update_section","section_index":0,"data":{"headline":"...","items":[...]}}
-
-3. Update single field (dot-notation path for nested):
-{"action":"update_field","section_index":0,"field_path":"listName.0.subField","value":"..."}
-
-4. Set image:
-{"action":"set_image","section_index":0,"field_path":"backgroundImage","image_url":"/storage/assets/..."}
-
-5. Remove section:
-{"action":"remove_section","section_index":2}
-
-6. Reorder sections:
-{"action":"reorder_sections","order":[2,0,1]}
-
-7. Replace all sections:
-{"action":"replace_all_sections","sections":[{"name":"BlockName","enabled":true,"data":{...}}]}
-
-8. Navigate to field in sidebar:
-{"action":"navigate_to_field","section_index":0,"field_path":"headline"}
-
-9. Save page:
-{"action":"save_page"}
-
-10. Add a new item to a list field (e.g. add itinerary day, highlight, FAQ, feature):
-{"action":"add_list_item","section_index":0,"list_path":"itinerary","data":{"dayLabel":"Day-05","dayTitle":"Return Journey","stopName":"","departure":"","dayDescription":"..."}}
-- list_path: dot-path to the list field (e.g. "itinerary", "highlights", "faqs", "locations")
-- data: object with all sub-field values for the new item
-- The new item is appended at the end of the list
-
-11. Remove an item from a list field by index:
-{"action":"remove_list_item","section_index":0,"list_path":"itinerary","index":2}
-- index: 0-based position of the item to delete
-
-========================
-KEY RULES RECAP
-========================
-- Edit request → update_field / update_section only. Never add_section.
-- Add list item → add_list_item (NOT update_section with the whole array).
-- Remove list item → remove_list_item with the 0-based index.
-- Build/create request → replace_all_sections or add_section sequence.
-- Always output valid JSON. No markdown wrapper.
-PROMPT;
+        return AiPromptBuilder::build($context);
     }
 
     /**
@@ -1010,15 +773,15 @@ PROMPT;
             Log::warning('AiAgentService asset search failed: '.$e->getMessage());
         }
 
-        // If local results are sufficient or no query is provided, return local
-        if (count($localResults) >= 3 || empty(trim($query))) {
-            return $localResults;
+        // Fetch outsourced stock photos (Pixabay / Pexels / Unsplash) when a query is provided
+        $stockResults = [];
+        $cleanQuery = trim($query);
+        if (! empty($cleanQuery)) {
+            $stockResults = $this->searchStockImages($cleanQuery, $limit);
         }
 
-        // Fallback to configured stock photo API if local library has few/no matches
-        $stockResults = $this->searchStockImages($query, $limit - count($localResults));
-
-        return array_merge($localResults, $stockResults);
+        // Prioritize outsourced stock photos first, followed by matching local assets
+        return array_merge($stockResults, $localResults);
     }
 
     /**
@@ -1029,39 +792,49 @@ PROMPT;
     public function searchStockImages(string $query, int $limit = 10): array
     {
         $settings = Setting::first();
-        if (! $settings) {
-            return [];
-        }
+        $provider = strtolower(trim((string) ($settings?->image_provider ?? 'auto')));
 
-        $provider = $settings->image_provider ?? 'auto';
         if ($provider === 'local') {
             return [];
         }
 
-        $query = trim($query);
-        if (empty($query)) {
+        $cleanQuery = trim($query);
+        if (empty($cleanQuery)) {
             return [];
         }
 
-        // 1. Try Pexels
-        if (($provider === 'pexels' || $provider === 'auto') && ! empty($settings->pexels_api_key)) {
-            $results = $this->fetchFromPexels($query, $settings->pexels_api_key, $limit);
+        $pixabayKey = trim((string) ($settings?->pixabay_api_key ?: config('services.pixabay.key', env('PIXABAY_API_KEY', ''))));
+        $pexelsKey = trim((string) ($settings?->pexels_api_key ?: config('services.pexels.key', env('PEXELS_API_KEY', ''))));
+        $unsplashKey = trim((string) ($settings?->unsplash_access_key ?: config('services.unsplash.access_key', env('UNSPLASH_ACCESS_KEY', ''))));
+
+        // 1. If a specific provider is chosen, query that provider
+        if ($provider === 'pixabay' && ! empty($pixabayKey)) {
+            return $this->fetchFromPixabay($cleanQuery, $pixabayKey, $limit);
+        }
+        if ($provider === 'pexels' && ! empty($pexelsKey)) {
+            return $this->fetchFromPexels($cleanQuery, $pexelsKey, $limit);
+        }
+        if ($provider === 'unsplash' && ! empty($unsplashKey)) {
+            return $this->fetchFromUnsplash($cleanQuery, $unsplashKey, $limit);
+        }
+
+        // 2. Auto mode: check any configured provider (Pixabay, Pexels, Unsplash)
+        if (! empty($pixabayKey)) {
+            $results = $this->fetchFromPixabay($cleanQuery, $pixabayKey, $limit);
             if (! empty($results)) {
                 return $results;
             }
         }
 
-        // 2. Try Unsplash
-        if (($provider === 'unsplash' || $provider === 'auto') && ! empty($settings->unsplash_access_key)) {
-            $results = $this->fetchFromUnsplash($query, $settings->unsplash_access_key, $limit);
+        if (! empty($pexelsKey)) {
+            $results = $this->fetchFromPexels($cleanQuery, $pexelsKey, $limit);
             if (! empty($results)) {
                 return $results;
             }
         }
 
-        // 3. Try Pixabay
-        if (($provider === 'pixabay' || $provider === 'auto') && ! empty($settings->pixabay_api_key)) {
-            $results = $this->fetchFromPixabay($query, $settings->pixabay_api_key, $limit);
+        if (! empty($unsplashKey)) {
+            $results = $this->fetchFromUnsplash($cleanQuery, $unsplashKey, $limit);
             if (! empty($results)) {
                 return $results;
             }
@@ -1153,6 +926,43 @@ PROMPT;
     }
 
     /**
+     * Extract topic keywords from user messages and page context to search for relevant stock images.
+     *
+     * @param  array<int, array{role: string, content: string}>  $messages
+     * @param  array<string, mixed>  $context
+     */
+    public function extractImageSearchQuery(array $messages, array $context): string
+    {
+        $lastUserMsg = '';
+        foreach (array_reverse($messages) as $m) {
+            if (($m['role'] ?? '') === 'user' && ! empty($m['content'])) {
+                $lastUserMsg = (string) $m['content'];
+                break;
+            }
+        }
+
+        $pageTitle = (string) ($context['entryData']['title'] ?? '');
+        $activeSectionName = (string) ($context['activeSectionName'] ?? '');
+
+        // Remove conversational filler and command words
+        $clean = preg_replace('/\b(update|change|rewrite|write|polish|create|add|my|full|content|page|all|section|image|images|photos|photo|picture|pictures|make|it|to|and|the|a|an|please|with|for|in|on|set|find|put|replace)\b/i', '', $lastUserMsg);
+        $clean = trim(preg_replace('/\s+/', ' ', (string) $clean));
+
+        if (! empty($clean) && strlen($clean) >= 3) {
+            return $clean;
+        }
+
+        if (! empty($pageTitle)) {
+            $cleanTitle = preg_replace('/\b(details|page|template|overview|home|welcome)\b/i', '', $pageTitle);
+            $cleanTitle = trim(preg_replace('/\s+/', ' ', (string) $cleanTitle));
+
+            return $cleanTitle ?: $pageTitle;
+        }
+
+        return $activeSectionName ?: 'website';
+    }
+
+    /**
      * Fetch photos from Pixabay API.
      *
      * @return array<int, array<string, mixed>>
@@ -1160,12 +970,20 @@ PROMPT;
     protected function fetchFromPixabay(string $query, string $apiKey, int $limit = 10): array
     {
         try {
+            $cleanQuery = trim(preg_replace('/[^a-zA-Z0-9\s]/', ' ', $query));
+            $cleanQuery = trim(preg_replace('/\s+/', ' ', $cleanQuery));
+
+            if (empty($cleanQuery)) {
+                $cleanQuery = 'nature';
+            }
+
             $response = Http::timeout(10)->get('https://pixabay.com/api/', [
                 'key' => $apiKey,
-                'q' => urlencode($query),
+                'q' => $cleanQuery,
                 'per_page' => min(20, max(3, $limit)),
                 'image_type' => 'photo',
                 'orientation' => 'horizontal',
+                'safesearch' => 'true',
             ]);
 
             if (! $response->successful()) {
@@ -1175,6 +993,25 @@ PROMPT;
             }
 
             $hits = $response->json('hits') ?? [];
+
+            // If 0 hits with full query, retry with first major keyword or fallback topic
+            if (empty($hits) && str_contains($cleanQuery, ' ')) {
+                $words = explode(' ', $cleanQuery);
+                $firstWord = $words[0] ?? '';
+                if (strlen($firstWord) >= 3) {
+                    $retryResponse = Http::timeout(10)->get('https://pixabay.com/api/', [
+                        'key' => $apiKey,
+                        'q' => $firstWord,
+                        'per_page' => min(20, max(3, $limit)),
+                        'image_type' => 'photo',
+                        'orientation' => 'horizontal',
+                        'safesearch' => 'true',
+                    ]);
+                    if ($retryResponse->successful()) {
+                        $hits = $retryResponse->json('hits') ?? [];
+                    }
+                }
+            }
 
             return array_map(function ($h) {
                 return [
@@ -1192,7 +1029,6 @@ PROMPT;
             return [];
         }
     }
-
 
     /**
      * Parse JSON from model response safely with automatic repair for common LLM syntax defects.
@@ -1223,12 +1059,13 @@ PROMPT;
         // 3. Trailing commas before closing braces/brackets
         $repaired = preg_replace('/,\s*([\}\]])/s', '$1', $repaired);
 
+        // 4. Try standard JSON decode
         $decoded = json_decode($repaired, true);
         if (is_array($decoded) && (isset($decoded['message']) || isset($decoded['actions']))) {
             return $decoded;
         }
 
-        // 4. Extract JSON substring if surrounded by extra text
+        // 5. Extract JSON substring if surrounded by extra text
         $firstBrace = strpos($repaired, '{');
         $lastBrace = strrpos($repaired, '}');
 
@@ -1241,7 +1078,57 @@ PROMPT;
             }
         }
 
-        // 5. Fallback: Regex extraction if full JSON parsing failed
+        // 6. Auto-close truncated JSON using a LIFO token stack (recovers responses truncated by max_tokens)
+        if ($firstBrace !== false) {
+            $unclosed = substr($repaired, $firstBrace);
+
+            // If there is an unclosed string literal, append a closing quote
+            $quoteCount = substr_count(str_replace('\"', '', $unclosed), '"');
+            if ($quoteCount % 2 !== 0) {
+                $unclosed .= '"';
+            }
+
+            $unclosed = preg_replace('/,\s*$/', '', $unclosed);
+
+            // Track unclosed structural tokens using a LIFO stack
+            $stack = [];
+            $inString = false;
+            $len = strlen($unclosed);
+
+            for ($i = 0; $i < $len; $i++) {
+                $char = $unclosed[$i];
+                if ($char === '"' && ($i === 0 || $unclosed[$i - 1] !== '\\')) {
+                    $inString = ! $inString;
+
+                    continue;
+                }
+                if ($inString) {
+                    continue;
+                }
+
+                if ($char === '{') {
+                    $stack[] = '}';
+                } elseif ($char === '[') {
+                    $stack[] = ']';
+                } elseif ($char === '}' || $char === ']') {
+                    if (! empty($stack) && end($stack) === $char) {
+                        array_pop($stack);
+                    }
+                }
+            }
+
+            if (! empty($stack)) {
+                // Close in exact LIFO reverse stack order
+                $unclosed .= implode('', array_reverse($stack));
+
+                $decoded = json_decode($unclosed, true);
+                if (is_array($decoded) && (isset($decoded['message']) || isset($decoded['actions']))) {
+                    return $decoded;
+                }
+            }
+        }
+
+        // 7. Fallback: Regex extraction if full JSON parsing failed
         $fallbackActions = [];
         if (preg_match('/"actions"\s*:\s*(\[.*?\])(?=\s*,\s*"|\s*\})/s', $repaired, $actMatches)) {
             $parsedActions = json_decode($actMatches[1], true);
@@ -1261,6 +1148,221 @@ PROMPT;
             'actions' => $fallbackActions,
             'suggestions' => [],
         ];
+    }
+
+    /**
+     * Sanitize and validate actions before sending to the editor client.
+     * Prevents out-of-bounds errors, normalizes block names, and verifies field paths.
+     *
+     * @param  array<int, array<string, mixed>>  $actions
+     * @param  array<string, mixed>  $context
+     * @return array<int, array<string, mixed>>
+     */
+    public function sanitizeActions(array $actions, array $context = []): array
+    {
+        $sections = $context['full_sections'] ?? $context['sections'] ?? [];
+        $sectionCount = is_array($sections) ? count($sections) : 0;
+        $blockList = $context['blockList'] ?? [];
+        $registeredBlockNames = [];
+
+        foreach ($blockList as $item) {
+            if (is_array($item) && ! empty($item['name'])) {
+                $registeredBlockNames[] = $item['name'];
+            } elseif (is_string($item) && ! empty($item)) {
+                $registeredBlockNames[] = $item;
+            }
+        }
+
+        $sanitized = [];
+
+        foreach ($actions as $action) {
+            if (! is_array($action) || empty($action['action'])) {
+                continue;
+            }
+
+            $type = (string) $action['action'];
+
+            switch ($type) {
+                case 'update_field':
+                    $idx = isset($action['section_index']) ? (int) $action['section_index'] : null;
+                    if ($idx === null || $idx < 0 || ($sectionCount > 0 && $idx >= $sectionCount)) {
+                        $idx = $context['activeSectionIndex'] ?? 0;
+                    }
+                    if (! empty($action['field_path']) && is_string($action['field_path'])) {
+                        $sanitized[] = [
+                            'action' => 'update_field',
+                            'section_index' => (int) $idx,
+                            'field_path' => trim($action['field_path']),
+                            'value' => $action['value'] ?? '',
+                        ];
+                    }
+                    break;
+
+                case 'update_section':
+                    $idx = isset($action['section_index']) ? (int) $action['section_index'] : null;
+                    if ($idx === null || $idx < 0 || ($sectionCount > 0 && $idx >= $sectionCount)) {
+                        $idx = $context['activeSectionIndex'] ?? 0;
+                    }
+                    if (isset($action['data']) && is_array($action['data'])) {
+                        $sanitized[] = [
+                            'action' => 'update_section',
+                            'section_index' => (int) $idx,
+                            'data' => $action['data'],
+                        ];
+                    }
+                    break;
+
+                case 'set_image':
+                    $idx = isset($action['section_index']) ? (int) $action['section_index'] : null;
+                    if ($idx === null || $idx < 0 || ($sectionCount > 0 && $idx >= $sectionCount)) {
+                        $idx = $context['activeSectionIndex'] ?? 0;
+                    }
+                    $url = trim((string) ($action['image_url'] ?? ''));
+                    $fieldPath = trim((string) ($action['field_path'] ?? 'image'));
+                    if (! empty($url) && ! empty($fieldPath)) {
+                        $sanitized[] = [
+                            'action' => 'set_image',
+                            'section_index' => (int) $idx,
+                            'field_path' => $fieldPath,
+                            'image_url' => $url,
+                        ];
+                    }
+                    break;
+
+                case 'add_section':
+                    $name = trim((string) ($action['name'] ?? ''));
+                    if (empty($name)) {
+                        continue 2;
+                    }
+
+                    // Normalize block name against registered blocks (case-insensitive fuzzy match)
+                    $matchedName = $name;
+                    if (! empty($registeredBlockNames)) {
+                        $found = false;
+                        foreach ($registeredBlockNames as $regName) {
+                            if (strcasecmp($regName, $name) === 0) {
+                                $matchedName = $regName;
+                                $found = true;
+                                break;
+                            }
+                        }
+                        if (! $found) {
+                            $cleanTarget = strtolower(str_replace(['block', '_', '-'], '', $name));
+                            foreach ($registeredBlockNames as $regName) {
+                                $cleanReg = strtolower(str_replace(['block', '_', '-'], '', $regName));
+                                if ($cleanTarget === $cleanReg || str_contains($cleanReg, $cleanTarget) || str_contains($cleanTarget, $cleanReg)) {
+                                    $matchedName = $regName;
+                                    $found = true;
+                                    break;
+                                }
+                            }
+                        }
+                    }
+
+                    $position = isset($action['position']) ? (int) $action['position'] : $sectionCount;
+                    $sanitized[] = [
+                        'action' => 'add_section',
+                        'name' => $matchedName,
+                        'data' => is_array($action['data'] ?? null) ? $action['data'] : [],
+                        'position' => max(0, $position),
+                    ];
+                    break;
+
+                case 'remove_section':
+                    if (isset($action['section_index'])) {
+                        $idx = (int) $action['section_index'];
+                        if ($idx >= 0 && ($sectionCount === 0 || $idx < $sectionCount)) {
+                            $sanitized[] = [
+                                'action' => 'remove_section',
+                                'section_index' => $idx,
+                            ];
+                        }
+                    }
+                    break;
+
+                case 'reorder_sections':
+                    if (isset($action['order']) && is_array($action['order'])) {
+                        $sanitized[] = [
+                            'action' => 'reorder_sections',
+                            'order' => array_values(array_map('intval', $action['order'])),
+                        ];
+                    }
+                    break;
+
+                case 'replace_all_sections':
+                    if (isset($action['sections']) && is_array($action['sections'])) {
+                        $sanitized[] = [
+                            'action' => 'replace_all_sections',
+                            'sections' => $action['sections'],
+                        ];
+                    }
+                    break;
+
+                case 'add_list_item':
+                    $idx = isset($action['section_index']) ? (int) $action['section_index'] : 0;
+                    $listPath = trim((string) ($action['list_path'] ?? ''));
+                    $itemData = is_array($action['data'] ?? null) ? $action['data'] : [];
+                    if (! empty($listPath)) {
+                        $sanitized[] = [
+                            'action' => 'add_list_item',
+                            'section_index' => $idx,
+                            'list_path' => $listPath,
+                            'data' => $itemData,
+                        ];
+                    }
+                    break;
+
+                case 'remove_list_item':
+                    $idx = isset($action['section_index']) ? (int) $action['section_index'] : 0;
+                    $listPath = trim((string) ($action['list_path'] ?? ''));
+                    $itemIndex = isset($action['index']) ? (int) $action['index'] : 0;
+                    if (! empty($listPath)) {
+                        $sanitized[] = [
+                            'action' => 'remove_list_item',
+                            'section_index' => $idx,
+                            'list_path' => $listPath,
+                            'index' => max(0, $itemIndex),
+                        ];
+                    }
+                    break;
+
+                case 'navigate_to_field':
+                    $idx = isset($action['section_index']) ? (int) $action['section_index'] : 0;
+                    $fieldPath = trim((string) ($action['field_path'] ?? ''));
+                    if (! empty($fieldPath)) {
+                        $sanitized[] = [
+                            'action' => 'navigate_to_field',
+                            'section_index' => $idx,
+                            'field_path' => $fieldPath,
+                        ];
+                    }
+                    break;
+
+                case 'set_field_source':
+                    $idx = isset($action['section_index']) ? (int) $action['section_index'] : 0;
+                    $fieldPath = trim((string) ($action['field_path'] ?? ''));
+                    $source = trim((string) ($action['source'] ?? ''));
+                    if (! empty($fieldPath) && ! empty($source)) {
+                        $sanitized[] = [
+                            'action' => 'set_field_source',
+                            'section_index' => $idx,
+                            'field_path' => $fieldPath,
+                            'source' => $source,
+                        ];
+                    }
+                    break;
+
+                case 'save_page':
+                    $sanitized[] = ['action' => 'save_page'];
+                    break;
+
+                default:
+                    $sanitized[] = $action;
+                    break;
+            }
+        }
+
+        return $sanitized;
     }
 
     public static function getActiveModelName(): string
