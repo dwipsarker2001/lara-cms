@@ -530,7 +530,7 @@
                 if (item.is_directory) {
                     this.setDirectory(item.directory_path);
                 } else if (this.callback) {
-                    this.callback(`/storage/${item.path}`);
+                    this.callback(item.url || `/storage/${item.path}`);
                     this.close();
                 }
             },

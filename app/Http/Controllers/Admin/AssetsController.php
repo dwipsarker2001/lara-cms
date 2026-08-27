@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Asset;
+use App\Services\CloudflareR2Service;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 
@@ -23,6 +24,10 @@ class AssetsController extends Controller
                     return true;
                 }
 
+                if ($asset->disk === 'r2') {
+                    return true;
+                }
+
                 return Storage::disk('public')->exists($asset->path);
             })
             ->map(function ($asset) {
@@ -32,6 +37,8 @@ class AssetsController extends Controller
                     // Directories do not have a public storage URL; returning null prevents
                     // the browser from firing a spurious /storage/<dirname> network request.
                     'path' => $asset->is_directory ? null : $asset->path,
+                    'url' => $asset->url,
+                    'disk' => $asset->disk ?? 'public',
                     // Keep the directory navigation path separate so the frontend can
                     // use it to navigate into the directory without building a file URL.
                     'directory_path' => $asset->is_directory
@@ -76,13 +83,27 @@ class AssetsController extends Controller
         $file = $request->file('file');
         $directory = $request->input('directory', '') ?? '';
         $prefix = $directory ? 'assets/'.$directory : 'assets';
-        $path = $file->store($prefix, 'public');
+
+        /** @var CloudflareR2Service $r2 */
+        $r2 = app(CloudflareR2Service::class);
+        $useR2 = $r2->isEnabled();
+
+        if ($useR2) {
+            $filename = $file->hashName();
+            $path = $prefix.'/'.$filename;
+            $r2->uploadFile($path, $file);
+            $disk = 'r2';
+        } else {
+            $path = $file->store($prefix, 'public');
+            $disk = 'public';
+        }
 
         [$width, $height] = $this->getImageDimensions($file);
 
         $asset = Asset::create([
             'name' => $file->getClientOriginalName(),
             'path' => $path,
+            'disk' => $disk,
             'directory' => $directory,
             'mime' => $file->getMimeType(),
             'size' => $file->getSize(),
@@ -150,7 +171,11 @@ class AssetsController extends Controller
                     if ($ext && ! str_ends_with($newPath, '.'.$ext)) {
                         $newPath .= '.'.$ext;
                     }
-                    if (Storage::disk('public')->exists($oldPath)) {
+                    if ($asset->disk === 'r2') {
+                        /** @var CloudflareR2Service $r2 */
+                        $r2 = app(CloudflareR2Service::class);
+                        $r2->move($oldPath, $newPath);
+                    } elseif (Storage::disk('public')->exists($oldPath)) {
                         Storage::disk('public')->move($oldPath, $newPath);
                     }
                     $asset->update(['name' => $name, 'path' => $newPath]);
@@ -213,8 +238,14 @@ class AssetsController extends Controller
                 $fileName = basename($oldPath);
                 $newPath = $newDir ? 'assets/'.$newDir.'/'.$fileName : 'assets/'.$fileName;
 
-                if ($oldPath !== $newPath && Storage::disk('public')->exists($oldPath)) {
-                    Storage::disk('public')->move($oldPath, $newPath);
+                if ($oldPath !== $newPath) {
+                    if ($asset->disk === 'r2') {
+                        /** @var CloudflareR2Service $r2 */
+                        $r2 = app(CloudflareR2Service::class);
+                        $r2->move($oldPath, $newPath);
+                    } elseif (Storage::disk('public')->exists($oldPath)) {
+                        Storage::disk('public')->move($oldPath, $newPath);
+                    }
                 }
 
                 $asset->update(['directory' => $newDir, 'path' => $newPath]);
@@ -239,9 +270,15 @@ class AssetsController extends Controller
                 Storage::disk('public')->deleteDirectory('assets/'.$dirPath);
             }
 
+            /** @var CloudflareR2Service $r2 */
+            $r2 = app(CloudflareR2Service::class);
+            if ($r2->isConfigured()) {
+                $r2->deleteDirectory($storageDirPath);
+            }
+
             $asset->delete();
         } else {
-            $this->deletePhysicalFile($asset->path);
+            $this->deletePhysicalFile($asset->path, $asset->disk);
             $asset->delete();
         }
 
@@ -256,16 +293,22 @@ class AssetsController extends Controller
 
         foreach ($children as $child) {
             if (! $child->is_directory) {
-                $this->deletePhysicalFile($child->path);
+                $this->deletePhysicalFile($child->path, $child->disk);
             }
             $child->delete();
         }
     }
 
-    private function deletePhysicalFile(?string $path)
+    private function deletePhysicalFile(?string $path, ?string $disk = null)
     {
         if (! $path) {
             return;
+        }
+
+        if ($disk === 'r2') {
+            /** @var CloudflareR2Service $r2 */
+            $r2 = app(CloudflareR2Service::class);
+            $r2->delete($path);
         }
 
         if (Storage::disk('public')->exists($path)) {
@@ -281,6 +324,42 @@ class AssetsController extends Controller
     {
         if ($asset->is_directory) {
             abort(404);
+        }
+
+        if ($asset->disk === 'r2') {
+            /** @var CloudflareR2Service $r2 */
+            $r2 = app(CloudflareR2Service::class);
+
+            if ($request->query('download') || $request->has('download')) {
+                $contents = $r2->get($asset->path);
+                if ($contents === null) {
+                    abort(404);
+                }
+                $name = $asset->name;
+                $ext = pathinfo($asset->path, PATHINFO_EXTENSION);
+                if ($ext && ! str_ends_with(strtolower($name), '.'.strtolower($ext))) {
+                    $name .= '.'.$ext;
+                }
+
+                return response($contents, 200, [
+                    'Content-Type' => $asset->mime ?: 'application/octet-stream',
+                    'Content-Disposition' => 'attachment; filename="'.$name.'"',
+                ]);
+            }
+
+            if ($r2->getPublicUrl()) {
+                return redirect()->away($r2->getUrl($asset->path));
+            }
+
+            $contents = $r2->get($asset->path);
+            if ($contents === null) {
+                abort(404);
+            }
+
+            return response($contents, 200, [
+                'Content-Type' => $asset->mime ?: 'application/octet-stream',
+                'Cache-Control' => 'public, max-age=86400',
+            ]);
         }
 
         $fullPath = Storage::disk('public')->path($asset->path);

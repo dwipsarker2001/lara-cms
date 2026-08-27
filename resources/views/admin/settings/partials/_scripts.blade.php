@@ -871,6 +871,66 @@
             }
         };
     }
+
+    function cloudflareR2Settings() {
+        return {
+            enabled: @json((bool) ($settings->cloudflare_r2_enabled ?? false)),
+            accountId: @json($settings->cloudflare_r2_account_id ?? ''),
+            accessKeyId: @json($settings->cloudflare_r2_access_key_id ?? ''),
+            secretAccessKey: '',
+            bucket: @json($settings->cloudflare_r2_bucket ?? ''),
+            publicUrl: @json($settings->cloudflare_r2_public_url ?? ''),
+            showSecret: false,
+            isTesting: false,
+            testResult: null,
+
+            async testConnection() {
+                this.isTesting = true;
+                this.testResult = null;
+
+                try {
+                    const res = await fetch('{{ route('admin.settings.test_cloudflare_r2') }}', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Accept': 'application/json',
+                            'X-CSRF-TOKEN': document.querySelector('meta[name=csrf-token]')?.content || '{{ csrf_token() }}'
+                        },
+                        body: JSON.stringify({
+                            account_id: this.accountId,
+                            access_key_id: this.accessKeyId,
+                            secret_access_key: this.secretAccessKey,
+                            bucket: this.bucket,
+                            public_url: this.publicUrl
+                        })
+                    });
+
+                    const data = await res.json();
+                    this.testResult = data;
+
+                    window.dispatchEvent(new CustomEvent('toast', {
+                        detail: {
+                            message: data.success ? '✓ Cloudflare R2 connection successful!' : '✕ Cloudflare R2 connection failed',
+                            type: data.success ? 'success' : 'error'
+                        }
+                    }));
+                } catch (err) {
+                    this.testResult = {
+                        success: false,
+                        message: err.message || 'Network error while testing connection.'
+                    };
+                    window.dispatchEvent(new CustomEvent('toast', {
+                        detail: {
+                            message: `✕ Error: ${err.message}`,
+                            type: 'error'
+                        }
+                    }));
+                } finally {
+                    this.isTesting = false;
+                }
+            }
+        };
+    }
 </script>
 
 <style>

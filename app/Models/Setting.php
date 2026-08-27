@@ -9,6 +9,7 @@ class Setting extends Model
     protected $guarded = [];
 
     protected $casts = [
+        'cloudflare_r2_enabled' => 'boolean',
         'seo' => 'array',
         'payment' => 'array',
         'custom_fields' => 'array',
@@ -35,6 +36,12 @@ class Setting extends Model
         'pexels_api_key',
         'pixabay_api_key',
         'image_provider',
+        'cloudflare_r2_enabled',
+        'cloudflare_r2_account_id',
+        'cloudflare_r2_access_key_id',
+        'cloudflare_r2_secret_access_key',
+        'cloudflare_r2_bucket',
+        'cloudflare_r2_public_url',
         'custom_fields',
         'custom_values',
     ];
@@ -126,6 +133,16 @@ class Setting extends Model
     public function getMaskedPixabayKey(): ?string
     {
         return $this->maskSecretKey($this->pixabay_api_key);
+    }
+
+    public function getMaskedR2SecretKey(): ?string
+    {
+        return $this->maskSecretKey($this->cloudflare_r2_secret_access_key);
+    }
+
+    public function getMaskedR2AccessKey(): ?string
+    {
+        return $this->maskSecretKey($this->cloudflare_r2_access_key_id);
     }
 
     protected function maskSecretKey(?string $key): ?string

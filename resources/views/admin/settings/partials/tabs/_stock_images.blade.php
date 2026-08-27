@@ -2,7 +2,7 @@
 <div x-show="activeTab === 'stock_images'" x-cloak>
     <div class="bg-panel-bg rounded-2xl mb-8 p-[7px]">
         <div class="px-[18px] pt-3 pb-1 text-sm font-medium text-text-heading">Stock Images & Media Keys</div>
-        <p class="px-[18px] pb-3 text-sm text-text-muted">Connect free stock photo APIs so your AI agent and editor can automatically find and place high-resolution, relevant photos.</p>
+        <p class="px-[18px] pb-3 text-xs text-text-muted">Connect free stock photo APIs so your AI agent and editor can automatically find and place high-resolution, relevant photos.</p>
         <div class="px-1.5 pb-2">
             <div class="bg-content-bg rounded-xl ring-1 ring-content-border shadow-sm px-3 py-3">
                 <div>

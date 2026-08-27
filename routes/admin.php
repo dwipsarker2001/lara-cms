@@ -33,6 +33,7 @@ Route::middleware(['web', 'auth:admin'])->prefix('admin')->name('admin.')->group
 
     Route::get('settings', [SettingsController::class, 'index'])->name('settings');
     Route::put('settings', [SettingsController::class, 'update'])->name('settings.update');
+    Route::post('settings/test-cloudflare-r2', [SettingsController::class, 'testCloudflareR2'])->name('settings.test_cloudflare_r2');
     Route::patch('settings/reorder-custom-fields', [SettingsController::class, 'reorderCustomFields'])->name('settings.reorder_custom_fields');
 
     Route::get('updates/check', [UpdateController::class, 'check'])->name('updates.check');

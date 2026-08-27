@@ -1321,7 +1321,8 @@
             },
 
             copyUrl(asset) {
-                navigator.clipboard?.writeText(`${window.location.origin}/admin/assets/${asset.id}/file`).then(() => {
+                const url = (asset.url && asset.url.startsWith('http')) ? asset.url : `${window.location.origin}/admin/assets/${asset.id}/file`;
+                navigator.clipboard?.writeText(url).then(() => {
                     window.dispatchEvent(new CustomEvent('toast', {
                         detail: { message: 'Link copied to clipboard.', type: 'success' }
                     }));

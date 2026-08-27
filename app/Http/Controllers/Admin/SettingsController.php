@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Setting;
+use App\Services\CloudflareR2Service;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Schema;
 
@@ -72,6 +73,42 @@ class SettingsController extends Controller
                     $table->string('image_provider', 50)->default('auto')->nullable();
                 });
             }
+            if (! Schema::hasColumn('settings', 'cloudflare_r2_enabled')) {
+                Schema::table('settings', function ($table) {
+                    $table->boolean('cloudflare_r2_enabled')->default(false);
+                });
+            }
+            if (! Schema::hasColumn('settings', 'cloudflare_r2_account_id')) {
+                Schema::table('settings', function ($table) {
+                    $table->string('cloudflare_r2_account_id')->nullable();
+                });
+            }
+            if (! Schema::hasColumn('settings', 'cloudflare_r2_access_key_id')) {
+                Schema::table('settings', function ($table) {
+                    $table->string('cloudflare_r2_access_key_id')->nullable();
+                });
+            }
+            if (! Schema::hasColumn('settings', 'cloudflare_r2_secret_access_key')) {
+                Schema::table('settings', function ($table) {
+                    $table->text('cloudflare_r2_secret_access_key')->nullable();
+                });
+            }
+            if (! Schema::hasColumn('settings', 'cloudflare_r2_bucket')) {
+                Schema::table('settings', function ($table) {
+                    $table->string('cloudflare_r2_bucket')->nullable();
+                });
+            }
+            if (! Schema::hasColumn('settings', 'cloudflare_r2_public_url')) {
+                Schema::table('settings', function ($table) {
+                    $table->string('cloudflare_r2_public_url')->nullable();
+                });
+            }
+        }
+
+        if (Schema::hasTable('assets') && ! Schema::hasColumn('assets', 'disk')) {
+            Schema::table('assets', function ($table) {
+                $table->string('disk', 30)->default('public')->nullable();
+            });
         }
     }
 
@@ -113,6 +150,12 @@ class SettingsController extends Controller
             'pexels_api_key' => 'nullable|string|max:1000',
             'pixabay_api_key' => 'nullable|string|max:1000',
             'image_provider' => 'nullable|string|in:auto,unsplash,pexels,pixabay,local',
+            'cloudflare_r2_enabled' => 'nullable|boolean',
+            'cloudflare_r2_account_id' => 'nullable|string|max:255',
+            'cloudflare_r2_access_key_id' => 'nullable|string|max:255',
+            'cloudflare_r2_secret_access_key' => 'nullable|string|max:1000',
+            'cloudflare_r2_bucket' => 'nullable|string|max:255',
+            'cloudflare_r2_public_url' => 'nullable|string|max:500',
             'logo_light' => 'nullable|string|max:255',
             'logo_dark' => 'nullable|string|max:255',
             'contact_number' => 'nullable|string|max:50',
@@ -121,7 +164,9 @@ class SettingsController extends Controller
             'custom_values' => 'nullable|array',
         ]);
 
-        foreach (['ai_api_key', 'unsplash_access_key', 'pexels_api_key', 'pixabay_api_key'] as $secretField) {
+        $data['cloudflare_r2_enabled'] = $request->boolean('cloudflare_r2_enabled');
+
+        foreach (['ai_api_key', 'unsplash_access_key', 'pexels_api_key', 'pixabay_api_key', 'cloudflare_r2_secret_access_key', 'cloudflare_r2_access_key_id'] as $secretField) {
             if (array_key_exists($secretField, $data)) {
                 $submittedKey = trim((string) $data[$secretField]);
                 if ($submittedKey === '' || str_contains($submittedKey, '*') || str_contains($submittedKey, '•')) {
@@ -147,6 +192,34 @@ class SettingsController extends Controller
         $settings->update($data);
 
         return back()->with('success', 'Settings updated successfully.');
+    }
+
+    public function testCloudflareR2(Request $request)
+    {
+        $this->ensureSchemaColumns();
+
+        $settings = Setting::first();
+
+        $accountId = $request->input('account_id') ?: $settings?->cloudflare_r2_account_id;
+        $accessKeyId = $request->input('access_key_id') ?: $settings?->cloudflare_r2_access_key_id;
+        $secretKey = $request->input('secret_access_key');
+        if (empty($secretKey) || str_contains($secretKey, '*') || str_contains($secretKey, '•')) {
+            $secretKey = $settings?->cloudflare_r2_secret_access_key;
+        }
+        $bucket = $request->input('bucket') ?: $settings?->cloudflare_r2_bucket;
+        $publicUrl = $request->input('public_url') ?: $settings?->cloudflare_r2_public_url;
+
+        $r2Service = new CloudflareR2Service([
+            'account_id' => $accountId,
+            'access_key_id' => $accessKeyId,
+            'secret_access_key' => $secretKey,
+            'bucket' => $bucket,
+            'public_url' => $publicUrl,
+        ]);
+
+        $result = $r2Service->testConnection();
+
+        return response()->json($result);
     }
 
     public function reorderCustomFields(Request $request)

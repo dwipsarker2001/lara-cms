@@ -2,7 +2,7 @@
 <div x-show="activeTab === 'recaptcha'" x-cloak>
     <div class="bg-panel-bg rounded-2xl mb-8 p-[7px]">
         <div class="px-[18px] pt-3 pb-1 text-sm font-medium text-text-heading">reCAPTCHA v3 Protection</div>
-        <p class="px-[18px] pb-3 text-sm text-text-muted">Configure Google reCAPTCHA v3 credentials to protect your admin login page from automated brute-force attacks.</p>
+        <p class="px-[18px] pb-3 text-xs text-text-muted">Configure Google reCAPTCHA v3 credentials to protect your admin login page from automated brute-force attacks.</p>
         <div class="px-1.5 pb-2">
             <div class="bg-content-bg rounded-xl ring-1 ring-content-border shadow-sm px-3 py-3">
                 <div>

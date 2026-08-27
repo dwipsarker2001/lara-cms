@@ -65,6 +65,11 @@
                     :class="activeTab === 'stock_images' ? 'border-primary text-primary font-semibold' : 'border-transparent text-text-muted hover:text-text-primary'">
                     Stock Images & Keys
                 </button>
+                <button type="button" @click="activeTab = 'cloudflare_r2'"
+                    class="px-4 py-2.5 text-sm font-medium transition-colors border-b-2 cursor-pointer -mb-px"
+                    :class="activeTab === 'cloudflare_r2' ? 'border-primary text-primary font-semibold' : 'border-transparent text-text-muted hover:text-text-primary'">
+                    Cloudflare Storage
+                </button>
             </div>
 
             {{-- Settings Content --}}
@@ -74,6 +79,7 @@
                 @include('admin.settings.partials.tabs._recaptcha')
                 @include('admin.settings.partials.tabs._ai')
                 @include('admin.settings.partials.tabs._stock_images')
+                @include('admin.settings.partials.tabs._cloudflare_r2')
 
                 {{-- System Updates Card --}}
                 @include('admin.settings.partials._system_updates')

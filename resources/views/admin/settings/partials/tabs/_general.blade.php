@@ -2,7 +2,7 @@
 <div x-show="activeTab === 'general'">
     <div class="bg-panel-bg rounded-2xl mb-8 p-[7px]">
         <div class="px-[18px] pt-3 pb-1 text-sm font-medium text-text-heading">General Settings</div>
-        <p class="px-[18px] pb-3 text-sm text-text-muted">Configure default preferences for your application.</p>
+        <p class="px-[18px] pb-3 text-xs text-text-muted">Configure default preferences for your application.</p>
         <div class="px-1.5 pb-2">
             <div class="bg-content-bg rounded-xl ring-1 ring-content-border shadow-sm px-3 py-3">
                 <div>
