@@ -147,4 +147,3 @@ class Setting extends Model
         return $prefix.str_repeat('*', $maskedLength).$suffix;
     }
 }
-

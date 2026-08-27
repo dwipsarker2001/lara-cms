@@ -28,6 +28,7 @@ class AiAgentController extends Controller
             'blockList' => 'nullable|array',
             'entryData' => 'nullable|array',
             'stream' => 'nullable|boolean',
+            'model' => 'nullable|string',
         ]);
 
         $messages = $request->input('messages', []);
@@ -40,6 +41,9 @@ class AiAgentController extends Controller
 
         $context = $request->input('context', []);
 
+        if ($request->filled('model')) {
+            $context['model'] = $request->input('model');
+        }
         if ($request->has('sections')) {
             $context['sections'] = $request->input('sections');
         }
@@ -79,21 +83,21 @@ class AiAgentController extends Controller
     public function agentChat(Request $request): JsonResponse
     {
         $request->validate([
-            'messages'      => 'required|array',
+            'messages' => 'required|array',
             'full_sections' => 'nullable|array',
-            'schemas'       => 'nullable|array',
-            'blockList'     => 'nullable|array',
-            'entryData'     => 'nullable|array',
+            'schemas' => 'nullable|array',
+            'blockList' => 'nullable|array',
+            'entryData' => 'nullable|array',
             'collectionFields' => 'nullable|array',
         ]);
 
         // Context is held server-side — never injected into the AI system prompt upfront.
         // The AI fetches pieces of this on demand via tool calls.
         $context = [
-            'full_sections'    => $request->input('full_sections', []),
-            'schemas'          => $request->input('schemas', []),
-            'blockList'        => $request->input('blockList', []),
-            'entryData'        => $request->input('entryData', []),
+            'full_sections' => $request->input('full_sections', []),
+            'schemas' => $request->input('schemas', []),
+            'blockList' => $request->input('blockList', []),
+            'entryData' => $request->input('entryData', []),
             'collectionFields' => $request->input('collectionFields', []),
         ];
 
@@ -111,7 +115,6 @@ class AiAgentController extends Controller
     public function assets(Request $request): JsonResponse
     {
         $assets = $this->aiAgentService->getAvailableAssets();
-
 
         return response()->json([
             'assets' => $assets,

@@ -103,13 +103,8 @@ it('can store and update ai settings including base url, api key, and model name
 
     get(route('admin.settings'))
         ->assertSuccessful()
-        ->assertSee('name="ai_base_url"', false)
-        ->assertSee('name="ai_api_key"', false)
-        ->assertSee('name="ai_model"', false)
-        ->assertSee('https://api.groq.com/openai/v1', false)
-        ->assertSee('llama-3.3-70b-versatile', false)
-        ->assertSee($maskedKey, false)
-        ->assertDontSee('sk-test-ai-secret-key-999', false);
+        ->assertSee('AI Models & Providers', false)
+        ->assertSee('aiModelsManager', false);
 
     // Saving with masked key or blank preserves existing raw key
     put(route('admin.settings.update'), [

@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Models\AiModel;
 use App\Models\Asset;
 use App\Models\Setting;
 use Illuminate\Support\Facades\Http;
@@ -23,15 +24,15 @@ class AiAgentService
      */
     public function chat(array $messages, array $context = []): array
     {
-        $settings = Setting::first();
-        $apiKey = $settings?->ai_api_key ?: config('services.deepseek.api_key');
-        $baseUrl = rtrim($settings?->ai_base_url ?: config('services.deepseek.base_url', 'https://api.deepseek.com'), '/');
-        $model = $settings?->ai_model ?: config('services.deepseek.model', 'deepseek-chat');
+        $modelConfig = $this->resolveAiModelConfig($context['model'] ?? null);
+        $apiKey = $modelConfig['api_key'];
+        $baseUrl = $modelConfig['base_url'];
+        $model = $modelConfig['model'];
 
-        if (empty($apiKey)) {
+        if (empty($apiKey) && $modelConfig['provider'] !== 'custom') {
             return [
                 'success' => false,
-                'message' => 'AI API key is not configured. Please configure your API key in Admin Settings > AI Assistant to get started.',
+                'message' => "AI API key for '{$modelConfig['name']}' is not configured. Please configure your API key in Admin Settings > AI Assistant to get started.",
                 'actions' => [],
                 'suggestions' => ['Configure API Key in Admin Settings'],
                 'error' => 'Missing API key',
@@ -329,15 +330,15 @@ class AiAgentService
      */
     public function streamChat(array $messages, array $context, callable $onChunk): void
     {
-        $settings = Setting::first();
-        $apiKey = $settings?->ai_api_key ?: config('services.deepseek.api_key');
-        $baseUrl = rtrim($settings?->ai_base_url ?: config('services.deepseek.base_url', 'https://api.deepseek.com'), '/');
-        $model = $settings?->ai_model ?: config('services.deepseek.model', 'deepseek-chat');
+        $modelConfig = $this->resolveAiModelConfig($context['model'] ?? null);
+        $apiKey = $modelConfig['api_key'];
+        $baseUrl = $modelConfig['base_url'];
+        $model = $modelConfig['model'];
 
-        if (empty($apiKey)) {
+        if (empty($apiKey) && $modelConfig['provider'] !== 'custom') {
             $onChunk(json_encode([
                 'type' => 'error',
-                'error' => 'AI API key is not configured. Please configure your API key in Admin Settings > AI Assistant.',
+                'error' => "AI API key for '{$modelConfig['name']}' is not configured. Please configure your API key in Admin Settings > AI Assistant.",
             ]));
 
             return;
@@ -1365,10 +1366,70 @@ class AiAgentService
         return $sanitized;
     }
 
-    public static function getActiveModelName(): string
+    /**
+     * Resolve AI model configuration (model_id, api_key, base_url, provider, name).
+     *
+     * @return array{model: string, api_key: string, base_url: string, provider: string, name: string}
+     */
+    public function resolveAiModelConfig(?string $requestedModel = null): array
     {
         $settings = Setting::first();
+        $defaultApiKey = (string) ($settings?->ai_api_key ?: config('services.deepseek.api_key', ''));
+        $defaultBaseUrl = (string) rtrim($settings?->ai_base_url ?: config('services.deepseek.base_url', 'https://api.deepseek.com'), '/');
+        $defaultModelId = (string) ($settings?->ai_model ?: config('services.deepseek.model', 'deepseek-chat'));
 
-        return (string) ($settings?->ai_model ?: config('services.deepseek.model', 'DeepSeek V4'));
+        if (class_exists(AiModel::class)) {
+            AiModel::ensureTableExists();
+
+            $aiModel = null;
+            if (! empty($requestedModel)) {
+                $aiModel = AiModel::where('model_id', $requestedModel)
+                    ->orWhere('name', $requestedModel)
+                    ->orWhere('id', is_numeric($requestedModel) ? (int) $requestedModel : 0)
+                    ->first();
+            }
+
+            if (! $aiModel) {
+                $aiModel = AiModel::where('is_default', true)->first()
+                    ?: AiModel::where('is_active', true)->first();
+            }
+
+            if ($aiModel) {
+                $key = $aiModel->getEffectiveApiKey() ?: $defaultApiKey;
+                $url = $aiModel->getEffectiveBaseUrl() ?: $defaultBaseUrl;
+
+                return [
+                    'model' => $aiModel->model_id,
+                    'name' => $aiModel->name,
+                    'api_key' => (string) $key,
+                    'base_url' => (string) $url,
+                    'provider' => $aiModel->provider,
+                ];
+            }
+        }
+
+        return [
+            'model' => $requestedModel ?: $defaultModelId,
+            'name' => $requestedModel ?: $defaultModelId,
+            'api_key' => $defaultApiKey,
+            'base_url' => $defaultBaseUrl,
+            'provider' => 'deepseek',
+        ];
+    }
+
+    public static function getActiveModelName(): string
+    {
+        if (class_exists(AiModel::class)) {
+            AiModel::ensureTableExists();
+            $default = AiModel::where('is_default', true)->first()
+                ?: AiModel::where('is_active', true)->first();
+            if ($default) {
+                return $default->name;
+            }
+        }
+
+        $settings = Setting::first();
+
+        return (string) ($settings?->ai_model ?: config('services.deepseek.model', 'DeepSeek V3'));
     }
 }

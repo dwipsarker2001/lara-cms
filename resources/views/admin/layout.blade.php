@@ -519,7 +519,7 @@
 
         {{-- Main content area --}}
         <main class="flex-1 overflow-hidden">
-            <div class="h-full overflow-y-auto">
+            <div class="h-full overflow-y-auto" style="scrollbar-gutter: stable;">
                 @hasSection('content-full')
                     @yield('content-full')
                 @else

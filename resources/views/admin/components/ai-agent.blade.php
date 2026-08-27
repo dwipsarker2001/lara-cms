@@ -2,12 +2,37 @@
      Lara-CMS Autonomous Interactive AI Agent (Super AI Style)
      Clean Minimalist UI: Seamless Borderless Input, Theme Send Button, Lucide Icons
      ========================================================================= --}}
+{{-- Tippy.js Tooltip Library (Popper + Tippy + Shift-Away Animation) --}}
+<link rel="stylesheet" href="https://unpkg.com/tippy.js@6/dist/tippy.css" />
+<link rel="stylesheet" href="https://unpkg.com/tippy.js@6/animations/shift-away.css" />
+<script src="https://unpkg.com/@popperjs/core@2"></script>
+<script src="https://unpkg.com/tippy.js@6"></script>
+
 <div
     x-data="aiAgent()"
     x-init="init()"
     class="ai-agent-system font-sans"
 >
     <style>
+        /* Tippy Custom Animated Top Theme */
+        .tippy-box[data-theme~='ai-dark'] {
+            background-color: rgba(15, 23, 42, 0.96) !important;
+            backdrop-filter: blur(8px) !important;
+            -webkit-backdrop-filter: blur(8px) !important;
+            border: 1px solid rgba(255, 255, 255, 0.15) !important;
+            color: #ffffff !important;
+            font-size: 11px !important;
+            font-weight: 500 !important;
+            letter-spacing: 0.025em !important;
+            border-radius: 6px !important;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.3), 0 4px 6px -2px rgba(0, 0, 0, 0.1) !important;
+            padding: 2px 6px !important;
+        }
+        .tippy-box[data-theme~='ai-dark'] > .tippy-arrow::before {
+            border-top-color: rgba(15, 23, 42, 0.96) !important;
+            border-bottom-color: rgba(15, 23, 42, 0.96) !important;
+        }
+
         .ai-chat-scroll {
             scrollbar-width: thin;
             scrollbar-color: rgba(209, 213, 219, 0.7) transparent;
@@ -203,18 +228,16 @@
         <div class="px-4 py-2.5 bg-white flex items-center justify-between shrink-0 border-b border-gray-100/60">
             <div class="flex items-center gap-2">
                 <h3 class="text-sm font-semibold text-gray-900 tracking-tight">Ask Super AI</h3>
-                <span class="inline-flex items-center px-1.5 py-0.5 rounded-md text-[10px] font-medium bg-sky-50 text-sky-700 border border-sky-200/60 font-mono">
-                    {{ \App\Services\AiAgentService::getActiveModelName() }}
-                </span>
             </div>
 
             <div class="flex items-center gap-1">
-                {{-- Erase / Clear Chat --}}
+                {{-- Clear Chat Button with Animated Top Tooltip --}}
                 <button
                     type="button"
                     @click="clearChat()"
-                    class="p-1 rounded-lg text-gray-400 hover:text-gray-700 hover:bg-gray-100 transition-colors"
-                    title="Erase Chat"
+                    class="p-1 rounded-lg text-gray-400 hover:text-gray-700 hover:bg-gray-100 transition-colors cursor-pointer"
+                    data-tippy-content="Clear chat"
+                    aria-label="Clear chat"
                 >
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="size-4">
                         <path d="m7 21-4.3-4.3c-1-1-1-2.5 0-3.4l9.6-9.6c1-1 2.5-1 3.4 0l5.6 5.6c1 1 1 2.5 0 3.4L13 21"/>
@@ -223,16 +246,16 @@
                     </svg>
                 </button>
 
-                {{-- Close Button (Lucide X) --}}
+                {{-- Minimize Button with Animated Top Tooltip --}}
                 <button
                     type="button"
                     @click="closeChat()"
-                    class="p-1 rounded-lg text-gray-400 hover:text-gray-800 hover:bg-gray-100 transition-colors"
-                    title="Close"
+                    class="p-1 rounded-lg text-gray-400 hover:text-gray-800 hover:bg-gray-100 transition-colors cursor-pointer"
+                    data-tippy-content="Minimize"
+                    aria-label="Minimize"
                 >
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="size-4">
-                        <path d="M18 6 6 18"/>
-                        <path d="m6 6 12 12"/>
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" class="size-4">
+                        <path d="M5 12h14"/>
                     </svg>
                 </button>
             </div>
@@ -469,39 +492,140 @@
                         :disabled="isProcessingActions"
                     ></textarea>
 
-                    {{-- Actions Row (Right-aligned Send / Stop Button) --}}
-                    <div class="flex items-center justify-end px-2.5 pb-2 pt-0.5">
-                        {{-- Stop Generation Button (when active) --}}
-                        <button
-                            type="button"
-                            x-show="isLoading || isProcessingActions"
-                            x-cloak
-                            @click="stopGeneration()"
-                            class="w-8 h-8 rounded-full bg-primary hover:bg-primary/90 text-white flex items-center justify-center transition-all shadow-xs active:scale-95 cursor-pointer shrink-0"
-                            title="Stop generation"
-                        >
-                            <svg viewBox="0 0 24 24" fill="currentColor" class="w-3.5 h-3.5">
-                                <rect x="6" y="6" width="12" height="12" rx="2" />
-                            </svg>
-                        </button>
+                    {{-- Actions Row (Model Selector on Left, Send / Stop Button on Right) --}}
+                    <div class="flex items-center justify-between px-2.5 pb-2 pt-0.5">
+                        {{-- Model Selector Dropdown --}}
+                        <div class="relative" x-data="{ modelDropdownOpen: false }" @click.outside="modelDropdownOpen = false">
+                            <button
+                                type="button"
+                                @click="modelDropdownOpen = !modelDropdownOpen"
+                                class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-medium text-gray-700 hover:text-gray-900 hover:bg-white bg-white/95 transition-all border border-gray-200/90 shadow-2xs cursor-pointer select-none"
+                                title="Change AI Model"
+                            >
+                                <img :src="getProviderLogo(activeModelProvider)" class="size-3.5 object-contain shrink-0" alt="">
+                                <span class="font-mono text-xs tracking-tight" x-text="selectedModel || '{{ \App\Services\AiAgentService::getActiveModelName() }}'"></span>
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="size-3.5 text-gray-400 transition-transform duration-150" :class="modelDropdownOpen ? 'rotate-180' : ''">
+                                    <path d="m6 9 6 6 6-6"/>
+                                </svg>
+                            </button>
 
-                        {{-- Send Message Button (when idle) --}}
-                        <button
-                            type="button"
-                            x-show="!isLoading && !isProcessingActions"
-                            @click="sendMessage()"
-                            :disabled="!prompt.trim()"
-                            class="w-8 h-8 rounded-full bg-primary hover:bg-primary/90 text-white flex items-center justify-center transition-all shadow-xs active:scale-95 disabled:opacity-30 disabled:cursor-not-allowed disabled:active:scale-100 cursor-pointer shrink-0"
-                            title="Send message"
-                        >
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="w-4 h-4">
-                                <path d="m5 12 7-7 7 7"/>
-                                <path d="M12 19V5"/>
-                            </svg>
-                        </button>
+                            {{-- Dropdown Popover (Opens upwards) --}}
+                            <div
+                                x-show="modelDropdownOpen"
+                                x-cloak
+                                x-transition:enter="transition ease-out duration-150"
+                                x-transition:enter-start="opacity-0 translate-y-1.5 scale-95"
+                                x-transition:enter-end="opacity-100 translate-y-0 scale-100"
+                                x-transition:leave="transition ease-in duration-100"
+                                x-transition:leave-start="opacity-100 translate-y-0 scale-100"
+                                x-transition:leave-end="opacity-0 translate-y-1 scale-95"
+                                class="absolute bottom-full mb-1.5 left-0 w-60 bg-white rounded-xl shadow-xl border border-gray-200/90 py-1.5 z-50 overflow-hidden"
+                            >
+                                <template x-for="m in availableModels" :key="m.id">
+                                    <button
+                                        type="button"
+                                        @click="setModel(m.name)"
+                                        class="w-full px-3.5 py-2 text-left text-xs flex items-center justify-between hover:bg-gray-50 transition-colors cursor-pointer"
+                                        :class="(selectedModel === m.name || (!selectedModel && m.name === '{{ \App\Services\AiAgentService::getActiveModelName() }}')) ? 'text-primary font-semibold bg-primary/5' : 'text-gray-700'"
+                                    >
+                                        <div class="flex items-center gap-2 min-w-0">
+                                            <div class="size-5 rounded-md flex items-center justify-center shrink-0 border border-gray-200 bg-white p-0.5 shadow-2xs">
+                                                <img :src="getProviderLogo(m.provider)" class="size-full object-contain pointer-events-none" :alt="m.provider">
+                                            </div>
+                                            <span class="font-mono text-xs truncate" x-text="m.name"></span>
+                                        </div>
+                                        <svg x-show="selectedModel === m.name || (!selectedModel && m.name === '{{ \App\Services\AiAgentService::getActiveModelName() }}')" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" class="size-4 text-primary shrink-0">
+                                            <path d="M20 6 9 17l-5-5"/>
+                                        </svg>
+                                    </button>
+                                </template>
+                            </div>
+                        </div>
+
+                        {{-- Right: Voice Input + Send / Stop Button --}}
+                        <div class="flex items-center gap-1.5">
+                            {{-- Voice Input Microphone Button --}}
+                            <button
+                                type="button"
+                                @click="toggleVoiceRecognition()"
+                                :disabled="isLoading || isProcessingActions"
+                                class="w-8 h-8 rounded-full flex items-center justify-center transition-all cursor-pointer shrink-0 disabled:opacity-40 disabled:cursor-not-allowed outline-none focus:outline-none focus:ring-0 focus-visible:outline-none border-0 select-none"
+                                :class="isListening ? 'bg-red-500 shadow-[0_0_14px_rgba(239,68,68,0.6)] animate-pulse' : 'bg-gray-100/90 hover:bg-gray-200/80 active:scale-95 shadow-2xs'"
+                                data-tippy-content="Voice input"
+                                aria-label="Voice input"
+                            >
+                                <svg
+                                    viewBox="0 0 24 24"
+                                    fill="none"
+                                    stroke="currentColor"
+                                    stroke-width="2.2"
+                                    stroke-linecap="round"
+                                    stroke-linejoin="round"
+                                    class="w-4 h-4 transition-colors"
+                                    :class="isListening ? 'text-white stroke-white' : 'text-gray-600'"
+                                >
+                                    <path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z"/>
+                                    <path d="M19 10v2a7 7 0 0 1-14 0v-2"/>
+                                    <line x1="12" x2="12" y1="19" y2="22"/>
+                                </svg>
+                            </button>
+
+                            {{-- Stop Generation Button (when active) --}}
+                            <button
+                                type="button"
+                                x-show="isLoading || isProcessingActions"
+                                x-cloak
+                                @click="stopGeneration()"
+                                class="w-8 h-8 rounded-full bg-primary hover:bg-primary/90 text-white flex items-center justify-center transition-all shadow-xs active:scale-95 cursor-pointer shrink-0"
+                                data-tippy-content="Stop generation"
+                                title="Stop generation"
+                            >
+                                <svg viewBox="0 0 24 24" fill="currentColor" class="w-3.5 h-3.5">
+                                    <rect x="6" y="6" width="12" height="12" rx="2" />
+                                </svg>
+                            </button>
+
+                            {{-- Send Message Button (when idle) --}}
+                            <button
+                                type="button"
+                                x-show="!isLoading && !isProcessingActions"
+                                @click="sendMessage()"
+                                :disabled="!prompt.trim()"
+                                class="w-8 h-8 rounded-full bg-primary hover:bg-primary/90 text-white flex items-center justify-center transition-all shadow-xs active:scale-95 disabled:opacity-30 disabled:cursor-not-allowed disabled:active:scale-100 cursor-pointer shrink-0"
+                                data-tippy-content="Send message"
+                                title="Send message"
+                            >
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="w-4 h-4">
+                                    <path d="m5 12 7-7 7 7"/>
+                                    <path d="M12 19V5"/>
+                                </svg>
+                            </button>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 </div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        function initAiTippy() {
+            if (typeof tippy === 'function') {
+                tippy('[data-tippy-content]', {
+                    placement: 'top',
+                    animation: 'shift-away',
+                    theme: 'ai-dark',
+                    arrow: true,
+                    duration: [180, 120],
+                    interactive: false,
+                    offset: [0, 8],
+                });
+            }
+        }
+        initAiTippy();
+        window.initAiTippy = initAiTippy;
+        window.addEventListener('ai-chat-opened', initAiTippy);
+        setTimeout(initAiTippy, 400);
+    });
+</script>

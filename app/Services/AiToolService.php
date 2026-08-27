@@ -17,25 +17,25 @@ class AiToolService
             [
                 'type' => 'function',
                 'function' => [
-                    'name'        => 'get_sections',
+                    'name' => 'get_sections',
                     'description' => 'Get a compact list of all sections on the current page. Returns index, block name, and enabled status only. Call this first to understand the page structure before editing.',
-                    'parameters'  => [
-                        'type'       => 'object',
+                    'parameters' => [
+                        'type' => 'object',
                         'properties' => (object) [],
-                        'required'   => [],
+                        'required' => [],
                     ],
                 ],
             ],
             [
                 'type' => 'function',
                 'function' => [
-                    'name'        => 'get_section',
+                    'name' => 'get_section',
                     'description' => 'Get the complete data of one specific section by its index number. Use this to read the exact current content of a section before editing it.',
-                    'parameters'  => [
-                        'type'       => 'object',
+                    'parameters' => [
+                        'type' => 'object',
                         'properties' => [
                             'index' => [
-                                'type'        => 'integer',
+                                'type' => 'integer',
                                 'description' => 'The section index (0-based) from get_sections()',
                             ],
                         ],
@@ -46,13 +46,13 @@ class AiToolService
             [
                 'type' => 'function',
                 'function' => [
-                    'name'        => 'get_section_by_name',
+                    'name' => 'get_section_by_name',
                     'description' => 'Find a section by its block name (e.g. "faq", "hero", "testimonials", "gallery"). Returns the section index and full data.',
-                    'parameters'  => [
-                        'type'       => 'object',
+                    'parameters' => [
+                        'type' => 'object',
                         'properties' => [
                             'name' => [
-                                'type'        => 'string',
+                                'type' => 'string',
                                 'description' => 'Block name keyword to search for (case-insensitive partial match)',
                             ],
                         ],
@@ -63,13 +63,13 @@ class AiToolService
             [
                 'type' => 'function',
                 'function' => [
-                    'name'        => 'get_schema',
+                    'name' => 'get_schema',
                     'description' => 'Get the field schema for a specific block type. Shows all editable field names and their types. Call this before editing a section so you know the exact field names to use.',
-                    'parameters'  => [
-                        'type'       => 'object',
+                    'parameters' => [
+                        'type' => 'object',
                         'properties' => [
                             'block_name' => [
-                                'type'        => 'string',
+                                'type' => 'string',
                                 'description' => 'The exact block name (e.g. "HeroBlock", "FaqBlock")',
                             ],
                         ],
@@ -80,29 +80,29 @@ class AiToolService
             [
                 'type' => 'function',
                 'function' => [
-                    'name'        => 'get_block_list',
+                    'name' => 'get_block_list',
                     'description' => 'Get all available block names that can be added to the page. Use this before calling add_section.',
-                    'parameters'  => [
-                        'type'       => 'object',
+                    'parameters' => [
+                        'type' => 'object',
                         'properties' => (object) [],
-                        'required'   => [],
+                        'required' => [],
                     ],
                 ],
             ],
             [
                 'type' => 'function',
                 'function' => [
-                    'name'        => 'search_images',
+                    'name' => 'search_images',
                     'description' => 'Search the media library for images matching a keyword. Always call this before setting any image field — never guess or fabricate image URLs.',
-                    'parameters'  => [
-                        'type'       => 'object',
+                    'parameters' => [
+                        'type' => 'object',
                         'properties' => [
                             'query' => [
-                                'type'        => 'string',
+                                'type' => 'string',
                                 'description' => 'Search keyword (e.g. "beach", "team photo", "hotel lobby")',
                             ],
                             'limit' => [
-                                'type'        => 'integer',
+                                'type' => 'integer',
                                 'description' => 'Max results to return (default: 8, max: 20)',
                             ],
                         ],
@@ -113,30 +113,30 @@ class AiToolService
             [
                 'type' => 'function',
                 'function' => [
-                    'name'        => 'get_page_meta',
+                    'name' => 'get_page_meta',
                     'description' => 'Get page metadata: entry data (title, slug, custom fields) and collection field definitions.',
-                    'parameters'  => [
-                        'type'       => 'object',
+                    'parameters' => [
+                        'type' => 'object',
                         'properties' => (object) [],
-                        'required'   => [],
+                        'required' => [],
                     ],
                 ],
             ],
             [
                 'type' => 'function',
                 'function' => [
-                    'name'        => 'apply_actions',
+                    'name' => 'apply_actions',
                     'description' => 'Apply a list of editor actions to the page. This is your FINAL call — it executes all changes and ends the agent loop. Do not call other tools after this.',
-                    'parameters'  => [
-                        'type'       => 'object',
+                    'parameters' => [
+                        'type' => 'object',
                         'properties' => [
                             'actions' => [
-                                'type'        => 'array',
+                                'type' => 'array',
                                 'description' => 'Array of editor action objects (update_field, update_section, set_image, add_section, remove_section, save_page, etc.)',
-                                'items'       => ['type' => 'object'],
+                                'items' => ['type' => 'object'],
                             ],
                             'message' => [
-                                'type'        => 'string',
+                                'type' => 'string',
                                 'description' => 'A concise markdown summary of what was changed, shown to the user.',
                             ],
                         ],
@@ -151,23 +151,22 @@ class AiToolService
      * Dispatch a tool call by name and return its result.
      *
      * @param  array<string, mixed>  $context
-     * @return mixed
      */
     public function dispatch(string $toolName, array $args, array $context): mixed
     {
         try {
             return match ($toolName) {
-                'get_sections'        => $this->getSections($context['full_sections'] ?? []),
-                'get_section'         => $this->getSection($context['full_sections'] ?? [], (int) ($args['index'] ?? 0)),
+                'get_sections' => $this->getSections($context['full_sections'] ?? []),
+                'get_section' => $this->getSection($context['full_sections'] ?? [], (int) ($args['index'] ?? 0)),
                 'get_section_by_name' => $this->getSectionByName($context['full_sections'] ?? [], (string) ($args['name'] ?? '')),
-                'get_schema'          => $this->getSchema($context['schemas'] ?? [], (string) ($args['block_name'] ?? '')),
-                'get_block_list'      => $this->getBlockList($context['blockList'] ?? []),
-                'search_images'       => $this->searchImages((string) ($args['query'] ?? ''), min(20, (int) ($args['limit'] ?? 8))),
-                'get_page_meta'       => $this->getPageMeta($context['entryData'] ?? [], $context['collectionFields'] ?? []),
-                default               => ['error' => 'Unknown tool: ' . $toolName],
+                'get_schema' => $this->getSchema($context['schemas'] ?? [], (string) ($args['block_name'] ?? '')),
+                'get_block_list' => $this->getBlockList($context['blockList'] ?? []),
+                'search_images' => $this->searchImages((string) ($args['query'] ?? ''), min(20, (int) ($args['limit'] ?? 8))),
+                'get_page_meta' => $this->getPageMeta($context['entryData'] ?? [], $context['collectionFields'] ?? []),
+                default => ['error' => 'Unknown tool: '.$toolName],
             };
         } catch (\Throwable $e) {
-            Log::warning("AiToolService dispatch error [{$toolName}]: " . $e->getMessage());
+            Log::warning("AiToolService dispatch error [{$toolName}]: ".$e->getMessage());
 
             return ['error' => $e->getMessage()];
         }
@@ -186,13 +185,13 @@ class AiToolService
     protected function getSections(array $fullSections): array
     {
         $compact = array_map(fn ($s, $i) => [
-            'index'   => $i,
-            'name'    => $s['name'] ?? 'unknown',
+            'index' => $i,
+            'name' => $s['name'] ?? 'unknown',
             'enabled' => $s['enabled'] ?? true,
         ], $fullSections, array_keys($fullSections));
 
         return [
-            'total'    => count($compact),
+            'total' => count($compact),
             'sections' => array_values($compact),
         ];
     }
@@ -206,11 +205,11 @@ class AiToolService
     protected function getSection(array $fullSections, int $index): array
     {
         if (! isset($fullSections[$index])) {
-            return ['error' => "Section index {$index} not found. Total sections: " . count($fullSections)];
+            return ['error' => "Section index {$index} not found. Total sections: ".count($fullSections)];
         }
 
         return [
-            'index'   => $index,
+            'index' => $index,
             'section' => $fullSections[$index],
         ];
     }
@@ -227,14 +226,14 @@ class AiToolService
         foreach ($fullSections as $i => $section) {
             if (str_contains(strtolower($section['name'] ?? ''), strtolower($name))) {
                 $matches[] = [
-                    'index'   => $i,
+                    'index' => $i,
                     'section' => $section,
                 ];
             }
         }
 
         if (empty($matches)) {
-            return ['error' => "No section found matching '{$name}'. Available: " . implode(', ', array_column($fullSections, 'name'))];
+            return ['error' => "No section found matching '{$name}'. Available: ".implode(', ', array_column($fullSections, 'name'))];
         }
 
         return ['matches' => $matches];
@@ -250,7 +249,7 @@ class AiToolService
     {
         if (isset($schemas[$blockName])) {
             return [
-                'block'  => $blockName,
+                'block' => $blockName,
                 'schema' => $schemas[$blockName],
             ];
         }
@@ -263,7 +262,7 @@ class AiToolService
         }
 
         return [
-            'error'     => "Schema not found for '{$blockName}'.",
+            'error' => "Schema not found for '{$blockName}'.",
             'available' => array_keys($schemas),
         ];
     }
@@ -289,8 +288,8 @@ class AiToolService
         $results = app(AiAgentService::class)->searchAssets($query, $limit);
 
         return [
-            'query'  => $query,
-            'count'  => count($results),
+            'query' => $query,
+            'count' => count($results),
             'images' => $results,
         ];
     }
@@ -305,7 +304,7 @@ class AiToolService
     protected function getPageMeta(array $entryData, array $collectionFields): array
     {
         return [
-            'entry'            => $entryData,
+            'entry' => $entryData,
             'collection_fields' => $collectionFields,
         ];
     }

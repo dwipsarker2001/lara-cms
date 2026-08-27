@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Admin\AdminUserController;
 use App\Http\Controllers\Admin\AiAgentController;
+use App\Http\Controllers\Admin\AiModelController;
 use App\Http\Controllers\Admin\AssetsController;
 use App\Http\Controllers\Admin\CollectionController;
 use App\Http\Controllers\Admin\CollectionEntryController;
@@ -91,4 +92,13 @@ Route::middleware(['web', 'auth:admin'])->prefix('admin')->name('admin.')->group
     Route::get('ai/assets', [AiAgentController::class, 'assets'])->name('ai.assets');
     Route::get('ai/images', [AiAgentController::class, 'images'])->name('ai.images');
     Route::get('ai/search-images', [AiAgentController::class, 'searchImages'])->name('ai.search-images');
+
+    // AI Model Management
+    Route::get('ai-models', [AiModelController::class, 'index'])->name('ai-models.index');
+    Route::post('ai-models', [AiModelController::class, 'store'])->name('ai-models.store');
+    Route::put('ai-models/{aiModel}', [AiModelController::class, 'update'])->name('ai-models.update');
+    Route::delete('ai-models/{aiModel}', [AiModelController::class, 'destroy'])->name('ai-models.destroy');
+    Route::post('ai-models/{aiModel}/toggle-active', [AiModelController::class, 'toggleActive'])->name('ai-models.toggle-active');
+    Route::post('ai-models/{aiModel}/set-default', [AiModelController::class, 'setDefault'])->name('ai-models.set-default');
+    Route::post('ai-models/test-connection', [AiModelController::class, 'testConnection'])->name('ai-models.test-connection');
 });

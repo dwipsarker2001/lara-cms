@@ -35,6 +35,22 @@ function aiAgent() {
         isBlinking: false,
         blinkTimer: null,
         eyeFollowRaf: null,
+        isListening: false,
+        recognition: null,
+        selectedModel: localStorage.getItem('lara_cms_selected_ai_model') || '',
+        modelDropdownOpen: false,
+        aiModels: [],
+        staticModels: [
+            { id: 'deepseek-chat', name: 'DeepSeek V3', provider: 'DeepSeek', badgeColor: 'bg-blue-500' },
+            { id: 'deepseek-reasoner', name: 'DeepSeek R1', provider: 'DeepSeek', badgeColor: 'bg-purple-500' },
+            { id: 'gpt-4o', name: 'GPT-4o', provider: 'OpenAI', badgeColor: 'bg-emerald-500' },
+            { id: 'gpt-4o-mini', name: 'GPT-4o Mini', provider: 'OpenAI', badgeColor: 'bg-teal-500' },
+            { id: 'claude-3-5-sonnet', name: 'Claude 3.5 Sonnet', provider: 'Anthropic', badgeColor: 'bg-amber-500' },
+            { id: 'gemini-1.5-pro', name: 'Gemini 1.5 Pro', provider: 'Google', badgeColor: 'bg-sky-500' },
+        ],
+        get availableModels() {
+            return this.aiModels.length > 0 ? this.aiModels : this.staticModels;
+        },
         suggestions: [
             '🎯 Optimize hook & headlines (3 angles)',
             '✍️ Rewrite section copy for high conversion',
@@ -136,6 +152,7 @@ function aiAgent() {
 
         init() {
             this.loadSavedPosition();
+            this.fetchAiModels();
             this.loadAssets();
             this.initWelcomeMessage();
             this.startEyeTracking();
@@ -312,6 +329,80 @@ You can ask me to draft or polish copy, add or reorganize sections, or find and 
             }
         },
 
+        get activeModelProvider() {
+            if (this.selectedModel && this.aiModels.length > 0) {
+                const found = this.aiModels.find(m => m.name === this.selectedModel);
+                if (found) return found.provider;
+            }
+            return 'deepseek';
+        },
+
+        getProviderLogo(provider) {
+            switch (provider) {
+                case 'deepseek':
+                    return '/images/ai-providers/deepseek.svg';
+                case 'openai':
+                    return '/images/ai-providers/openai.svg';
+                case 'anthropic':
+                case 'claude':
+                    return '/images/ai-providers/claude.svg';
+                case 'grok':
+                case 'xai':
+                    return '/images/ai-providers/grok.svg';
+                case 'qwen':
+                    return '/images/ai-providers/qwen.svg';
+                case 'google':
+                    return '/images/ai-providers/google.svg';
+                case 'groq':
+                    return '/images/ai-providers/groq.png';
+                default:
+                    return '/images/ai-providers/custom.png';
+            }
+        },
+
+        setModel(name) {
+            this.selectedModel = name;
+            try {
+                localStorage.setItem('lara_cms_selected_ai_model', name);
+            } catch (e) {}
+            this.modelDropdownOpen = false;
+        },
+
+        async fetchAiModels() {
+            try {
+                const res = await fetch('/admin/ai-models?active_only=1', {
+                    headers: { 'Accept': 'application/json' }
+                });
+                if (res.ok) {
+                    const data = await res.json();
+                    if (data.success && Array.isArray(data.models) && data.models.length > 0) {
+                        this.aiModels = data.models;
+
+                        let saved = null;
+                        try {
+                            saved = localStorage.getItem('lara_cms_selected_ai_model');
+                        } catch (e) {}
+
+                        const savedExists = saved && this.aiModels.some(m => m.name === saved || m.model_id === saved);
+                        if (savedExists) {
+                            const found = this.aiModels.find(m => m.name === saved || m.model_id === saved);
+                            this.selectedModel = found.name;
+                        } else if (!this.selectedModel || !this.aiModels.some(m => m.name === this.selectedModel)) {
+                            const def = this.aiModels.find(m => m.is_default) || this.aiModels[0];
+                            if (def) {
+                                this.selectedModel = def.name;
+                                try {
+                                    localStorage.setItem('lara_cms_selected_ai_model', def.name);
+                                } catch (e) {}
+                            }
+                        }
+                    }
+                }
+            } catch (e) {
+                console.warn('AI Agent fetch models error:', e);
+            }
+        },
+
         async loadAssets() {
             this.assetsLoading = true;
             try {
@@ -422,6 +513,9 @@ You can ask me to draft or polish copy, add or reorganize sections, or find and 
                 this.scrollToBottom();
                 const input = this.$refs.promptInput;
                 if (input) input.focus();
+                if (typeof window.initAiTippy === 'function') {
+                    window.initAiTippy();
+                }
             });
         },
 
@@ -457,6 +551,78 @@ You can ask me to draft or polish copy, add or reorganize sections, or find and 
             this.isLoading = false;
             this.isProcessingActions = false;
             this.statusMessage = '';
+        },
+
+        toggleVoiceRecognition() {
+            if (this.isListening) {
+                this.stopVoiceRecognition();
+                return;
+            }
+
+            const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+            if (!SpeechRecognition) {
+                this.setFloatingToast('Voice recognition not supported in this browser', 3000);
+                return;
+            }
+
+            try {
+                this.recognition = new SpeechRecognition();
+                this.recognition.continuous = true;
+                this.recognition.interimResults = true;
+                this.recognition.lang = navigator.language || 'en-US';
+
+                let initialPrompt = this.prompt.trim();
+
+                this.recognition.onstart = () => {
+                    this.isListening = true;
+                    this.statusMessage = 'Listening... Speak now';
+                };
+
+                this.recognition.onresult = (event) => {
+                    let transcript = '';
+                    for (let i = 0; i < event.results.length; i++) {
+                        transcript += event.results[i][0].transcript;
+                    }
+                    this.prompt = (initialPrompt ? initialPrompt + ' ' : '') + transcript;
+                    this.$nextTick(() => {
+                        this.adjustTextareaHeight(this.$refs.promptInput);
+                    });
+                };
+
+                this.recognition.onerror = (event) => {
+                    if (event.error !== 'no-speech') {
+                        console.warn('Speech recognition error:', event.error);
+                        this.setFloatingToast(`Voice error: ${event.error}`, 2500);
+                    }
+                    this.stopVoiceRecognition();
+                };
+
+                this.recognition.onend = () => {
+                    this.isListening = false;
+                    if (this.statusMessage === 'Listening... Speak now') {
+                        this.statusMessage = '';
+                    }
+                };
+
+                this.recognition.start();
+            } catch (err) {
+                console.error('Failed to start speech recognition:', err);
+                this.isListening = false;
+                this.setFloatingToast('Could not access microphone', 2500);
+            }
+        },
+
+        stopVoiceRecognition() {
+            if (this.recognition) {
+                try {
+                    this.recognition.stop();
+                } catch (e) {}
+                this.recognition = null;
+            }
+            this.isListening = false;
+            if (this.statusMessage === 'Listening... Speak now') {
+                this.statusMessage = '';
+            }
         },
 
         clearChat() {
@@ -531,6 +697,7 @@ You can ask me to draft or polish copy, add or reorganize sections, or find and 
         },
 
         async sendMessage() {
+            this.stopVoiceRecognition();
             const text = this.prompt.trim();
             if (!text || this.isLoading || this.isProcessingActions) return;
 
@@ -596,6 +763,7 @@ You can ask me to draft or polish copy, add or reorganize sections, or find and 
                         activeSectionName:  activeSectionName,
                         activeSectionData:  activeSectionData,
                         assets:             this.availableAssets.length > 0 ? this.availableAssets : null,
+                        model:              this.selectedModel || undefined,
                     })
                 });
 
