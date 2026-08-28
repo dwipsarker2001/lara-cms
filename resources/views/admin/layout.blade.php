@@ -519,17 +519,19 @@
 
         {{-- Main content area --}}
         <main class="flex-1 overflow-hidden">
-            <div class="h-full overflow-y-auto" style="scrollbar-gutter: stable;">
-                @hasSection('content-full')
+            @hasSection('content-full')
+                <div class="h-full w-full overflow-hidden">
                     @yield('content-full')
-                @else
+                </div>
+            @else
+                <div class="h-full overflow-y-auto" style="scrollbar-gutter: stable;">
                     {{-- PageShell --}}
                     <div class="bg-content-bg min-h-[calc(100%-8px)] mx-2 mt-2 px-6 lg:px-20 pt-6 pb-40 lg:pb-52 rounded-t-2xl border border-content-border border-b-0 relative" style="container-type: inline-size;">
 
                         @yield('content')
                     </div>
-                @endif
-            </div>
+                </div>
+            @endif
         </main>
     </div>
 
