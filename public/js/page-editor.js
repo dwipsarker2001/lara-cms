@@ -346,14 +346,26 @@ function pageEditor() {
                 const isTagged = opts.some(o => o && typeof o.collection === 'string');
                 if (!isTagged) return opts;
 
-                // Find the listCollection value in this section's data
+                // Find the collection value in this section's data or current block fields
                 const sectionData = (this.active !== null && this.sections[this.active])
                     ? (this.sections[this.active].data || {})
                     : {};
-                const selectedCol = sectionData['listCollection'] || '';
+                const selectedCol = sectionData['listCollection']
+                    || sectionData['collection']
+                    || sectionData['postCollection']
+                    || sectionData['selectedCollection']
+                    || this.getField('listCollection')
+                    || this.getField('collection')
+                    || this.getField('postCollection')
+                    || this.getField('selectedCollection')
+                    || '';
 
                 if (!selectedCol) {
-                    // No collection chosen — show only the "Not Mapped" option
+                    const colField = (this.currentFields() || []).find(f => ['listCollection', 'collection', 'postCollection', 'selectedCollection'].includes(f.name));
+                    const defaultCol = colField?.default || '';
+                    if (defaultCol) {
+                        return opts.filter(o => o.collection === '' || o.collection === defaultCol);
+                    }
                     return opts.filter(o => o.collection === '');
                 }
 
@@ -369,8 +381,61 @@ function pageEditor() {
                 if (!form || !Array.isArray(form.fields)) return [];
                 return form.fields.map(f => ({
                     value: f.name,
-                    label: (f.label ? (f.label + ' (' + f.name + ')') : f.name) + (f.type ? ' [' + f.type + ']' : ''),
+                    label: f.label || f.name,
                 }));
+            },
+
+            getCollectionFieldOptions(field) {
+                const colFieldKey = field.collectionFieldKey || 'collection';
+                const sectionData = (this.active !== null && this.sections[this.active])
+                    ? (this.sections[this.active].data || {})
+                    : {};
+                const selectedCol = sectionData[colFieldKey]
+                    || sectionData['collection']
+                    || sectionData['listCollection']
+                    || sectionData['postCollection']
+                    || sectionData['selectedCollection']
+                    || this.getField(colFieldKey)
+                    || this.getField('collection')
+                    || this.getField('listCollection')
+                    || this.getField('postCollection')
+                    || this.getField('selectedCollection')
+                    || '';
+
+                const allCols = window.editorAllCollections || this.allCollections || [];
+                let targetCol = allCols.find(c => c.slug === selectedCol || String(c.id) === String(selectedCol));
+                if (!targetCol && !selectedCol) {
+                    const colDef = (this.currentFields() || []).find(f => [colFieldKey, 'collection', 'listCollection', 'postCollection'].includes(f.name));
+                    if (colDef && colDef.default) {
+                        targetCol = allCols.find(c => c.slug === colDef.default || String(c.id) === String(colDef.default));
+                    }
+                    if (!targetCol) {
+                        targetCol = allCols.find(c => c.slug === 'packages' || c.slug === 'blogs');
+                    }
+                }
+
+                if (!targetCol && !selectedCol) return [];
+
+                const options = [
+                    { value: '', label: '-- Not Mapped / Auto --' },
+                    { value: 'title', label: 'Title' },
+                    { value: 'slug', label: 'Slug' },
+                    { value: 'created_at', label: 'Created Date' },
+                ];
+
+                if (targetCol && Array.isArray(targetCol.fields)) {
+                    for (const f of targetCol.fields) {
+                        const key = f.template || f.key || f.name || f._key;
+                        if (!key) continue;
+                        const label = f.title || f.label || key;
+                        options.push({
+                            value: key,
+                            label: label,
+                        });
+                    }
+                }
+
+                return options;
             },
 
             currentData() {

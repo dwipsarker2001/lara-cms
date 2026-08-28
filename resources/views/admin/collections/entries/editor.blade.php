@@ -133,6 +133,7 @@
                                 @include('admin.collections.entries.partials.fields._devices')
                                 @include('admin.collections.entries.partials.fields._select')
                                 @include('admin.collections.entries.partials.fields._form')
+                                @include('admin.collections.entries.partials.fields._collection_field')
                                 @include('admin.collections.entries.partials.fields._collection')
                                 @include('admin.collections.entries.partials.fields._taxonomies')
                                 @include('admin.collections.entries.partials.fields._image')

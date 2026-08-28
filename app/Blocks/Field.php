@@ -219,6 +219,33 @@ class Field
     }
 
     /**
+     * Input field that lets the user map a field key from a selected Collection (e.g. collection, listCollection, or postCollection).
+     *
+     * @param  string  $name  Field name in block data (e.g. 'map_title', 'map_price', 'map_adult_price')
+     * @param  string  $label  Human readable label shown in editor
+     * @param  string  $collectionFieldKey  The name of the collection select field in the same block (defaults to 'collection')
+     * @param  string  $default  Default key value
+     * @param  string  $source  Optional source binding
+     */
+    public static function collectionField(string $name, string $label, string $collectionFieldKey = 'collection', string $default = '', string $source = ''): array
+    {
+        $field = compact('name', 'label', 'collectionFieldKey') + ['type' => 'collectionField', 'defaultValue' => $default];
+        if ($source !== '') {
+            $field['source'] = $source;
+        }
+
+        return $field;
+    }
+
+    /**
+     * Alias for Field::collectionField()
+     */
+    public static function collectionKey(string $name, string $label, string $collectionFieldKey = 'collection', string $default = '', string $source = ''): array
+    {
+        return self::collectionField($name, $label, $collectionFieldKey, $default, $source);
+    }
+
+    /**
      * Input field that lets the user select an entry from a collection (e.g. Packages, Tours, Destinations).
      *
      * @param  string|null  $collection  Collection slug to restrict to (e.g. 'packages'). Null allows picking from any collection.
