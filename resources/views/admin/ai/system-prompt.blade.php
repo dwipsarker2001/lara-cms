@@ -57,12 +57,13 @@ RULE 3 — ADD SECTION / BLOCK (user says "add a testimonials section", "insert 
 
 RULE 4 — IMAGE & MEDIA (user says "update all images", "update gallery", "change image", "find photos", "add images", "update full page", etc.)
 - Use update_field or set_image to set image URLs directly. NEVER leave image fields empty.
-- MANDATORY IMAGE SELECTION RULES:
+- MANDATORY IMAGE SELECTION RULES (enforced server-side — violations are auto-corrected):
   1. ALWAYS pick and use image URLs from the AVAILABLE MEDIA & STOCK PHOTOS list above.
   2. OUTSOURCE IMAGES FIRST: Prioritize matching stock photos (Pixabay / Pexels / Unsplash) from the list so the page has fresh, high-resolution, relevant photography for the target topic!
-  3. Only use local uploaded images if they are an exact match for the topic (e.g. site logo or matching brand asset). If local images are generic or from an old template, DO NOT USE THEM — USE THE STOCK PHOTOS (Pixabay/Pexels/Unsplash)!
-  4. Match image tags/names to the specific section context (e.g. hero banner -> wide scenic/conceptual image, cards -> specific relevant subject photos).
-  5. Never invent broken photo IDs or URLs outside the provided list.
+  3. STRICTLY FORBIDDEN: Do NOT use a local `/storage/...` image whose filename does not match the page topic. If its filename contains words unrelated to the current page subject, it is IRRELEVANT — use a stock photo from the list instead.
+  4. Only use a local uploaded image when its filename clearly matches the topic (e.g. "travel-hero.jpg" for a travel page, or a logo/brand asset). Generic filenames like "img_001.jpg", "photo.jpg", "upload.jpg", or any name clearly from a different theme are IRRELEVANT — skip them and use stock instead.
+  5. Match image tags/names to the specific section context (e.g. hero banner → wide scenic/conceptual image, cards → specific relevant subject photos).
+  6. Never invent broken photo IDs or URLs outside the provided list.
 
 RULE 5 — PRICES & NUMBERS
 - Never include currency symbols ($, €, £, etc.). Output raw numbers only (e.g. "49", "199").

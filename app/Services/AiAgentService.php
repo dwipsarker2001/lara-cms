@@ -48,6 +48,9 @@ class AiAgentService
             $context['assets'] = $searchedAssets;
         }
 
+        // Pass topic query into context so sanitizeActions() can enforce image relevance
+        $context['_image_topic_query'] = $topicQuery;
+
         $systemPrompt = $this->buildSystemPrompt($context);
         $completion = $this->executeCompletion($systemPrompt, $messages, $apiKey, $baseUrl, $model, $modelConfig['provider'] ?? 'custom');
 
@@ -1176,6 +1179,72 @@ class AiAgentService
             }
         }
 
+        // ── Image relevance guard ──────────────────────────────────────────────
+        // Extract topic keywords so we can decide if a local image filename is relevant
+        $topicQuery = strtolower(trim((string) ($context['_image_topic_query'] ?? '')));
+        $topicWords = array_filter(preg_split('/\s+/', $topicQuery));
+
+        // Separate stock images from local images from the assets list for swapping
+        $allAssets = is_array($context['assets'] ?? null) ? $context['assets'] : [];
+        $stockImages = array_values(array_filter($allAssets, fn ($a) => isset($a['source']) && $a['source'] !== 'local' && ! empty($a['url'])));
+        $localImages = array_values(array_filter($allAssets, fn ($a) => (! isset($a['source']) || $a['source'] === 'local') && ! empty($a['url'])));
+
+        /**
+         * Determine whether a local image URL is relevant to the current topic.
+         * Checks the filename/path against topic keywords extracted from the user request.
+         */
+        $isLocalImageRelevant = function (string $url) use ($topicWords): bool {
+            if (empty($topicWords)) {
+                return true; // No topic info — do not block
+            }
+
+            // Extract just the filename without extension for matching
+            $filename = strtolower(pathinfo(parse_url($url, PHP_URL_PATH) ?? $url, PATHINFO_FILENAME));
+            $filename = preg_replace('/[-_]+/', ' ', $filename);
+
+            foreach ($topicWords as $word) {
+                if (strlen($word) >= 4 && str_contains($filename, $word)) {
+                    return true;
+                }
+            }
+
+            return false;
+        };
+
+        /**
+         * Pick the best stock image from the fetched list, or null if none available.
+         */
+        $pickBestStockImage = function () use ($stockImages): ?string {
+            return ! empty($stockImages) ? ($stockImages[0]['url'] ?? null) : null;
+        };
+
+        /**
+         * Guard an image URL: if it is a local irrelevant upload, swap to stock or return null.
+         *
+         * @return string|null resolved URL (stock, relevant-local, or null if nothing suitable)
+         */
+        $guardImageUrl = function (string $url) use ($isLocalImageRelevant, $pickBestStockImage): ?string {
+            // External or stock URLs are always trusted
+            if (str_starts_with($url, 'http://') || str_starts_with($url, 'https://')) {
+                return $url;
+            }
+
+            // Local storage URL — check relevance
+            if (str_starts_with($url, '/storage/') || str_starts_with($url, 'storage/')) {
+                if ($isLocalImageRelevant($url)) {
+                    return $url; // Relevant local image — keep it
+                }
+
+                // Irrelevant local image — swap to stock
+                $stock = $pickBestStockImage();
+
+                return $stock; // null means "skip / leave empty" on the frontend
+            }
+
+            return $url; // Unknown format — pass through
+        };
+        // ─────────────────────────────────────────────────────────────────────
+
         $sanitized = [];
 
         foreach ($actions as $action) {
@@ -1192,11 +1261,16 @@ class AiAgentService
                         $idx = $context['activeSectionIndex'] ?? 0;
                     }
                     if (! empty($action['field_path']) && is_string($action['field_path'])) {
+                        $fieldValue = $action['value'] ?? '';
+                        // If the value looks like a local image path, run the relevance guard
+                        if (is_string($fieldValue) && str_starts_with($fieldValue, '/storage/')) {
+                            $fieldValue = $guardImageUrl($fieldValue) ?? '';
+                        }
                         $sanitized[] = [
                             'action' => 'update_field',
                             'section_index' => (int) $idx,
                             'field_path' => trim($action['field_path']),
-                            'value' => $action['value'] ?? '',
+                            'value' => $fieldValue,
                         ];
                     }
                     break;
@@ -1223,12 +1297,16 @@ class AiAgentService
                     $url = trim((string) ($action['image_url'] ?? ''));
                     $fieldPath = trim((string) ($action['field_path'] ?? 'image'));
                     if (! empty($url) && ! empty($fieldPath)) {
-                        $sanitized[] = [
-                            'action' => 'set_image',
-                            'section_index' => (int) $idx,
-                            'field_path' => $fieldPath,
-                            'image_url' => $url,
-                        ];
+                        $guardedUrl = $guardImageUrl($url);
+                        if ($guardedUrl !== null) {
+                            $sanitized[] = [
+                                'action' => 'set_image',
+                                'section_index' => (int) $idx,
+                                'field_path' => $fieldPath,
+                                'image_url' => $guardedUrl,
+                            ];
+                        }
+                        // null = irrelevant local image with no stock fallback — skip action entirely
                     }
                     break;
 
