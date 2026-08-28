@@ -1543,7 +1543,7 @@ function pageEditor() {
                     this.sidebarOpen = true;
 
                     const path = this.buildFieldPath(e.target);
-                    this.focusField(path, idx);
+                    this.focusField(path, idx, false, true);
                 });
             },
 
@@ -1622,10 +1622,10 @@ function pageEditor() {
                 }
             },
 
-            focusField(cmd, sectionIdx, noScroll = false) {
+            focusField(cmd, sectionIdx, noScroll = false, noIframeScroll = false) {
                 if (sectionIdx !== undefined) {
                     this.active = sectionIdx;
-                    this.scrollToIframeSection(sectionIdx, noScroll);
+                    this.scrollToIframeSection(sectionIdx, noIframeScroll || noScroll);
                 }
 
                 const raw = cmd.split('#')[0];
