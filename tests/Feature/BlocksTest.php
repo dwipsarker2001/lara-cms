@@ -7,8 +7,8 @@ use App\Models\Admin;
 use App\Models\Collection;
 use App\Support\BlockPreview;
 use App\Support\Sections;
-use Plugins\CustomBlocks\Blocks\HeroBanner\HeroBanner;
-use Plugins\CustomBlocks\Blocks\TravelDeals\TravelDeals;
+use Plugins\TravelTheme\Blocks\HeroBanner\HeroBanner;
+use Plugins\TravelTheme\Blocks\TravelDeals\TravelDeals;
 
 test('Block::render returns a string for a block with a view', function () {
     $block = new HeroBanner;

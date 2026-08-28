@@ -43,6 +43,16 @@ abstract class ListBlock extends Block
     abstract protected function cardSchema(): array;
 
     /**
+     * Block-level fields placed at the top (before the collection selector).
+     *
+     * @return array<int, array>
+     */
+    protected function topFields(): array
+    {
+        return [];
+    }
+
+    /**
      * Block-level fields specific to the subclass (taxonomies, per-page, filters, etc.).
      * These are merged after the collection selector and card slot selectors.
      *
@@ -55,17 +65,22 @@ abstract class ListBlock extends Block
 
     /**
      * Builds the full fields() array automatically:
-     *   1. Select Collection dropdown.
-     *   2. One Field::select() per card slot (mapped to the collection's inputs).
-     *   3. Any extra fields from baseFields().
+     *   1. Top fields from topFields().
+     *   2. Select Collection dropdown.
+     *   3. One Field::select() per card slot (mapped to the collection's inputs).
+     *   4. Any extra fields from baseFields().
      *
      * @return array<int, array>
      */
     final public function fields(): array
     {
-        $fields = [
-            Field::select('listCollection', 'Select Collection', self::buildCollectionOptions(), default: ''),
-        ];
+        $fields = [];
+
+        foreach ($this->topFields() as $field) {
+            $fields[] = $field;
+        }
+
+        $fields[] = Field::select('listCollection', 'Select Collection', self::buildCollectionOptions(), default: '');
 
         $fieldOptions = self::collectionFieldOptions();
 
@@ -274,40 +289,5 @@ abstract class ListBlock extends Block
         }
 
         return $options;
-    }
-}
-
-/**
- * CardSlot
- *
- * Defines a single mappable slot on a list block's card (e.g. Title, Image, Price).
- * Types: 'text' | 'image' | 'price' | 'url'
- */
-class CardSlot
-{
-    public function __construct(
-        public readonly string $key,
-        public readonly string $label,
-        public readonly string $type = 'text',
-    ) {}
-
-    public static function text(string $key, string $label): self
-    {
-        return new self($key, $label, 'text');
-    }
-
-    public static function image(string $key, string $label): self
-    {
-        return new self($key, $label, 'image');
-    }
-
-    public static function price(string $key, string $label): self
-    {
-        return new self($key, $label, 'price');
-    }
-
-    public static function url(string $key, string $label): self
-    {
-        return new self($key, $label, 'url');
     }
 }

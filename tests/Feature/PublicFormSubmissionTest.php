@@ -5,7 +5,8 @@ use App\Models\Collection;
 use App\Models\Form;
 use App\Models\FormEntry;
 use Illuminate\Support\ViewErrorBag;
-use Plugins\CustomBlocks\Blocks\CheckoutForm\CheckoutForm;
+use Plugins\Bookings\Blocks\CheckoutForm\CheckoutForm;
+use Plugins\Bookings\Models\Booking;
 
 it('submits a public form entry and saves to database', function () {
     $form = Form::factory()->create([
@@ -65,52 +66,29 @@ it('submits standard built-in checkout form and shows submission in admin entrie
     $adminResponse->assertSee('Window seat please');
 });
 
-it('renders mapped form fields from selected form in checkout-form and submits correctly', function () {
-    $form = Form::factory()->create([
-        'title' => 'Custom Tour Form',
-        'submit_text' => 'Book Tour Now',
-        'fields' => [
-            ['_key' => '1', 'type' => 'text', 'label' => 'Full Name', 'name' => 'customer_name', 'required' => true],
-            ['_key' => '2', 'type' => 'email', 'label' => 'Email', 'name' => 'customer_email', 'required' => true],
-            ['_key' => '3', 'type' => 'text', 'label' => 'Custom Notes', 'name' => 'custom_notes', 'required' => false],
-            ['_key' => '4', 'type' => 'number', 'label' => 'Adult Guests', 'name' => 'adults_count', 'required' => false],
-        ],
-    ]);
-
-    $view = $this->view((new CheckoutForm)->view(), [
-        'data' => [
-            'formId' => $form->id,
-            'formTitle' => 'Traveler Details',
-            'mapFullName' => 'customer_name',
-            'mapEmail' => 'customer_email',
-            'mapMessage' => 'custom_notes',
-            'mapAdults' => 'adults_count',
-        ],
-        'errors' => new ViewErrorBag,
-    ]);
-
-    $view->assertSee('name="customer_name"', false);
-    $view->assertSee('name="customer_email"', false);
-    $view->assertSee('name="custom_notes"', false);
-    $view->assertSee('name="adults_count"', false);
-    $view->assertSee(route('forms.public-submit', $form));
-    $view->assertSee('Book Tour Now');
-
-    // Test successful submission
-    $successResponse = $this->post(route('forms.public-submit', $form), [
+it('submits checkout-form booking and saves to database', function () {
+    $response = $this->post(route('bookings.submit'), [
         'customer_name' => 'Jane Doe',
         'customer_email' => 'jane@example.com',
-        'custom_notes' => 'Vegetarian meal please',
-        'adults_count' => 3,
+        'customer_phone' => '+15551234567',
+        'travel_date' => '2026-10-15',
+        'preferred_time' => '14:00',
+        'adults' => 3,
+        'children' => 1,
+        'notes' => 'Vegetarian meal please',
+        'tour_title' => 'Paris Special Tour',
+        'amount' => 899.00,
     ]);
 
-    $successResponse->assertRedirect();
-    $entry = FormEntry::where('form_id', $form->id)->first();
-    expect($entry)->not->toBeNull();
-    expect($entry->data['customer_name'])->toBe('Jane Doe');
-    expect($entry->data['customer_email'])->toBe('jane@example.com');
-    expect($entry->data['custom_notes'])->toBe('Vegetarian meal please');
-    expect($entry->data['adults_count'])->toBe(3);
+    $response->assertRedirect();
+    $response->assertSessionHas('success');
+
+    $booking = Booking::where('customer_email', 'jane@example.com')->first();
+    expect($booking)->not->toBeNull();
+    expect($booking->customer_name)->toBe('Jane Doe');
+    expect($booking->adults)->toBe(3);
+    expect($booking->children)->toBe(1);
+    expect($booking->notes)->toBe('Vegetarian meal please');
 });
 
 it('shows error alert and disables booking confirm button when no package is selected in checkout-form', function () {

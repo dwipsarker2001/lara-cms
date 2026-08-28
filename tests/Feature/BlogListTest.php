@@ -2,8 +2,8 @@
 
 use App\Models\Collection;
 use App\Models\CollectionEntry;
-use Plugins\CustomBlocks\Blocks\BlogList\BlogList;
-use Plugins\CustomBlocks\Support\BlogSidebarData;
+use Plugins\TravelTheme\Blocks\BlogList\BlogList;
+use Plugins\TravelTheme\Support\BlogSidebarData;
 
 test('blog list resolves featured_image from entry data', function () {
     $collection = Collection::create(['name' => 'Blog', 'slug' => 'blog']);

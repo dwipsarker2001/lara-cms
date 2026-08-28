@@ -6,8 +6,8 @@ use App\Models\Collection;
 use App\Models\CollectionEntry;
 use App\Models\Taxonomy;
 use App\Models\Term;
-use Plugins\CustomBlocks\Blocks\DestinationsGrid\DestinationsGrid;
-use Plugins\CustomBlocks\Blocks\TravelDeals\TravelDeals;
+use Plugins\TravelTheme\Blocks\DestinationsGrid\DestinationsGrid;
+use Plugins\TravelTheme\Blocks\TravelDeals\TravelDeals;
 
 beforeEach(function () {
     $this->admin = Admin::factory()->create();
