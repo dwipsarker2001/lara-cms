@@ -270,7 +270,7 @@
             :style="'width: ' + (navCollapsed ? '0px' : '208px')"
             class="shrink-0 overflow-hidden transition-all duration-300 ease-in-out"
         >
-            <div class="w-52 px-3 py-6 overflow-y-auto h-full">
+            <div class="w-52 px-3 py-6 overflow-y-auto h-full [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
                 <a
                     href="{{ route('admin.dashboard') }}"
                     class="flex items-center gap-2.5 px-2.5 py-1.5 rounded-md text-sm no-underline transition-colors @if(request()->routeIs('admin.dashboard')) text-text-heading bg-gray-200 font-semibold @else text-text-primary hover:bg-gray-100 hover:text-text-heading font-medium @endif"
@@ -524,7 +524,7 @@
                     @yield('content-full')
                 </div>
             @else
-                <div class="h-full overflow-y-auto" style="scrollbar-gutter: stable;">
+                <div class="h-full overflow-y-auto [scrollbar-width:thin] [scrollbar-color:rgba(156,163,175,0.3)_transparent] [&::-webkit-scrollbar]:w-1.5 [&::-webkit-scrollbar-thumb]:bg-gray-300/60 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-track]:bg-transparent">
                     {{-- PageShell --}}
                     <div class="bg-content-bg min-h-[calc(100%-8px)] mx-2 mt-2 px-6 lg:px-20 pt-6 pb-40 lg:pb-52 rounded-t-2xl border border-content-border border-b-0 relative" style="container-type: inline-size;">
 
