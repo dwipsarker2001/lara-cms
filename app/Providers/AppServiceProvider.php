@@ -22,7 +22,15 @@ class AppServiceProvider extends ServiceProvider
 
     public function boot(): void
     {
-        if ($this->app->environment('production') || config('app.env') === 'production' || str_contains(config('app.url'), 'https://')) {
+        if (
+            $this->app->environment('production')
+            || config('app.env') === 'production'
+            || str_starts_with((string) config('app.url'), 'https://')
+            || request()->isSecure()
+            || request()->header('X-Forwarded-Proto') === 'https'
+            || request()->server('HTTP_X_FORWARDED_PROTO') === 'https'
+            || request()->server('HTTPS') === 'on'
+        ) {
             URL::forceScheme('https');
         }
 

@@ -1432,7 +1432,13 @@ function pageEditor() {
                 }
                 const payload = { sections: this.sections, entry_data: this.entryData };
                 if (window.editorPostId) payload.post_id = window.editorPostId;
-                fetch(window.editorPreviewRoute, {
+
+                let previewUrl = window.editorPreviewRoute || '/admin/preview';
+                if (window.location.protocol === 'https:' && previewUrl.startsWith('http:')) {
+                    previewUrl = previewUrl.replace(/^http:/, 'https:');
+                }
+
+                fetch(previewUrl, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json', 'X-CSRF-TOKEN': window.editorCsrfToken },
                     body: JSON.stringify(payload),
@@ -1445,6 +1451,24 @@ function pageEditor() {
             updateIframeContent(iframe, html) {
                 const doc = iframe.contentDocument || iframe.contentWindow?.document;
                 if (!doc) return;
+
+                const win = iframe.contentWindow;
+                if (win && typeof win.blogDetails !== 'function') {
+                    win.blogDetails = function () {
+                        return {
+                            copied: false,
+                            copyLink() {
+                                try {
+                                    if (navigator.clipboard) {
+                                        navigator.clipboard.writeText(win.location.href);
+                                        this.copied = true;
+                                        setTimeout(() => { this.copied = false; }, 2000);
+                                    }
+                                } catch (e) {}
+                            }
+                        };
+                    };
+                }
 
                 doc.body.className = 'antialiased text-gray-800 m-0 p-0 min-h-full bg-white preview-shell';
                 let container = doc.getElementById('preview-content');
@@ -1731,7 +1755,10 @@ function pageEditor() {
 
             async save() {
                 this.isSaving = true;
-                const route = window.editorSaveRoute;
+                let route = window.editorSaveRoute;
+                if (window.location.protocol === 'https:' && route && route.startsWith('http:')) {
+                    route = route.replace(/^http:/, 'https:');
+                }
                 try {
                     const r = await fetch(route, {
                         method: 'PATCH',
@@ -1750,12 +1777,32 @@ function pageEditor() {
                     this.isSaving = false;
                     alert('Save failed.');
                 }
-        }
+            }
+        };
     }
+
+if (typeof window.blogDetails !== 'function') {
+    window.blogDetails = function () {
+        return {
+            copied: false,
+            copyLink() {
+                try {
+                    if (navigator.clipboard) {
+                        navigator.clipboard.writeText(window.location.href);
+                        this.copied = true;
+                        setTimeout(() => { this.copied = false; }, 2000);
+                    }
+                } catch (e) {}
+            }
+        };
+    };
 }
 
 document.addEventListener('alpine:init', function () {
     if (window.Alpine) {
         window.Alpine.data('pageEditor', pageEditor);
+        if (typeof window.blogDetails === 'function') {
+            window.Alpine.data('blogDetails', window.blogDetails);
+        }
     }
 });

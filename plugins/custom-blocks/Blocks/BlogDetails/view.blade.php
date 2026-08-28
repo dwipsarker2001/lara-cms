@@ -58,7 +58,7 @@
     $contactButtonLink = $d['contactButtonLink'] ?? '/contact';
 @endphp
 
-<div class="w-full bg-white py-10 lg:py-16 text-gray-800 antialiased">
+<article data-block="blogDetails" class="w-full bg-white py-10 lg:py-16 text-gray-800 antialiased">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-12 items-start">
             
@@ -92,9 +92,12 @@
                             </svg>
                             Share:
                         </span>
-                        <a href="#" class="size-8 rounded-full border border-gray-200 flex items-center justify-center text-gray-500 hover:border-emerald-500 hover:bg-emerald-50 hover:text-emerald-600 transition-colors" title="Copy link">
-                            <svg class="size-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
-                        </a>
+                        <div x-data="{ copied: false }" class="relative inline-flex items-center">
+                            <button type="button" @click="if (navigator.clipboard) { navigator.clipboard.writeText(window.location.href); copied = true; setTimeout(() => copied = false, 2000); }" class="size-8 rounded-full border border-gray-200 flex items-center justify-center text-gray-500 hover:border-emerald-500 hover:bg-emerald-50 hover:text-emerald-600 transition-colors cursor-pointer" title="Copy link">
+                                <svg class="size-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
+                            </button>
+                            <span x-show="copied" x-cloak x-transition class="absolute -top-8 left-1/2 -translate-x-1/2 bg-slate-900 text-white text-[10px] font-semibold px-2 py-0.5 rounded shadow whitespace-nowrap pointer-events-none">Copied!</span>
+                        </div>
                         <a href="#" class="size-8 rounded-full border border-gray-200 flex items-center justify-center text-gray-500 hover:border-emerald-500 hover:bg-emerald-50 hover:text-emerald-600 transition-colors" title="Facebook">
                             <svg class="size-3.5" fill="currentColor" viewBox="0 0 24 24"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
                         </a>
@@ -197,5 +200,5 @@
 
         </div>
     </div>
-</div>
+</article>
 

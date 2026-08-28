@@ -18,8 +18,8 @@
     window.editorCollectionFields       = @json($collectionFields ?? []);
     window.editorGroupedCollectionFields = @json($groupedCollectionFields ?? []);
     window.editorSettingsCustomValues   = @json($settingsCustomValues ?? (object)[]);
-    window.editorSaveRoute              = '{{ route('admin.collections.entries.update-sections', [$collection, $entry]) }}';
-    window.editorPreviewRoute           = '{{ route('admin.preview') }}';
+    window.editorSaveRoute              = '{{ route('admin.collections.entries.update-sections', [$collection, $entry], false) }}';
+    window.editorPreviewRoute           = '{{ route('admin.preview', [], false) }}';
     window.editorCsrfToken              = '{{ csrf_token() }}';
     window.editorPostId                 = null;
     window.editorForms                  = @json($availableForms ?? []);

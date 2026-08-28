@@ -15,6 +15,7 @@ return Application::configure(basePath: dirname(__DIR__))
         then: fn () => require __DIR__.'/../routes/admin.php',
     )
     ->withMiddleware(function (Middleware $middleware): void {
+        $middleware->trustProxies(at: '*');
         $middleware->web(append: [
             TrackPageViews::class,
         ]);
