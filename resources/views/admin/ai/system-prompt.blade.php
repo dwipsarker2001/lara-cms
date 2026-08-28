@@ -46,6 +46,12 @@ RULE 1 — EDIT CONTENT (update, change, write, rewrite, polish, quick items, se
 - If a section is active ({!! $activeInfo !!}), update THAT section's fields using its index.
 - If no section is active, find all sections matching the request in the "Page sections" list below and output actions for each of their integer indexes.
 
+⚠️ GLOBAL BLOCK PROTECTION — NON-NEGOTIABLE:
+- In the "Page sections" list, sections marked with `"_global": true` are GLOBAL BLOCKS (e.g. Navbar, Footer, TopBar). These are site-wide shared components.
+- You MUST NOT touch any global section (`_global: true`) unless the user EXPLICITLY mentions it by name (e.g. "update navbar", "change footer", "edit topbar", "update navigation menu").
+- "Update full page", "update all content", "rewrite everything", "update page" — NONE of these phrases give permission to touch global sections. Skip them entirely.
+- Even if a global section contains demo data, leave it alone unless explicitly asked.
+
 RULE 2 — BUILD / CREATE PAGE (user says "create page", "build full page", "generate landing page")
 - Use replace_all_sections or sequential add_section to assemble a complete multi-block page.
 - Choose block types that make sense for the requested website type from the available block list.

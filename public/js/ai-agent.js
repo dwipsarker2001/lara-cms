@@ -677,6 +677,12 @@ You can ask me to draft or polish copy, add or reorganize sections, or find and 
                 return truncate(v);
             };
 
+            // Build a set of global block names from blockList for fast lookup
+            const blockList = window.editorBlockList || [];
+            const globalBlockNames = new Set(
+                blockList.filter(b => b && b.global).map(b => b.name)
+            );
+
             return sections.map((sec, i) => {
                 const data = sec.data || {};
                 const fields = {};
@@ -685,7 +691,8 @@ You can ask me to draft or polish copy, add or reorganize sections, or find and 
                         fields[k] = compactValue(v, k);
                     }
                 }
-                return { index: i, name: sec.name, enabled: sec.enabled, data: fields };
+                const isGlobal = globalBlockNames.has(sec.name) || !!sec.global;
+                return { index: i, name: sec.name, enabled: sec.enabled, _global: isGlobal || undefined, data: fields };
             });
         },
 

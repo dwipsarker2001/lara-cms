@@ -51,6 +51,9 @@ class AiAgentService
         // Pass topic query into context so sanitizeActions() can enforce image relevance
         $context['_image_topic_query'] = $topicQuery;
 
+        // Pass messages into context so sanitizeActions() can detect explicit global block requests
+        $context['_messages'] = $messages;
+
         $systemPrompt = $this->buildSystemPrompt($context);
         $completion = $this->executeCompletion($systemPrompt, $messages, $apiKey, $baseUrl, $model, $modelConfig['provider'] ?? 'custom');
 
@@ -1179,6 +1182,45 @@ class AiAgentService
             }
         }
 
+        // ── Global section guard ───────────────────────────────────────────────
+        // Build a set of section indexes that belong to global blocks (navbar, footer, topbar, etc.)
+        // These must NEVER be touched by a general "update full page" request.
+        $globalBlockNames = collect($blockList)
+            ->filter(fn ($item) => is_array($item) && ! empty($item['name']) && ! empty($item['global']))
+            ->pluck('name')
+            ->flip() // Use as a lookup set (O(1))
+            ->all();
+
+        // Also check by known naming patterns in case blockList global flag is missing
+        $globalNamePatterns = ['navbar', 'footer', 'topbar', 'header', 'navigation', 'nav', 'sitefooter', 'sitenavbar', 'sitetopbar'];
+
+        $globalSectionIndexes = [];
+        foreach ((is_array($sections) ? $sections : []) as $i => $sec) {
+            $name = strtolower((string) ($sec['name'] ?? ''));
+            $isGlobalByList = isset($globalBlockNames[$sec['name'] ?? '']);
+            $isGlobalByPattern = array_any($globalNamePatterns, fn ($p) => str_contains($name, $p));
+            $isGlobalByFlag = ! empty($sec['global']);
+            if ($isGlobalByList || $isGlobalByPattern || $isGlobalByFlag) {
+                $globalSectionIndexes[$i] = $sec['name'] ?? '';
+            }
+        }
+
+        // Check if the user's last message EXPLICITLY requested a global block by name
+        $lastUserMessage = '';
+        $messages = $context['_messages'] ?? [];
+        if (! empty($messages)) {
+            foreach (array_reverse($messages) as $m) {
+                if (($m['role'] ?? '') === 'user' && ! empty($m['content'])) {
+                    $lastUserMessage = strtolower((string) $m['content']);
+                    break;
+                }
+            }
+        }
+
+        $globalKeywords = ['navbar', 'navigation', 'nav', 'footer', 'topbar', 'top bar', 'header', 'menu', 'site header', 'site footer'];
+        $userExplicitlyRequestedGlobal = array_any($globalKeywords, fn ($kw) => str_contains($lastUserMessage, $kw));
+        // ─────────────────────────────────────────────────────────────────────
+
         // ── Image relevance guard ──────────────────────────────────────────────
         // Extract topic keywords so we can decide if a local image filename is relevant
         $topicQuery = strtolower(trim((string) ($context['_image_topic_query'] ?? '')));
@@ -1245,6 +1287,15 @@ class AiAgentService
         };
         // ─────────────────────────────────────────────────────────────────────
 
+        /**
+         * Returns true if the given section index is a global block (navbar/footer/topbar)
+         * AND the user did not explicitly ask to edit global blocks.
+         * Use this to short-circuit any action that targets a global section.
+         */
+        $isBlockedGlobalAction = function (int $idx) use ($globalSectionIndexes, $userExplicitlyRequestedGlobal): bool {
+            return isset($globalSectionIndexes[$idx]) && ! $userExplicitlyRequestedGlobal;
+        };
+
         $sanitized = [];
 
         foreach ($actions as $action) {
@@ -1259,6 +1310,9 @@ class AiAgentService
                     $idx = isset($action['section_index']) ? (int) $action['section_index'] : null;
                     if ($idx === null || $idx < 0 || ($sectionCount > 0 && $idx >= $sectionCount)) {
                         $idx = $context['activeSectionIndex'] ?? 0;
+                    }
+                    if ($isBlockedGlobalAction((int) $idx)) {
+                        break; // Silently skip — global block, user did not request it
                     }
                     if (! empty($action['field_path']) && is_string($action['field_path'])) {
                         $fieldValue = $action['value'] ?? '';
@@ -1280,6 +1334,9 @@ class AiAgentService
                     if ($idx === null || $idx < 0 || ($sectionCount > 0 && $idx >= $sectionCount)) {
                         $idx = $context['activeSectionIndex'] ?? 0;
                     }
+                    if ($isBlockedGlobalAction((int) $idx)) {
+                        break; // Silently skip — global block, user did not request it
+                    }
                     if (isset($action['data']) && is_array($action['data'])) {
                         $sanitized[] = [
                             'action' => 'update_section',
@@ -1293,6 +1350,9 @@ class AiAgentService
                     $idx = isset($action['section_index']) ? (int) $action['section_index'] : null;
                     if ($idx === null || $idx < 0 || ($sectionCount > 0 && $idx >= $sectionCount)) {
                         $idx = $context['activeSectionIndex'] ?? 0;
+                    }
+                    if ($isBlockedGlobalAction((int) $idx)) {
+                        break; // Silently skip — global block, user did not request it
                     }
                     $url = trim((string) ($action['image_url'] ?? ''));
                     $fieldPath = trim((string) ($action['field_path'] ?? 'image'));
