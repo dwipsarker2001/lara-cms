@@ -35,6 +35,13 @@
                         </svg>
                         Add Input
                     </button>
+                    <button type="button" @click="$dispatch('open-ai-model-modal')" x-show="activeTab === 'ai'" x-cloak
+                        class="inline-flex items-center justify-center gap-1.5 shrink-0 font-medium cursor-pointer no-underline rounded-lg transition-colors h-10 px-3 bg-white hover:bg-gray-50 text-text-heading shadow-sm border border-gray-200 text-sm">
+                        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="size-4">
+                            <path d="M8 3v10M3 8h10" />
+                        </svg>
+                        Add Model
+                    </button>
                     <button type="submit"
                         class="inline-flex items-center justify-center gap-2 whitespace-nowrap shrink-0 font-medium cursor-pointer no-underline rounded-lg transition-colors h-10 text-sm leading-tight px-4 bg-primary hover:opacity-90 text-white shadow-sm"
                     >

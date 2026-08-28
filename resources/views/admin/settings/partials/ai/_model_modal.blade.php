@@ -29,12 +29,12 @@
         x-transition:leave="transition ease-in duration-100"
         x-transition:leave-start="opacity-100 scale-100"
         x-transition:leave-end="opacity-0 scale-95"
-        class="relative w-full max-w-lg bg-white rounded-2xl border border-gray-200/90 shadow-2xl z-10 font-sans"
+        class="relative w-full max-w-lg bg-white rounded-xl border border-gray-200/90 shadow-2xl z-10 font-sans"
     >
         {{-- Modal Header --}}
-        <div class="px-6 py-4 border-b border-gray-100 flex items-center justify-between bg-white rounded-t-2xl">
+        <div class="px-6 py-4 border-b border-gray-100 flex items-center justify-between bg-white rounded-t-xl">
             <div class="flex items-center gap-3">
-                <div class="size-10 rounded-xl bg-gray-50 border border-gray-200/90 flex items-center justify-center p-2 shadow-2xs shrink-0">
+                <div class="size-10 rounded-lg bg-gray-50 border border-gray-200/90 flex items-center justify-center p-2 shadow-2xs shrink-0">
                     <img :src="getProviderLogo(form.provider)" class="size-full object-contain pointer-events-none" :alt="form.provider">
                 </div>
                 <div>
@@ -55,7 +55,7 @@
         </div>
 
         {{-- Modal Form --}}
-        <div @keydown.enter.prevent="saveModel()" class="rounded-b-2xl">
+        <div @keydown.enter.prevent="saveModel()" class="rounded-b-xl">
             <div class="px-6 py-4 space-y-3.5">
                 {{-- Modern Provider Custom Dropdown --}}
                 <div class="relative" @click.outside="providerDropdownOpen = false" @keydown.escape.window="providerDropdownOpen = false">
@@ -63,10 +63,10 @@
                     <button
                         type="button"
                         @click="providerDropdownOpen = !providerDropdownOpen"
-                        class="w-full h-10 rounded-xl border border-gray-300 hover:border-gray-400 bg-white px-3 flex items-center justify-between text-xs text-text-heading focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all shadow-2xs cursor-pointer select-none"
+                        class="w-full h-10 rounded-lg border border-gray-300 hover:border-gray-400 bg-white px-3 flex items-center justify-between text-xs text-text-heading outline-none focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-colors duration-150 shadow-2xs cursor-pointer select-none"
                     >
                         <div class="flex items-center gap-2.5 min-w-0">
-                            <div class="size-6 rounded-lg bg-gray-50 border border-gray-200 flex items-center justify-center p-1 shadow-2xs shrink-0">
+                            <div class="size-6 rounded-md bg-gray-50 border border-gray-200 flex items-center justify-center p-1 shadow-2xs shrink-0">
                                 <img :src="getProviderLogo(form.provider)" class="size-full object-contain pointer-events-none" :alt="form.provider">
                             </div>
                             <span class="font-semibold text-xs truncate text-text-heading" x-text="currentProviderObj?.name || form.provider"></span>
@@ -87,17 +87,17 @@
                         x-transition:leave="transition ease-in duration-75"
                         x-transition:leave-start="opacity-100 translate-y-0 scale-100"
                         x-transition:leave-end="opacity-0 translate-y-1 scale-98"
-                        class="absolute z-50 top-full mt-1.5 left-0 w-full rounded-xl border border-gray-200 bg-white shadow-2xl p-1 space-y-0.5"
+                        class="absolute z-50 top-full mt-1.5 left-0 w-full rounded-lg border border-gray-200 bg-white shadow-2xl p-1 space-y-0.5"
                     >
                         <template x-for="p in providersList" :key="p.id">
                             <button
                                 type="button"
                                 @click="selectProvider(p.id)"
-                                class="w-full flex items-center justify-between gap-2.5 px-2.5 py-1.5 rounded-lg text-left transition-colors cursor-pointer select-none"
+                                class="w-full flex items-center justify-between gap-2.5 px-2.5 py-1.5 rounded-md text-left transition-colors cursor-pointer select-none"
                                 :class="form.provider === p.id ? 'bg-primary/10 text-primary font-semibold' : 'hover:bg-gray-50 text-text-heading'"
                             >
                                 <div class="flex items-center gap-2.5 min-w-0">
-                                    <div class="size-6 rounded-lg bg-gray-50 border border-gray-200 flex items-center justify-center p-1 shadow-2xs shrink-0">
+                                    <div class="size-6 rounded-md bg-gray-50 border border-gray-200 flex items-center justify-center p-1 shadow-2xs shrink-0">
                                         <img :src="getProviderLogo(p.id)" class="size-full object-contain pointer-events-none" :alt="p.name">
                                     </div>
                                     <div class="min-w-0">
@@ -121,7 +121,7 @@
                         <button
                             type="button"
                             @click="modelPresetDropdownOpen = !modelPresetDropdownOpen"
-                            class="w-full h-10 rounded-xl border border-gray-300 hover:border-gray-400 bg-white px-3 flex items-center justify-between text-xs text-text-heading focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all shadow-2xs cursor-pointer select-none"
+                            class="w-full h-10 rounded-lg border border-gray-300 hover:border-gray-400 bg-white px-3 flex items-center justify-between text-xs text-text-heading outline-none focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-colors duration-150 shadow-2xs cursor-pointer select-none"
                         >
                             <div class="flex items-center gap-2 min-w-0">
                                 <span class="font-semibold text-xs truncate text-text-heading" x-text="form.name || 'Select a Model'"></span>
@@ -142,13 +142,13 @@
                             x-transition:leave="transition ease-in duration-75"
                             x-transition:leave-start="opacity-100 translate-y-0 scale-100"
                             x-transition:leave-end="opacity-0 translate-y-1 scale-98"
-                            class="absolute z-40 top-full mt-1.5 left-0 w-full rounded-xl border border-gray-200 bg-white shadow-2xl p-1 space-y-0.5"
+                            class="absolute z-40 top-full mt-1.5 left-0 w-full rounded-lg border border-gray-200 bg-white shadow-2xl p-1 space-y-0.5"
                         >
                             <template x-for="item in currentProviderModels" :key="item.model_id">
                                 <button
                                     type="button"
                                     @click="applyModelPreset(item); modelPresetDropdownOpen = false"
-                                    class="w-full flex items-center justify-between gap-2.5 px-2.5 py-1.5 rounded-lg text-left transition-colors cursor-pointer select-none"
+                                    class="w-full flex items-center justify-between gap-2.5 px-2.5 py-1.5 rounded-md text-left transition-colors cursor-pointer select-none"
                                     :class="form.model_id === item.model_id ? 'bg-primary/10 text-primary font-semibold' : 'hover:bg-gray-50 text-text-heading'"
                                 >
                                     <div class="min-w-0">
@@ -174,7 +174,7 @@
                                 type="text"
                                 x-model="form.name"
                                 placeholder="e.g. Local LLaMA 3.2"
-                                class="w-full h-10 rounded-xl border border-gray-300 bg-white px-3.5 text-xs text-text-heading placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all shadow-2xs"
+                                class="w-full h-10 rounded-lg border border-gray-300 bg-white px-3.5 text-xs text-text-heading placeholder:text-gray-400 outline-none focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-colors duration-150 shadow-2xs"
                             >
                         </div>
                         <div>
@@ -183,7 +183,7 @@
                                 type="text"
                                 x-model="form.model_id"
                                 placeholder="e.g. llama3.2"
-                                class="w-full h-10 rounded-xl border border-gray-300 bg-white px-3.5 text-xs font-mono text-text-heading placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all shadow-2xs"
+                                class="w-full h-10 rounded-lg border border-gray-300 bg-white px-3.5 text-xs font-mono text-text-heading placeholder:text-gray-400 outline-none focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-colors duration-150 shadow-2xs"
                             >
                         </div>
                     </div>
@@ -195,7 +195,7 @@
                             type="text"
                             x-model="form.base_url"
                             placeholder="https://tabitoken.com/v1, http://localhost:11434/v1, or any custom URL"
-                            class="w-full h-10 rounded-xl border border-gray-300 bg-white px-3.5 text-xs font-mono text-text-heading placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all shadow-2xs"
+                            class="w-full h-10 rounded-lg border border-gray-300 bg-white px-3.5 text-xs font-mono text-text-heading placeholder:text-gray-400 outline-none focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-colors duration-150 shadow-2xs"
                         >
                         <p class="text-[11px] text-text-muted mt-1">Supports domain roots, <code>/v1</code> prefixes, or direct endpoints.</p>
                     </div>
@@ -207,7 +207,7 @@
                             type="text"
                             x-model="form.description"
                             placeholder="e.g. Local self-hosted model"
-                            class="w-full h-10 rounded-xl border border-gray-300 bg-white px-3.5 text-xs text-text-heading placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all shadow-2xs"
+                            class="w-full h-10 rounded-lg border border-gray-300 bg-white px-3.5 text-xs text-text-heading placeholder:text-gray-400 outline-none focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-colors duration-150 shadow-2xs"
                         >
                     </div>
                 </div>
@@ -220,7 +220,7 @@
                             :type="showApiKey ? 'text' : 'password'"
                             x-model="form.api_key"
                             :placeholder="isEditing && form.has_api_key ? '•••••••••••••••• (Leave blank to keep unchanged)' : (form.provider === 'custom' ? 'Optional for local Ollama / sk-...' : 'sk-...')"
-                            class="w-full h-10 rounded-xl border border-gray-300 bg-white pl-3.5 pr-10 text-xs font-mono text-text-heading placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all shadow-2xs"
+                            class="w-full h-10 rounded-lg border border-gray-300 bg-white pl-3.5 pr-10 text-xs font-mono text-text-heading placeholder:text-gray-400 outline-none focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-colors duration-150 shadow-2xs"
                         >
                         <button
                             type="button"
@@ -254,7 +254,7 @@
                 </div>
 
                 {{-- Test Connection Result Message --}}
-                <div x-show="modalTestMessage" x-cloak class="p-3 rounded-xl text-xs" :class="modalTestSuccess ? 'bg-emerald-50 text-emerald-800 border border-emerald-200' : 'bg-rose-50 text-rose-800 border border-rose-200'">
+                <div x-show="modalTestMessage" x-cloak class="p-3 rounded-lg text-xs" :class="modalTestSuccess ? 'bg-emerald-50 text-emerald-800 border border-emerald-200' : 'bg-rose-50 text-rose-800 border border-rose-200'">
                     <div class="flex items-center gap-1.5 font-semibold">
                         <span x-text="modalTestSuccess ? '✓ Connection Verified' : (modalErrorTitle || '✕ Error')"></span>
                     </div>
@@ -263,12 +263,12 @@
             </div>
 
             {{-- Modal Footer --}}
-            <div class="px-6 py-4 bg-gray-50/80 border-t border-gray-100 flex items-center justify-between gap-3 rounded-b-2xl">
+            <div class="px-6 py-4 bg-gray-50/80 border-t border-gray-100 flex items-center justify-between gap-3 rounded-b-xl">
                 <button
                     type="button"
                     @click="testModalConnection()"
                     :disabled="isTestingModal"
-                    class="h-10 px-4 rounded-xl border border-gray-200 bg-white text-xs font-semibold text-gray-700 hover:bg-gray-100 transition-colors cursor-pointer inline-flex items-center justify-center gap-1.5 shadow-2xs"
+                    class="h-10 px-4 rounded-lg border border-gray-200 bg-white text-xs font-semibold text-gray-700 hover:bg-gray-100 transition-colors cursor-pointer inline-flex items-center justify-center gap-1.5 shadow-2xs"
                 >
                     <svg x-show="!isTestingModal" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="size-3.5 text-emerald-600">
                         <path d="M13 2 3 14h9l-1 8 10-12h-9l1-8z" stroke-linecap="round" stroke-linejoin="round"/>
@@ -284,15 +284,18 @@
                     <button
                         type="button"
                         @click="closeModal()"
-                        class="h-10 px-4 rounded-xl border border-gray-200 bg-white text-xs font-semibold text-gray-700 hover:bg-gray-100 transition-colors cursor-pointer text-center"
+                        class="h-10 px-4 rounded-lg border border-gray-200 bg-white text-xs font-semibold text-gray-700 hover:bg-gray-100 transition-colors cursor-pointer text-center"
                     >Cancel</button>
 
                     <button
                         type="button"
                         @click="saveModel()"
                         :disabled="isSaving"
-                        class="h-10 px-5 rounded-xl bg-primary text-xs font-semibold text-white hover:opacity-90 active:scale-[0.98] disabled:opacity-60 disabled:cursor-not-allowed shadow-sm shadow-primary/20 transition-all cursor-pointer text-center inline-flex items-center justify-center gap-1.5"
+                        class="h-10 px-5 rounded-lg bg-primary text-xs font-semibold text-white hover:opacity-90 active:scale-[0.98] disabled:opacity-60 disabled:cursor-not-allowed shadow-sm shadow-primary/20 transition-all cursor-pointer text-center inline-flex items-center justify-center gap-1.5"
                     >
+                        <svg x-show="!isSaving" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round" class="size-3.5">
+                            <polyline points="20 6 9 17 4 12" />
+                        </svg>
                         <svg x-show="isSaving" x-cloak class="animate-spin size-3.5 text-white" viewBox="0 0 24 24" fill="none">
                             <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
                             <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>

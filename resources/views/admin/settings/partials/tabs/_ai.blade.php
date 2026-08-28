@@ -1,5 +1,5 @@
 {{-- AI Models Management Tab Panel --}}
-<div x-show="activeTab === 'ai'" x-cloak x-data="aiModelsManager()" x-init="init()">
+<div x-show="activeTab === 'ai'" x-cloak x-data="aiModelsManager()" x-init="init()" @open-ai-model-modal.window="openCreateModal()">
     <div class="bg-panel-bg rounded-2xl mb-8 p-[7px]">
         {{-- Top Navigation & Filter Bar --}}
         <div class="flex flex-wrap items-center justify-between gap-4 px-4 py-3 border-b border-content-border text-sm font-medium text-text-heading">
@@ -112,18 +112,6 @@
                         </button>
                     </div>
                 </div>
-
-                {{-- Add AI Model Button in Toolbar --}}
-                <button
-                    type="button"
-                    @click="openCreateModal()"
-                    class="inline-flex items-center justify-center whitespace-nowrap shrink-0 font-medium text-sm px-4 py-2 rounded-lg bg-primary hover:opacity-90 text-white shadow-sm cursor-pointer transition-opacity"
-                >
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="size-4 mr-2">
-                        <path d="M12 5v14M5 12h14" stroke-linecap="round" />
-                    </svg>
-                    Add AI Model
-                </button>
             </div>
         </div>
 
