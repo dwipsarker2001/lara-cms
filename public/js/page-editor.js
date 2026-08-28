@@ -1057,6 +1057,26 @@ function pageEditor() {
                     return true;
                 }
 
+                const isIconField = !isRichtextField && (fieldDef?.type === 'icon' || target.tagName === 'I' || name.toLowerCase().includes('icon'));
+                if (isIconField) {
+                    let iconEl = target.tagName === 'I' ? target : target.querySelector('i');
+                    if (!iconEl) {
+                        iconEl = doc.createElement('i');
+                        target.innerHTML = '';
+                        target.appendChild(iconEl);
+                    }
+                    if (text) {
+                        iconEl.className = text;
+                        iconEl.textContent = '';
+                        iconEl.style.display = '';
+                    } else {
+                        iconEl.className = '';
+                        iconEl.textContent = '';
+                        iconEl.style.display = 'none';
+                    }
+                    return true;
+                }
+
                 if (looksLikeHtml) {
                     if (window.morphdom) {
                         const wrapper = doc.createElement('div');
@@ -1543,7 +1563,7 @@ function pageEditor() {
                     this.sidebarOpen = true;
 
                     const path = this.buildFieldPath(e.target);
-                    this.focusField(path, idx, false, true);
+                    this.focusField(path, idx);
                 });
             },
 
@@ -1622,10 +1642,10 @@ function pageEditor() {
                 }
             },
 
-            focusField(cmd, sectionIdx, noScroll = false, noIframeScroll = false) {
+            focusField(cmd, sectionIdx, noScroll = false) {
                 if (sectionIdx !== undefined) {
                     this.active = sectionIdx;
-                    this.scrollToIframeSection(sectionIdx, noIframeScroll || noScroll);
+                    this.scrollToIframeSection(sectionIdx, noScroll);
                 }
 
                 const raw = cmd.split('#')[0];
