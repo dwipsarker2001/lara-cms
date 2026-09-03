@@ -1680,7 +1680,7 @@ function pageEditor() {
                 return listParts.join('/') + '/';
             },
 
-            scrollToIframeSection(sectionIdx, noScroll = false) {
+            scrollToIframeSection(sectionIdx) {
                 if (sectionIdx === undefined || sectionIdx === null) return;
                 const iframe = document.getElementById('preview-iframe');
                 if (!iframe) return;
@@ -1692,9 +1692,6 @@ function pageEditor() {
                 const targetEl = container.children[sectionIdx];
                 if (targetEl) {
                     try {
-                        if (!noScroll) {
-                            targetEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                        }
                         targetEl.style.transition = 'outline 0.3s ease, box-shadow 0.3s ease';
                         targetEl.style.outline = '3px solid rgba(59, 130, 246, 0.65)';
                         targetEl.style.outlineOffset = '2px';
@@ -1710,7 +1707,7 @@ function pageEditor() {
             focusField(cmd, sectionIdx, noScroll = false) {
                 if (sectionIdx !== undefined) {
                     this.active = sectionIdx;
-                    this.scrollToIframeSection(sectionIdx, noScroll);
+                    this.scrollToIframeSection(sectionIdx);
                 }
 
                 const raw = cmd.split('#')[0];
